@@ -83,7 +83,7 @@ split_commits = false
 protect_breaking_commits = false
 all = false  # 只考虑当前分支
 include_paths = ["**"]
-sort_commits = "newest"
+sort_commits = "newest"  # 按时间倒序
 merge_commits = true  # 包含合并提交
 
 commit_parsers = [
@@ -104,7 +104,6 @@ commit_parsers = [
 ]
 
 ignore_tags = "rc"
-sort_commits = "oldest"
 
 [git.github]
 commits = true
