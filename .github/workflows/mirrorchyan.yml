@@ -2,43 +2,81 @@ name: mirrorchyan
 
 on:
   workflow_dispatch:
+    inputs:
+      target_version:
+        description: '目标版本号'
+        required: true
+        type: string
 
 jobs:
   mirrorchyan:
     runs-on: macos-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [win]
-        arch: [x86_64]
     steps:
+      - name: Download specific release asset
+        run: |
+          # 使用 GitHub API 获取指定版本的 release 信息
+          RELEASE_INFO=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/sunyink/MFABD2/releases/tags/${{ github.event.inputs.target_version }}")
+          
+          # 查找对应的资产文件
+          ASSET_URL=$(echo "$RELEASE_INFO" | jq -r '.assets[] | select(.name == "MFABD2-${{ github.event.inputs.target_version }}-win-x86_64.zip") | .url')
+          
+          if [ "$ASSET_URL" = "null" ] || [ -z "$ASSET_URL" ]; then
+            echo "错误: 找不到对应版本的文件 MFABD2-${{ github.event.inputs.target_version }}-win-x86_64.zip"
+            exit 1
+          fi
+          
+          # 下载文件
+          curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/octet-stream" \
+            -o "MFABD2-${{ github.event.inputs.target_version }}-win-x86_64.zip" \
+            "$ASSET_URL"
+          
+          echo "文件下载成功: MFABD2-${{ github.event.inputs.target_version }}-win-x86_64.zip"
+
       - id: uploading
         uses: MirrorChyan/uploading-action@v1
         with:
-          filetype: latest-release
-          filename: "MFABD2*-${{ matrix.os }}-${{ matrix.arch }}*.zip"
+          filetype: local
+          filename: "MFABD2-${{ github.event.inputs.target_version }}-win-x86_64.zip"
+          version_name: ${{ github.event.inputs.target_version }}
           mirrorchyan_rid: MFABD2
-
-          owner: sunyink
-          repo: MFABD2
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           upload_token: ${{ secrets.MirrorChyanUploadToken }}
-          os: ${{ matrix.os }}
-          arch: ${{ matrix.arch }}
+          os: win
+          arch: x86_64
 
   mirrorchyan_res:
     runs-on: macos-latest
     steps:
+      - name: Download specific release asset
+        run: |
+          # 使用 GitHub API 获取指定版本的 release 信息
+          RELEASE_INFO=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/sunyink/MFABD2/releases/tags/${{ github.event.inputs.target_version }}")
+          
+          # 查找对应的资产文件
+          ASSET_URL=$(echo "$RELEASE_INFO" | jq -r '.assets[] | select(.name == "MFABD2-${{ github.event.inputs.target_version }}-win-x86_64.zip") | .url')
+          
+          if [ "$ASSET_URL" = "null" ] || [ -z "$ASSET_URL" ]; then
+            echo "错误: 找不到对应版本的文件 MFABD2-${{ github.event.inputs.target_version }}-win-x86_64.zip"
+            exit 1
+          fi
+          
+          # 下载文件
+          curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/octet-stream" \
+            -o "MFABD2-${{ github.event.inputs.target_version }}-win-x86_64.zip" \
+            "$ASSET_URL"
+          
+          echo "文件下载成功: MFABD2-${{ github.event.inputs.target_version }}-win-x86_64.zip"
+
       - id: uploading
         uses: MirrorChyan/uploading-action@v1
         with:
-          filetype: latest-release
-          filename: "MFABD2*-win-x86_64*.zip"
+          filetype: local
+          filename: "MFABD2-${{ github.event.inputs.target_version }}-win-x86_64.zip"
+          version_name: ${{ github.event.inputs.target_version }}
           pick_files: '["resource", "interface.json"]'
           exclude_files: '["resource/model/ocr/**"]'
           mirrorchyan_rid: MFABD2
-
-          owner: sunyink
-          repo: MFABD2
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           upload_token: ${{ secrets.MirrorChyanUploadToken }}

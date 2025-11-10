@@ -226,9 +226,8 @@ jobs:
           cd artifacts
           mkdir -p release_assets
           for dir in *; do
-            # 提取平台信息
-            platform=${dir#MFABD2-}
-            zip_name="MFABD2-${{ needs.meta.outputs.tag }}-${platform}.zip"
+            # 直接使用目录名作为 zip 文件名
+            zip_name="${dir}.zip"
             
             # 创建压缩包
             (cd "$dir" && zip -r "../release_assets/$zip_name" .)
@@ -260,9 +259,8 @@ jobs:
       - name: Trigger MirrorChyanUploading
         if: github.repository_owner == 'sunyink' && ((needs.meta.outputs.is_tag_push == 'true') || contains(needs.meta.outputs.tag, '-beta'))
         run: |
-          echo "安全触发镜像服务: 分支=${{ github.base_ref || github.ref }}"
-          gh workflow run mirrorchyan
-          gh workflow run mirrorchyan_release_note
+          echo "安全触发镜像服务: 版本=${{ needs.meta.outputs.tag }}"
+          gh workflow run mirrorchyan.yml -f target_version=${{ needs.meta.outputs.tag }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
