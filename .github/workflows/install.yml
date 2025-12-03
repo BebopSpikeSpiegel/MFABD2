@@ -140,10 +140,38 @@ jobs:
         with:
           repository: SweetSmellFox/MFAAvalonia
           fileName: "MFAAvalonia-*-${{ (matrix.os == 'win' && 'win') || (matrix.os == 'macos' && 'osx') || (matrix.os == 'linux' && 'linux') }}-${{ (matrix.arch == 'x86_64' && 'x64') || (matrix.arch == 'aarch64' && 'arm64') }}*"
-          latest: true
+          # latest: true
+          # 指定MFA旧稳定版,2.0以后MFAAvalonia自带MFA v5.1
+          tag: "v1.8.9"
           out-file-path: "MFA"
           extract: true
 
+      - name: Restore Assets (Clone from Resource Repo)
+        uses: actions/checkout@v4
+        with:
+          repository: sunyink/MFABD2-Assets
+          ref: master
+          path: temp_assets
+          fetch-depth: 1
+      
+      - name: Merge Assets
+        shell: bash
+        run: |
+          # 创建目标目录结构（如果不存在）
+          mkdir -p assets/MaaCommonAssets
+          
+          # 将临时目录里的 MaaCommonAssets 里的内容，移动到主仓库的 assets/MaaCommonAssets 下
+          # 这样就解开了 "MaaCommonAssets/MaaCommonAssets" 的套娃
+          cp -r temp_assets/MaaCommonAssets/* assets/MaaCommonAssets/
+          
+          # 清理临时目录
+          rm -rf temp_assets
+          
+          # 验证
+          echo "✅ 资源合并完成，当前 assets 目录结构："
+          ls -R assets/
+
+          
       - name: Clean up MFAAvalonia archive
         if: matrix.os != 'android'
         shell: bash

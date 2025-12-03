@@ -33,6 +33,32 @@ jobs:
             # 指定安装 v4.5.6 稳定版
             python -m pip install maafw==4.5.6
 
+
+
+      - name: Restore Assets (Clone from Resource Repo)
+        uses: actions/checkout@v4
+        with:
+          repository: sunyink/MFABD2-Assets
+          ref: master
+          path: temp_assets
+          fetch-depth: 1
+      
+      - name: Merge Assets
+        shell: bash
+        run: |
+          # 创建目标目录结构（如果不存在）
+          mkdir -p assets/MaaCommonAssets
+          
+          # 将临时目录里的 MaaCommonAssets 里的内容，移动到主仓库的 assets/MaaCommonAssets 下
+          # 这样就解开了 "MaaCommonAssets/MaaCommonAssets" 的套娃
+          cp -r temp_assets/MaaCommonAssets/* assets/MaaCommonAssets/
+          
+          # 清理临时目录
+          rm -rf temp_assets
+          
+          # 验证
+          echo "✅ 资源合并完成，当前 assets 目录结构："
+          ls -R assets/
       - name: Check Resource
         run: |
             python ./check_resource.py ./assets/resource/

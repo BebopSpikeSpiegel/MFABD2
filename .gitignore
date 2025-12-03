@@ -447,6 +447,8 @@ deps/tools/ImageCropper
 build
 install
 
+# OCR模型
+assets/MaaCommonAssets
 
 # Tools
 
@@ -460,3 +462,4 @@ debug
 **/*.bak
 **/*.ffs_db
 发布帮助.md
+
