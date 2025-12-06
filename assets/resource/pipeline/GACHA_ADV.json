@@ -1,10 +1,8 @@
 {
   "GachaADV_Start": {
     "next": [
-      "GachaADV_HomePage_Enter"
-    ],
-    "interrupt": [
-      "Global_ToHomePage"
+      "GachaADV_HomePage_Enter",
+      "[JumpBack]Global_ToHomePage"
     ]
   },
   "GachaADV_HomePage_Enter": {
@@ -20,10 +18,8 @@
     ],
     "next": [
       "GachaADV_PageEnter_1#",
-      "GachaADV_GachaRed_HaveNot"
-    ],
-    "interrupt": [
-      "GachaADV_GachaRed_Have"
+      "GachaADV_GachaRed_HaveNot",
+      "[JumpBack]GachaADV_GachaRed_Have"
     ],
     "doc": "[通用复位]复位到主界面模块,结束,中继调用"
   },
@@ -152,10 +148,8 @@
     ],
     "inverse": true,
     "next": [
-      "GachaADV_AREA1#_Post"
-    ],
-    "interrupt": [
-      "Global_ToHomePage"
+      "GachaADV_AREA1#_Post",
+      "[JumpBack]Global_ToHomePage"
     ],
     "focus": "GA.服装类卡池-无关注项",
     "post_delay": 1000
@@ -180,24 +174,20 @@
     ],
     "count": 10,
     "next": [
-      "GachaADV_AREA1#_Post"
-    ],
-    "interrupt": [
-      "GachaADV_Location1",
-      "GachaADV_Location2",
-      "GachaADV_Location3",
-      "GachaADV_Location4",
-      "GachaADV_Location5"
+      "GachaADV_AREA1#_Post",
+      "[JumpBack]GachaADV_Location1",
+      "[JumpBack]GachaADV_Location2",
+      "[JumpBack]GachaADV_Location3",
+      "[JumpBack]GachaADV_Location4",
+      "[JumpBack]GachaADV_Location5"
     ]
   },
   "GachaADV_AREA1#_Post": {
     "recognition": "OCR",
     "next": [
       "GachaADV_PageEnter_2#",
-      "GachaADV_GachaRed_HaveNot"
-    ],
-    "interrupt": [
-      "GachaADV_GachaRed_Have"
+      "GachaADV_GachaRed_HaveNot",
+      "[JumpBack]GachaADV_GachaRed_Have"
     ],
     "roi": [
       98,
@@ -267,10 +257,8 @@
     "inverse": true,
     "focus": "GA.装备类卡池-无关注项",
     "next": [
-      "GachaADV_AREA2#_Post"
-    ],
-    "interrupt": [
-      "Global_ToHomePage"
+      "GachaADV_AREA2#_Post",
+      "[JumpBack]Global_ToHomePage"
     ],
     "post_delay": 1000
   },
@@ -294,14 +282,12 @@
     ],
     "count": 40,
     "next": [
-      "GachaADV_AREA2#_Post"
-    ],
-    "interrupt": [
-      "GachaADV_Location1",
-      "GachaADV_Location2",
-      "GachaADV_Location3",
-      "GachaADV_Location4",
-      "GachaADV_Location5"
+      "GachaADV_AREA2#_Post",
+      "[JumpBack]GachaADV_Location1",
+      "[JumpBack]GachaADV_Location2",
+      "[JumpBack]GachaADV_Location3",
+      "[JumpBack]GachaADV_Location4",
+      "[JumpBack]GachaADV_Location5"
     ]
   },
   "GachaADV_AREA2#_Post": {
@@ -357,10 +343,8 @@
     "post_delay": 500,
     "next": [
       "GachaADV_Location1_Ck",
-      "GachaADV_Location1"
-    ],
-    "interrupt": [
-      "GachaADV_SkipPV"
+      "GachaADV_Location1",
+      "[JumpBack]GachaADV_SkipPV"
     ]
   },
   "GachaADV_Location1_Ck": {
@@ -394,12 +378,10 @@
       "查看概率"
     ],
     "next": [
-      "GachaADV_Location2_Pre"
-    ],
-    "interrupt": [
-      "GachaADV_TouchFreeGacha",
-      "GachaADV_Special_ReservedRights",
-      "GachaADV_HaveNotAnyRed"
+      "GachaADV_Location2_Pre",
+      "[JumpBack]GachaADV_TouchFreeGacha",
+      "[JumpBack]GachaADV_Special_ReservedRights",
+      "[JumpBack]GachaADV_HaveNotAnyRed"
     ],
     "timeout": 3000,
     "on_error": [
@@ -419,13 +401,11 @@
       "付费抽目标卡池"
     ],
     "next": [
-      "GachaADV_Location2_Pre"
-    ],
-    "interrupt": [
-      "GachaADV_PaidDiamond_90LotFind_Tp1",
-      "GachaADV_TouchFreeGacha",
-      "GachaADV_Special_ReservedRights",
-      "GachaADV_HaveNotAnyRed"
+      "GachaADV_Location2_Pre",
+      "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
+      "[JumpBack]GachaADV_TouchFreeGacha",
+      "[JumpBack]GachaADV_Special_ReservedRights",
+      "[JumpBack]GachaADV_HaveNotAnyRed"
     ]
   },
   "GachaADV_Location2_Pre": {
@@ -506,10 +486,8 @@
     "post_delay": 500,
     "next": [
       "GachaADV_Location2_Ck",
-      "GachaADV_Location2"
-    ],
-    "interrupt": [
-      "GachaADV_SkipPV"
+      "GachaADV_Location2",
+      "[JumpBack]GachaADV_SkipPV"
     ]
   },
   "GachaADV_Location2_Ck": {
@@ -543,12 +521,10 @@
       "查看概率"
     ],
     "next": [
-      "GachaADV_Location3_Pre"
-    ],
-    "interrupt": [
-      "GachaADV_TouchFreeGacha",
-      "GachaADV_Special_ReservedRights",
-      "GachaADV_HaveNotAnyRed"
+      "GachaADV_Location3_Pre",
+      "[JumpBack]GachaADV_TouchFreeGacha",
+      "[JumpBack]GachaADV_Special_ReservedRights",
+      "[JumpBack]GachaADV_HaveNotAnyRed"
     ],
     "timeout": 3000,
     "on_error": [
@@ -568,13 +544,11 @@
       "付费抽目标卡池"
     ],
     "next": [
-      "GachaADV_Location3_Pre"
-    ],
-    "interrupt": [
-      "GachaADV_PaidDiamond_90LotFind_Tp1",
-      "GachaADV_TouchFreeGacha",
-      "GachaADV_Special_ReservedRights",
-      "GachaADV_HaveNotAnyRed"
+      "GachaADV_Location3_Pre",
+      "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
+      "[JumpBack]GachaADV_TouchFreeGacha",
+      "[JumpBack]GachaADV_Special_ReservedRights",
+      "[JumpBack]GachaADV_HaveNotAnyRed"
     ]
   },
   "GachaADV_Location3_Pre": {
@@ -649,10 +623,8 @@
     "post_delay": 500,
     "next": [
       "GachaADV_Location3_Ck",
-      "GachaADV_Location3"
-    ],
-    "interrupt": [
-      "GachaADV_SkipPV"
+      "GachaADV_Location3",
+      "[JumpBack]GachaADV_SkipPV"
     ]
   },
   "GachaADV_Location3_Ck": {
@@ -686,12 +658,10 @@
       "查看概率"
     ],
     "next": [
-      "GachaADV_Location4_Pre"
-    ],
-    "interrupt": [
-      "GachaADV_TouchFreeGacha",
-      "GachaADV_Special_ReservedRights",
-      "GachaADV_HaveNotAnyRed"
+      "GachaADV_Location4_Pre",
+      "[JumpBack]GachaADV_TouchFreeGacha",
+      "[JumpBack]GachaADV_Special_ReservedRights",
+      "[JumpBack]GachaADV_HaveNotAnyRed"
     ],
     "timeout": 3000,
     "on_error": [
@@ -711,13 +681,11 @@
       "付费抽目标卡池"
     ],
     "next": [
-      "GachaADV_Location4_Pre"
-    ],
-    "interrupt": [
-      "GachaADV_PaidDiamond_90LotFind_Tp1",
-      "GachaADV_TouchFreeGacha",
-      "GachaADV_Special_ReservedRights",
-      "GachaADV_HaveNotAnyRed"
+      "GachaADV_Location4_Pre",
+      "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
+      "[JumpBack]GachaADV_TouchFreeGacha",
+      "[JumpBack]GachaADV_Special_ReservedRights",
+      "[JumpBack]GachaADV_HaveNotAnyRed"
     ]
   },
   "GachaADV_Location4_Pre": {
@@ -788,10 +756,8 @@
     "post_delay": 500,
     "next": [
       "GachaADV_Location4_Ck",
-      "GachaADV_Location4"
-    ],
-    "interrupt": [
-      "GachaADV_SkipPV"
+      "GachaADV_Location4",
+      "[JumpBack]GachaADV_SkipPV"
     ]
   },
   "GachaADV_Location4_Ck": {
@@ -825,13 +791,11 @@
       "付费抽目标卡池"
     ],
     "next": [
-      "GachaADV_Location5_Pre"
-    ],
-    "interrupt": [
-      "GachaADV_PaidDiamond_90LotFind_Tp1",
-      "GachaADV_TouchFreeGacha",
-      "GachaADV_Special_ReservedRights",
-      "GachaADV_HaveNotAnyRed"
+      "GachaADV_Location5_Pre",
+      "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
+      "[JumpBack]GachaADV_TouchFreeGacha",
+      "[JumpBack]GachaADV_Special_ReservedRights",
+      "[JumpBack]GachaADV_HaveNotAnyRed"
     ]
   },
   "GachaADV_Location4_Post": {
@@ -847,12 +811,10 @@
       "查看概率"
     ],
     "next": [
-      "GachaADV_Location5_Pre"
-    ],
-    "interrupt": [
-      "GachaADV_TouchFreeGacha",
-      "GachaADV_Special_ReservedRights",
-      "GachaADV_HaveNotAnyRed"
+      "GachaADV_Location5_Pre",
+      "[JumpBack]GachaADV_TouchFreeGacha",
+      "[JumpBack]GachaADV_Special_ReservedRights",
+      "[JumpBack]GachaADV_HaveNotAnyRed"
     ],
     "timeout": 3000,
     "on_error": [
@@ -923,10 +885,8 @@
     "post_delay": 500,
     "next": [
       "GachaADV_Location5_Ck",
-      "GachaADV_Location5"
-    ],
-    "interrupt": [
-      "GachaADV_SkipPV"
+      "GachaADV_Location5",
+      "[JumpBack]GachaADV_SkipPV"
     ]
   },
   "GachaADV_Location5_Ck": {
@@ -960,13 +920,11 @@
       "付费抽目标卡池"
     ],
     "next": [
-      "GachaADV_LocationEnd_Pre"
-    ],
-    "interrupt": [
-      "GachaADV_PaidDiamond_90LotFind_Tp1",
-      "GachaADV_TouchFreeGacha",
-      "GachaADV_Special_ReservedRights",
-      "GachaADV_HaveNotAnyRed"
+      "GachaADV_LocationEnd_Pre",
+      "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
+      "[JumpBack]GachaADV_TouchFreeGacha",
+      "[JumpBack]GachaADV_Special_ReservedRights",
+      "[JumpBack]GachaADV_HaveNotAnyRed"
     ]
   },
   "GachaADV_Location5_Post": {
@@ -982,12 +940,10 @@
       "查看概率"
     ],
     "next": [
-      "GachaADV_LocationEnd_Pre"
-    ],
-    "interrupt": [
-      "GachaADV_TouchFreeGacha",
-      "GachaADV_Special_ReservedRights",
-      "GachaADV_HaveNotAnyRed"
+      "GachaADV_LocationEnd_Pre",
+      "[JumpBack]GachaADV_TouchFreeGacha",
+      "[JumpBack]GachaADV_Special_ReservedRights",
+      "[JumpBack]GachaADV_HaveNotAnyRed"
     ]
   },
   "GachaADV_LocationEnd_Pre": {

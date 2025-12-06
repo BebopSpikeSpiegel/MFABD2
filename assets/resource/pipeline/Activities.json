@@ -91,10 +91,8 @@
       58
     ],
     "next": [
-      "Activities_Call_Mail_Out"
-    ],
-    "interrupt": [
-      "Mail_NewRed"
+      "Activities_Call_Mail_Out",
+      "[JumpBack]Mail_NewRed"
     ],
     "doc": "目的：必须在next中插入中断。进入后call中断；预测返回场景制作next的判定来离开小循环"
   },

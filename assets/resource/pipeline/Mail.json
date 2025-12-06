@@ -1,10 +1,8 @@
 {
   "Mail_HomePage": {
     "next": [
-      "Mail_GoinMail"
-    ],
-    "interrupt": [
-      "Global_ToHomePage"
+      "Mail_GoinMail",
+      "[JumpBack]Global_ToHomePage"
     ]
   },
   "Mail_GoinMail": {

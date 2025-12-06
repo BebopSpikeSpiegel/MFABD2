@@ -120,10 +120,8 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "StartGame_UpdateShopEnd"
-    ],
-    "interrupt": [
-      "StartGame_UpdateEngShopnothink"
+      "StartGame_UpdateShopEnd",
+      "[JumpBack]StartGame_UpdateEngShopnothink"
     ],
     "timeout": 50000,
     "post_delay": 60000,
@@ -312,10 +310,8 @@
       "StartGame_NewChar",
       "StartGame_DaliyBanner",
       "StartGame_MapPage",
-      "StartGame_BackMapPage"
-    ],
-    "interrupt": [
-      "PVP_PerOperationsMain_Error"
+      "StartGame_BackMapPage",
+      "[JumpBack]PVP_PerOperationsMain_Error"
     ],
     "pre_delay": 5000,
     "post_delay": 20000,

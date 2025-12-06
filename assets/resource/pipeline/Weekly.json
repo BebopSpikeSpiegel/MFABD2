@@ -86,12 +86,10 @@
   "Weekly_LastNight_Start": {
     "next": [
       "Weekly_LastNight_Ind",
-      "Weekly_LastNight_HomePage"
-    ],
-    "interrupt": [
-      "Weekly_HomePageHub",
-      "Weekly_HomePageHub2",
-      "Weekly_HomePageHub1"
+      "Weekly_LastNight_HomePage",
+      "[JumpBack]Weekly_HomePageHub",
+      "[JumpBack]Weekly_HomePageHub2",
+      "[JumpBack]Weekly_HomePageHub1"
     ]
   },
   "Weekly_LastNight_HomePage": {
@@ -489,12 +487,10 @@
   },
   "Weekly_VisitCabin_Start": {
     "next": [
-      "Weekly_VisitCabin_HomePage"
-    ],
-    "interrupt": [
-      "Weekly_HomePageHub",
-      "Weekly_HomePageHub2",
-      "Weekly_HomePageHub1"
+      "Weekly_VisitCabin_HomePage",
+      "[JumpBack]Weekly_HomePageHub",
+      "[JumpBack]Weekly_HomePageHub2",
+      "[JumpBack]Weekly_HomePageHub1"
     ],
     "focus": "WVM.访问小屋开始"
   },
@@ -728,12 +724,10 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "Weekly_VisitCabin_LeavToHomePage"
-    ],
-    "interrupt": [
-      "Weekly_HomePageHub",
-      "Weekly_HomePageHub1",
-      "Weekly_HomePageHub2"
+      "Weekly_VisitCabin_LeavToHomePage",
+      "[JumpBack]Weekly_HomePageHub",
+      "[JumpBack]Weekly_HomePageHub1",
+      "[JumpBack]Weekly_HomePageHub2"
     ],
     "post_delay": 2000,
     "roi": [
@@ -776,12 +770,10 @@
   },
   "Weekly_Arcade_Start": {
     "next": [
-      "Weekly_Arcade_HomePage"
-    ],
-    "interrupt": [
-      "Weekly_HomePageHub",
-      "Weekly_HomePageHub1",
-      "Weekly_HomePageHub2"
+      "Weekly_Arcade_HomePage",
+      "[JumpBack]Weekly_HomePageHub",
+      "[JumpBack]Weekly_HomePageHub1",
+      "[JumpBack]Weekly_HomePageHub2"
     ],
     "focus": "WAM.访问街机开始"
   },
@@ -828,10 +820,8 @@
   "Weekly_Arcade_InCk": {
     "recognition": "OCR",
     "next": [
-      "Weekly_Arcade_LeavToHomePage"
-    ],
-    "interrupt": [
-      "Weekly_HomePageHub2"
+      "Weekly_Arcade_LeavToHomePage",
+      "[JumpBack]Weekly_HomePageHub2"
     ],
     "focus": "WAM.街机已进入",
     "roi": [

@@ -820,7 +820,7 @@
             "Collect_Skill1_5_Nothing"
         ],
         "timeout": 3000,
-        "on_error": "Collect_Skill1_2~5_Unable",
+        "on_error": ["Collect_Skill1_2~5_Unable"],
         "roi": [
             1173,
             486,
@@ -1082,11 +1082,9 @@
     "Collect_Skill_End": {
         "recognition": "ColorMatch",
         "next": [
-            "Collect_OperationsMain_OperationsEnd"
-        ],
-        "interrupt": [
-            "Collect_FindTeleporCircle0.9",
-            "Collect_FindTeleporCircle"
+            "Collect_OperationsMain_OperationsEnd",
+            "[JumpBack]Collect_FindTeleporCircle0.9",
+            "[JumpBack]Collect_FindTeleporCircle"
         ],
         "timeout": 5000,
         "on_error": [

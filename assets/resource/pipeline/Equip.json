@@ -810,10 +810,8 @@
   "Equip_Sequen_MenuOpenCk": {
     "recognition": "OCR",
     "next": [
-      "Equip_Sequen_MenuFind"
-    ],
-    "interrupt": [
-      "Equip_Sequen_MenuSwipDown"
+      "Equip_Sequen_MenuFind",
+      "[JumpBack]Equip_Sequen_MenuSwipDown"
     ],
     "post_delay": 500,
     "roi": [
@@ -1115,10 +1113,8 @@
     ],
     "expected": "达到最大强化级别",
     "next": [
-      "Equip_Overdrive_RefLvMax_filter"
-    ],
-    "interrupt": [
-      "Global_BackPageHub_Once"
+      "Equip_Overdrive_RefLvMax_filter",
+      "[JumpBack]Global_BackPageHub_Once"
     ],
     "focus": "EBO.[WRN]所选装备无法继续精炼"
   },

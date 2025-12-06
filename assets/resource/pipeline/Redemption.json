@@ -298,10 +298,8 @@
     "action": "Click",
     "next": [
       "Redemption_Evil_Redemption_DetPassLv",
-      "Redemption_Evil_Redemption_Lv1"
-    ],
-    "interrupt": [
-      "Redemption_Evil_Redemption_SelLv-1"
+      "Redemption_Evil_Redemption_Lv1",
+      "[JumpBack]Redemption_Evil_Redemption_SelLv-1"
     ],
     "post_delay": 3000,
     "roi": [

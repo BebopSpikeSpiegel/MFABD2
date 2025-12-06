@@ -1,10 +1,8 @@
 {
   "Battle_StartGame_HomePage": {
     "next": [
-      "Battle_TouchCollect"
-    ],
-    "interrupt": [
-      "Global_ToSandBox"
+      "Battle_TouchCollect",
+      "[JumpBack]Global_ToSandBox"
     ]
   },
   "Battle_TouchCollect": {
@@ -84,10 +82,8 @@
     "action": "Click",
     "next": [
       "Battle_NoAP_Rice",
-      "Battle_FastBattleMAXTouchShouLie"
-    ],
-    "interrupt": [
-      "Battle_QuickBattleButton"
+      "Battle_FastBattleMAXTouchShouLie",
+      "[JumpBack]Battle_QuickBattleButton"
     ],
     "timeout": 5000,
     "pre_wait_freezes": 1500,
@@ -106,10 +102,8 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "Battle_CollectMapHangXian1"
-    ],
-    "interrupt": [
-      "Battle_FastBattleStart"
+      "Battle_CollectMapHangXian1",
+      "[JumpBack]Battle_FastBattleStart"
     ],
     "focus": "BM.狩猎场R1",
     "roi": [
@@ -170,10 +164,8 @@
     "action": "Click",
     "next": [
       "Battle_NoAP_Rice",
-      "Battle_FastBattleMAXTouchHangxian"
-    ],
-    "interrupt": [
-      "Battle_QuickBattleButton"
+      "Battle_FastBattleMAXTouchHangxian",
+      "[JumpBack]Battle_QuickBattleButton"
     ],
     "focus": "BM.航线-资源首选-双倍ck",
     "roi": [
@@ -252,10 +244,8 @@
     "action": "Click",
     "next": [
       "Battle_NoAP_Rice",
-      "Battle_FastBattleMAXTouchHangxian"
-    ],
-    "interrupt": [
-      "Battle_QuickBattleButton"
+      "Battle_FastBattleMAXTouchHangxian",
+      "[JumpBack]Battle_QuickBattleButton"
     ],
     "focus": "BM.航线-资源备选-双倍ck",
     "roi": [
@@ -332,10 +322,8 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "Battle_FastBattleMAXTouchShouLieR2"
-    ],
-    "interrupt": [
-      "Battle_QuickBattleButton"
+      "Battle_FastBattleMAXTouchShouLieR2",
+      "[JumpBack]Battle_QuickBattleButton"
     ],
     "timeout": 3000,
     "post_delay": 3000,
@@ -356,10 +344,8 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "Battle_CollectMapDongXue"
-    ],
-    "interrupt": [
-      "Battle_FastBattleStart"
+      "Battle_CollectMapDongXue",
+      "[JumpBack]Battle_FastBattleStart"
     ],
     "roi": [
       723,
@@ -382,10 +368,8 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "Battle_CollectMapDongXue"
-    ],
-    "interrupt": [
-      "Battle_FastBattleStart"
+      "Battle_CollectMapDongXue",
+      "[JumpBack]Battle_FastBattleStart"
     ],
     "roi": [
       679,
@@ -416,12 +400,10 @@
       77,
       38
     ],
-    "interrupt": [
-      "Battle_CollectMapInitialize"
-    ],
     "next": [
       "Battle_NoAP_Rice",
-      "Battle_CollectMapDongXue"
+      "Battle_CollectMapDongXue",
+      "[JumpBack]Battle_CollectMapInitialize"
     ],
     "focus": "BB.付费米饭无AP弹窗"
   },
@@ -479,10 +461,8 @@
     "action": "Click",
     "next": [
       "Battle_NoAP_Torch",
-      "Battle_FastBattleMAXTouchDongXue"
-    ],
-    "interrupt": [
-      "Battle_QuickBattleButton"
+      "Battle_FastBattleMAXTouchDongXue",
+      "[JumpBack]Battle_QuickBattleButton"
     ],
     "timeout": 3000,
     "post_delay": 1000,
@@ -507,10 +487,8 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "Battle_BackHomePage"
-    ],
-    "interrupt": [
-      "Battle_FastBattleStart"
+      "Battle_BackHomePage",
+      "[JumpBack]Battle_FastBattleStart"
     ],
     "roi": [
       679,
@@ -656,10 +634,8 @@
     ],
     "next": [
       "Battle_CollectMapInitialize_Out_Ty2",
-      "Battle_CollectMapInitialize_Out_BedReset"
-    ],
-    "interrupt": [
-      "Battle_MapLocReset_once"
+      "Battle_CollectMapInitialize_Out_BedReset",
+      "[JumpBack]Battle_MapLocReset_once"
     ],
     "expected": [
       "可以获得"
@@ -754,10 +730,8 @@
   },
   "Battle_TurnCharact_Start": {
     "next": [
-      "Battle_TurnCharact_End"
-    ],
-    "interrupt": [
-      "Battle_TurnCharact_QuickBattleButton"
+      "Battle_TurnCharact_End",
+      "[JumpBack]Battle_TurnCharact_QuickBattleButton"
     ],
     "focus": "BTM.洞穴均衡打取圣石开始"
   },
@@ -784,10 +758,8 @@
     "recognition": "OCR",
     "next": [
       "Battle_TurnCharact_NoAP",
-      "Battle_TurnCharact_TurnDuo"
-    ],
-    "interrupt": [
-      "Battle_TurnCharact_TurnDuo_Int"
+      "Battle_TurnCharact_TurnDuo",
+      "[JumpBack]Battle_TurnCharact_TurnDuo_Int"
     ],
     "post_delay": 1500,
     "focus": "BTM.快速狩猎-菜单！",
@@ -805,10 +777,8 @@
   "Battle_TurnCharact_NoAP": {
     "recognition": "ColorMatch",
     "next": [
-      "Battle_TurnCharact_CollectMapInitializeE"
-    ],
-    "interrupt": [
-      "Battle_CollectMapInitialize"
+      "Battle_TurnCharact_CollectMapInitializeE",
+      "[JumpBack]Battle_CollectMapInitialize"
     ],
     "roi": [
       649,
@@ -947,10 +917,8 @@
     "recognition": "TemplateMatch",
     "next": [
       "Battle_NoAP_Torch",
-      "Battle_FastBattleMAXTouchDongXue"
-    ],
-    "interrupt": [
-      "Battle_QuickBattleButton"
+      "Battle_FastBattleMAXTouchDongXue",
+      "[JumpBack]Battle_QuickBattleButton"
     ],
     "focus": "BTM.退出BTM分支。BM.准备刷最后一项",
     "roi": [

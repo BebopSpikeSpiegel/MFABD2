@@ -2,14 +2,12 @@
   "PVP_TaskStart": {
     "next": [
       "PVP_Sandplay",
-      "PVP_PullUp_QuickCart"
-    ],
-    "interrupt": [
-      "PVP_PerPetTask",
-      "PVP_PVPMes",
-      "PVP_PVPMes2",
-      "PVP_PerOperationsMain_Error",
-      "Global_ToSandBox"
+      "PVP_PullUp_QuickCart",
+      "[JumpBack]PVP_PerPetTask",
+      "[JumpBack]PVP_PVPMes",
+      "[JumpBack]PVP_PVPMes2",
+      "[JumpBack]PVP_PerOperationsMain_Error",
+      "[JumpBack]Global_ToSandBox"
     ],
     "timeout": 5000,
     "on_error": [
@@ -113,13 +111,11 @@
   },
   "PVP_HUB_Sandplay": {
     "next": [
-      "PVP_Sandplay"
-    ],
-    "interrupt": [
-      "PVP_PerPetTask",
-      "PVP_PVPMes",
-      "PVP_PVPMes2",
-      "PVP_PerOperationsMain_Error"
+      "PVP_Sandplay",
+      "[JumpBack]PVP_PerPetTask",
+      "[JumpBack]PVP_PVPMes",
+      "[JumpBack]PVP_PVPMes2",
+      "[JumpBack]PVP_PerOperationsMain_Error"
     ],
     "focus": "PM.HUB(0/2)"
   },
@@ -138,13 +134,11 @@
     "focus": "PM.PVP箱庭确认,(1/2)",
     "post_delay": 5000,
     "next": [
-      "PVP_Sandplay_Again"
-    ],
-    "interrupt": [
-      "PVP_PerPetTask",
-      "PVP_PVPMes",
-      "PVP_PVPMes2",
-      "PVP_PerOperationsMain_Error"
+      "PVP_Sandplay_Again",
+      "[JumpBack]PVP_PerPetTask",
+      "[JumpBack]PVP_PVPMes",
+      "[JumpBack]PVP_PVPMes2",
+      "[JumpBack]PVP_PerOperationsMain_Error"
     ],
     "doc": "防止弹窗滞后,设置两个一样的节点.| 此处int为消除弹窗"
   },
@@ -161,16 +155,14 @@
       32
     ],
     "next": [
-      "PVP_AutoBattle"
-    ],
-    "interrupt": [
-      "PVP_PerPetTask",
-      "PVP_PVPMes",
-      "PVP_PVPMes2",
-      "PVP_PerOperationsMain_Error",
-      "PVP_InsandboxAndlocAbnormal",
-      "PVP_PVPStart",
-      "PVP_Sandplay_NoFindSrena"
+      "PVP_AutoBattle",
+      "[JumpBack]PVP_PerPetTask",
+      "[JumpBack]PVP_PVPMes",
+      "[JumpBack]PVP_PVPMes2",
+      "[JumpBack]PVP_PerOperationsMain_Error",
+      "[JumpBack]PVP_InsandboxAndlocAbnormal",
+      "[JumpBack]PVP_PVPStart",
+      "[JumpBack]PVP_Sandplay_NoFindSrena"
     ],
     "focus": "PM.PVP箱庭确认,(2/2)",
     "doc": "第二次已确认,1/除消除弹窗,2/还要进入舞台,3/复位异常位置"
@@ -831,10 +823,8 @@
   "PVP_WorkaroundIn_Start": {
     "next": [
       "PVP_WorkaroundIn_CkAtPass",
-      "PVP_WorkaroundIn_GoInPass"
-    ],
-    "interrupt": [
-      "Global_ToHomePage"
+      "PVP_WorkaroundIn_GoInPass",
+      "[JumpBack]Global_ToHomePage"
     ],
     "focus": "PWB.[WRN]PVP进入舞台备用方案启用"
   },
@@ -876,10 +866,8 @@
       49
     ],
     "next": [
-      "PVP_WorkaroundIn_PassIsEnter"
-    ],
-    "interrupt": [
-      "Pass_WorkaroundIn_PassTab_Change"
+      "PVP_WorkaroundIn_PassIsEnter",
+      "[JumpBack]Pass_WorkaroundIn_PassTab_Change"
     ],
     "doc": "目前默认就是这个通行证,后续需要维护加判定,和异常状态返回"
   },
@@ -925,11 +913,9 @@
     "next": [
       "Pass_WorkaroundIn_TextPVP",
       "Pass_WorkaroundIn_TemplinePVP",
-      "Pass_WorkaroundIn_Swip_pre"
-    ],
-    "interrupt": [
-      "Pass_WorkaroundIn_PassTabEnter",
-      "Pass_WorkaroundIn_Swip"
+      "Pass_WorkaroundIn_Swip_pre",
+      "[JumpBack]Pass_WorkaroundIn_PassTabEnter",
+      "[JumpBack]Pass_WorkaroundIn_Swip"
     ]
   },
   "Pass_WorkaroundIn_PassTabEnter": {

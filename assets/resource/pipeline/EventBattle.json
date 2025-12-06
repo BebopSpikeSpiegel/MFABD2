@@ -1,10 +1,8 @@
 {
   "Event_HomePage": {
     "next": [
-      "Event_GoinEvent"
-    ],
-    "interrupt": [
-      "Global_ToHomePage"
+      "Event_GoinEvent",
+      "[JumpBack]Global_ToHomePage"
     ]
   },
   "Event_GoinEvent": {
@@ -105,10 +103,8 @@
     "action": "Click",
     "next": [
       "Event_NormalBattleIsOver",
-      "Event_NormalBattle_End"
-    ],
-    "interrupt": [
-      "Event_LeaveInterrupt"
+      "Event_NormalBattle_End",
+      "[JumpBack]Event_LeaveInterrupt"
     ],
     "pre_delay": 500,
     "focus": "EM.活动.AP不足",
@@ -196,10 +192,8 @@
     "next": [
       "Event_NormalBattleIsOver",
       "Event_NormalBattleBack",
-      "Event_TouchNormalBattle"
-    ],
-    "interrupt": [
-      "Event_LeaveInterrupt"
+      "Event_TouchNormalBattle",
+      "[JumpBack]Event_LeaveInterrupt"
     ],
     "post_delay": 8000,
     "roi": [
@@ -243,10 +237,8 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "Event_NormalBattle_End"
-    ],
-    "interrupt": [
-      "Event_LeaveInterrupt"
+      "Event_NormalBattle_End",
+      "[JumpBack]Event_LeaveInterrupt"
     ],
     "on_error": [
       "Event_LeaveEvent"
@@ -381,10 +373,8 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "Event_MiniGame_End"
-    ],
-    "interrupt": [
-      "Event_LeaveInterrupt"
+      "Event_MiniGame_End",
+      "[JumpBack]Event_LeaveInterrupt"
     ],
     "post_delay": 8000,
     "focus": "EM.活动.小游戏模块结束",
@@ -425,10 +415,8 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "Even_BackMapPage"
-    ],
-    "interrupt": [
-      "Event_LeaveInterrupt"
+      "Even_BackMapPage",
+      "[JumpBack]Event_LeaveInterrupt"
     ],
     "post_delay": 8000,
     "focus": "EM.活动.打完活动关卡页面位置Dubck",
@@ -453,10 +441,8 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "Even_BackMapPage"
-    ],
-    "interrupt": [
-      "Event_LeaveInterrupt"
+      "Even_BackMapPage",
+      "[JumpBack]Event_LeaveInterrupt"
     ],
     "post_delay": 8000,
     "focus": "EM.活动.打完活动关卡页面位置ck",
@@ -564,10 +550,8 @@
   "Even_MamonoFollowUp_GotoEvMenu": {
     "recognition": "OCR",
     "next": [
-      "Even_MamonoFollowUp_InMamono"
-    ],
-    "interrupt": [
-      "Event_LeaveInterrupt"
+      "Even_MamonoFollowUp_InMamono",
+      "[JumpBack]Event_LeaveInterrupt"
     ],
     "roi": [
       69,
@@ -586,10 +570,8 @@
     "next": [
       "Even_MamonoFollowUp_QuickBattle_color",
       "Even_MamonoFollowUp_lvck",
-      "Even_MamonoFollowUp_InMamono"
-    ],
-    "interrupt": [
-      "Even_MamonoFollowUp_lvdown"
+      "Even_MamonoFollowUp_InMamono",
+      "[JumpBack]Even_MamonoFollowUp_lvdown"
     ],
     "post_delay": 5000,
     "post_wait_freezes": 3000,
@@ -702,10 +684,8 @@
   "Even_MamonoFollowUp_MmnNoHpCk_color": {
     "recognition": "ColorMatch",
     "next": [
-      "Even_MamonoFollowUp_MmnHaveHpCk_color"
-    ],
-    "interrupt": [
-      "Even_MamonoFollowUp_MmnHpUp"
+      "Even_MamonoFollowUp_MmnHaveHpCk_color",
+      "[JumpBack]Even_MamonoFollowUp_MmnHpUp"
     ],
     "inverse": true,
     "focus": "EM.EM.魔兽血量0-色核通过",
@@ -837,10 +817,8 @@
   "Even_MamonoFollowUp_onSubMain": {
     "recognition": "OCR",
     "next": [
-      "Even_MamonoFollowUp_End"
-    ],
-    "interrupt": [
-      "Event_LeaveInterrupt"
+      "Even_MamonoFollowUp_End",
+      "[JumpBack]Event_LeaveInterrupt"
     ],
     "roi": [
       702,

@@ -196,10 +196,8 @@
     "next": [
       "RewardsORG_BusinReward",
       "RewardsORG_BusinReward_img",
-      "RewardsORG_UnionBack2"
-    ],
-    "interrupt": [
-      "Global_OnceHomeButton"
+      "RewardsORG_UnionBack2",
+      "[JumpBack]Global_OnceHomeButton"
     ],
     "post_delay": 3000,
     "roi": [
@@ -314,10 +312,8 @@
     "action": "Click",
     "next": [
       "RewardsORG_Busin_In",
-      "RewardsORG_Busin_In_img"
-    ],
-    "interrupt": [
-      "RewardsORG_ClickOnce"
+      "RewardsORG_Busin_In_img",
+      "[JumpBack]RewardsORG_ClickOnce"
     ],
     "on_error": [],
     "post_delay": 3000,
