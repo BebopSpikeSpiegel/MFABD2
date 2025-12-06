@@ -501,10 +501,7 @@
     },
     "Collect_TeleporCircle_OnFoot_SandHub": {
         "next": [
-            "Collect_OnFoot_Skill3_1",
-            "Collect_TeleporCircle_OnFoot_Skirmish",
-            "Collect_ForceTelepor_IsEffect",
-            "Collect_ForceTelepor_FindTeleporCircle"
+            "Collect_OnFoot_Skill3_1"
         ]
     },
     "Collect_OnFoot_Skill3_1": {
@@ -526,10 +523,15 @@
             8
         ],
         "next": [
-            "Collect_TeleporCircle_OnFoot_LoopFoot"
+            "Collect_TeleporCircle_OnFoot_LoopFoot",
+            "Collect_TeleporCircle_OnFoot_Skirmish",
+            "Collect_ForceTelepor_IsEffect",
+            "Collect_ForceTelepor_FindTeleporCircle",
+            "Collect_FindTeleporCircle0.9"
         ]
     },
     "Collect_TeleporCircle_OnFoot_LoopFoot": {
+        "recognition": "TemplateMatch",
         "template": [
             "AutoNvi_ico.png"
         ],
@@ -628,6 +630,9 @@
         ],
         "interrupt": [
             "Global_BackPageHub_Once"
+        ],
+        "on_error": [
+            "Collect_FindTeleporCircle0.9"
         ]
     },
     "Collect_ForceTelepor_IsEffect_ResetFoot": {
