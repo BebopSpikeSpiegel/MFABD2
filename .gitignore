@@ -464,3 +464,4 @@ debug
 发布帮助.md
 
 .nicegui
+assets/resource/pipeline/*.mpe.json

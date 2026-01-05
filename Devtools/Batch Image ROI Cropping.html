@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>批量特征图截取工具 (ROI Cropper)</title>
+
+    <script src="jszip.min.js"></script>
+    <script src="FileSaver.min.js"></script>
+
+    <script>
+        if (typeof JSZip === 'undefined') {
+            document.write('<script src="https://cdn.bootcdn.net/ajax/libs/jszip/3.10.1/jszip.min.js"><\/script>');
+        }
+        if (typeof saveAs === 'undefined') {
+            document.write('<script src="https://cdn.bootcdn.net/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"><\/script>');
+        }
+    </script>
+    
+    <style>
+        :root { --bg: #1e1e1e; --text: #ddd; --accent: #4caf50; --panel: #2d2d2d; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        h2 { margin-top: 0; color: var(--accent); }
+        .container { display: flex; gap: 20px; width: 100%; max-width: 1200px; height: 80vh; }
+        
+        /* 左侧控制区 */
+        .controls { flex: 1; display: flex; flex-direction: column; gap: 15px; background: var(--panel); padding: 20px; border-radius: 8px; }
+        textarea { background: #111; color: #0f0; border: 1px solid #444; padding: 10px; font-family: monospace; height: 150px; resize: vertical; border-radius: 4px; }
+        .drop-zone { border: 2px dashed #555; padding: 30px; text-align: center; cursor: pointer; transition: 0.3s; border-radius: 4px; }
+        .drop-zone:hover, .drop-zone.dragover { border-color: var(--accent); background: #333; }
+        button { background: var(--accent); color: white; border: none; padding: 12px; cursor: pointer; font-size: 16px; border-radius: 4px; font-weight: bold; }
+        button:disabled { background: #555; cursor: not-allowed; }
+        .log { flex: 1; background: #111; padding: 10px; overflow-y: auto; font-family: monospace; font-size: 12px; border: 1px solid #444; color: #aaa; }
+        
+        /* 右侧预览区 */
+        .preview-area { flex: 2; background: var(--panel); padding: 20px; border-radius: 8px; display: flex; flex-direction: column; }
+        .preview-canvas-container { flex: 1; overflow: auto; border: 1px solid #444; background: #000; position: relative; display: flex; justify-content: center; align-items: center; }
+        canvas { box-shadow: 0 0 10px rgba(0,0,0,0.5); max-width: 100%; }
+        .status-bar { margin-top: 10px; font-size: 14px; color: #bbb; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+
+    <h2>🛠️ 批量 ROI 特征截取工具</h2>
+
+    <div class="container">
+        <div class="controls">
+            <div>
+                <label>1. 输入 ROI 列表 (JSON格式)</label>
+                <div style="font-size: 12px; color: #888; margin-bottom: 5px;">格式: [[x, y, w, h], [x, y, w, h]...]</div>
+                <textarea id="roiInput" placeholder='Example: 
+[
+  [100, 200, 50, 50],
+  [500, 300, 100, 80]
+]'></textarea>
+            </div>
+
+            <div class="drop-zone" id="dropZone">
+                <label>2. 拖入图片文件 (或点击选择)</label>
+                <input type="file" id="fileInput" multiple accept="image/png, image/jpeg" style="display:none">
+                <div id="fileCount" style="margin-top: 5px; color: var(--accent);">未选择文件</div>
+            </div>
+
+            <button id="processBtn" disabled>开始批量截取并下载 ZIP</button>
+            
+            <div class="log" id="logArea">等待操作...</div>
+        </div>
+
+        <div class="preview-area">
+            <div style="margin-bottom: 10px; font-weight: bold;">最后一张处理预览 (及 ROI 框示)</div>
+            <div class="preview-canvas-container">
+                <canvas id="previewCanvas"></canvas>
+            </div>
+            <div class="status-bar">
+                <span id="progressText">进度: 0 / 0</span>
+                <span id="zipSize">ZIP大小: 0 MB</span>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // 变量初始化
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const roiInput = document.getElementById('roiInput');
+    const processBtn = document.getElementById('processBtn');
+    const logArea = document.getElementById('logArea');
+    const canvas = document.getElementById('previewCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    let files = [];
+    let rois = [];
+
+    // 默认 ROI 示例
+    roiInput.value = "[\n  [988, 122, 116, 116],\n  [1000, 300, 50, 50]\n]";
+
+    // 日志工具
+    function log(msg) {
+        const div = document.createElement('div');
+        div.innerText = `> ${msg}`;
+        logArea.appendChild(div);
+        logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    // 1. 文件处理逻辑
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+    
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+    function handleFiles(fileList) {
+        files = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+        if (files.length > 0) {
+            document.getElementById('fileCount').innerText = `已加载 ${files.length} 张图片`;
+            processBtn.disabled = false;
+            processBtn.style.background = "#4caf50";
+            log(`加载了 ${files.length} 张图片。请确认 ROI 后点击开始。`);
+            
+            // 预览第一张图
+            previewImage(files[0]);
+        }
+    }
+
+    // 预览图片并画出 ROI 框
+    function previewImage(file) {
+        const img = new Image();
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            
+            // 尝试画 ROI
+            try {
+                const currentRois = JSON.parse(roiInput.value);
+                ctx.strokeStyle = '#00ff00'; // 绿色框
+                ctx.lineWidth = 3;
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "#00ff00";
+                
+                currentRois.forEach((roi, idx) => {
+                    if(roi.length === 4) {
+                        ctx.strokeRect(roi[0], roi[1], roi[2], roi[3]);
+                        ctx.fillText(`ROI_${idx}`, roi[0], roi[1] - 5);
+                    }
+                });
+            } catch (e) {
+                // 忽略解析错误
+            }
+        };
+        img.src = URL.createObjectURL(file);
+    }
+
+    // ROI 输入框变化时刷新预览
+    roiInput.addEventListener('input', () => {
+        if(files.length > 0) previewImage(files[0]);
+    });
+
+    // 2. 核心处理逻辑
+    processBtn.addEventListener('click', async () => {
+        // 解析 ROI
+        try {
+            rois = JSON.parse(roiInput.value);
+            if (!Array.isArray(rois) || rois.length === 0) throw new Error("格式错误");
+        } catch (e) {
+            alert("ROI 格式错误！请输入 JSON 数组，例如 [[x,y,w,h]]");
+            return;
+        }
+
+        processBtn.disabled = true;
+        processBtn.innerText = "处理中...";
+        log("开始批量处理...");
+
+        const zip = new JSZip();
+        const folder = zip.folder("roi_crops");
+        let processedCount = 0;
+
+        // 辅助函数：加载图片
+        const loadImage = (file) => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = URL.createObjectURL(file);
+            });
+        };
+
+        // 辅助函数：裁剪并转 Blob
+        const cropToBlob = (img, x, y, w, h) => {
+            const cropCanvas = document.createElement('canvas');
+            cropCanvas.width = w;
+            cropCanvas.height = h;
+            const cropCtx = cropCanvas.getContext('2d');
+            
+            // 核心：无论原图多大，只取左上角相对坐标
+            cropCtx.drawImage(img, x, y, w, h, 0, 0, w, h);
+            
+            return new Promise(resolve => {
+                cropCanvas.toBlob(blob => resolve(blob), 'image/png');
+            });
+        };
+
+        // 循环处理文件
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const safeName = file.name.replace(/\.[^/.]+$/, ""); // 去后缀
+            
+            try {
+                const img = await loadImage(file);
+                
+                // 对每个 ROI 进行裁剪
+                for (let j = 0; j < rois.length; j++) {
+                    const [x, y, w, h] = rois[j];
+                    const blob = await cropToBlob(img, x, y, w, h);
+                    
+                    // 文件命名: 原文件名_roi索引.png
+                    folder.file(`${safeName}_roi${j}.png`, blob);
+                }
+
+                processedCount++;
+                document.getElementById('progressText').innerText = `进度: ${processedCount} / ${files.length}`;
+                
+                // 简单的内存回收
+                URL.revokeObjectURL(img.src);
+
+            } catch (err) {
+                log(`错误: 处理文件 ${file.name} 失败`);
+                console.error(err);
+            }
+        }
+
+        log("图片处理完成，正在打包 ZIP...");
+        
+        // 生成 ZIP 并下载
+        zip.generateAsync({type:"blob"}).then(function(content) {
+            const sizeMB = (content.size / 1024 / 1024).toFixed(2);
+            document.getElementById('zipSize').innerText = `ZIP大小: ${sizeMB} MB`;
+            saveAs(content, "roi_features.zip");
+            
+            log(`✅ 完成！已下载 roi_features.zip (${sizeMB} MB)`);
+            processBtn.disabled = false;
+            processBtn.innerText = "开始批量截取并下载 ZIP";
+        });
+    });
+</script>
+</body>
+</html>

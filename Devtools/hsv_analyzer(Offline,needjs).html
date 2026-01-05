@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSV 分析工坊 (本地极速版)</title>
+    
+    <script src="plotly.min.js"></script>
+    <script src="jszip.min.js"></script>
+
+    
+
+    <style>
+        :root { --bg: #1e1e1e; --panel: #252525; --accent: #00bcd4; --text: #e0e0e0; --border: #333; --input-bg: #111; }
+        * { box-sizing: border-box; outline: none; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* 顶部 */
+        header { background: #111; height: 36px; padding: 0 15px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        h1 { font-size: 14px; color: var(--accent); margin: 0; font-weight: bold; letter-spacing: 1px; }
+        .status { font-size: 12px; color: #888; font-family: monospace; }
+
+        /* 布局 */
+        .main-container { flex: 1; display: grid; grid-template-columns: 280px 1fr 320px; overflow: hidden; min-height: 0; }
+        
+        .panel { padding: 10px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; overflow-y: auto; background: var(--panel); min-width: 0; }
+        .panel-title { font-weight: bold; font-size: 12px; margin-bottom: 2px; color: #fff; border-left: 3px solid var(--accent); padding-left: 6px; }
+
+        /* 左栏控件 */
+        .drop-zone { border: 2px dashed #444; padding: 15px; text-align: center; border-radius: 4px; cursor: pointer; background: #1a1a1a; transition: 0.2s; user-select: none; }
+        .drop-zone:hover { border-color: var(--accent); background: #222; }
+        
+        .control-group { background: #1a1a1a; padding: 8px; border-radius: 4px; border: 1px solid #333; }
+        .slider-row { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; font-size: 12px; }
+        .slider-row label { width: 12px; font-weight: bold; opacity: 0.7; }
+        input[type=range] { flex: 1; accent-color: var(--accent); cursor: pointer; height: 4px; }
+        
+        /* 数值输入框 */
+        input[type=number] { 
+            width: 45px; background: var(--input-bg); border: 1px solid #444; 
+            color: var(--accent); font-family: monospace; font-size: 12px; 
+            text-align: center; border-radius: 2px; padding: 1px 0;
+        }
+        input[type=number]:focus { border-color: var(--accent); background: #000; }
+        /* 去掉数字输入框的小箭头 */
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        button { background: var(--accent); color: #000; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-weight: bold; font-size: 12px; width: 100%; margin-top: 4px; transition: 0.1s; }
+        button:hover { filter: brightness(1.1); }
+        button:active { transform: translateY(1px); }
+        button.secondary { background: #444; color: #fff; }
+
+        /* 中栏图表 */
+        .charts-area { background: #000; padding: 10px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+        
+        .chart-wrapper { display: flex; gap: 5px; border: 1px solid #333; padding: 2px; background: #080808; border-radius: 4px; flex-shrink: 0; }
+        .chart-main { flex: 1; min-width: 0; position: relative; }
+        .chart-desc { width: 90px; font-size: 11px; color: #888; padding: 8px; display: flex; flex-direction: column; justify-content: center; border-left: 1px solid #333; line-height: 1.4; user-select: none; }
+
+        /* 右栏输出 */
+        .preview-box { background: #000; border: 1px solid #444; height: 220px; min-height: 220px; display: flex; justify-content: center; align-items: center; position: relative; flex-shrink: 0; }
+        canvas { max-width: 100%; max-height: 100%; object-fit: contain; image-rendering: pixelated; }
+        textarea { width: 100%; flex: 1; background: #111; color: #0f0; border: 1px solid #444; font-family: monospace; padding: 8px; resize: none; font-size: 11px; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🎨 HSV 分析工坊 <span style="font-size:11px; opacity:0.5;">V8</span></h1>
+    <div class="status" id="statusText">请先导入数据</div>
+</header>
+
+<div class="main-container">
+    <div class="panel">
+        <div class="panel-title">1. 数据源</div>
+        <div class="drop-zone" id="dropZone">
+            <div style="font-size:13px; font-weight:bold;">📂 拖入 ZIP / 文件夹</div>
+            <div style="font-size:11px; color:#666; margin-top:2px;">支持递归解析</div>
+            <input type="file" id="fileInput" multiple accept=".zip, image/*" style="display:none">
+        </div>
+
+        <div class="panel-title" style="margin-top:10px;">2. 阈值控制</div>
+        
+        <div class="control-group">
+            <div style="font-size:11px; margin-bottom:4px; color:#aaa; display:flex; justify-content:space-between;">
+                <span>H 色相</span><span>0-180</span>
+            </div>
+            <div class="slider-row">
+                <label>L</label>
+                <input type="range" id="hMin" max="180">
+                <input type="number" id="hMinIn" value="0" min="0" max="180">
+            </div>
+            <div class="slider-row">
+                <label>H</label>
+                <input type="range" id="hMax" max="180">
+                <input type="number" id="hMaxIn" value="180" min="0" max="180">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div style="font-size:11px; margin-bottom:4px; color:#aaa; display:flex; justify-content:space-between;">
+                <span>S 饱和度</span><span>0-255</span>
+            </div>
+            <div class="slider-row">
+                <label>L</label>
+                <input type="range" id="sMin" max="255">
+                <input type="number" id="sMinIn" value="0" min="0" max="255">
+            </div>
+            <div class="slider-row">
+                <label>H</label>
+                <input type="range" id="sMax" max="255">
+                <input type="number" id="sMaxIn" value="255" min="0" max="255">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div style="font-size:11px; margin-bottom:4px; color:#aaa; display:flex; justify-content:space-between;">
+                <span>V 亮度</span><span>0-255</span>
+            </div>
+            <div class="slider-row">
+                <label>L</label>
+                <input type="range" id="vMin" max="255">
+                <input type="number" id="vMinIn" value="0" min="0" max="255">
+            </div>
+            <div class="slider-row">
+                <label>H</label>
+                <input type="range" id="vMax" max="255">
+                <input type="number" id="vMaxIn" value="255" min="0" max="255">
+            </div>
+        </div>
+
+        <button onclick="autoFit()">⚡ 自动吸附 (98%样本)</button>
+        <button class="secondary" onclick="resetRange()">↺ 重置全选</button>
+    </div>
+
+    <div class="charts-area">
+        <div class="chart-wrapper" style="height: 180px;">
+            <div class="chart-main">
+                <div id="hChart" style="width:100%; height:100%;"></div>
+            </div>
+            <div class="chart-desc">
+                <b>Hue</b><br>
+                <div style="width:100%; height:4px; background:linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red); margin:5px 0; border-radius:2px;"></div>
+                波峰即主色。<br>
+                拖动左侧滑块，用<span style="color:red">红线</span>夹住波峰。
+            </div>
+        </div>
+
+        <div class="chart-wrapper" style="flex:1; min-height: 0;">
+            <div class="chart-main" style="display:flex; justify-content:center; background:#121212;">
+                <div id="svChart" style="aspect-ratio:1/1; height:100%; max-width:100%;"></div>
+            </div>
+            <div class="chart-desc">
+                <b>SV Cloud</b><br><br>
+                <span style="color:var(--accent);">■</span> X: Sat<br>
+                <span style="color:var(--accent);">■</span> Y: Val<br><br>
+                <b>操作：</b><br>
+                在图上<br>
+                <b>画框</b><br>
+                (Box Select)
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title" style="display:flex; justify-content:space-between; align-items: center;">
+            3. 验证预览
+            <button class="secondary" style="width:auto; padding:2px 8px; margin:0;" onclick="nextPreview()">Next >></button>
+        </div>
+        <div class="preview-box">
+            <canvas id="previewCanvas"></canvas>
+            <div id="prevInfo" style="position:absolute; bottom:0; left:0; background:rgba(0,0,0,0.7); font-size:10px; padding:2px 5px; color:#fff;">No Image</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:10px;">4. JSON 结果</div>
+        <textarea id="outputJson" readonly onclick="this.select()"></textarea>
+    </div>
+</div>
+
+<script>
+    // --- State Management ---
+    const STATE = {
+        h: [0, 180], s: [0, 255], v: [0, 255],
+        pixels: [], images: [], curImgIdx: 0, isReady: false
+    };
+    const MAX_SAMPLES = 40000;
+    
+    // --- Utils ---
+    const getEl = id => document.getElementById(id);
+    const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
+    
+    const rgb2hsv = (r, g, b) => {
+        let r_ = r/255, g_ = g/255, b_ = b/255;
+        let cmax = Math.max(r_, g_, b_), cmin = Math.min(r_, g_, b_), d = cmax - cmin;
+        let h = 0, s = cmax===0 ? 0 : (d/cmax)*255, v = cmax*255;
+        if (d !== 0) {
+            if (cmax === r_) h = ((g_ - b_) / d) % 6;
+            else if (cmax === g_) h = (b_ - r_) / d + 2;
+            else h = (r_ - g_) / d + 4;
+        }
+        h = Math.round(h * 60); if (h < 0) h += 360;
+        return [Math.round(h / 2), Math.round(s), Math.round(v)];
+    };
+
+    // --- Events: Drag & Drop ---
+    const dz = getEl('dropZone');
+    const fi = getEl('fileInput');
+    dz.onclick = () => fi.click();
+    dz.ondragover = e => { e.preventDefault(); dz.style.borderColor = '#00bcd4'; };
+    dz.ondragleave = e => dz.style.borderColor = '#444';
+    dz.ondrop = e => { e.preventDefault(); dz.style.borderColor = '#444'; loadFiles(e.dataTransfer.files); };
+    fi.onchange = e => loadFiles(e.target.files);
+
+    // --- Events: Input Sync Logic ---
+    ['h','s','v'].forEach(k => {
+        const sliderMin = getEl(k+'Min'), sliderMax = getEl(k+'Max');
+        const inputMin = getEl(k+'MinIn'), inputMax = getEl(k+'MaxIn');
+        const limit = k === 'h' ? 180 : 255;
+
+        // 1. Slider Change
+        const onSlider = () => {
+            let v1 = +sliderMin.value, v2 = +sliderMax.value;
+            if (v1 > v2) [v1, v2] = [v2, v1]; // Auto-swap
+            STATE[k] = [v1, v2];
+            syncUI(false); // Update charts & numbers, keep sliders focus
+        };
+        sliderMin.oninput = onSlider; sliderMax.oninput = onSlider;
+
+        // 2. Number Input Change (Enter or Blur)
+        const onNumChange = () => {
+            let v1 = parseInt(inputMin.value) || 0;
+            let v2 = parseInt(inputMax.value) || limit;
+            v1 = clamp(v1, 0, limit);
+            v2 = clamp(v2, 0, limit);
+            if (v1 > v2) [v1, v2] = [v2, v1]; // Auto-swap
+            STATE[k] = [v1, v2];
+            syncUI(true); // Update everything including sliders
+        };
+        
+        [inputMin, inputMax].forEach(inp => {
+            inp.onchange = onNumChange; // Blur / Enter triggers this
+            inp.onkeydown = (e) => { if(e.key === 'Enter') { onNumChange(); inp.blur(); }};
+        });
+    });
+
+    // --- Core: File Loading (Recursive ZIP) ---
+    async function loadFiles(files) {
+        if (typeof JSZip === 'undefined') return alert("JSZip 未加载，请检查网络或下载本地依赖。");
+        getEl('statusText').innerText = "⏳ 深度遍历与采样中...";
+        STATE.pixels = []; STATE.images = []; STATE.isReady = false;
+
+        const blobs = [];
+        
+        // Helper: Recursive processing
+        const processEntry = async (zip, relativePath, file) => {
+            if (file.dir) return; // Skip directories
+            if (file.name.includes('__MACOSX')) return; // Skip Mac junk
+            if (file.name.match(/\.(png|jpg|jpeg)$/i)) {
+                blobs.push(await file.async('blob'));
+            }
+        };
+
+        for (let f of files) {
+            if (f.name.endsWith('.zip')) {
+                try {
+                    const zip = await JSZip.loadAsync(f);
+                    // JSZip forEach iterates everything recursively
+                    const promises = [];
+                    zip.forEach((path, file) => {
+                        promises.push(processEntry(zip, path, file));
+                    });
+                    await Promise.all(promises);
+                } catch(e) { console.error("Zip Error", e); }
+            } else if (f.type.startsWith('image/')) {
+                blobs.push(f);
+            }
+        }
+
+        if (!blobs.length) {
+            getEl('statusText').innerText = "❌ 未找到图片";
+            return alert("未在文件或 ZIP 中找到 PNG/JPG 图片。");
+        }
+
+        // Sampling Logic
+        let count = 0;
+        // Shuffle blobs to get random sample if too many files
+        blobs.sort(() => Math.random() - 0.5);
+        
+        for (let blob of blobs) {
+            if (count >= MAX_SAMPLES) break;
+            // Decode image
+            const img = await new Promise(r => { 
+                const i = new Image(); 
+                i.onload = () => r(i); 
+                i.onerror = () => r(null);
+                i.src = URL.createObjectURL(blob); 
+            });
+            if (!img) continue;
+
+            if (STATE.images.length < 10) STATE.images.push(img); // Save preview
+
+            const cvs = document.createElement('canvas');
+            cvs.width = img.width; cvs.height = img.height;
+            const ctx = cvs.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            const d = ctx.getImageData(0,0,img.width,img.height).data;
+            
+            // Random stride sampling
+            for (let k = 0; k < d.length; k += 4 * 10) { 
+                if (Math.random() > 0.15) continue; // Skip 85% pixels
+                const [h,s,v] = rgb2hsv(d[k], d[k+1], d[k+2]);
+                STATE.pixels.push({ h, s, v, c: `rgb(${d[k]},${d[k+1]},${d[k+2]})` });
+                count++;
+                if (count >= MAX_SAMPLES) break;
+            }
+        }
+
+        getEl('statusText').innerText = `✅ 就绪: ${count} 像素点 | ${blobs.length} 文件`;
+        STATE.isReady = true;
+        initCharts();
+        autoFit();
+    }
+
+    // --- Charts ---
+    function initCharts() {
+        if (typeof Plotly === 'undefined') return alert("Plotly 未加载");
+
+        // 1. H Chart (Bar)
+        const counts = new Array(180).fill(0);
+        STATE.pixels.forEach(p => { if(p.h < 180) counts[p.h]++; });
+        
+        // Rainbow colors
+        const cols = Array.from({length:180}, (_,i) => `hsl(${i*2}, 80%, 50%)`);
+
+        Plotly.newPlot('hChart', [{
+            x: Array.from({length:180}, (_,i)=>i), y: counts,
+            type: 'bar', marker: { color: cols }, hoverinfo: 'x'
+        }], {
+            margin: { t: 5, b: 20, l: 30, r: 10 },
+            paper_bgcolor: '#000', plot_bgcolor: '#000',
+            xaxis: { range: [0, 180], fixedrange: true, color:'#666' },
+            yaxis: { showgrid: false, fixedrange: true },
+            dragmode: false, // H Chart uses sliders only
+            shapes: []
+        }, { displayModeBar: false });
+
+        // 2. SV Chart (Scatter) - Force CLAMPING
+        Plotly.newPlot('svChart', [{
+            x: STATE.pixels.map(p => p.s),
+            y: STATE.pixels.map(p => p.v),
+            mode: 'markers', type: 'scattergl',
+            marker: { size: 3, color: STATE.pixels.map(p => p.c), opacity: 0.8 },
+            hoverinfo: 'none'
+        }], {
+            margin: { t: 5, b: 20, l: 20, r: 5 },
+            paper_bgcolor: '#000', plot_bgcolor: '#111',
+            xaxis: { range: [0, 255], fixedrange: true, color:'#666', gridcolor:'#333' },
+            yaxis: { range: [0, 255], fixedrange: true, color:'#666', gridcolor:'#333' },
+            dragmode: 'select', 
+            shapes: []
+        }, { 
+            displayModeBar: false // Disable zoom tools completely
+        });
+
+        // SV Selection Event (Strict Clamping)
+        getEl('svChart').on('plotly_selected', (data) => {
+            if (data && data.range) {
+                // CLAMP VALUES STRICTLY TO 0-255 TO PREVENT FREEZE
+                const x = data.range.x, y = data.range.y;
+                let s1 = Math.round(clamp(x[0], 0, 255));
+                let s2 = Math.round(clamp(x[1], 0, 255));
+                let v1 = Math.round(clamp(y[0], 0, 255));
+                let v2 = Math.round(clamp(y[1], 0, 255));
+
+                STATE.s = [s1, s2];
+                STATE.v = [v1, v2];
+                syncUI(true); // Sync sliders
+            }
+        });
+        
+        // Double click to reset SV
+        getEl('svChart').on('plotly_deselect', () => {
+             STATE.s = [0, 255]; STATE.v = [0, 255];
+             syncUI(true);
+        });
+    }
+
+    // --- Sync Logic ---
+    function syncUI(updateAll) {
+        if (!STATE.isReady) return;
+
+        // 1. Update Inputs (if needed)
+        if (updateAll) {
+            getEl('hMin').value = STATE.h[0]; getEl('hMax').value = STATE.h[1];
+            getEl('sMin').value = STATE.s[0]; getEl('sMax').value = STATE.s[1];
+            getEl('vMin').value = STATE.v[0]; getEl('vMax').value = STATE.v[1];
+        }
+        // Always update Number Inputs
+        getEl('hMinIn').value = STATE.h[0]; getEl('hMaxIn').value = STATE.h[1];
+        getEl('sMinIn').value = STATE.s[0]; getEl('sMaxIn').value = STATE.s[1];
+        getEl('vMinIn').value = STATE.v[0]; getEl('vMaxIn').value = STATE.v[1];
+
+        // 2. Update Charts (Visual Feedback)
+        // H Chart: Red Lines & Mask
+        const hShapes = [
+            { type: 'line', x0: STATE.h[0], x1: STATE.h[0], y0: 0, y1: 1, yref: 'paper', line: {color:'red', width:2} },
+            { type: 'line', x0: STATE.h[1], x1: STATE.h[1], y0: 0, y1: 1, yref: 'paper', line: {color:'red', width:2} },
+            { type: 'rect', x0: -5, x1: STATE.h[0], y0: 0, y1: 1, yref: 'paper', fillcolor:'rgba(0,0,0,0.7)', line:{width:0} },
+            { type: 'rect', x0: STATE.h[1], x1: 185, y0: 0, y1: 1, yref: 'paper', fillcolor:'rgba(0,0,0,0.7)', line:{width:0} }
+        ];
+        Plotly.relayout('hChart', { shapes: hShapes });
+
+        // SV Chart: Green Box
+        const svShapes = [{
+            type: 'rect', 
+            x0: STATE.s[0], x1: STATE.s[1], 
+            y0: STATE.v[0], y1: STATE.v[1], 
+            line: {color: '#00ff00', width: 2}
+        }];
+        Plotly.relayout('svChart', { shapes: svShapes });
+
+        // 3. Update JSON
+        const json = {
+            method: 40,
+            lower: [STATE.h[0], STATE.s[0], STATE.v[0]],
+            upper: [STATE.h[1], STATE.s[1], STATE.v[1]]
+        };
+        getEl('outputJson').value = JSON.stringify(json, null, 4);
+
+        // 4. Update Preview
+        renderPreview();
+    }
+
+    function autoFit() {
+        if (!STATE.isReady) return;
+        const calc = (key) => {
+            const arr = STATE.pixels.map(p => p[key]).sort((a,b)=>a-b);
+            // 2% - 98%
+            return [arr[Math.floor(arr.length*0.02)]||0, arr[Math.floor(arr.length*0.98)]||255];
+        };
+        STATE.h = calc('h'); STATE.s = calc('s'); STATE.v = calc('v');
+        syncUI(true);
+    }
+
+    function resetRange() {
+        STATE.h = [0, 180]; STATE.s = [0, 255]; STATE.v = [0, 255];
+        syncUI(true);
+    }
+
+    function nextPreview() {
+        if (STATE.images.length) {
+            STATE.curImgIdx = (STATE.curImgIdx + 1) % STATE.images.length;
+            renderPreview();
+        }
+    }
+
+    function renderPreview() {
+        if (!STATE.images.length) return;
+        const img = STATE.images[STATE.curImgIdx];
+        const cvs = getEl('previewCanvas');
+        const ctx = cvs.getContext('2d');
+        
+        // Ensure canvas has size (Fix for disappeared validation window)
+        cvs.width = img.width; cvs.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        
+        const idata = ctx.getImageData(0,0,cvs.width,cvs.height);
+        const d = idata.data;
+        for (let i = 0; i < d.length; i += 4) {
+            const [h,s,v] = rgb2hsv(d[i], d[i+1], d[i+2]);
+            const hit = h>=STATE.h[0] && h<=STATE.h[1] && s>=STATE.s[0] && s<=STATE.s[1] && v>=STATE.v[0] && v<=STATE.v[1];
+            if (hit) {
+                // Highlight Green
+                d[i+1] = Math.min(255, d[i+1] + 40);
+            } else {
+                // Dim
+                d[i]*=0.2; d[i+1]*=0.2; d[i+2]*=0.2;
+            }
+        }
+        ctx.putImageData(idata, 0, 0);
+        getEl('prevInfo').innerText = `预览 ${STATE.curImgIdx+1} / ${STATE.images.length}`;
+    }
+</script>
+</body>
+</html>

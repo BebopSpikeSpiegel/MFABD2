@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>批量特征图截取工具 (V4 缩放增强版)</title>
+    <script src="jszip.min.js"></script>
+    <script src="FileSaver.min.js"></script>
+
+    <script>
+        if (typeof JSZip === 'undefined') {
+            document.write('<script src="https://cdn.bootcdn.net/ajax/libs/jszip/3.10.1/jszip.min.js"><\/script>');
+        }
+        if (typeof saveAs === 'undefined') {
+            document.write('<script src="https://cdn.bootcdn.net/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"><\/script>');
+        }
+    </script>
+    <style>
+        :root { --bg: #1e1e1e; --text: #ddd; --accent: #4caf50; --panel: #2d2d2d; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); 
+            margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; 
+            height: 100vh; box-sizing: border-box; overflow: hidden;
+        }
+        h2 { margin-top: 0; color: var(--accent); }
+        .container { display: flex; gap: 20px; width: 100%; max-width: 1200px; flex: 1; min-height: 0; }
+        
+        /* 左侧 */
+        .controls { flex: 1; display: flex; flex-direction: column; gap: 15px; background: var(--panel); padding: 20px; border-radius: 8px; min-width: 300px; }
+        label { font-weight: bold; color: #fff; display: block; margin-bottom: 5px; }
+        textarea { background: #111; color: #0f0; border: 1px solid #444; padding: 10px; font-family: monospace; height: 100px; resize: vertical; width: 100%; box-sizing: border-box; }
+        
+        /* 拖拽区 */
+        .drop-zone { 
+            border: 2px dashed #666; padding: 30px 20px; text-align: center; cursor: pointer; 
+            transition: all 0.3s; border-radius: 6px; background: #252525; user-select: none;
+        }
+        .drop-zone:hover { border-color: var(--accent); background: #333; }
+        .drop-zone.dragover { border-color: #fff; background: #444; transform: scale(1.02); }
+        
+        button { background: var(--accent); color: white; border: none; padding: 15px; cursor: pointer; font-size: 16px; border-radius: 4px; font-weight: bold; }
+        button:disabled { background: #555; cursor: not-allowed; }
+        
+        .log { flex: 1; background: #111; padding: 10px; overflow-y: auto; font-family: monospace; font-size: 12px; border: 1px solid #444; color: #aaa; }
+        
+        /* 右侧预览区 */
+        .preview-area { flex: 2; background: var(--panel); padding: 20px; border-radius: 8px; display: flex; flex-direction: column; }
+        .preview-canvas-container { 
+            flex: 1; overflow: hidden; /* 隐藏溢出，由 Canvas 内部控制漫游 */
+            border: 1px solid #444; background: #000; position: relative; border-radius: 4px; cursor: grab;
+        }
+        .preview-canvas-container:active { cursor: grabbing; }
+        
+        canvas { display: block; } /* 消除 Canvas 底部间隙 */
+        
+        .status-bar { margin-top: 10px; font-size: 14px; color: #bbb; display: flex; justify-content: space-between; background: #222; padding: 8px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h2>🛠️ 批量特征图截取工具 (V4)</h2>
+    <div class="container">
+        <div class="controls">
+            <div>
+                <label>1. 输入 ROI 数据</label>
+                <div style="font-size: 12px; color: #888; margin-bottom: 5px;">格式: [[x,y,w,h]]</div>
+                <textarea id="roiInput" placeholder='Example: [[100, 200, 50, 50]]'>[229, 668, 69, 2]</textarea>
+            </div>
+            
+            <input type="file" id="fileInput" multiple accept="image/*" style="display:none">
+            <div class="drop-zone" id="dropZone">
+                <div style="font-size: 16px; font-weight: bold;">📂 点击或拖入图片</div>
+                <div id="fileCount" style="margin-top: 8px; color: var(--accent);">(未选择)</div>
+            </div>
+
+            <button id="processBtn" disabled>开始处理并下载</button>
+            <div class="log" id="logArea"><div>系统就绪 (需联网加载库)...</div></div>
+        </div>
+
+        <div class="preview-area">
+            <div style="margin-bottom: 10px; font-weight: bold; display:flex; justify-content:space-between;">
+                <span>预览 (滚轮缩放，左键拖拽)</span>
+                <button onclick="resetZoom()" style="padding:2px 8px; font-size:12px; height:auto;">重置视图</button>
+            </div>
+            <div class="preview-canvas-container" id="canvasContainer">
+                <canvas id="previewCanvas"></canvas>
+            </div>
+            <div class="status-bar">
+                <span id="progressText">进度: 0 / 0</span>
+                <span id="zipSize">ZIP大小: 0 MB</span>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // --- 0. 变量定义 ---
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const roiInput = document.getElementById('roiInput');
+    const processBtn = document.getElementById('processBtn');
+    const logArea = document.getElementById('logArea');
+    const canvas = document.getElementById('previewCanvas');
+    const container = document.getElementById('canvasContainer');
+    const ctx = canvas.getContext('2d');
+    
+    let files = [];
+    let currentImg = null; // 当前加载的图片对象
+    
+    // 视图状态变量 (缩放 & 平移)
+    let viewState = { scale: 1, offsetX: 0, offsetY: 0, isDragging: false, startX: 0, startY: 0 };
+
+    function log(msg, isError = false) {
+        const div = document.createElement('div');
+        div.innerText = `> ${msg}`;
+        if(isError) div.style.color = "#ff5252";
+        logArea.appendChild(div);
+        logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    // --- 1. 视图控制逻辑 (缩放 & 平移) ---
+    
+    // 重新绘制画布
+    function draw() {
+        if (!currentImg) return;
+        
+        // 1. 清空画布 (使用物理像素尺寸)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        
+        // 2. 应用变换 (平移 + 缩放)
+        ctx.translate(viewState.offsetX, viewState.offsetY);
+        ctx.scale(viewState.scale, viewState.scale);
+        
+        // 3. 画图
+        ctx.drawImage(currentImg, 0, 0);
+        
+        // 4. 画 ROI
+        const rois = parseROIs(roiInput.value);
+        if (rois) {
+            ctx.lineWidth = 2 / viewState.scale; // 保持线条宽度视觉一致
+            ctx.font = `${14 / viewState.scale}px Arial`;
+            
+            rois.forEach((roi, idx) => {
+                if(Array.isArray(roi) && roi.length === 4) {
+                    const [x, y, w, h] = roi;
+                    // 半透明填充
+                    ctx.fillStyle = "rgba(0, 255, 0, 0.2)";
+                    ctx.fillRect(x, y, w, h);
+                    // 边框
+                    ctx.strokeStyle = "#00ff00";
+                    ctx.strokeRect(x, y, w, h);
+                    // 标注
+                    ctx.fillStyle = "#00ff00";
+                    ctx.fillText(`#${idx}`, x, y - (5 / viewState.scale));
+                }
+            });
+        }
+        
+        ctx.restore();
+    }
+
+    // 重置视图
+    window.resetZoom = function() {
+        if(!currentImg) return;
+        // 简单的自适应逻辑：让图片在容器内完整显示
+        const scaleX = container.clientWidth / currentImg.width;
+        const scaleY = container.clientHeight / currentImg.height;
+        viewState.scale = Math.min(scaleX, scaleY, 1) * 0.9; // 留点边距
+        // 居中
+        viewState.offsetX = (container.clientWidth - currentImg.width * viewState.scale) / 2;
+        viewState.offsetY = (container.clientHeight - currentImg.height * viewState.scale) / 2;
+        draw();
+    };
+
+    // 滚轮缩放事件
+    container.addEventListener('wheel', (e) => {
+        if (!currentImg) return;
+        e.preventDefault();
+
+        const zoomIntensity = 0.1;
+        const delta = e.deltaY > 0 ? -zoomIntensity : zoomIntensity;
+        const newScale = viewState.scale * (1 + delta);
+
+        // 限制缩放范围
+        if (newScale < 0.1 || newScale > 20) return;
+
+        // 计算鼠标相对于 Canvas 的位置
+        const rect = container.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        // 核心算法：以鼠标为中心缩放
+        // (mouseX - offsetX) / scale = pointX (在图上的实际坐标)
+        // newOffsetX = mouseX - pointX * newScale
+        const pointX = (mouseX - viewState.offsetX) / viewState.scale;
+        const pointY = (mouseY - viewState.offsetY) / viewState.scale;
+
+        viewState.offsetX = mouseX - pointX * newScale;
+        viewState.offsetY = mouseY - pointY * newScale;
+        viewState.scale = newScale;
+
+        draw();
+    });
+
+    // 鼠标拖拽平移事件
+    container.addEventListener('mousedown', (e) => {
+        viewState.isDragging = true;
+        viewState.startX = e.clientX - viewState.offsetX;
+        viewState.startY = e.clientY - viewState.offsetY;
+        container.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (viewState.isDragging && currentImg) {
+            e.preventDefault();
+            viewState.offsetX = e.clientX - viewState.startX;
+            viewState.offsetY = e.clientY - viewState.startY;
+            draw();
+        }
+    });
+
+    window.addEventListener('mouseup', () => {
+        viewState.isDragging = false;
+        container.style.cursor = 'grab';
+    });
+
+
+    // --- 2. 核心逻辑 ---
+
+    function parseROIs(inputStr) {
+        try {
+            let parsed = JSON.parse(inputStr);
+            if (Array.isArray(parsed) && parsed.length === 4 && typeof parsed[0] === 'number') return [parsed];
+            if (Array.isArray(parsed) && parsed.length > 0 && Array.isArray(parsed[0])) return parsed;
+            return null;
+        } catch { return null; }
+    }
+
+    // 文件处理
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault(); dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files);
+    });
+    fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+    function handleFiles(fileList) {
+        const newFiles = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+        if (newFiles.length > 0) {
+            files = newFiles;
+            document.getElementById('fileCount').innerText = `✅ 已加载 ${files.length} 张图片`;
+            processBtn.disabled = false;
+            processBtn.style.background = "#4caf50";
+            log(`加载了 ${files.length} 张图片。`);
+            
+            // 加载第一张图用于预览
+            const img = new Image();
+            img.onload = () => {
+                currentImg = img;
+                // 设置 canvas 物理尺寸为容器尺寸，避免拉伸
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+                resetZoom(); // 自动适配视图
+            };
+            img.src = URL.createObjectURL(files[0]);
+        }
+    }
+
+    // 窗口大小改变时调整 canvas
+    window.addEventListener('resize', () => {
+        if(currentImg) {
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            draw();
+        }
+    });
+
+    roiInput.addEventListener('input', draw); // ROI 改变时重绘
+
+    // 批量处理 (逻辑不变)
+    processBtn.addEventListener('click', async () => {
+        const rois = parseROIs(roiInput.value);
+        if (!rois) return alert("ROI 格式错误");
+
+        processBtn.disabled = true;
+        processBtn.innerText = "⏳ 处理中...";
+        log("🚀 开始任务...");
+        const zip = new JSZip();
+        const folder = zip.folder("roi_crops");
+        
+        const loadImage = (file) => new Promise((resolve) => {
+            const i = new Image();
+            i.onload = () => resolve(i);
+            i.src = URL.createObjectURL(file);
+        });
+
+        const cropToBlob = (img, x, y, w, h) => {
+            const c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            c.getContext('2d').drawImage(img, x, y, w, h, 0, 0, w, h);
+            return new Promise(r => c.toBlob(r, 'image/png'));
+        };
+
+        for (let i = 0; i < files.length; i++) {
+            try {
+                const img = await loadImage(files[i]);
+                const safeName = files[i].name.replace(/\.[^/.]+$/, "");
+                for (let j = 0; j < rois.length; j++) {
+                    const [x, y, w, h] = rois[j];
+                    const blob = await cropToBlob(img, x, y, w, h);
+                    folder.file(`${safeName}${rois.length>1 ? `_roi${j}` : ''}.png`, blob);
+                }
+                document.getElementById('progressText').innerText = `进度: ${i+1} / ${files.length}`;
+            } catch(e) { console.error(e); }
+        }
+
+        zip.generateAsync({type:"blob"}).then(function(content) {
+            saveAs(content, "roi_features.zip");
+            document.getElementById('zipSize').innerText = `ZIP大小: ${(content.size/1024/1024).toFixed(2)} MB`;
+            processBtn.disabled = false;
+            processBtn.innerText = "开始处理并下载";
+            log("✅ 下载完成！");
+        });
+    });
+
+    // 防止全局拖拽干扰
+    window.addEventListener("dragover", e => e.preventDefault(), false);
+    window.addEventListener("drop", e => e.preventDefault(), false);
+</script>
+</body>
+</html>

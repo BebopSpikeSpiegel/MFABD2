@@ -1583,10 +1583,13 @@
   },
   "Collect_Mode_QC_Isenable": {
     "recognition": "ColorMatch",
+    "anchor": "Collect_Isenable",
     "next": [
       "Collect_QC_SafeArea_Clr",
-      "Collect_QC_NoSafeArea_Clr",
-      "[JumpBack]Collect_QuickCart_NOHavePointer_Swip"
+      "Collect_QC_NoSafeArea_Clr"
+    ],
+    "on_error": [
+      "Collect_QuickCart_NOHavePointer_Swip"
     ],
     "roi": [
       214,
@@ -1615,17 +1618,18 @@
       1040,
       19
     ],
+    "method": 40,
     "lower": [
-      226,
-      191,
-      13
+      22,
+      67,
+      177
     ],
     "upper": [
-      254,
-      254,
-      184
+      30,
+      241,
+      255
     ],
-    "count": 10,
+    "count": 2,
     "target_offset": [
       145,
       -20,
@@ -1646,17 +1650,18 @@
       240,
       19
     ],
+    "method": 40,
     "lower": [
-      226,
-      191,
-      13
+      22,
+      67,
+      177
     ],
     "upper": [
-      254,
-      254,
-      184
+      30,
+      241,
+      255
     ],
-    "count": 10,
+    "count": 2,
     "target_offset": [
       145,
       -20,
@@ -1817,10 +1822,13 @@
   },
   "Collect_Mode_QR_Isenable": {
     "recognition": "ColorMatch",
+    "anchor": "Collect_Isenable",
     "next": [
       "Collect_QR_SafeArea_Clr",
-      "Collect_QR_NoSafeArea_Clr",
-      "[JumpBack]Collect_QuickCart_NOHavePointer_Swip"
+      "Collect_QR_NoSafeArea_Clr"
+    ],
+    "on_error": [
+      "Collect_QuickCart_NOHavePointer_Swip"
     ],
     "roi": [
       392,
@@ -1859,7 +1867,7 @@
       254,
       184
     ],
-    "count": 10,
+    "count": 2,
     "target_offset": [
       145,
       -20,
@@ -1890,7 +1898,7 @@
       254,
       184
     ],
-    "count": 10,
+    "count": 2,
     "target_offset": [
       145,
       -20,
@@ -2025,10 +2033,14 @@
       0,
       0
     ],
+    "next": [
+      "[Anchor]Collect_Isenable"
+    ],
     "duration": 500,
     "end_hold": 1000,
     "post_delay": 500,
-    "doc": "将卡带表滑到更右侧,中继"
+    "doc": "将卡带表滑到更右侧,中继",
+    "focus": "CB.[WRN]预埋管路触发-检查运行是否出错"
   },
   "Collect_QuickCart_Menu_Ocr": {
     "recognition": "OCR",

@@ -81,9 +81,9 @@
     "recognition": "OCR",
     "focus": "GA.进入抽抽乐页面",
     "roi": [
-      912,
+      1046,
       416,
-      267,
+      133,
       97
     ],
     "expected": [
@@ -345,6 +345,7 @@
     "post_delay": 500,
     "next": [
       "GachaADV_Location1_Ck",
+      "GachaADV_Special_ReservedRights_1",
       "GachaADV_Location1",
       "[JumpBack]GachaADV_SkipPV"
     ]
@@ -358,9 +359,9 @@
     "green_mask": true,
     "roi": [
       835,
-      415,
+      521,
       349,
-      239
+      133
     ],
     "next": [
       "GachaADV_Location1_90LotPost",
@@ -380,10 +381,8 @@
       "查看概率"
     ],
     "next": [
-      "GachaADV_Location2_Pre",
       "[JumpBack]GachaADV_TouchFreeGacha",
-      "[JumpBack]GachaADV_Special_ReservedRights",
-      "[JumpBack]GachaADV_HaveNotAnyRed"
+      "GachaADV_Location2_Pre"
     ],
     "timeout": 3000,
     "on_error": [
@@ -403,47 +402,25 @@
       "付费抽目标卡池"
     ],
     "next": [
-      "GachaADV_Location2_Pre",
       "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
       "[JumpBack]GachaADV_TouchFreeGacha",
-      "[JumpBack]GachaADV_Special_ReservedRights",
-      "[JumpBack]GachaADV_HaveNotAnyRed"
+      "GachaADV_Location2_Pre"
     ]
   },
   "GachaADV_Location2_Pre": {
-    "recognition": "OCR",
-    "action": "Click",
-    "target": [
-      868,
-      161,
-      0,
-      0
-    ],
-    "expected": "帮助",
-    "roi": [
-      533,
-      109,
-      218,
-      163
-    ],
-    "post_delay": 500,
     "next": [
-      "GachaADV_Location2_Pre",
       "GachaADV_Location2_NoPool_Clr",
       "GachaADV_Location2_NoPool_Tmp",
       "GachaADV_Location2"
     ],
     "timeout": 3000,
     "on_error": [
-      "GachaADV_Location3_Pre",
       "GachaADV_Location3_NoPool_Clr",
       "GachaADV_Location3_NoPool_Tmp",
       "GachaADV_Location3",
-      "GachaADV_Location4_Pre",
       "GachaADV_Location4_NoPool_Clr",
       "GachaADV_Location4_NoPool_Tmp",
       "GachaADV_Location4",
-      "GachaADV_Location5_Pre",
       "GachaADV_Location5_NoPool_Clr",
       "GachaADV_Location5_NoPool_Tmp",
       "GachaADV_Location5",
@@ -488,6 +465,7 @@
     "post_delay": 500,
     "next": [
       "GachaADV_Location2_Ck",
+      "GachaADV_Special_ReservedRights_2",
       "GachaADV_Location2",
       "[JumpBack]GachaADV_SkipPV"
     ]
@@ -501,9 +479,9 @@
     "green_mask": true,
     "roi": [
       835,
-      415,
+      521,
       349,
-      239
+      133
     ],
     "next": [
       "GachaADV_Location2_90LotPost",
@@ -523,10 +501,8 @@
       "查看概率"
     ],
     "next": [
-      "GachaADV_Location3_Pre",
       "[JumpBack]GachaADV_TouchFreeGacha",
-      "[JumpBack]GachaADV_Special_ReservedRights",
-      "[JumpBack]GachaADV_HaveNotAnyRed"
+      "GachaADV_Location3_Pre"
     ],
     "timeout": 3000,
     "on_error": [
@@ -546,42 +522,22 @@
       "付费抽目标卡池"
     ],
     "next": [
-      "GachaADV_Location3_Pre",
       "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
       "[JumpBack]GachaADV_TouchFreeGacha",
-      "[JumpBack]GachaADV_Special_ReservedRights",
-      "[JumpBack]GachaADV_HaveNotAnyRed"
+      "GachaADV_Location3_Pre"
     ]
   },
   "GachaADV_Location3_Pre": {
-    "recognition": "OCR",
-    "action": "Click",
-    "target": [
-      868,
-      161,
-      0,
-      0
-    ],
-    "expected": "帮助",
-    "roi": [
-      533,
-      109,
-      218,
-      163
-    ],
     "next": [
-      "GachaADV_Location3_Pre",
       "GachaADV_Location3_NoPool_Clr",
       "GachaADV_Location3_NoPool_Tmp",
       "GachaADV_Location3"
     ],
     "timeout": 3000,
     "on_error": [
-      "GachaADV_Location4_Pre",
       "GachaADV_Location4_NoPool_Clr",
       "GachaADV_Location4_NoPool_Tmp",
       "GachaADV_Location4",
-      "GachaADV_Location5_Pre",
       "GachaADV_Location5_NoPool_Clr",
       "GachaADV_Location5_NoPool_Tmp",
       "GachaADV_Location5",
@@ -625,6 +581,7 @@
     "post_delay": 500,
     "next": [
       "GachaADV_Location3_Ck",
+      "GachaADV_Special_ReservedRights_3",
       "GachaADV_Location3",
       "[JumpBack]GachaADV_SkipPV"
     ]
@@ -638,9 +595,9 @@
     "green_mask": true,
     "roi": [
       835,
-      415,
+      521,
       349,
-      239
+      133
     ],
     "next": [
       "GachaADV_Location3_90LotPost",
@@ -660,10 +617,8 @@
       "查看概率"
     ],
     "next": [
-      "GachaADV_Location4_Pre",
       "[JumpBack]GachaADV_TouchFreeGacha",
-      "[JumpBack]GachaADV_Special_ReservedRights",
-      "[JumpBack]GachaADV_HaveNotAnyRed"
+      "GachaADV_Location4_Pre"
     ],
     "timeout": 3000,
     "on_error": [
@@ -683,38 +638,19 @@
       "付费抽目标卡池"
     ],
     "next": [
-      "GachaADV_Location4_Pre",
       "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
       "[JumpBack]GachaADV_TouchFreeGacha",
-      "[JumpBack]GachaADV_Special_ReservedRights",
-      "[JumpBack]GachaADV_HaveNotAnyRed"
+      "GachaADV_Location4_Pre"
     ]
   },
   "GachaADV_Location4_Pre": {
-    "recognition": "OCR",
-    "action": "Click",
-    "target": [
-      868,
-      161,
-      0,
-      0
-    ],
-    "expected": "帮助",
-    "roi": [
-      533,
-      109,
-      218,
-      163
-    ],
     "next": [
-      "GachaADV_Location4_Pre",
       "GachaADV_Location4_NoPool_Clr",
       "GachaADV_Location4_NoPool_Tmp",
       "GachaADV_Location4"
     ],
     "timeout": 3000,
     "on_error": [
-      "GachaADV_Location5_Pre",
       "GachaADV_Location5_NoPool_Clr",
       "GachaADV_Location5_NoPool_Tmp",
       "GachaADV_Location5",
@@ -758,6 +694,7 @@
     "post_delay": 500,
     "next": [
       "GachaADV_Location4_Ck",
+      "GachaADV_Special_ReservedRights_4",
       "GachaADV_Location4",
       "[JumpBack]GachaADV_SkipPV"
     ]
@@ -771,9 +708,9 @@
     "green_mask": true,
     "roi": [
       835,
-      415,
+      521,
       349,
-      239
+      133
     ],
     "next": [
       "GachaADV_Location4_90LotPost",
@@ -793,11 +730,9 @@
       "付费抽目标卡池"
     ],
     "next": [
-      "GachaADV_Location5_Pre",
       "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
       "[JumpBack]GachaADV_TouchFreeGacha",
-      "[JumpBack]GachaADV_Special_ReservedRights",
-      "[JumpBack]GachaADV_HaveNotAnyRed"
+      "GachaADV_Location5_Pre"
     ]
   },
   "GachaADV_Location4_Post": {
@@ -813,10 +748,8 @@
       "查看概率"
     ],
     "next": [
-      "GachaADV_Location5_Pre",
       "[JumpBack]GachaADV_TouchFreeGacha",
-      "[JumpBack]GachaADV_Special_ReservedRights",
-      "[JumpBack]GachaADV_HaveNotAnyRed"
+      "GachaADV_Location5_Pre"
     ],
     "timeout": 3000,
     "on_error": [
@@ -824,23 +757,7 @@
     ]
   },
   "GachaADV_Location5_Pre": {
-    "recognition": "OCR",
-    "action": "Click",
-    "target": [
-      868,
-      161,
-      0,
-      0
-    ],
-    "expected": "帮助",
-    "roi": [
-      533,
-      109,
-      218,
-      163
-    ],
     "next": [
-      "GachaADV_Location5_Pre",
       "GachaADV_Location5_NoPool_Clr",
       "GachaADV_Location5_NoPool_Tmp",
       "GachaADV_Location5"
@@ -887,6 +804,7 @@
     "post_delay": 500,
     "next": [
       "GachaADV_Location5_Ck",
+      "GachaADV_Special_ReservedRights_5",
       "GachaADV_Location5",
       "[JumpBack]GachaADV_SkipPV"
     ]
@@ -900,9 +818,9 @@
     "green_mask": true,
     "roi": [
       835,
-      415,
+      521,
       349,
-      239
+      133
     ],
     "next": [
       "GachaADV_Location5_90LotPost",
@@ -922,11 +840,9 @@
       "付费抽目标卡池"
     ],
     "next": [
-      "GachaADV_LocationEnd_Pre",
       "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
       "[JumpBack]GachaADV_TouchFreeGacha",
-      "[JumpBack]GachaADV_Special_ReservedRights",
-      "[JumpBack]GachaADV_HaveNotAnyRed"
+      "GachaADV_LocationEnd_Pre"
     ]
   },
   "GachaADV_Location5_Post": {
@@ -942,21 +858,11 @@
       "查看概率"
     ],
     "next": [
-      "GachaADV_LocationEnd_Pre",
       "[JumpBack]GachaADV_TouchFreeGacha",
-      "[JumpBack]GachaADV_Special_ReservedRights",
-      "[JumpBack]GachaADV_HaveNotAnyRed"
+      "GachaADV_LocationEnd_Pre"
     ]
   },
   "GachaADV_LocationEnd_Pre": {
-    "recognition": "OCR",
-    "expected": "帮助",
-    "roi": [
-      533,
-      109,
-      218,
-      163
-    ],
     "next": [
       "GachaADV_Slip"
     ]
@@ -1141,7 +1047,7 @@
       "Global_ToHomePage"
     ]
   },
-  "GachaADV_Special_ReservedRights": {
+  "GachaADV_Special_ReservedRights_1": {
     "focus": "GAB.[INT]卡池内存在特殊红点",
     "recognition": "TemplateMatch",
     "template": [
@@ -1156,62 +1062,89 @@
     ],
     "threshold": 0.7,
     "next": [
-      "GachaADV_SpecialCountButton"
+      "GachaADV_Location2_Pre"
     ],
     "doc": "中断发现点数超过200但用户决定保留的情况"
   },
-  "GachaADV_HaveNotAnyRed": {
-    "focus": "GAB.[INT]卡池内存无红点",
+  "GachaADV_Special_ReservedRights_2": {
+    "focus": "GAB.[INT]卡池内存在特殊红点",
     "recognition": "TemplateMatch",
     "template": [
-      "GACHA_Free.ReservedRights_Red_GE.png"
+      "GACHA_Special.ReservedRights_Red_GE.png"
     ],
     "green_mask": true,
     "roi": [
-      635,
-      434,
-      539,
-      221
+      721,
+      210,
+      462,
+      297
     ],
-    "threshold": 0.75,
-    "inverse": true,
+    "threshold": 0.7,
     "next": [
-      "GachaADV_SpecialCountButton"
+      "GachaADV_Location3_Pre"
     ],
     "doc": "中断发现点数超过200但用户决定保留的情况"
   },
-  "GachaADV_SpecialCountButton": {
+  "GachaADV_Special_ReservedRights_3": {
+    "focus": "GAB.[INT]卡池内存在特殊红点",
     "recognition": "TemplateMatch",
     "template": [
-      "GACHA_IntOut.png"
+      "GACHA_Special.ReservedRights_Red_GE.png"
     ],
+    "green_mask": true,
     "roi": [
-      720,
-      382,
-      183,
-      72
+      721,
+      210,
+      462,
+      297
     ],
-    "action": "Click",
-    "post_delay": 1000,
+    "threshold": 0.7,
     "next": [
-      "GachaADV_SpecialCountButton_Out",
-      "GachaADV_SpecialCountButton"
-    ]
+      "GachaADV_Location4_Pre"
+    ],
+    "doc": "中断发现点数超过200但用户决定保留的情况"
   },
-  "GachaADV_SpecialCountButton_Out": {
-    "recognition": "OCR",
-    "expected": "帮助",
+  "GachaADV_Special_ReservedRights_4": {
+    "focus": "GAB.[INT]卡池内存在特殊红点",
+    "recognition": "TemplateMatch",
+    "template": [
+      "GACHA_Special.ReservedRights_Red_GE.png"
+    ],
+    "green_mask": true,
     "roi": [
-      533,
-      109,
-      218,
-      163
-    ]
+      721,
+      210,
+      462,
+      297
+    ],
+    "threshold": 0.7,
+    "next": [
+      "GachaADV_Location5_Pre"
+    ],
+    "doc": "中断发现点数超过200但用户决定保留的情况"
+  },
+  "GachaADV_Special_ReservedRights_5": {
+    "focus": "GAB.[INT]卡池内存在特殊红点",
+    "recognition": "TemplateMatch",
+    "template": [
+      "GACHA_Special.ReservedRights_Red_GE.png"
+    ],
+    "green_mask": true,
+    "roi": [
+      721,
+      210,
+      462,
+      297
+    ],
+    "threshold": 0.7,
+    "next": [
+      "GachaADV_LocationEnd_Pre"
+    ],
+    "doc": "中断发现点数超过200但用户决定保留的情况"
   },
   "GachaADV_Slip": {
     "recognition": "OCR",
     "next": [
-      "[JumpBack]GachaADV_Slip_WinElimi",
       "GachaADV_Slip_Action"
     ],
     "on_error": [
@@ -1229,24 +1162,6 @@
       "抽抽乐"
     ],
     "doc": "下滑寻找免费抽卡"
-  },
-  "GachaADV_Slip_WinElimi": {
-    "recognition": "OCR",
-    "action": "Click",
-    "target": [
-      868,
-      161,
-      0,
-      0
-    ],
-    "expected": "帮助",
-    "roi": [
-      533,
-      109,
-      218,
-      163
-    ],
-    "post_delay": 1000
   },
   "GachaADV_Slip_Action": {
     "recognition": "OCR",
@@ -1283,13 +1198,13 @@
     ],
     "begin": [
       210,
-      300,
+      450,
       0,
       0
     ],
     "end": [
       210,
-      220,
+      116,
       0,
       0
     ],
