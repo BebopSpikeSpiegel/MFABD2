@@ -1,9 +1,17 @@
 {
     "Arbitrage_Start": {
+        "doc": "总流程启动器。现在设定3个子开关，购买、制作、出售，按次序JB。其中出售部分‘Arbitrage_Buy’多置一个空节点节点引导到单独文件",
+        "next": [
+            "[JumpBack]Arbitrage_Buy"
+        ]
+    },
+    "Arbitrage_Buy": {
         "next": [
             "Arbitrage_HomePageOldCardMenu_Goin",
             "[JumpBack]Global_ToHomePage"
-        ]
+        ],
+        "focus": "ABM.商店套利-购买环节 启动",
+        "enabled": true
     },
     "Arbitrage_HomePageOldCardMenu_Goin": {
         "recognition": "OCR",
