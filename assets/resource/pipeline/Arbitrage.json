@@ -11,7 +11,8 @@
             "[JumpBack]Global_ToHomePage"
         ],
         "focus": "ABM.商店套利-购买环节 启动",
-        "enabled": true
+        "enabled": true,
+        "max_hit": 1
     },
     "Arbitrage_HomePageOldCardMenu_Goin": {
         "recognition": "OCR",
