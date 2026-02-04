@@ -156,6 +156,50 @@ def parse_merge_subject(subject: str) -> tuple:
         
     return None, None
 
+def sanitize_markdown_for_weak_parser(text: str) -> str:
+    """
+    针对弱解析器清洗 Markdown：
+    1. 将 Markdown 列表 (- / *) 转换为全角空格+圆点 (　• )
+    2. 将 Markdown 标题 (#) 转换为加粗 HTML (<b>)
+    3. 将 换行符 (\n) 转换为 <br>
+    4. 移除其他可能导致崩溃的 Markdown 符号
+    """
+    if not text:
+        return ""
+
+    lines = text.split('\n')
+    new_lines = []
+    
+    for line in lines:
+        stripped = line.strip()
+        
+        # 处理标题 (例如: ### Bug修复 -> <b>Bug修复</b>)
+        if stripped.startswith('#'):
+            content = stripped.lstrip('#').strip()
+            new_lines.append(f"<b>{content}</b><br>")
+            
+        # 处理列表 (例如: - 修复问题 -> 　• 修复问题)
+        # 匹配 - 或 * 开头的列表
+        elif re.match(r'^[-*]\s+', stripped):
+            content = re.sub(r'^[-*]\s+', '', stripped)
+            # 使用全角空格做缩进，• 做子弹头
+            new_lines.append(f"　• {content}<br>")
+            
+        # 处理引用 (例如: > 说明 -> 　> 说明)
+        elif stripped.startswith('>'):
+            content = stripped.lstrip('>').strip()
+            new_lines.append(f"　> {content}<br>")
+            
+        # 处理空行 (必须显式加 <br>)
+        elif not stripped:
+            new_lines.append("<br>")
+            
+        # 处理普通文本
+        else:
+            new_lines.append(f"{line}<br>")
+            
+    return "\n".join(new_lines)
+
 def get_beta_preview_content(compare_base: str, current_tag: str) -> str:
     """生成 Beta 功能预览板块"""
     # 标签不存在时的自动回退
@@ -384,37 +428,40 @@ def add_historical_versions(current_changelog: str, current_tag: str) -> str:
             body = release.get('body', '') or ""
             
             print(f"处理历史版本: {tag} (发布时间: {published_at})")
-            print(f"内容长度: {len(body)} 字符")
             
-            # 智能标记分析（根据配置决定是否启用）
+            # 智能标记分析
             markers = ""
             if HISTORY_CONFIG['enable_version_highlights']:
                 markers = analyze_version_highlights(release)
                 marker_display = f" {markers}" if markers else ""
-                print(f"版本标记: '{markers}'")
             else:
                 marker_display = ""
-                print("版本标记: 已禁用")
             
             # 截断处理
             truncated_body = manager.truncate_release_body(body)
-            print(f"截断后长度: {len(truncated_body)} 字符")
             
-            if not truncated_body.strip():
+            # ==================== 核心修改区域 ====================
+            
+            # 1. 清洗：将 Markdown 转为“伪装 HTML” (防止UI解析器闪退)
+            safe_body = sanitize_markdown_for_weak_parser(truncated_body)
+            
+            # 2. 判空：注意要用清洗后的 safe_body 判断
+            if not safe_body.strip().replace('<br>', ''): 
                 print(f"跳过版本 {tag}: 内容为空")
                 continue
             
-            # 检查内容是否与其他版本重复
-            body_hash = hash(truncated_body.strip())
-            print(f"内容哈希: {body_hash}")
+            # 日志打印
+            print(f"截断并清洗后长度: {len(safe_body)} 字符")
             
+            # 3. 拼接：构建折叠块
+            # 【重要】下面的 <details> 等标签必须顶格写（没有缩进）
             historical_section += f"""<details>
 <summary>{tag} ({published_at}){marker_display}</summary>
-
-{truncated_body}
+<br>
+{safe_body}
 
 </details>
-
+<br>
 """
         
         print(f"成功添加 {len(historical_releases)} 个历史版本")
