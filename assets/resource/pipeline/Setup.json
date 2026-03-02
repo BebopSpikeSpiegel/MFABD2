@@ -1067,9 +1067,9 @@
         "recognition": "ColorMatch",
         "roi": "Setup_Main_Tab_2",
         "lower": [
-            218,
-            218,
-            218
+            216,
+            216,
+            216
         ],
         "upper": [
             255,
@@ -1377,9 +1377,9 @@
         "recognition": "ColorMatch",
         "roi": "Setup_Main_Tab_3",
         "lower": [
-            218,
-            218,
-            218
+            216,
+            216,
+            216
         ],
         "upper": [
             255,
@@ -1459,9 +1459,9 @@
         "recognition": "ColorMatch",
         "roi": "Setup_Main_Tab_4",
         "lower": [
-            218,
-            218,
-            218
+            216,
+            216,
+            216
         ],
         "upper": [
             255,
