@@ -124,10 +124,15 @@ class OCR_RankAndPatch(CustomAction):
             target_param = params.get("target_param", "target")
             
             # 逻辑参数
-            filter_regex = params.get("filter_regex", r"(\d+)")
+            number_mode = params.get("number_mode", "float")  # 先获取 number_mode
             sort_mode = params.get("sort_mode", "asc")
-            number_mode = params.get("number_mode", "float")
             direction = params.get("direction", "vertical")
+            
+            # 智能分配默认正则
+            if number_mode == "float" and "filter_regex" not in params:  
+                filter_regex = r"(\d+\.?\d*)"  # float 模式默认保留小数
+            else:  
+                filter_regex = params.get("filter_regex", r"(\d+)")
             
             # 索引转换 (人类 1-based -> 内部 0-based)
             user_pick = int(params.get("pick_index", 1))
@@ -200,10 +205,13 @@ class OCR_RankAndPatch(CustomAction):
                         matches = re.findall(r"(\d+\.?\d*)", clean_text)
                 
                 if matches:
-                    # 如果用户的正则有多个括号(捕获组)，findall 会返回 tuple 列表，这里取第一个元素
+                    # 如果用户的正则有多个括号(捕获组)，findall 会返回 tuple 列表
                     first_match = matches[0]
                     if isinstance(first_match, tuple):
-                        first_match = first_match[0]
+                        # 获取元组中第一个非空的有效分组
+                        first_match = next((g for g in first_match if g), None)
+                        if first_match is None:
+                            continue  # 如果全是空的，跳过该条目
                         
                     try:
                         val = float(first_match)

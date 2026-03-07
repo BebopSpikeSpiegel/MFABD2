@@ -1,10 +1,14 @@
 {
     "Arbitrage_Start": {
+        "doc": "总流程启动器。现在设定3个子开关，购买、制作、出售，按次序JB。其中出售部分‘Arbitrage_Buy’多置一个空节点节点引导到单独文件",
         "next": [
+            "Arbitrage_Merchant_Ico",
+            "Arbitrage_Merchant_Menu",
             "Arbitrage_HomePageOldCardMenu_Goin",
             "[JumpBack]Global_ToHomePage"
         ]
     },
+    "#1总控与进图寻路": {},
     "Arbitrage_HomePageOldCardMenu_Goin": {
         "recognition": "OCR",
         "action": "Click",
@@ -36,14 +40,13 @@
         ],
         "post_delay": 1000,
         "roi": [
-            99,
-            78,
-            212,
-            630
+            165,
+            0,
+            227,
+            80
         ],
         "expected": [
-            "角色游戏卡",
-            "玩法游戏卡带"
+            "游戏卡珍藏集"
         ],
         "begin": [
             70,
@@ -241,6 +244,7 @@
         "post_delay": 5000,
         "focus": "行路中..."
     },
+    "#2商人交互与分支总枢纽": {},
     "Arbitrage_Merchant_Ico": {
         "recognition": "TemplateMatch",
         "template": [
@@ -374,10 +378,47 @@
         ],
         "next": [
             "[Anchor]PractiseBargaining_Per",
-            "Arbitrage_Select_QC1"
+            "Arbitrage_Action_Hub"
         ]
     },
-    "Arbitrage_Select_QC1": {
+    "Arbitrage_Action_Hub": {
+        "next": [
+            "[JumpBack]Arbitrage_BuyItem",
+            "[JumpBack]Arbitrage_Cooking_Weekly",
+            "[JumpBack]Arbitrage_Cooking",
+            "[JumpBack]Arbitrage_SellItem",
+            "[JumpBack]Arbitrage_Merchant_Close_Ck",
+            "[JumpBack]Global_BackPageHub_Once",
+            "Global_ToSandBox"
+        ],
+        "timeout": 3000,
+        "doc": "商店内动作路由"
+    },
+    "Arbitrage_Merchant_Close_Ck": {
+        "action": "Click",
+        "pre_delay": 500,
+        "recognition": "OCR",
+        "roi": [
+            667,
+            402,
+            81,
+            66
+        ],
+        "expected": [
+            "关闭商店"
+        ]
+    },
+    "#3购买流程": {},
+    "Arbitrage_BuyItem": {
+        "focus": "Arb.M.购入模块启动",
+        "next": [
+            "Arbitrage_Buy_Select_QC1"
+        ],
+        "enabled": true,
+        "max_hit": 1,
+        "doc": "商店内购买"
+    },
+    "Arbitrage_Buy_Select_QC1": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -393,12 +434,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC1_Clr"
+            "Arbitrage_Buy_Select_QC1_Clr"
         ]
     },
-    "Arbitrage_Select_QC1_Clr": {
+    "Arbitrage_Buy_Select_QC1_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC1",
+        "roi": "Arbitrage_Buy_Select_QC1",
         "lower": [
             216,
             216,
@@ -412,10 +453,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter1Shop",
-            "Arbitrage_Select_QC2"
+            "Arbitrage_Buy_Select_QC2"
         ]
     },
-    "Arbitrage_Select_QC2": {
+    "Arbitrage_Buy_Select_QC2": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -431,12 +472,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC2_Clr"
+            "Arbitrage_Buy_Select_QC2_Clr"
         ]
     },
-    "Arbitrage_Select_QC2_Clr": {
+    "Arbitrage_Buy_Select_QC2_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC2",
+        "roi": "Arbitrage_Buy_Select_QC2",
         "lower": [
             216,
             216,
@@ -450,10 +491,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter2Shop",
-            "Arbitrage_Select_QC3"
+            "Arbitrage_Buy_Select_QC3"
         ]
     },
-    "Arbitrage_Select_QC3": {
+    "Arbitrage_Buy_Select_QC3": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -469,12 +510,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC3_Clr"
+            "Arbitrage_Buy_Select_QC3_Clr"
         ]
     },
-    "Arbitrage_Select_QC3_Clr": {
+    "Arbitrage_Buy_Select_QC3_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC3",
+        "roi": "Arbitrage_Buy_Select_QC3",
         "lower": [
             216,
             216,
@@ -488,10 +529,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter3Shop",
-            "Arbitrage_Select_QC4"
+            "Arbitrage_Buy_Select_QC4"
         ]
     },
-    "Arbitrage_Select_QC4": {
+    "Arbitrage_Buy_Select_QC4": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -507,12 +548,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC4_Clr"
+            "Arbitrage_Buy_Select_QC4_Clr"
         ]
     },
-    "Arbitrage_Select_QC4_Clr": {
+    "Arbitrage_Buy_Select_QC4_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC4",
+        "roi": "Arbitrage_Buy_Select_QC4",
         "lower": [
             216,
             216,
@@ -526,10 +567,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter4Shop",
-            "Arbitrage_Select_QC5"
+            "Arbitrage_Buy_Select_QC5"
         ]
     },
-    "Arbitrage_Select_QC5": {
+    "Arbitrage_Buy_Select_QC5": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -545,12 +586,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC5_Clr"
+            "Arbitrage_Buy_Select_QC5_Clr"
         ]
     },
-    "Arbitrage_Select_QC5_Clr": {
+    "Arbitrage_Buy_Select_QC5_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC5",
+        "roi": "Arbitrage_Buy_Select_QC5",
         "lower": [
             216,
             216,
@@ -564,10 +605,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter5Shop",
-            "Arbitrage_Select_QC6"
+            "Arbitrage_Buy_Select_QC6"
         ]
     },
-    "Arbitrage_Select_QC6": {
+    "Arbitrage_Buy_Select_QC6": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -583,12 +624,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC6_Clr"
+            "Arbitrage_Buy_Select_QC6_Clr"
         ]
     },
-    "Arbitrage_Select_QC6_Clr": {
+    "Arbitrage_Buy_Select_QC6_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC6",
+        "roi": "Arbitrage_Buy_Select_QC6",
         "lower": [
             216,
             216,
@@ -602,10 +643,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter6Shop",
-            "Arbitrage_Select_QC7"
+            "Arbitrage_Buy_Select_QC7"
         ]
     },
-    "Arbitrage_Select_QC7": {
+    "Arbitrage_Buy_Select_QC7": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -621,12 +662,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC7_Clr"
+            "Arbitrage_Buy_Select_QC7_Clr"
         ]
     },
-    "Arbitrage_Select_QC7_Clr": {
+    "Arbitrage_Buy_Select_QC7_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC7",
+        "roi": "Arbitrage_Buy_Select_QC7",
         "lower": [
             216,
             216,
@@ -640,10 +681,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter7Shop",
-            "Arbitrage_Select_QC8"
+            "Arbitrage_Buy_Select_QC8"
         ]
     },
-    "Arbitrage_Select_QC8": {
+    "Arbitrage_Buy_Select_QC8": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -659,12 +700,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC8_Clr"
+            "Arbitrage_Buy_Select_QC8_Clr"
         ]
     },
-    "Arbitrage_Select_QC8_Clr": {
+    "Arbitrage_Buy_Select_QC8_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC8",
+        "roi": "Arbitrage_Buy_Select_QC8",
         "lower": [
             216,
             216,
@@ -676,13 +717,17 @@
             255
         ],
         "count": 100,
+        "anchor": {
+            "PackSwip_Str": "Arbitrage_Buy_Select_QC8_Clr",
+            "PackSwip_End": "Arbitrage_Buy_Select_QC9"
+        },
         "next": [
             "[JumpBack]Chapter8Shop",
-            "Arbitrage_Select_QC9",
-            "[JumpBack]Arbitrage_Select_Swip"
+            "Arbitrage_Buy_Select_QC9",
+            "Arbitrage_Select_Swip"
         ]
     },
-    "Arbitrage_Select_QC9": {
+    "Arbitrage_Buy_Select_QC9": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -698,12 +743,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC9_Clr"
+            "Arbitrage_Buy_Select_QC9_Clr"
         ]
     },
-    "Arbitrage_Select_QC9_Clr": {
+    "Arbitrage_Buy_Select_QC9_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC9",
+        "roi": "Arbitrage_Buy_Select_QC9",
         "lower": [
             216,
             216,
@@ -716,10 +761,10 @@
         ],
         "count": 100,
         "next": [
-            "Arbitrage_Select_QC10"
+            "Arbitrage_Buy_Select_QC10"
         ]
     },
-    "Arbitrage_Select_QC10": {
+    "Arbitrage_Buy_Select_QC10": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -735,12 +780,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC10_Clr"
+            "Arbitrage_Buy_Select_QC10_Clr"
         ]
     },
-    "Arbitrage_Select_QC10_Clr": {
+    "Arbitrage_Buy_Select_QC10_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC10",
+        "roi": "Arbitrage_Buy_Select_QC10",
         "lower": [
             216,
             216,
@@ -754,10 +799,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter10Shop",
-            "Arbitrage_Select_QC11"
+            "Arbitrage_Buy_Select_QC11"
         ]
     },
-    "Arbitrage_Select_QC11": {
+    "Arbitrage_Buy_Select_QC11": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -773,12 +818,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC11_Clr"
+            "Arbitrage_Buy_Select_QC11_Clr"
         ]
     },
-    "Arbitrage_Select_QC11_Clr": {
+    "Arbitrage_Buy_Select_QC11_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC11",
+        "roi": "Arbitrage_Buy_Select_QC11",
         "lower": [
             216,
             216,
@@ -792,10 +837,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter11Shop",
-            "Arbitrage_Select_QC12"
+            "Arbitrage_Buy_Select_QC12"
         ]
     },
-    "Arbitrage_Select_QC12": {
+    "Arbitrage_Buy_Select_QC12": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -811,12 +856,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC12_Clr"
+            "Arbitrage_Buy_Select_QC12_Clr"
         ]
     },
-    "Arbitrage_Select_QC12_Clr": {
+    "Arbitrage_Buy_Select_QC12_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC12",
+        "roi": "Arbitrage_Buy_Select_QC12",
         "lower": [
             216,
             216,
@@ -830,10 +875,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter12Shop",
-            "Arbitrage_Select_QC13"
+            "Arbitrage_Buy_Select_QC13"
         ]
     },
-    "Arbitrage_Select_QC13": {
+    "Arbitrage_Buy_Select_QC13": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -849,12 +894,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC13_Clr"
+            "Arbitrage_Buy_Select_QC13_Clr"
         ]
     },
-    "Arbitrage_Select_QC13_Clr": {
+    "Arbitrage_Buy_Select_QC13_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC13",
+        "roi": "Arbitrage_Buy_Select_QC13",
         "lower": [
             216,
             216,
@@ -868,10 +913,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter13Shop",
-            "Arbitrage_Select_QC14"
+            "Arbitrage_Buy_Select_QC14"
         ]
     },
-    "Arbitrage_Select_QC14": {
+    "Arbitrage_Buy_Select_QC14": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -887,12 +932,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC14_Clr"
+            "Arbitrage_Buy_Select_QC14_Clr"
         ]
     },
-    "Arbitrage_Select_QC14_Clr": {
+    "Arbitrage_Buy_Select_QC14_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC14",
+        "roi": "Arbitrage_Buy_Select_QC14",
         "lower": [
             216,
             216,
@@ -906,10 +951,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter14Shop",
-            "Arbitrage_Select_QC15"
+            "Arbitrage_Buy_Select_QC15"
         ]
     },
-    "Arbitrage_Select_QC15": {
+    "Arbitrage_Buy_Select_QC15": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -925,12 +970,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC15_Clr"
+            "Arbitrage_Buy_Select_QC15_Clr"
         ]
     },
-    "Arbitrage_Select_QC15_Clr": {
+    "Arbitrage_Buy_Select_QC15_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC15",
+        "roi": "Arbitrage_Buy_Select_QC15",
         "lower": [
             216,
             216,
@@ -942,13 +987,17 @@
             255
         ],
         "count": 100,
+        "anchor": {
+            "PackSwip_Str": "Arbitrage_Buy_Select_QC15_Clr",
+            "PackSwip_End": "Arbitrage_Buy_Select_QC16"
+        },
         "next": [
             "[JumpBack]Chapter15Shop",
-            "Arbitrage_Select_QC16",
-            "[JumpBack]Arbitrage_Select_Swip"
+            "Arbitrage_Buy_Select_QC16",
+            "Arbitrage_Select_Swip"
         ]
     },
-    "Arbitrage_Select_QC16": {
+    "Arbitrage_Buy_Select_QC16": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -964,12 +1013,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC16_Clr"
+            "Arbitrage_Buy_Select_QC16_Clr"
         ]
     },
-    "Arbitrage_Select_QC16_Clr": {
+    "Arbitrage_Buy_Select_QC16_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC16",
+        "roi": "Arbitrage_Buy_Select_QC16",
         "lower": [
             216,
             216,
@@ -981,13 +1030,17 @@
             255
         ],
         "count": 100,
+        "anchor": {
+            "PackSwip_Str": "Arbitrage_Buy_Select_QC16_Clr",
+            "PackSwip_End": "Arbitrage_Buy_Select_QC17"
+        },
         "next": [
             "[JumpBack]Chapter16Shop",
-            "Arbitrage_Select_QC17",
-            "[JumpBack]Arbitrage_Select_Swip"
+            "Arbitrage_Buy_Select_QC17",
+            "Arbitrage_Select_Swip"
         ]
     },
-    "Arbitrage_Select_QC17": {
+    "Arbitrage_Buy_Select_QC17": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -1003,12 +1056,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC17_Clr"
+            "Arbitrage_Buy_Select_QC17_Clr"
         ]
     },
-    "Arbitrage_Select_QC17_Clr": {
+    "Arbitrage_Buy_Select_QC17_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC17",
+        "roi": "Arbitrage_Buy_Select_QC17",
         "lower": [
             216,
             216,
@@ -1022,10 +1075,10 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter17Shop",
-            "Arbitrage_Select_QC18"
+            "Arbitrage_Buy_Select_QC18"
         ]
     },
-    "Arbitrage_Select_QC18": {
+    "Arbitrage_Buy_Select_QC18": {
         "recognition": "OCR",
         "roi": [
             236,
@@ -1041,12 +1094,12 @@
             "time": 500
         },
         "next": [
-            "Arbitrage_Select_QC18_Clr"
+            "Arbitrage_Buy_Select_QC18_Clr"
         ]
     },
-    "Arbitrage_Select_QC18_Clr": {
+    "Arbitrage_Buy_Select_QC18_Clr": {
         "recognition": "ColorMatch",
-        "roi": "Arbitrage_Select_QC18",
+        "roi": "Arbitrage_Buy_Select_QC18",
         "lower": [
             216,
             216,
@@ -1060,10 +1113,16 @@
         "count": 100,
         "next": [
             "[JumpBack]Chapter18Shop",
-            "[JumpBack]Arbitrage_Merchant_Close_Ck",
-            "[JumpBack]Global_BackPageHub_Once",
-            "Global_ToSandBox"
+            "Arbitrage_Buy_Select_End"
         ]
+    },
+    "Arbitrage_Buy_Select_End": {
+        "focus": "Arb.B.购买模块结束",
+        "next": [
+            "Arbitrage_PackList_ResetEnter",
+            "[JumpBack]Arbitrage_PackList_ResetSwip"
+        ],
+        "timeout": 1005
     },
     "Arbitrage_Select_Swip": {
         "recognition": "OCR",
@@ -1077,23 +1136,39 @@
             51,
             149
         ],
-        "action": "Swipe",
-        "begin": [
-            285,
-            660,
-            1,
-            1
-        ],
-        "end": [
-            285,
-            135,
-            1,
-            1
-        ],
-        "duration": 600,
-        "end_hold": 1000,
+        "action": "Custom",
+        "custom_action": "SmartSwipe",
+        "custom_action_param": {
+            "proxy_node": "Custom_Proxy_Swipe",
+            "action": "Swipe",
+            "detect_roi": [
+                195,
+                104,
+                52,
+                120
+            ],
+            "begin": [
+                285,
+                660
+            ],
+            "end": [
+                285,
+                135
+            ],
+            "duration": 600,
+            "end_hold": 1000,
+            "settle_delay": 500,
+            "retry_times": 2,
+            "threshold": 3.0
+        },
         "post_wait_freezes": 1000,
-        "focus": "滑动商店卡带表"
+        "next": [
+            "[Anchor]PackSwip_End",
+            "[Anchor]PackSwip_Str"
+        ],
+        "timeout": 2000,
+        "focus": "滑动商店卡带表",
+        "doc": "商店卡带列表滑动.使用特殊的anchor来实现同层级类JumpBack复用,因为smartswip的跳出是节点链级,Jb会+1级导致失效、循环"
     },
     "Arbitrage_Merchant_BuyMsg": {
         "action": "Click",
@@ -1166,18 +1241,1269 @@
         ],
         "inverse": true
     },
-    "Arbitrage_Merchant_Close_Ck": {
-        "action": "Click",
-        "pre_delay": 500,
+    "#4出售侦察与调度": {},
+    "Arbitrage_SellItem": {
+        "focus": "Arb.M.出售模块启动",
+        "next": [
+            "Arbitrage_Sell_Type_Ocr"
+        ],
+        "enabled": true,
+        "max_hit": 1,
+        "doc": "商店内出售"
+    },
+    "Arbitrage_Sell_Type_Ocr": {
         "recognition": "OCR",
         "roi": [
-            667,
-            402,
-            81,
-            66
+            66,
+            159,
+            140,
+            123
         ],
         "expected": [
-            "关闭商店"
+            "出售"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Arbitrage_Sell_Type_Clr",
+            "Arbitrage_Sell_Type_Ocr"
+        ],
+        "doc": "类型确认为-出售"
+    },
+    "Arbitrage_Sell_Type_Clr": {
+        "recognition": "ColorMatch",
+        "roi": [
+            118,
+            173,
+            36,
+            59
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            188
+        ],
+        "upper": [
+            30,
+            2,
+            255
+        ],
+        "count": 30,
+        "next": [
+            "Arbitrage_Sell_PriceList"
+        ],
+        "timeout": 5000,
+        "on_error": [],
+        "doc": "验证类型-出售"
+    },
+    "Arbitrage_Sell_PriceList": {
+        "recognition": "OCR",
+        "roi": [
+            863,
+            595,
+            153,
+            125
+        ],
+        "expected": [
+            "价目表"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Arbitrage_Sell_PriceList_Enter",
+            "Arbitrage_Sell_PriceList"
+        ],
+        "doc": "点击价目表按钮"
+    },
+    "Arbitrage_Sell_PriceList_Enter": {
+        "recognition": "OCR",
+        "roi": [
+            165,
+            77,
+            196,
+            145
+        ],
+        "expected": [
+            "价目表"
+        ],
+        "doc": "确认价目表子菜单",
+        "next": [
+            "[JumpBack]Arbitrage_Sell_PriceList_FirstCalibration",
+            "Arbitrage_ShopSell_Active"
         ]
+    },
+    "Arbitrage_Sell_PriceList_FirstCalibration": {
+        "next": [
+            "Arbitrage_Swip_Calibration_Hub"
+        ],
+        "doc": "初次打开价目表,将4行价格纵向对齐",
+        "max_hit": 1
+    },
+    "Arbitrage_ShopSell_Active": {
+        "action": "Custom",
+        "custom_action": "ArbitrageSellController",
+        "attach": {
+            "default": "烤蜂蜜苹果,蜂蜜黄油杏仁,三角美乃滋饭团,鱼子酱蛋包饭,炸三文鱼便当,桑格利亚酒",
+            "Drops": "巧克力鸡尾酒,火烤鱼板棒,鱼子酱蛋包饭,炸三文鱼便当,卢戈山参烤串,煤炭饼干,闪闪铁板虾,透明沙拉,地狱火紫菜包饭"
+        },
+        "focus": "出售模块启动",
+        "doc": "由此开始出售模块,拉起Py"
+    },
+    "Arbitrage_Swip_PriceList": {
+        "action": "Swipe",
+        "begin": [
+            653,
+            511
+        ],
+        "end": [
+            653,
+            150
+        ],
+        "duration": 700,
+        "end_hold": 500,
+        "doc": "【非孤立节点】由Agent调用,价目表下滑Runtask入口",
+        "next": [
+            "Arbitrage_Swip_Calibration_Hub"
+        ]
+    },
+    "Arbitrage_Swip_Calibration_Hub": {
+        "next": [
+            "[JumpBack]Arbitrage_Swip_Calibration_Down",
+            "[JumpBack]Arbitrage_Swip_Calibration_Up",
+            "[JumpBack]Arbitrage_Swip_Calibration_Up_FineTuning"
+        ],
+        "timeout": 1,
+        "doc": "滑动后微调,使价目表完整显示,设定多种情况不同力度调整,反复运作后能准确控制位置"
+    },
+    "Arbitrage_Swip_Calibration_Down": {
+        "recognition": "ColorMatch",
+        "method": 40,
+        "upper": [
+            120,
+            62,
+            75
+        ],
+        "lower": [
+            102,
+            30,
+            59
+        ],
+        "roi": [
+            416,
+            213,
+            10,
+            4
+        ],
+        "action": "Swipe",
+        "begin": [
+            635,
+            218
+        ],
+        "end": [
+            635,
+            228
+        ],
+        "end_hold": 250,
+        "post_delay": 800,
+        "doc": "区域识别到物品框,应向下滑动,宁可多识别一次"
+    },
+    "Arbitrage_Swip_Calibration_Up": {
+        "recognition": "ColorMatch",
+        "method": 40,
+        "upper": [
+            110,
+            29,
+            78
+        ],
+        "lower": [
+            103,
+            23,
+            75
+        ],
+        "roi": [
+            416,
+            211,
+            7,
+            7
+        ],
+        "action": "Swipe",
+        "end": [
+            635,
+            218
+        ],
+        "begin": [
+            635,
+            224
+        ],
+        "end_hold": 250,
+        "post_delay": 800,
+        "doc": "区域识别到分割线,应向上滑动,下滑过头。同时力度为6,配合下滑10使得可以反复来微调"
+    },
+    "Arbitrage_Swip_Calibration_Up_FineTuning": {
+        "recognition": "ColorMatch",
+        "method": 40,
+        "upper": [
+            109,
+            76,
+            55
+        ],
+        "lower": [
+            106,
+            65,
+            50
+        ],
+        "roi": [
+            419,
+            221,
+            26,
+            3
+        ],
+        "action": "Swipe",
+        "end": [
+            635,
+            218
+        ],
+        "begin": [
+            635,
+            222
+        ],
+        "end_hold": 250,
+        "post_delay": 800,
+        "doc": "高精度识别,调整小上划,让下方文字"
+    },
+    "5#复用出售动作链(必须调用才能正常运行)": {},
+    "Arbitrage_Sell_HUB": {
+        "doc": "可复用出售环节",
+        "next": [
+            "Arbitrage_Sell_Button_Ocr"
+        ]
+    },
+    "Arbitrage_Sell_Button_Ocr": {
+        "recognition": "OCR",
+        "roi": [
+            66,
+            159,
+            140,
+            123
+        ],
+        "expected": [
+            "出售"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Arbitrage_Sell_Button_Clr",
+            "Arbitrage_Sell_Button_Ocr"
+        ],
+        "doc": "类型确认为-出售"
+    },
+    "Arbitrage_Sell_Button_Clr": {
+        "recognition": "ColorMatch",
+        "roi": [
+            118,
+            173,
+            36,
+            59
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            188
+        ],
+        "upper": [
+            30,
+            2,
+            255
+        ],
+        "count": 30,
+        "anchor": {
+            "PackSwip_Str": "Arbitrage_Sell_Button_Clr",
+            "PackSwip_End": "Arbitrage_Sell_PackShopSwich"
+        },
+        "next": [
+            "Arbitrage_Sell_PackShopSwich",
+            "Arbitrage_Select_Swip"
+        ],
+        "timeout": 5000,
+        "on_error": [],
+        "doc": "寻找匹配卡带,如果匹配不到超时跳出。"
+    },
+    "Arbitrage_Sell_PackShopSwich": {
+        "recognition": "OCR",
+        "roi": [
+            236,
+            90,
+            142,
+            594
+        ],
+        "expected": [
+            "目标卡带"
+        ],
+        "replace": [
+            [
+                " ",
+                ""
+            ]
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Arbitrage_Sell_PackShopSwich_Clr",
+            "Arbitrage_Sell_PackShopSwich"
+        ],
+        "doc": "需要[custom]传入正确的名称.出售卡带选择,空格删去匹配cus源,保留默认"
+    },
+    "Arbitrage_Sell_PackShopSwich_Clr": {
+        "recognition": "ColorMatch",
+        "roi": "Arbitrage_Sell_PackShopSwich",
+        "roi_offset": [
+            0,
+            5,
+            0,
+            20
+        ],
+        "lower": [
+            218,
+            218,
+            218
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 100,
+        "next": [
+            "Arbitrage_Sell_Item_ListTraverse",
+            "[JumpBack]Arbitrage_ItemList_Swip"
+        ],
+        "doc": "卡带是否选中色核"
+    },
+    "Arbitrage_ItemList_Swip": {
+        "recognition": "OCR",
+        "expected": [
+            "购买",
+            "出售"
+        ],
+        "roi": [
+            110,
+            92,
+            51,
+            149
+        ],
+        "action": "Custom",
+        "custom_action": "SmartSwipe",
+        "custom_action_param": {
+            "proxy_node": "Custom_Proxy_Swipe",
+            "action": "Swipe",
+            "detect_roi": [
+                404,
+                102,
+                63,
+                161
+            ],
+            "begin": [
+                894,
+                580
+            ],
+            "end": [
+                894,
+                40
+            ],
+            "duration": 800,
+            "end_hold": 800,
+            "settle_delay": 500,
+            "retry_times": 2,
+            "threshold": 3.0
+        },
+        "post_wait_freezes": 1000,
+        "focus": "滑动商店卡带表",
+        "doc": "商店卡带列表滑动"
+    },
+    "Arbitrage_Sell_Item_ListTraverse": {
+        "recognition": "OCR",
+        "roi": [
+            392,
+            94,
+            733,
+            536
+        ],
+        "expected": [
+            "目标物品"
+        ],
+        "replace": [
+            [
+                " ",
+                ""
+            ]
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Arbitrage_Sell_Item_SellMenu",
+            "Arbitrage_Sell_Item_ListTraverse"
+        ],
+        "doc": "需要[custom]传入特征词.点击目标出售物品 。注意，这里的replace是和py处理一致的。"
+    },
+    "Arbitrage_Sell_Item_SellMenu": {
+        "recognition": "Or",
+        "any_of": [
+            {
+                "recognition": "OCR",
+                "roi": [
+                    810,
+                    450,
+                    222,
+                    102
+                ],
+                "expected": [
+                    "出售"
+                ]
+            },
+            {
+                "recognition": "OCR",
+                "roi": [
+                    264,
+                    445,
+                    398,
+                    111
+                ],
+                "expected": [
+                    "MIX",
+                    "MAX"
+                ]
+            }
+        ],
+        "next": [
+            "Arbitrage_Sell_Item_Number"
+        ],
+        "doc": "确认出售子菜单已弹出"
+    },
+    "Arbitrage_Sell_Item_Number": {
+        "action": "Click",
+        "target": [
+            318,
+            502
+        ],
+        "next": [
+            "Arbitrage_Sell_Item_Selling"
+        ],
+        "doc": "决定出售个数,未添加验证控制。Intface控制，默认Mix，操作后覆盖成Max"
+    },
+    "Arbitrage_Sell_Item_Selling": {
+        "recognition": "OCR",
+        "roi": [
+            810,
+            450,
+            222,
+            102
+        ],
+        "expected": [
+            "出售"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "timeout": 4000,
+        "next": [
+            "Arbitrage_Sell_Item_Selling",
+            "Arbitrage_PackList_ResetEnter",
+            "[JumpBack]Arbitrage_PackList_ResetSwip"
+        ]
+    },
+    "Arbitrage_PackList_ResetSwip": {
+        "action": "Swipe",
+        "end": [
+            285,
+            660
+        ],
+        "begin": [
+            285,
+            135
+        ],
+        "duration": 300,
+        "end_hold": 500,
+        "post_wait_freezes": 1000,
+        "focus": "复位商店卡带表",
+        "doc": "商店卡带列表滑动"
+    },
+    "Arbitrage_PackList_ResetEnter": {
+        "recognition": "OCR",
+        "roi": [
+            236,
+            90,
+            142,
+            72
+        ],
+        "expected": [
+            "血骑士"
+        ]
+    },
+    "6#料理制作": {},
+    "Arbitrage_Cooking_Weekly": {
+        "recognition": "Custom",
+        "custom_recognition": "CheckCoolDown",
+        "custom_recognition_param": {
+            "card_name": "Arbitrage_Cooking",
+            "cycle_type": "g_weekly"
+        },
+        "action": "Custom",
+        "custom_action": "MarkComplete",
+        "custom_action_param": {
+            "card_name": "Arbitrage_Cooking",
+            "cycle_type": "g_weekly",
+            "focus": "Arb.M.料理制作模块启动"
+        },
+        "next": [
+            "Arbitrage_Cooking_MenuPatch"
+        ],
+        "enabled": false,
+        "max_hit": 1,
+        "doc": "料理制作开始"
+    },
+    "Arbitrage_Cooking": {
+        "focus": "Arb.M.料理制作模块启动",
+        "next": [
+            "Arbitrage_Cooking_MenuPatch"
+        ],
+        "enabled": true,
+        "max_hit": 1,
+        "doc": "料理制作开始"
+    },
+    "Arbitrage_Cooking_MenuPatch": {
+        "action": "Custom",
+        "custom_action": "PatchByRegex",
+        "custom_action_param": {
+            "rules": [
+                {
+                    "pattern": [
+                        "^Setup_SetSkill_tab3_Ck$"
+                    ],
+                    "patch": {
+                        "next": [
+                            "[JumpBack]Setup_SetSkill_tab3_ReLift",
+                            "Arbitrage_Cooking_SetupToSkill",
+                            "[JumpBack]Setup_SetSkill_3-1_Swip"
+                        ]
+                    },
+                    "origin": {
+                        "next": [
+                            "[JumpBack]Setup_SetSkill_tab3_ReLift",
+                            "Setup_SetSkill_tab3_Reset5"
+                        ]
+                    }
+                }
+            ]
+        },
+        "next": [
+            "Setup_SetSkill_Per",
+            "Arbitrage_Cooking_SetupToSkill"
+        ],
+        "doc": "借用setup管路,从技能菜单进入烹饪菜单"
+    },
+    "Arbitrage_Cooking_SetupToSkill": {
+        "recognition": "OCR",
+        "expected": [
+            "料理"
+        ],
+        "roi": [
+            110,
+            580,
+            1053,
+            33
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Arbitrage_Cooking_MenuEnter"
+        ],
+        "doc": "技能菜单出口"
+    },
+    "Arbitrage_Cooking_MenuEnter": {
+        "recognition": "OCR",
+        "roi": [
+            221,
+            7,
+            96,
+            65
+        ],
+        "expected": [
+            "料理"
+        ],
+        "focus": "Arb.料理界面-确认",
+        "next": [
+            "[JumpBack]Arbitrage_Cooking_Page2",
+            "[JumpBack]Arbitrage_Cooking_Page1"
+        ],
+        "timeout": 1,
+        "doc": "确认进了料理菜单。料理项目页逆序排序。兼做页间HUB节点"
+    },
+    "Arbitrage_Cooking_Page2": {
+        "anchor": {
+            "Cooking": "Arbitrage_Cooking_Swip_Page2"
+        },
+        "next": [
+            "Arbitrage_Cooking_Swip_Page2"
+        ],
+        "max_hit": 1,
+        "doc": "先进行第二页，因为高级料理利多，优先。"
+    },
+    "Arbitrage_Cooking_Swip_Page2": {
+        "action": "Swipe",
+        "begin": [
+            887,
+            669
+        ],
+        "end": [
+            892,
+            46
+        ],
+        "end_hold": 500,
+        "post_delay": 1500,
+        "next": [
+            "Arbitrage_Cooking_B8",
+            "Arbitrage_Cooking_B9",
+            "Arbitrage_Cooking_B10"
+        ],
+        "timeout": 2000,
+        "focus": "Arb.料理页面2",
+        "doc": "滑动到指定页面。兼做页内HUB节点"
+    },
+    "Arbitrage_Cooking_B8": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    592,
+                    103,
+                    596,
+                    598
+                ],
+                "template": [
+                    "Shop/cook_Sparkling Griddle Shrimp.png"
+                ]
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": "Templateroi",
+                "method": 40,
+                "lower": [
+                    16,
+                    46,
+                    142
+                ],
+                "upper": [
+                    20,
+                    68,
+                    168
+                ]
+            }
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "Arbitrage_Cooking_SubMenu"
+        ],
+        "enabled": false,
+        "focus": "Arb.料理制作:[5级]闪闪铁板虾",
+        "doc": "菜品选择器,进入料理子菜单"
+    },
+    "Arbitrage_Cooking_B9": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    592,
+                    103,
+                    596,
+                    598
+                ],
+                "template": [
+                    "Shop/cook_Transparent Salad.png"
+                ]
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": "Templateroi",
+                "method": 40,
+                "lower": [
+                    16,
+                    46,
+                    142
+                ],
+                "upper": [
+                    20,
+                    68,
+                    168
+                ]
+            }
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "Arbitrage_Cooking_SubMenu"
+        ],
+        "enabled": false,
+        "focus": "Arb.料理制作:[5级]透明沙拉",
+        "doc": "菜品选择器,进入料理子菜单"
+    },
+    "Arbitrage_Cooking_B10": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    592,
+                    103,
+                    596,
+                    598
+                ],
+                "template": [
+                    "Shop/cook_Hellfire Gimbap.png"
+                ]
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": "Templateroi",
+                "method": 40,
+                "lower": [
+                    16,
+                    46,
+                    142
+                ],
+                "upper": [
+                    20,
+                    68,
+                    168
+                ]
+            }
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "Arbitrage_Cooking_SubMenu"
+        ],
+        "enabled": false,
+        "focus": "Arb.料理制作:[5级]地狱火紫菜包饭",
+        "doc": "菜品选择器,进入料理子菜单"
+    },
+    "Arbitrage_Cooking_Page1": {
+        "anchor": {
+            "Cooking": "Arbitrage_Cooking_Hub",
+            "Cookint_Menu_Reset": "Arbitrage_Cooking_Hub"
+        },
+        "next": [
+            "Arbitrage_Cooking_Menu_Reset",
+            "Arbitrage_Cooking_Hub"
+        ],
+        "max_hit": 1,
+        "doc": "先进行第二页，因为高级料理利多，优先。【实际：】利用发送锚点，从页复位直接进入页1的HUB节点，next中HUB只是为了方便理解，实际不会触发。"
+    },
+    "Arbitrage_Cooking_Hub": {
+        "next": [
+            "Arbitrage_Cooking_B6",
+            "Arbitrage_Cooking_B7",
+            "Arbitrage_Cooking_A2",
+            "Arbitrage_Cooking_A3",
+            "Arbitrage_Cooking_A4",
+            "Arbitrage_Cooking_A5",
+            "Arbitrage_Cooking_A6",
+            "Arbitrage_Cooking_A1"
+        ],
+        "timeout": 2000,
+        "doc": "第一页料理,路由节点,菜品按等级/价值倒序"
+    },
+    "Arbitrage_Cooking_B6": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    592,
+                    103,
+                    596,
+                    598
+                ],
+                "template": [
+                    "Shop/cook_Lugas Ginseng Skewer.png"
+                ]
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": "Templateroi",
+                "method": 40,
+                "lower": [
+                    16,
+                    46,
+                    142
+                ],
+                "upper": [
+                    20,
+                    68,
+                    168
+                ]
+            }
+        ],
+        "enabled": false,
+        "action": "Click",
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "Arbitrage_Cooking_SubMenu"
+        ],
+        "focus": "Arb.料理制作:[5级]卢戈山参烤串",
+        "doc": "菜品选择器,进入料理子菜单"
+    },
+    "Arbitrage_Cooking_B7": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    592,
+                    103,
+                    596,
+                    598
+                ],
+                "template": [
+                    "Shop/cook_Coal Cookies.png"
+                ]
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": "Templateroi",
+                "method": 40,
+                "lower": [
+                    16,
+                    46,
+                    142
+                ],
+                "upper": [
+                    20,
+                    68,
+                    168
+                ]
+            }
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "Arbitrage_Cooking_SubMenu"
+        ],
+        "enabled": false,
+        "focus": "Arb.料理制作:[5级]煤炭饼干",
+        "doc": "菜品选择器,进入料理子菜单"
+    },
+    "Arbitrage_Cooking_A2": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    592,
+                    103,
+                    596,
+                    598
+                ],
+                "template": [
+                    "Shop/cook_Honey Butter Almonds.png"
+                ]
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": "Templateroi",
+                "method": 40,
+                "lower": [
+                    16,
+                    46,
+                    142
+                ],
+                "upper": [
+                    20,
+                    68,
+                    168
+                ]
+            }
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "Arbitrage_Cooking_SubMenu"
+        ],
+        "focus": "Arb.料理制作:[3级]蜂蜜黄油杏仁",
+        "doc": "菜品选择器,进入料理子菜单"
+    },
+    "Arbitrage_Cooking_A3": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    592,
+                    103,
+                    596,
+                    598
+                ],
+                "template": [
+                    "Shop/cook_Mayo Triangle Rice Ball.png"
+                ]
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": "Templateroi",
+                "method": 40,
+                "lower": [
+                    16,
+                    46,
+                    142
+                ],
+                "upper": [
+                    20,
+                    68,
+                    168
+                ]
+            }
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "Arbitrage_Cooking_SubMenu"
+        ],
+        "focus": "Arb.料理制作:[3级]三角美乃滋饭团",
+        "doc": "菜品选择器,进入料理子菜单"
+    },
+    "Arbitrage_Cooking_A4": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    592,
+                    103,
+                    596,
+                    598
+                ],
+                "template": [
+                    "Shop/cook_Caviar Omurice.png"
+                ]
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": "Templateroi",
+                "method": 40,
+                "lower": [
+                    16,
+                    46,
+                    142
+                ],
+                "upper": [
+                    20,
+                    68,
+                    168
+                ]
+            }
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "Arbitrage_Cooking_SubMenu"
+        ],
+        "focus": "Arb.料理制作:[3级]鱼子酱蛋包饭",
+        "doc": "菜品选择器,进入料理子菜单"
+    },
+    "Arbitrage_Cooking_A5": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    592,
+                    103,
+                    596,
+                    598
+                ],
+                "template": [
+                    "Shop/cook_Fried Salmon Bento.png"
+                ]
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": "Templateroi",
+                "method": 40,
+                "lower": [
+                    16,
+                    46,
+                    142
+                ],
+                "upper": [
+                    20,
+                    68,
+                    168
+                ]
+            }
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "Arbitrage_Cooking_SubMenu"
+        ],
+        "focus": "Arb.料理制作:[2级]炸三文鱼便当",
+        "doc": "菜品选择器,进入料理子菜单"
+    },
+    "Arbitrage_Cooking_A6": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    592,
+                    103,
+                    596,
+                    598
+                ],
+                "template": [
+                    "Shop/cook_Sangria.png"
+                ]
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": "Templateroi",
+                "method": 40,
+                "lower": [
+                    16,
+                    46,
+                    142
+                ],
+                "upper": [
+                    20,
+                    68,
+                    168
+                ]
+            }
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "Arbitrage_Cooking_SubMenu"
+        ],
+        "focus": "Arb.料理制作:[2级]桑格利亚酒",
+        "doc": "菜品选择器,进入料理子菜单"
+    },
+    "Arbitrage_Cooking_A1": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    592,
+                    103,
+                    596,
+                    598
+                ],
+                "template": [
+                    "Shop/cook_Honey Baked Apple.png"
+                ]
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": "Templateroi",
+                "method": 40,
+                "lower": [
+                    16,
+                    46,
+                    142
+                ],
+                "upper": [
+                    20,
+                    68,
+                    168
+                ]
+            }
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "Arbitrage_Cooking_SubMenu"
+        ],
+        "focus": "Arb.料理制作:[1级]烤蜂蜜苹果",
+        "doc": "菜品选择器,进入料理子菜单"
+    },
+    "Arbitrage_Cooking_Menu_Reset": {
+        "action": "Click",
+        "target": [
+            606,
+            118,
+            271,
+            267
+        ],
+        "doc": "使用Anchor复用.将菜单复位。通过随机点一个菜品后返回，利用系统机制复位最顶。",
+        "next": [
+            "Arbitrage_Cooking_Menu_Reset_SubIn",
+            "Arbitrage_Cooking_Menu_Reset"
+        ],
+        "post_delay": 1500,
+        "max_hit": 50
+    },
+    "Arbitrage_Cooking_Menu_Reset_SubIn": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            701,
+            587,
+            144,
+            131
+        ],
+        "template": [
+            "UI_cooking_submenu.png"
+        ],
+        "green_mask": true,
+        "next": [
+            "Arbitrage_Cooking_Menu_Reset_SubOut",
+            "[JumpBack]Global_BackPageHub_Once"
+        ],
+        "post_delay": 3000
+    },
+    "Arbitrage_Cooking_Menu_Reset_SubOut": {
+        "recognition": "OCR",
+        "roi": [
+            566,
+            46,
+            116,
+            56
+        ],
+        "expected": [
+            "所需材料$"
+        ],
+        "focus": "Arb.返回料理菜单\n\n页内复位完成",
+        "next": [
+            "[Anchor]Cookint_Menu_Reset"
+        ]
+    },
+    "Arbitrage_Cooking_SubMenu": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            701,
+            587,
+            144,
+            131
+        ],
+        "template": [
+            "UI_cooking_submenu.png"
+        ],
+        "green_mask": true,
+        "focus": "Arb.料理子菜单-确认",
+        "next": [
+            "Arbitrage_Cooking_NubMenu_Max"
+        ],
+        "doc": "可复用料理流程开始.使用按钮团确定子菜单"
+    },
+    "Arbitrage_Cooking_NubMenu_Max": {
+        "doc": "数量预留,测试阶段上保险不改",
+        "next": [
+            "Arbitrage_Cooking_NubMenu_Doing"
+        ]
+    },
+    "Arbitrage_Cooking_NubMenu_Doing": {
+        "recognition": "ColorMatch",
+        "roi": [
+            830,
+            560,
+            204,
+            152
+        ],
+        "method": 40,
+        "lower": [
+            19,
+            11,
+            205
+        ],
+        "upper": [
+            26,
+            16,
+            224
+        ],
+        "action": "Click",
+        "next": [
+            "Arbitrage_Cooking_Doing_Starus"
+        ]
+    },
+    "Arbitrage_Cooking_Doing_Starus": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            701,
+            587,
+            144,
+            131
+        ],
+        "template": [
+            "UI_cooking_submenu.png"
+        ],
+        "green_mask": true,
+        "inverse": true,
+        "post_delay": 3000,
+        "focus": "Arb.料理制作动画中...",
+        "next": [
+            "Arbitrage_Cooking_Doing_ReBack",
+            "Arbitrage_Cooking_Doing_Starus"
+        ],
+        "doc": "按钮之前存在,现在不存在,是在动画"
+    },
+    "Arbitrage_Cooking_Doing_ReBack": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            701,
+            587,
+            144,
+            131
+        ],
+        "template": [
+            "UI_cooking_submenu.png"
+        ],
+        "green_mask": true,
+        "doc": "按钮之前不存在,现在存在,动画结束",
+        "next": [
+            "Arbitrage_Cooking_Menu_ReBack",
+            "[JumpBack]Global_BackPageHub_Once"
+        ]
+    },
+    "Arbitrage_Cooking_Menu_ReBack": {
+        "recognition": "OCR",
+        "roi": [
+            566,
+            46,
+            116,
+            56
+        ],
+        "expected": [
+            "所需材料$"
+        ],
+        "focus": "Arb.返回料理菜单",
+        "next": [
+            "[Anchor]Cooking"
+        ],
+        "doc": "确认返回料理菜单,回到选择流"
     }
 }

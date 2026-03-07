@@ -599,40 +599,77 @@
       "[JumpBack]Level_5_Start"
     ]
   },
-  "test_Max&custom_HUB": {
+  "Arbitrage_Sell_ReadList_OCR": {
+    "recognition": "OCR",
+    "roi": [
+      475,
+      209,
+      592,
+      344
+    ],
+    "expected": "",
+    "doc": "这是一个被动节点，只为了给 Python 提供全区域的 OCR 数据池。ROI大致框住右侧四个商品即可"
+  },
+  "Arbitrage_Test_Selling_Action": {
+    "action": "Custom",
+    "custom_action": "ArbitrageSellAnalyze",
+    "custom_action_param": {},
+    "doc": "测试入口：呼叫 Python 进行逻辑解析"
+  },
+  "测试runtask": {},
+  "test_active_runtask_entry": {
+    "action": "Custom",
+    "custom_action": "YourCustomRunTask",
+    "custom_action_param": {
+      "target_task": "test_delay_step_1"
+    },
+    "pre_delay": 2000
+  },
+  "test_delay_step_1": {
+    "action": "DoNothing",
+    "post_delay": 3000,
     "next": [
-      "[JumpBack]test_Max&custom_1",
-      "[JumpBack]test_Max&custom_2"
+      "test_delay_step_2"
     ]
   },
-  "test_Max&custom_1": {
-    "recognition": "TemplateMatch",
-    "template": [
-      "Cook_app.png"
-    ],
-    "action": "Custom",
-    "custom_action": "PatchByRegex",
-    "custom_action_param": {
-      "pattern": "^test_Max&custom_2$",
-      "patch": {
-        "roi": "$box"
-      },
-      "origin": {
-        "roi": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "max_hit": 1
+  "test_delay_step_2": {
+    "action": "DoNothing",
+    "post_delay": 3000,
+    "next": [
+      "test_delay_step_3"
+    ]
   },
-  "test_Max&custom_2": {
-    "recognition": "TemplateMatch",
-    "template": [
-      "cook_hone.png"
+  "test_delay_step_3": {
+    "action": "DoNothing",
+    "post_delay": 3000
+  },
+  "test_anchor1": {
+    "recognition": "OCR",
+    "roi": [
+      98,
+      656,
+      66,
+      32
     ],
-    "max_hit": 1
-  }
+    "expected": [
+      "抽抽乐"
+    ],
+    "action": "Click",
+    "target": [
+      120,
+      35
+    ],
+    "post_delay": 4000,
+    "anchor": "test",
+    "next": [
+      "test_anchor2"
+    ]
+  },
+  "test_anchor2": {
+    "next": [
+      "[Anchor]test",
+      "test_anchor2"
+    ]
+  },
+  "test_anchor3": {}
 }

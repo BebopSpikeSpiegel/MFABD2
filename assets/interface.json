@@ -181,7 +181,12 @@
         {
             "name": "[开发中]商店套利",
             "entry": "Arbitrage_Start",
-            "description": "**商店套利：**流传‘跑商’中的‘商’，我定义为商店套利。<br>未来完整流程包括：购买高利润料理食材、购买高利润其他食材、料理制作、料理择价出售、高利润材料择价出售"
+            "description": "**商店套利：**流传‘跑商’中的‘商’，我定义为商店套利。<br>**已完成：**购买高利润料理食材、购买高利润其他食材、料理制作(仅原料取自商店且可长期获利菜品)、料理择价出售<br>未来计划：完善购买覆盖、其他料理变现、高利润材料择价出售",
+            "option": [
+                "利润商品-低价进货",
+                "利润商品-最高价抛售",
+                "利润料理-制作"
+            ]
         },
         {
             "name": "[半自动]自动钓鱼",
@@ -1385,6 +1390,207 @@
                     ]
                 }
             }
+        },
+        "利润料理-制作": {
+            "type": "switch",
+            "description": "对利润料理制作。",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {},
+                    "option": [
+                        "料理制作周期（每次|每周）",
+                        "5星料理开关"
+                    ]
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "Arbitrage_Cooking": {
+                            "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
+        "料理制作周期（每次|每周）": {
+            "type": "switch",
+            "description": "每周：完成一次后存档，下周再次运行，其他时间会跳过节省时间。",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "Arbitrage_Cooking_Weekly": {
+                            "enabled": true
+                        },
+                        "Arbitrage_Cooking": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "Arbitrage_Cooking": {
+                            "enabled": true
+                        },
+                        "Arbitrage_Cooking_Weekly": {
+                            "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
+        "5星料理开关": {
+            "type": "checkbox",
+            "description": "高亮为启用，用于想保留特殊掉落食材",
+            "default_case": [
+                "卢戈山参烤串",
+                "煤炭饼干",
+                "闪闪铁板虾",
+                "透明沙拉",
+                "地狱火紫菜包饭"
+            ],
+            "cases": [
+                {
+                    "name": "卢戈山参烤串",
+                    "pipeline_override": {
+                        "Arbitrage_Cooking_B6": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "煤炭饼干",
+                    "pipeline_override": {
+                        "Arbitrage_Cooking_B7": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "闪闪铁板虾",
+                    "pipeline_override": {
+                        "Arbitrage_Cooking_B8": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "透明沙拉",
+                    "pipeline_override": {
+                        "Arbitrage_Cooking_B9": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "地狱火紫菜包饭",
+                    "pipeline_override": {
+                        "Arbitrage_Cooking_B10": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ]
+        },
+        "利润商品-低价进货": {
+            "type": "switch",
+            "description": "逐卡带扫货有利的低价原料",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {}
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "Arbitrage_BuyItem": {
+                            "enabled": false
+                        },
+                        "Arbitrage_Bargaining_SkillList": {
+                            "recognition": "DirectHit",
+                            "target": [
+                                1122,
+                                523,
+                                8,
+                                15
+                            ],
+                            "next": "Arbitrage_Merchant_Menu"
+                        }
+                    }
+                }
+            ]
+        },
+        "利润商品-最高价抛售": {
+            "type": "switch",
+            "description": "判断每日最高价商品,与待售物品列表相交的,依次出售",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {},
+                    "option": [
+                        "抛售行为保险",
+                        "待出售的物品"
+                    ]
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "Arbitrage_SellItem": {
+                            "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
+        "抛售行为保险": {
+            "type": "switch",
+            "description": "保险功能打开时，只会出售1件而不是MAX。你可以尽情测试。",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "Arbitrage_Sell_Item_Number": {
+                            "target": [
+                                318,
+                                502
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "Arbitrage_Sell_Item_Number": {
+                            "target": [
+                                596,
+                                506
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        "待出售的物品": {
+            "type": "input",
+            "description": "输入期望监视最高价的物品。用逗号隔开(,)。",
+            "inputs": [
+                {
+                    "name": "监视最高价待售物品",
+                    "pipeline_type": "string",
+                    "default": "",
+                    "verify": "^[\\w\\u4e00-\\u9fa5,，\\s]*$",
+                    "pattern_msg": "请输入物品名称,多个之间用','隔开"
+                }
+            ],
+            "pipeline_override": {
+                "Arbitrage_ShopSell_Active": {
+                    "attach": {
+                        "SellName": "{监视最高价待售物品}"
+                    }
+                }
+            }
         }
     },
     "agent": {
@@ -1395,7 +1601,7 @@
     },
     "interface_version": 2,
     "name": "MFABD2",
-    "title": "MFABD2 | 棕色尘埃2自动化助手(sunyink/MFABD2)v0.0.20 | 游戏版本：20260212 ( Mart War )",
+    "title": "MFABD2 | 棕色尘埃2自动化助手(sunyink/MFABD2)v0.0.20 | 游戏版本：20260212 ( Magical & Lyrical )",
     "github": "https://github.com/sunyink/MFABD2",
     "mirrorchyan_rid": "MFABD2",
     "mirrorchyan_multiplatform": true,
