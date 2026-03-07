@@ -13,8 +13,8 @@
             "win32": {
                 "class_regex": "UnityWndClass",
                 "screencap": "FramePool",
-                "mouse": "PostMessageWithCursorPos",
-                "keyboard": "PostMessageWithCursorPos"
+                "mouse": "PostMessageWithWindowPos",
+                "keyboard": "PostMessageWithWindowPos"
             },
             "permission_required": true,
             "display_short_side": 720
@@ -44,7 +44,7 @@
             "name": "[全局]启动游戏",
             "entry": "StartGame_Start",
             "default_check": true,
-            "description": "<b>最新版探测&下载渠道:</b><br>[![正式版](https://img.shields.io/github/v/release/sunyink/MFABD2?label=仓库源·正式版&color=green&logo=github)](https://github.com/sunyink/MFABD2/releases/latest)<br>[![公测版](https://img.shields.io/github/v/tag/sunyink/MFABD2?include_prereleases&filter=%2Abeta%2A&label=仓库源·公测版&color=blue&logo=github)](https://github.com/sunyink/MFABD2/releases?q=beta)<br>[![Mirror酱](https://img.shields.io/badge/Mirror%E9%85%B1-镜像源·高速下载-%239af3f6?logo=countingworkspro&logoColor=4f46e5)](https://mirrorchyan.com/zh/projects?rid=MFABD2)<br><span style=\"color:Crimson;font-size:10px\">框架有PC端控制器(720P窗口化)，但资源来不及适配仅供探索。</span><br><b>启动游戏</b>：<br>自动启动游戏，包含更新、支付失败等一些异常框点击，领取`主界面`奖励、`宠物派遣`。<br><b><span style=\"color:Crimson;font-size:16px\">注意：网络环境需提前解决。</span></b><br>【<b>首次运行前，务必至少查看</b>`使用帮助`<b>卡片！</b>】",
+            "description": "<b>最新版探测&下载渠道:</b><br>[![正式版](https://img.shields.io/github/v/release/sunyink/MFABD2?label=仓库源·正式版&color=green&logo=github)](https://github.com/sunyink/MFABD2/releases/latest)<br>[![公测版](https://img.shields.io/github/v/tag/sunyink/MFABD2?include_prereleases&filter=%2Abeta%2A&label=仓库源·公测版&color=blue&logo=github)](https://github.com/sunyink/MFABD2/releases?q=beta)<br>[![Mirror酱](https://img.shields.io/badge/Mirror%E9%85%B1-镜像源·高速下载-%239af3f6?logo=countingworkspro&logoColor=4f46e5)](https://mirrorchyan.com/zh/projects?rid=MFABD2)<br><span style=\"color:Crimson;font-size:10px\">框架有PC端控制器(720P窗口化)，但资源来不及适配仅供探索。</span><b>启动游戏</b>：<br>自动启动游戏，包含更新、支付失败等一些异常框点击，领取`主界面`奖励、`宠物派遣`。<br><b><span style=\"color:Crimson;font-size:16px\">注意：网络环境需提前解决。</span></b><br>【<b>首次运行前，务必至少查看</b>`使用帮助`<b>卡片！</b>】<br><span style=\"color:Crimson;\">存档系统：</span>用于记录刷取完成时间戳，供判断免于反复运行。</span><br>存档文件名:`agent_save_data.json`。<br>存档路径：<br>全局模式:`用户应用数据(Appdata)/MFABD2`下；便携模式:`软件根目录`。<br>通过在根目录创建空白的`agent_save_data.json`即可启用便携模式。",
             "option": [
                 "前置助手"
             ]
@@ -172,7 +172,7 @@
             "name": "[执行]地图采集[完整]",
             "entry": "Collect_StartGame_HomePage",
             "default_check": true,
-            "description": "**地图采集**：进入卡带，对有传送阵地图进行`探查`、`吸取`、`召集`。<span style=\"color: Crimson;\"><b></b></span><br>**注意:**应当先将传送阵激活，并探明周围箱庭迷雾，使得区域地图上能完整显示明亮的传送阵图标。<br><span style=\"color: Crimson;\"><b>已适配周常卡带CD：</b></span><br>将在软件根目录生成名为`agent_save_data.json`的存档文件，用于记录周期标记与运行时间标记，<b>只打刷新CD内没刷过的关卡</b>。<br>刷取顺序，先按照卡带框从左到右，再按照`故事`、`角色`、`活动`大类顺序。<br>存档文件可以`手动迁移`到新的MFA构建物中保留进度。",
+            "description": "**地图采集**：进入卡带，对有传送阵地图进行`探查`、`吸取`、`召集`。<span style=\"color: Crimson;\"><b></b></span><br>**注意:**应当先将传送阵激活，并探明周围箱庭迷雾，使得区域地图上能完整显示明亮的传送阵图标。<br><span style=\"color: Crimson;\"><b>已适配周常卡带CD：</b></span><br>将在生成名为`agent_save_data.json`的存档文件，用于记录周期标记与运行时间标记。<b>只打刷新CD内没刷过的关卡</b>。<br>刷取顺序，先按照卡带框从左到右，再按照`故事`、`角色`、`活动`大类顺序。<br>存档文件可以`手动迁移`到新的MFA构建物中保留进度。",
             "option": [
                 "采集卡带屏蔽",
                 "第三图采集额外等待"
@@ -362,9 +362,7 @@
                             ],
                             "target": [
                                 800,
-                                390,
-                                0,
-                                0
+                                390
                             ]
                         }
                     }
@@ -420,9 +418,7 @@
                         "Battle_CollectMapHangXian1": {
                             "target": [
                                 341,
-                                558,
-                                0,
-                                0
+                                558
                             ],
                             "focus": "BM.航线-首选-金币"
                         }
@@ -434,9 +430,7 @@
                         "Battle_CollectMapHangXian1": {
                             "target": [
                                 510,
-                                531,
-                                0,
-                                0
+                                531
                             ],
                             "focus": "BM.航线-首选-经验"
                         }
@@ -454,9 +448,7 @@
                         "Battle_FastBattleMAXTouchHangxian": {
                             "target": [
                                 800,
-                                390,
-                                0,
-                                0
+                                390
                             ]
                         }
                     }
@@ -467,9 +459,7 @@
                         "Battle_FastBattleMAXTouchShouLie": {
                             "target": [
                                 800,
-                                390,
-                                0,
-                                0
+                                390
                             ]
                         },
                         "Battle_CollectMap": {
@@ -516,9 +506,7 @@
                         "Battle_FastBattleTouch_StoneSelect": {
                             "target": [
                                 230,
-                                120,
-                                0,
-                                0
+                                120
                             ]
                         }
                     }
@@ -529,9 +517,7 @@
                         "Battle_FastBattleTouch_StoneSelect": {
                             "target": [
                                 230,
-                                175,
-                                0,
-                                0
+                                175
                             ]
                         }
                     }
@@ -542,9 +528,7 @@
                         "Battle_FastBattleTouch_StoneSelect": {
                             "target": [
                                 230,
-                                230,
-                                0,
-                                0
+                                230
                             ]
                         }
                     }
@@ -555,9 +539,7 @@
                         "Battle_FastBattleTouch_StoneSelect": {
                             "target": [
                                 230,
-                                290,
-                                0,
-                                0
+                                290
                             ]
                         }
                     }
@@ -568,9 +550,7 @@
                         "Battle_FastBattleTouch_StoneSelect": {
                             "target": [
                                 230,
-                                350,
-                                0,
-                                0
+                                350
                             ]
                         }
                     }
@@ -604,7 +584,7 @@
         },
         "精炼类别倾向-专武|制作": {
             "description": "开关球位置表示状态。左(专武)、右(制作)。<br>潜在期望，如果要选择装备分类，你期望强化哪种？",
-            "type": "select",
+            "type": "switch",
             "cases": [
                 {
                     "name": "No",
@@ -631,7 +611,7 @@
         },
         "精炼类别倾向应用-按需|强制": {
             "description": "开关球位置表示状态。左(按需)、右(强制)。<br>按需:仅当发现精炼装备为魔兽装备时应用<br>强制:正常装备精炼筛选时直接应用",
-            "type": "select",
+            "type": "switch",
             "cases": [
                 {
                     "name": "No",
@@ -677,9 +657,7 @@
                             "focus": "EM.装备精炼.<C10",
                             "target": [
                                 720,
-                                320,
-                                0,
-                                0
+                                320
                             ],
                             "recognition": "DirectHit"
                         },
@@ -973,6 +951,27 @@
                             "next": [
                                 "GachaADV_Start"
                             ]
+                        }
+                    },
+                    "option": [
+                        "5星必出保留"
+                    ]
+                }
+            ]
+        },
+        "5星必出保留": {
+            "description": "卡池100次必中5星机会保留。跳过此池免费抽,留给未来卡池。<br>注意,必中5星≠必中Up5星。",
+            "type": "switch",
+            "cases": [
+                {
+                    "name": "No",
+                    "pipeline_override": {}
+                },
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "GachaADV_Special_SaveGuaranteed": {
+                            "enabled": true
                         }
                     }
                 }

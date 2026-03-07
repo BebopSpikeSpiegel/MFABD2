@@ -1,6 +1,7 @@
 {
   "Battle_StartGame_HomePage": {
     "next": [
+      "[JumpBack]Battle_MIniMap_locErr",
       "Battle_TouchCollect",
       "[JumpBack]Global_ToSandBox"
     ]
@@ -26,13 +27,28 @@
     "green_mask": true,
     "target": [
       120,
-      185,
-      0,
-      0
+      185
     ],
     "post_delay": 2000,
     "post_wait_freezes": 1000,
     "doc": "找到run-点击左上扫荡"
+  },
+  "Battle_MIniMap_locErr": {
+    "recognition": "TemplateMatch",
+    "template": [
+      "UI_miniMap_B.png"
+    ],
+    "roi": [
+      298,
+      255,
+      48,
+      41
+    ],
+    "action": "Click",
+    "post_delay": 1000,
+    "max_hit": 20,
+    "doc": "小地图位置调整",
+    "focus": "CB.[WRN]小地图盘位置非Mini-调整"
   },
   "Battle_ListCollapse": {
     "recognition": "TemplateMatch",
@@ -72,9 +88,7 @@
     ],
     "target": [
       140,
-      120,
-      0,
-      0
+      120
     ],
     "doc": "A.进入扫荡地图，依次执行支线"
   },
@@ -131,9 +145,7 @@
     ],
     "target": [
       470,
-      390,
-      0,
-      0
+      390
     ],
     "doc": "B-1.狩猎场次数选择，点击MAX"
   },
@@ -167,9 +179,7 @@
     "focus": "BM.航线-首选（异常！）",
     "target": [
       138,
-      200,
-      0,
-      0
+      200
     ],
     "doc": "A-2.interface，默认为金币优先，已留空|色核逻辑，浮窗菜单底色使左上字体变色，以此反向判定菜单是否存在，反向才能调用中断！"
   },
@@ -195,9 +205,7 @@
     "threshold": 0.8,
     "target": [
       1060,
-      650,
-      0,
-      0
+      650
     ]
   },
   "Battle_CollectMapHangXianDoubleCk1No": {
@@ -248,9 +256,7 @@
     "focus": "BM.航线-备选",
     "target": [
       138,
-      280,
-      0,
-      0
+      280
     ]
   },
   "Battle_CollectMapHangXianDoubleCk2": {
@@ -275,9 +281,7 @@
     "threshold": 0.8,
     "target": [
       1060,
-      650,
-      0,
-      0
+      650
     ]
   },
   "Battle_CollectMapHangXianDoubleCk2No": {
@@ -308,9 +312,7 @@
     "focus": "BM.快速狩猎-狩猎地图返回默认位置",
     "target": [
       140,
-      120,
-      0,
-      0
+      120
     ],
     "doc": "目的是不用中断、在主流程里把地图复位，配个其他中断使用。T1"
   },
@@ -372,9 +374,7 @@
     ],
     "target": [
       800,
-      390,
-      0,
-      0
+      390
     ],
     "doc": "B全无狩猎场-点击MAX"
   },
@@ -396,9 +396,7 @@
     ],
     "target": [
       470,
-      390,
-      0,
-      0
+      390
     ],
     "doc": "B-2.冒险航线次数选择，点击MAX"
   },
@@ -450,9 +448,7 @@
     "focus": "BM.圣石洞穴",
     "target": [
       138,
-      355,
-      0,
-      0
+      355
     ]
   },
   "Battle_CollectMapDongXueCK": {
@@ -528,33 +524,23 @@
       "replacement_list": [
         [
           230,
-          120,
-          0,
-          0
+          120
         ],
         [
           230,
-          175,
-          0,
-          0
+          175
         ],
         [
           230,
-          230,
-          0,
-          0
+          230
         ],
         [
           230,
-          290,
-          0,
-          0
+          290
         ],
         [
           230,
-          350,
-          0,
-          0
+          350
         ]
       ],
       "target_node": "Battle_FastBattleTouch_StoneSelect_SmartClick",
@@ -567,8 +553,6 @@
   "Battle_FastBattleTouch_StoneSelect_SmartClick": {
     "action": "Click",
     "target": [
-      0,
-      0,
       0,
       0
     ],
@@ -599,9 +583,7 @@
     ],
     "target": [
       230,
-      120,
-      0,
-      0
+      120
     ],
     "doc": "寻找火之洞穴，点击属性图_火"
   },
@@ -623,9 +605,7 @@
     ],
     "target": [
       800,
-      390,
-      0,
-      0
+      390
     ],
     "doc": "B-2.冒险航线次数选择，点击MAX"
   },
@@ -677,10 +657,10 @@
       "start": "BB.快速狩猎，菜单"
     },
     "roi": [
-      644,
-      532,
-      121,
-      71
+      622,
+      492,
+      161,
+      111
     ],
     "expected": [
       "狩猎"
@@ -740,9 +720,7 @@
     "focus": "BB.快速狩猎-结算-狩猎地图默认位置",
     "target": [
       140,
-      120,
-      0,
-      0
+      120
     ]
   },
   "Battle_CollectMapInitialize_Out_Ty1": {
@@ -802,9 +780,7 @@
     "focus": "BB.快速狩猎-异常(点击地图默认位置按钮)",
     "target": [
       140,
-      120,
-      0,
-      0
+      120
     ]
   },
   "Battle_BackHomePage": {
@@ -827,9 +803,7 @@
     ],
     "target": [
       135,
-      37,
-      0,
-      0
+      37
     ],
     "doc": "返回本子地图"
   },
@@ -941,9 +915,7 @@
     "focus": "BTM.刷取次数调整",
     "target": [
       848,
-      451,
-      0,
-      0
+      451
     ]
   },
   "Battle_TurnCharact_BattleStart": {
@@ -1030,9 +1002,7 @@
     "focus": "BTBM.AP-异常（点击地图默认位置按钮）",
     "target": [
       140,
-      120,
-      0,
-      0
+      120
     ]
   },
   "Battle_TurnCharact_End": {
@@ -1069,22 +1039,16 @@
     "focus": "BM.史贝伦大陆西北",
     "begin": [
       270,
-      144,
-      0,
-      0
+      144
     ],
     "end": [
       [
         570,
-        144,
-        0,
-        0
+        144
       ],
       [
         570,
-        450,
-        0,
-        0
+        450
       ]
     ],
     "duration": 200,
@@ -1094,9 +1058,7 @@
     "action": "Click",
     "target": [
       140,
-      120,
-      0,
-      0
+      120
     ],
     "post_delay": 800
   }

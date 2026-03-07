@@ -38,6 +38,7 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
+      "[JumpBack]Daily_Union_Intnet_Err",
       "Daily_UnionGUI",
       "Daily_EnterUnion"
     ],
@@ -58,6 +59,7 @@
     "recognition": "TemplateMatch",
     "action": "Click",
     "next": [
+      "[JumpBack]Daily_Union_Intnet_Err",
       "Daily_UnionGUI",
       "Daily_EnterUnion_img"
     ],
@@ -79,6 +81,7 @@
   "Daily_UnionGUI": {
     "recognition": "OCR",
     "next": [
+      "[JumpBack]Daily_Union_Intnet_Err",
       "Daily_UnionBack"
     ],
     "post_delay": 3000,
@@ -93,11 +96,24 @@
     ],
     "target": [
       305,
-      120,
-      0,
-      0
+      120
     ],
     "doc": "工会签到"
+  },
+  "Daily_Union_Intnet_Err": {
+    "recognition": "OCR",
+    "roi": [
+      548,
+      277,
+      201,
+      195
+    ],
+    "expected": [
+      "确认"
+    ],
+    "doc": "公会页面连接错误",
+    "action": "Click",
+    "post_delay": 1000
   },
   "Daily_UnionBack": {
     "action": "Click",
@@ -116,9 +132,7 @@
     ],
     "target": [
       60,
-      360,
-      0,
-      0
+      360
     ],
     "doc": "工会返回主页"
   },
@@ -141,9 +155,7 @@
     "timeout": 5000,
     "target": [
       120,
-      35,
-      0,
-      0
+      35
     ],
     "doc": "工会返回主页"
   },
@@ -207,13 +219,20 @@
       "Daily_BusinReward"
     ],
     "on_error": [],
-    "post_delay": 1000,
+    "post_delay": 500,
+    "post_wait_freezes": 1000,
     "focus": "GOM.餐馆结算(COR)-主界面",
     "roi": [
       85,
       228,
       91,
       29
+    ],
+    "target_offset": [
+      0,
+      -5,
+      1,
+      1
     ],
     "expected": [
       "经营管理"
@@ -229,7 +248,8 @@
       "Daily_BusinReward_img"
     ],
     "on_error": [],
-    "post_delay": 1000,
+    "post_delay": 500,
+    "post_wait_freezes": 1000,
     "focus": "GOM.餐馆结算(IMG)-主界面",
     "roi": [
       87,
@@ -244,22 +264,44 @@
     "doc": "识别点击餐馆图像"
   },
   "Daily_GetBusinReward": {
-    "recognition": "OCR",
+    "recognition": "And",
+    "all_of": [
+      {
+        "sub_name": "ButtonOCR",
+        "recognition": "OCR",
+        "roi": [
+          657,
+          463,
+          176,
+          126
+        ],
+        "expected": [
+          "获得"
+        ]
+      },
+      {
+        "recognition": "ColorMatch",
+        "roi": "ButtonOCR",
+        "method": 40,
+        "upper": [
+          21,
+          16,
+          226
+        ],
+        "lower": [
+          19,
+          12,
+          218
+        ],
+        "count": 50
+      }
+    ],
     "action": "Click",
     "next": [
       "Daily_GetBusinReward",
       "Daily_GetBusinRewardBack"
     ],
     "post_delay": 2000,
-    "roi": [
-      657,
-      463,
-      176,
-      126
-    ],
-    "expected": [
-      "获得"
-    ],
     "doc": "点击结算"
   },
   "Daily_GetBusinHaveNotReward": {
@@ -287,14 +329,15 @@
       ]
     ],
     "next": [
-      "Daily_Busin_InBusin"
+      "Daily_Busin_Enter"
     ]
   },
   "Daily_GetBusinRewardBack": {
     "action": "Click",
     "next": [
+      "Daily_Busin_Enter",
       "Daily_Busin_In_img",
-      "Daily_Busin_In",
+      "Daily_Busin_MainMenu",
       "[JumpBack]Daily_ClickOnce"
     ],
     "on_error": [],
@@ -306,10 +349,8 @@
       40
     ],
     "target": [
-      45,
-      563,
-      0,
-      0
+      1,
+      1
     ],
     "doc": "点击领取全部返回"
   },
@@ -317,7 +358,7 @@
     "recognition": "TemplateMatch",
     "action": "Click",
     "next": [
-      "Daily_Busin_InBusin",
+      "Daily_Busin_Enter",
       "Daily_Busin_In_img"
     ],
     "post_delay": 1000,
@@ -333,14 +374,14 @@
     ],
     "doc": "流程：进入餐馆。领取每日常客水晶。"
   },
-  "Daily_Busin_In": {
+  "Daily_Busin_MainMenu": {
     "recognition": "OCR",
     "action": "Click",
     "post_delay": 400,
     "post_wait_freezes": 800,
     "next": [
-      "Daily_Busin_InBusin",
-      "Daily_Busin_In"
+      "Daily_Busin_Enter",
+      "Daily_Busin_MainMenu"
     ],
     "focus": "GOM.餐馆常客属性石ocr",
     "roi": [
@@ -360,18 +401,13 @@
     ],
     "doc": "流程：进入餐馆。领取每日常客水晶。"
   },
-  "Daily_Busin_InBusin": {
+  "Daily_Busin_Enter": {
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "[JumpBack]Global_WaitingForLoading",
-      "[JumpBack]Daily_Busin_GiftGet",
-      "[JumpBack]Daily_Busin_StageUp",
-      "[JumpBack]Daily_Busin_LevelUp",
-      "Daily_Busin_InBusin",
-      "Daily_Busin_DecorCoin_Hub",
-      "Daily_Busin_NoGift",
-      "Daily_Busin_Nothing_Binary"
+      "Daily_Busin_Entered",
+      "Daily_Busin_Enter",
+      "[JumpBack]Global_WaitingForLoading"
     ],
     "post_delay": 1000,
     "roi": [
@@ -384,6 +420,30 @@
       "立刻前往"
     ],
     "doc": "餐馆结算页，进入餐馆"
+  },
+  "Daily_Busin_Entered": {
+    "recognition": "OCR",
+    "roi": [
+      87,
+      20,
+      146,
+      50
+    ],
+    "expected": [
+      "^(?=.*[格鲁菲])(?=.*[餐厅]).{3,6}$"
+    ],
+    "next": [
+      "[JumpBack]Global_WaitingForLoading",
+      "[JumpBack]Daily_Busin_GiftGet",
+      "[JumpBack]Daily_Busin_StageUp",
+      "[JumpBack]Daily_Busin_LevelUp",
+      "Daily_Busin_Enter",
+      "Daily_Busin_DecorCoin_Hub",
+      "Daily_Busin_NoGift",
+      "Daily_Busin_Nothing_Binary"
+    ],
+    "focus": "GBM.餐馆进入确认",
+    "doc": "已进入餐馆,再执行各种识别就不会出错了."
   },
   "Daily_Busin_GiftGet": {
     "recognition": "TemplateMatch",
@@ -449,9 +509,7 @@
     "focus": "装饰币拾取模块",
     "next": [
       "Daily_Busin_DecorCoin_IsFull_Binary",
-      "Daily_Busin_DecorCoin_PickUp",
-      "Daily_Busin_DecorCoin_PickUp2",
-      "Daily_Busin_DecorCoin_PickUp3"
+      "Daily_Busin_DecorCoin_PickUp"
     ],
     "timeout": 90000,
     "on_error": [
@@ -497,81 +555,54 @@
     "doc": "【假孤立，不要删除】"
   },
   "Daily_Busin_DecorCoin_PickUp": {
-    "recognition": "TemplateMatch",
-    "template": "UI_BusinCoin.png",
-    "roi": [
-      353,
-      98,
-      911,
-      449
+    "recognition": "Or",
+    "any_of": [
+      {
+        "recognition": "TemplateMatch",
+        "template": "UI_BusinCoin.png",
+        "roi": [
+          353,
+          98,
+          911,
+          449
+        ],
+        "green_mask": true
+      },
+      {
+        "recognition": "TemplateMatch",
+        "template": "UI_BusinCoin.png",
+        "roi": [
+          273,
+          509,
+          683,
+          200
+        ],
+        "green_mask": true
+      },
+      {
+        "recognition": "TemplateMatch",
+        "template": "UI_BusinCoin.png",
+        "roi": [
+          88,
+          360,
+          266,
+          230
+        ],
+        "green_mask": true
+      }
     ],
-    "green_mask": true,
     "action": "Click",
     "focus": "拾取装饰币",
     "post_delay": 1500,
     "next": [
       "Daily_Busin_DecorCoin_IsFull_Binary",
-      "Daily_Busin_DecorCoin_PickUp",
-      "Daily_Busin_DecorCoin_PickUp2",
-      "Daily_Busin_DecorCoin_PickUp3"
+      "Daily_Busin_DecorCoin_PickUp"
     ],
     "timeout": 25000,
     "on_error": [
       "Daily_Busin_DecorCoin_Move_1",
       "Daily_Busin_DecorCoin_Move_2"
     ]
-  },
-  "Daily_Busin_DecorCoin_PickUp2": {
-    "recognition": "TemplateMatch",
-    "template": "UI_BusinCoin.png",
-    "roi": [
-      273,
-      509,
-      683,
-      200
-    ],
-    "green_mask": true,
-    "action": "Click",
-    "focus": "拾取装饰币",
-    "post_delay": 1500,
-    "next": [
-      "Daily_Busin_DecorCoin_IsFull_Binary",
-      "Daily_Busin_DecorCoin_PickUp",
-      "Daily_Busin_DecorCoin_PickUp2",
-      "Daily_Busin_DecorCoin_PickUp3"
-    ],
-    "timeout": 25000,
-    "on_error": [
-      "Daily_Busin_DecorCoin_Move_1",
-      "Daily_Busin_DecorCoin_Move_2"
-    ],
-    "doc": "不能复核roi的产物,以后删掉"
-  },
-  "Daily_Busin_DecorCoin_PickUp3": {
-    "recognition": "TemplateMatch",
-    "template": "UI_BusinCoin.png",
-    "roi": [
-      88,
-      360,
-      266,
-      230
-    ],
-    "green_mask": true,
-    "action": "Click",
-    "focus": "拾取装饰币",
-    "post_delay": 1500,
-    "next": [
-      "Daily_Busin_DecorCoin_IsFull_Binary",
-      "Daily_Busin_DecorCoin_PickUp",
-      "Daily_Busin_DecorCoin_PickUp2",
-      "Daily_Busin_DecorCoin_PickUp3"
-    ],
-    "timeout": 25000,
-    "on_error": [
-      "Daily_Busin_DecorCoin_Move_1",
-      "Daily_Busin_DecorCoin_Move_2"
-    ],
-    "doc": "不能复核roi的产物,以后删掉"
   },
   "Daily_Busin_DecorCoin_Move_1": {
     "action": "Click",
@@ -582,9 +613,7 @@
       13
     ],
     "next": [
-      "Daily_Busin_DecorCoin_PickUp",
-      "Daily_Busin_DecorCoin_PickUp2",
-      "Daily_Busin_DecorCoin_PickUp3"
+      "Daily_Busin_DecorCoin_PickUp"
     ],
     "timeout": 30000,
     "on_error": [
@@ -606,9 +635,7 @@
     ],
     "timeout": 30000,
     "on_error": [
-      "Daily_Busin_Quick_BackPVEPage_Str",
-      "Daily_Busin_DecorCoin_PickUp2",
-      "Daily_Busin_DecorCoin_PickUp3"
+      "Daily_Busin_Quick_BackPVEPage_Str"
     ],
     "focus": "点击'员工',移动画面",
     "max_hit": 3
@@ -747,11 +774,10 @@
     "action": "Click",
     "focus": "GB.餐馆结算结束~中继调用",
     "target": [
-      60,
-      360,
-      0,
-      0
-    ]
+      1,
+      1
+    ],
+    "post_delay": 1000
   },
   "Daily_Square_Hub": {
     "next": [

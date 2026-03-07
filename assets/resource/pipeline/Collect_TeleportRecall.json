@@ -37,9 +37,7 @@
         "action": "Click",
         "target": [
             1203,
-            664,
-            0,
-            0
+            664
         ],
         "focus": "CFB.切换技能Tab3",
         "doc": "检查tab3,并切换,为传送阵可用状态做准备"
@@ -66,9 +64,7 @@
         "action": "Click",
         "target": [
             1203,
-            664,
-            0,
-            0
+            664
         ],
         "doc": "检查tab3,并切换,为传送阵可用状态做准备",
         "next": [
@@ -256,9 +252,7 @@
         "action": "Click",
         "target": [
             1080,
-            665,
-            0,
-            0
+            665
         ],
         "post_delay": 5000,
         "doc": "点击Pin1快捷技能栏恢复正常",
@@ -717,7 +711,10 @@
         "custom_action_param": {
             "card_name": "Event_1_夏日骑士",
             "cycle_type": "g_weekly"
-        }
+        },
+        "next": [
+            "Global_QuickCart_MenuReset"
+        ]
     },
     "Collect_TeleporCircle_OnFoot_StateResolGroup_Step1_Lift": {
         "doc": "两层级的导航地图箭头状态识别,来判断最左/中间/最右 ;+地图安全/危险来辅助操作 | Step2_Right下面为判定为最右",
@@ -1037,9 +1034,7 @@
         "action": "Click",
         "target": [
             1088,
-            444,
-            0,
-            0
+            444
         ],
         "next": [
             "Collect_TeleporCircle_OnFoot_Skirmish",
@@ -1107,9 +1102,7 @@
         "action": "Click",
         "target": [
             1088,
-            444,
-            0,
-            0
+            444
         ]
     },
     "Collect_TeleporCircle_OnFoot_Skirmish": {

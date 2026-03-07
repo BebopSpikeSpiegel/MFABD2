@@ -11,7 +11,7 @@
   "settings": {
     "row": 0,
     "col": 3,
-    "row_span": 5,
+    "row_span": 4,
     "col_span": 4
   },
   "live_view": {
@@ -21,9 +21,9 @@
     "col_span": 3
   },
   "task_desc": {
-    "row": 5,
+    "row": 4,
     "col": 3,
-    "row_span": 3,
+    "row_span": 4,
     "col_span": 4
   },
   "log": {

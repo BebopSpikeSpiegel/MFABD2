@@ -82,9 +82,7 @@
     ],
     "target": [
       1200,
-      664,
-      0,
-      0
+      664
     ],
     "doc": "第3页技能点击"
   },
@@ -146,9 +144,7 @@
     ],
     "target": [
       1181,
-      486,
-      0,
-      0
+      486
     ],
     "post_delay": 2000,
     "doc": "PVE点击技能4"
@@ -174,9 +170,7 @@
     ],
     "target": [
       757,
-      36,
-      0,
-      0
+      36
     ],
     "doc": "制作装备界面，下滑"
   },
@@ -262,9 +256,7 @@
     ],
     "target": [
       116,
-      40,
-      0,
-      0
+      40
     ],
     "doc": "制作装备界面，左上返回"
   },
@@ -276,6 +268,7 @@
       "Equip_ToEquipGui"
     ],
     "post_delay": 1500,
+    "post_wait_freezes": 1000,
     "focus": "EM.前往武器库存",
     "roi": [
       1019,
@@ -398,11 +391,25 @@
     ],
     "target": [
       1164,
-      660,
-      0,
-      0
+      660
     ],
     "doc": "点击对号"
+  },
+  "Equip_Processing": {
+    "recognition": "OCR",
+    "roi": [
+      512,
+      353,
+      146,
+      168
+    ],
+    "expected": [
+      "进行中",
+      "\\d+/\\d+"
+    ],
+    "post_delay": 5000,
+    "focus": "EB.作业装备较多,等待中...",
+    "doc": "等待作业装备 */* .匹配数字的*/*"
   },
   "Equip_EquipUpSelect_Err": {
     "recognition": "OCR",
@@ -423,7 +430,8 @@
     "action": "Click",
     "next": [
       "Equip_EquipUpResult",
-      "Equip_EquipUpSelect2"
+      "Equip_EquipUpSelect2",
+      "[JumpBack]Equip_Processing"
     ],
     "post_delay": 3000,
     "roi": [
@@ -441,7 +449,6 @@
     "recognition": "OCR",
     "action": "Click",
     "next": [
-      "[JumpBack]Equip_Awaiting",
       "Equip_EquipDec",
       "Equip_EquipUpResult"
     ],
@@ -467,10 +474,10 @@
     "post_delay": 1000,
     "focus": "EM.装备分解",
     "roi": [
-      1059,
-      644,
-      96,
-      34
+      1017,
+      599,
+      174,
+      121
     ],
     "expected": [
       "键分解"
@@ -566,9 +573,7 @@
     ],
     "target": [
       1167,
-      660,
-      0,
-      0
+      660
     ],
     "doc": "点击对号"
   },
@@ -577,7 +582,8 @@
     "action": "Click",
     "next": [
       "Equip_EquipDecResult",
-      "Equip_EquipDecSelect2"
+      "Equip_EquipDecSelect2",
+      "[JumpBack]Equip_Processing"
     ],
     "post_delay": 3000,
     "roi": [
@@ -723,9 +729,7 @@
     "count": 12,
     "target": [
       966,
-      228,
-      0,
-      0
+      228
     ]
   },
   "Equip_+9ColorCk": {
@@ -772,9 +776,7 @@
     ],
     "target": [
       840,
-      320,
-      0,
-      0
+      320
     ]
   },
   "Equip_filter<C17Ck": {
@@ -867,15 +869,11 @@
     "post_wait_freezes": 2000,
     "begin": [
       1019,
-      312,
-      0,
-      0
+      312
     ],
     "end": [
       1019,
-      99,
-      0,
-      0
+      99
     ],
     "duration": 250
   },
@@ -932,9 +930,7 @@
     ],
     "target": [
       450,
-      360,
-      0,
-      0
+      360
     ]
   },
   "Equip_FindRefining": {
@@ -946,9 +942,7 @@
     "post_delay": 1500,
     "target": [
       622,
-      163,
-      0,
-      0
+      163
     ],
     "doc": "点击第一个装备"
   },
@@ -1043,9 +1037,7 @@
     ],
     "target": [
       840,
-      320,
-      0,
-      0
+      320
     ]
   },
   "Equip_Overdrive_RefLvMax_Second_<C17Clr": {
@@ -1195,9 +1187,7 @@
     ],
     "target": [
       87,
-      40,
-      0,
-      0
+      40
     ],
     "doc": "精炼界面，返回"
   },
@@ -1220,9 +1210,7 @@
     ],
     "target": [
       87,
-      40,
-      0,
-      0
+      40
     ],
     "doc": "返回装备制作"
   },
@@ -1245,9 +1233,7 @@
     ],
     "target": [
       87,
-      40,
-      0,
-      0
+      40
     ],
     "doc": "返回主页"
   },
@@ -1285,9 +1271,7 @@
     ],
     "target": [
       1083,
-      664,
-      0,
-      0
+      664
     ],
     "doc": "第1页技能点击,复位"
   },
@@ -1313,21 +1297,5 @@
       129
     ],
     "doc": "技能页3，色核识别.next遍历是防止放置其他技能;次节点每轮next判定"
-  },
-  "Equip_Awaiting": {
-    "doc": "如果残留过多N装备,强化时间极长超时,做一个循环等待 | 有分解中? | /5.1后删除next",
-    "recognition": "OCR",
-    "roi": [
-      530,
-      212,
-      199,
-      245
-    ],
-    "expected": [
-      "强化中",
-      "进行中"
-    ],
-    "post_delay": 10000,
-    "focus": "EB.操作件数过多,等待中"
   }
 }

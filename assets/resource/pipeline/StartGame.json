@@ -325,12 +325,15 @@
       "StartGame_MainMsgBox_Remove",
       "[JumpBack]StartGame_PVPSet",
       "[JumpBack]StartGame_Special",
+      "[JumpBack]Daily_Busin_Quick_BackPVEPage_Str",
       "[JumpBack]StartGame_NewChar",
       "[JumpBack]StartGame_SeasonSet",
-      "StartGame_SandPlayPage",
       "[JumpBack]PVP_PerOperationsMain_Error",
       "[JumpBack]StartGame_BackMapPage",
-      "[JumpBack]Global_WaitingForLoading"
+      "[JumpBack]StartGame_AtPack_FantasiaSquare",
+      "[JumpBack]StartGame_AtPack_GoldenColosseum",
+      "[JumpBack]Global_WaitingForLoading",
+      "StartGame_SandPlayPage"
     ],
     "pre_delay": 5000,
     "post_delay": 10000,
@@ -438,9 +441,7 @@
     "focus": "SM.弹窗消除-无对象",
     "target": [
       60,
-      460,
-      0,
-      0
+      460
     ],
     "doc": "包里解决启动弹窗。注意新魔兽，新卡池、正常",
     "max_hit": 10
@@ -467,9 +468,7 @@
     ],
     "target": [
       60,
-      460,
-      0,
-      0
+      460
     ],
     "doc": "开始暴力解决广告，左侧点击10次"
   },
@@ -478,9 +477,7 @@
     "post_delay": 1000,
     "target": [
       60,
-      460,
-      0,
-      0
+      460
     ],
     "doc": "开始暴力解决广告，左侧点击10次",
     "max_hit": 10
@@ -493,9 +490,9 @@
       "[JumpBack]StartGame_Special",
       "[JumpBack]StartGame_NewChar",
       "[JumpBack]StartGame_SeasonSet",
-      "[JumpBack]StartGame_GoldenColosseum",
-      "[JumpBack]StartGame_GlupyDiner",
-      "[JumpBack]StartGame_FantasiaSouare",
+      "[JumpBack]StartGame_AtPack_GlupyDiner",
+      "[JumpBack]StartGame_AtPack_FantasiaSquare",
+      "[JumpBack]StartGame_AtPack_GoldenColosseum",
       "StartGame_FinBackMapPage",
       "[JumpBack]StartGame_BackMapPage"
     ],
@@ -512,9 +509,7 @@
     ],
     "target": [
       120,
-      35,
-      0,
-      0
+      35
     ],
     "doc": "识别左下抽抽乐-返回地图页(原版)"
   },
@@ -621,9 +616,7 @@
     ],
     "target": [
       640,
-      429,
-      0,
-      0
+      429
     ]
   },
   "StartGame_Error_AM": {
@@ -654,6 +647,40 @@
       164,
       948,
       542
+    ],
+    "doc": "另类赛季奖励接收"
+  },
+  "StartGame_AtPack_FantasiaSquare": {
+    "recognition": "TemplateMatch",
+    "roi": [
+      656,
+      622,
+      77,
+      66
+    ],
+    "template": [
+      "Mirror_FantasiaSquare_Ico.png"
+    ],
+    "doc": "在广场启动游戏",
+    "next": [
+      "Global_BackToQC1"
+    ]
+  },
+  "StartGame_AtPack_GoldenColosseum": {
+    "recognition": "OCR",
+    "roi": [
+      94,
+      601,
+      95,
+      55
+    ],
+    "expected": [
+      "阵型"
+    ],
+    "focus": "[WRN]SM.意料外卡带-黄金竞技场",
+    "doc": "在黄金角斗场启动游戏",
+    "next": [
+      "Global_BackToQC1"
     ]
   },
   "StartGame_LinkDown": {
@@ -675,9 +702,7 @@
     ],
     "target": [
       638,
-      443,
-      0,
-      0
+      443
     ]
   },
   "StartGame_LinkDown_TouchCk": {
@@ -696,23 +721,7 @@
       "确认"
     ]
   },
-  "StartGame_GoldenColosseum": {
-    "recognition": "OCR",
-    "roi": [
-      99,
-      613,
-      90,
-      36
-    ],
-    "expected": [
-      "阵形设置"
-    ],
-    "focus": "[WRN]SM.意料外卡带-黄金竞技场",
-    "next": [
-      "Global_BackToPve2#"
-    ]
-  },
-  "StartGame_GlupyDiner": {
+  "StartGame_AtPack_GlupyDiner": {
     "recognition": "OCR",
     "roi": [
       91,
@@ -726,24 +735,8 @@
     "focus": "[WRN]SM.意料外卡带-格鲁菲餐厅",
     "next": [
       "Global_BackToPve2#"
-    ]
-  },
-  "StartGame_FantasiaSouare": {
-    "recognition": "OCR",
-    "roi": [
-      122,
-      643,
-      206,
-      43
     ],
-    "expected": [
-      "聊天内容"
-    ],
-    "focus": "[WRN]SM.意料外卡带-梦幻广场",
-    "doc": "输入聊天内容（最多50字）",
-    "next": [
-      "Global_BackToPve2#"
-    ]
+    "doc": "意料外卡带-格鲁菲餐厅"
   },
   "StartGame_Setup_SoundTurnOff_Start": {
     "doc": "在下载前关闭游戏声音,节省资源和流量",

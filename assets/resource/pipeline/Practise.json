@@ -24,9 +24,7 @@
         "action": "Click",
         "target": [
             135,
-            40,
-            0,
-            0
+            40
         ],
         "post_wait_freezes": 500,
         "next": [

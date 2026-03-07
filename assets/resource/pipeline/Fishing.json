@@ -1,140 +1,176 @@
 {
-    "$__mpe_config_Fishing": {
-        "$__mpe_code": {
-            "prefix": "",
-            "savedViewport": {
-                "x": 255,
-                "y": -626,
-                "zoom": 0.61
-            },
-            "filename": "Fishing",
-            "version": "v0.14.2"
-        }
-    },
-    "Fishing_Entry": {
-        "recognition": {
-            "type": "DirectHit",
-            "param": {}
-        },
-        "action": {
-            "type": "DoNothing",
-            "param": {}
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 0,
-                "y": 1307
-            }
-        },
-        "next": [
-            "Fishing_BusinReward",
-            "Fishing_Already_Setsail",
-            "[JumpBack]Global_ToHomePage"
-        ]
-    },
-    "Fishing_Already_Setsail": {
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [
-                    1057,
-                    483,
-                    162,
-                    175
-                ],
-                "template": [
-                    "Fishhook.png"
-                ],
-                "green_mask": true
-            }
-        },
-        "action": {
-            "type": "DoNothing",
-            "param": {}
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 1064,
-                "y": 1645
-            }
-        },
-        "next": [
-            "Fishing_Start"
-        ]
-    },
-    "Fishing_Start": {
-        "recognition": {
-            "type": "DirectHit",
-            "param": {}
-        },
-        "action": {
-            "type": "DoNothing",
-            "param": {}
-        },
-        "post_wait_freezes": 100,
-        "$__mpe_code": {
-            "position": {
-                "x": 2100,
-                "y": 1482
-            }
-        },
-        "next": [
-            "Custom_Fishing_Task"
-        ]
-    },
-    "Custom_Fishing_Task": {
-        "recognition": {
-            "type": "DirectHit",
-            "param": {}
-        },
-        "action": {
-            "type": "Custom",
-            "param": {
-                "custom_action": "FishingAction",
-                "custom_action_param": {
-                    "max_count": 100
-                }
-            }
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 2400,
-                "y": 1480
-            }
-        }
-    },
     "Casting_Rod": {
-        "recognition": {
-            "type": "DirectHit",
-            "param": {}
-        },
         "action": {
-            "type": "LongPress",
             "param": {
                 "duration": 100,
                 "target": [
                     1130,
                     570
                 ]
-            }
-        },
-        "rate_limit": 800,
-        "$__mpe_code": {
-            "position": {
-                "x": 0,
-                "y": 17
-            }
+            },
+            "type": "LongPress"
         },
         "next": [
             "Detect_Took_Bait"
         ],
         "on_error": [
             "Move_Forward"
+        ],
+        "rate_limit": 800
+    },
+    "Custom_Fishing_Task": {
+        "action": {
+            "param": {
+                "custom_action": "FishingAction",
+                "custom_action_param": {
+                    "max_count": 100
+                }
+            },
+            "type": "Custom"
+        }
+    },
+    "Detect_CountDown": {
+        "next": [
+            "Detect_CountDown_Green",
+            "Detect_CountDown_Red"
         ]
     },
-    "Detect_Took_Bait": {
+    "Detect_CountDown_Green": {
         "recognition": {
-            "type": "TemplateMatch",
+            "param": {
+                "count": 20,
+                "lower": [
+                    51,
+                    245,
+                    147
+                ],
+                "method": 4,
+                "roi": [
+                    384,
+                    571,
+                    46,
+                    40
+                ],
+                "upper": [
+                    71,
+                    255,
+                    167
+                ]
+            },
+            "type": "ColorMatch"
+        }
+    },
+    "Detect_CountDown_Red": {
+        "recognition": {
+            "param": {
+                "count": 20,
+                "lower": [
+                    172,
+                    66,
+                    82
+                ],
+                "method": 4,
+                "roi": [
+                    384,
+                    571,
+                    46,
+                    40
+                ],
+                "upper": [
+                    192,
+                    86,
+                    102
+                ]
+            },
+            "type": "ColorMatch"
+        }
+    },
+    "Detect_Progress_Blue_Zones": {
+        "recognition": {
+            "param": {
+                "count": 10,
+                "lower": [
+                    95,
+                    130,
+                    250
+                ],
+                "method": 40,
+                "roi": [
+                    480,
+                    602,
+                    383,
+                    20
+                ],
+                "upper": [
+                    115,
+                    255,
+                    255
+                ]
+            },
+            "type": "ColorMatch"
+        }
+    },
+    "Detect_Progress_White_Cursor": {
+        "recognition": {
+            "param": {
+                "count": 15,
+                "lower": [
+                    0,
+                    0,
+                    240
+                ],
+                "method": 40,
+                "roi": [
+                    480,
+                    602,
+                    383,
+                    20
+                ],
+                "upper": [
+                    180,
+                    30,
+                    255
+                ]
+            },
+            "type": "ColorMatch"
+        }
+    },
+    "Detect_Progress_Yellow_Zones": {
+        "recognition": {
+            "param": {
+                "count": 10,
+                "lower": [
+                    15,
+                    40,
+                    250
+                ],
+                "method": 40,
+                "roi": [
+                    480,
+                    602,
+                    383,
+                    20
+                ],
+                "upper": [
+                    35,
+                    255,
+                    255
+                ]
+            },
+            "type": "ColorMatch"
+        }
+    },
+    "Detect_Took_Bait": {
+        "action": {
+            "param": {
+                "target": [
+                    1130,
+                    570
+                ]
+            },
+            "type": "Click"
+        },
+        "recognition": {
             "param": {
                 "roi": [
                     626,
@@ -144,373 +180,148 @@
                 ],
                 "template": "Fishing_took_bait.png",
                 "threshold": 0.6
-            }
+            },
+            "type": "TemplateMatch"
         },
-        "action": {
-            "type": "Click",
-            "param": {
-                "target": [
-                    1130,
-                    570
-                ]
-            }
-        },
-        "timeout": 6000,
-        "$__mpe_code": {
-            "position": {
-                "x": 300,
-                "y": 0
-            }
-        }
+        "timeout": 6000
     },
-    "Move_Forward": {
-        "recognition": {
-            "type": "DirectHit",
-            "param": {}
-        },
-        "action": {
-            "type": "Swipe",
-            "param": {
-                "begin": [
-                    230,
-                    580
-                ],
-                "end": [
-                    230,
-                    620
-                ],
-                "duration": 1000
-            }
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 300,
-                "y": 313
-            }
-        },
+    "Fishing_Already_Setsail": {
         "next": [
-            "Casting_Rod"
-        ]
-    },
-    "Reco_Minigame_Total_Time": {
+            "Fishing_Start"
+        ],
         "recognition": {
-            "type": "OCR",
             "param": {
-                "expected": [
-                    "^[1-9]\\d*$"
-                ],
+                "green_mask": true,
                 "roi": [
-                    384,
-                    571,
-                    46,
-                    40
+                    1057,
+                    483,
+                    162,
+                    175
+                ],
+                "template": [
+                    "Fishhook.png"
                 ]
-            }
-        },
-        "action": {
-            "type": "DoNothing",
-            "param": {}
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 0,
-                "y": 1466
-            }
-        }
-    },
-    "Detect_Progress_White_Cursor": {
-        "recognition": {
-            "type": "ColorMatch",
-            "param": {
-                "method": 40,
-                "roi": [
-                    480,
-                    602,
-                    383,
-                    20
-                ],
-                "lower": [
-                    0,
-                    0,
-                    240
-                ],
-                "upper": [
-                    180,
-                    30,
-                    255
-                ],
-                "count": 15
-            }
-        },
-        "action": {
-            "type": "DoNothing",
-            "param": {}
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 0,
-                "y": 1703
-            }
-        }
-    },
-    "Detect_Progress_Blue_Zones": {
-        "recognition": {
-            "type": "ColorMatch",
-            "param": {
-                "method": 40,
-                "roi": [
-                    480,
-                    602,
-                    383,
-                    20
-                ],
-                "lower": [
-                    95,
-                    130,
-                    250
-                ],
-                "upper": [
-                    115,
-                    255,
-                    255
-                ],
-                "count": 10
-            }
-        },
-        "action": {
-            "type": "DoNothing",
-            "param": {}
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 0,
-                "y": 2036
-            }
-        }
-    },
-    "Detect_Progress_Yellow_Zones": {
-        "recognition": {
-            "type": "ColorMatch",
-            "param": {
-                "method": 40,
-                "roi": [
-                    480,
-                    602,
-                    383,
-                    20
-                ],
-                "lower": [
-                    15,
-                    40,
-                    250
-                ],
-                "upper": [
-                    35,
-                    255,
-                    255
-                ],
-                "count": 10
-            }
-        },
-        "action": {
-            "type": "DoNothing",
-            "param": {}
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 0,
-                "y": 2369
-            }
-        }
-    },
-    "Detect_CountDown": {
-        "recognition": {
-            "type": "DirectHit",
-            "param": {}
-        },
-        "action": {
-            "type": "DoNothing",
-            "param": {}
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 0,
-                "y": 651
-            }
-        },
-        "next": [
-            "Detect_CountDown_Green",
-            "Detect_CountDown_Red"
-        ]
-    },
-    "Detect_CountDown_Green": {
-        "recognition": {
-            "type": "ColorMatch",
-            "param": {
-                "method": 4,
-                "roi": [
-                    384,
-                    571,
-                    46,
-                    40
-                ],
-                "lower": [
-                    51,
-                    245,
-                    147
-                ],
-                "upper": [
-                    71,
-                    255,
-                    167
-                ],
-                "count": 20
-            }
-        },
-        "action": {
-            "type": "DoNothing",
-            "param": {}
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 300,
-                "y": 564
-            }
-        }
-    },
-    "Detect_CountDown_Red": {
-        "recognition": {
-            "type": "ColorMatch",
-            "param": {
-                "method": 4,
-                "roi": [
-                    384,
-                    571,
-                    46,
-                    40
-                ],
-                "lower": [
-                    172,
-                    66,
-                    82
-                ],
-                "upper": [
-                    192,
-                    86,
-                    102
-                ],
-                "count": 20
-            }
-        },
-        "action": {
-            "type": "DoNothing",
-            "param": {}
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 300,
-                "y": 897
-            }
+            },
+            "type": "TemplateMatch"
         }
     },
     "Fishing_BusinReward": {
+        "action": {
+            "param": {},
+            "type": "Click"
+        },
+        "doc": "识别点击捕网",
+        "next": [
+            "Fishing_InFishingNet"
+        ],
+        "post_delay": 1000,
         "recognition": {
-            "type": "OCR",
             "param": {
+                "expected": [
+                    "经营管理"
+                ],
                 "roi": [
                     85,
                     228,
                     98,
                     34
-                ],
-                "expected": [
-                    "经营管理"
                 ]
-            }
-        },
+            },
+            "type": "OCR"
+        }
+    },
+    "Fishing_EnterFishingSpot_Frost": {
         "action": {
-            "type": "Click",
-            "param": {}
-        },
-        "post_delay": 1000,
-        "doc": "识别点击捕网",
-        "$__mpe_code": {
-            "position": {
-                "x": 300,
-                "y": 1230
-            }
+            "param": {
+                "target": [
+                    221,
+                    83,
+                    27,
+                    29
+                ]
+            },
+            "type": "Click"
         },
         "next": [
-            "Fishing_InFishingNet"
+            "Fishing_SetSail"
+        ]
+    },
+    "Fishing_EnterFishingSpot_Lake": {
+        "action": {
+            "param": {
+                "target": [
+                    407,
+                    492,
+                    22,
+                    27
+                ]
+            },
+            "type": "Click"
+        },
+        "next": [
+            "Fishing_SetSail"
+        ]
+    },
+    "Fishing_EnterFishingSpot_Shallow": {
+        "action": {
+            "param": {
+                "target": [
+                    369,
+                    315,
+                    22,
+                    25
+                ]
+            },
+            "type": "Click"
+        },
+        "next": [
+            "Fishing_SetSail"
+        ]
+    },
+    "Fishing_Entry": {
+        "next": [
+            "Fishing_BusinReward",
+            "Fishing_Already_Setsail",
+            "[JumpBack]Global_ToHomePage"
         ]
     },
     "Fishing_InFishingNet": {
+        "action": {
+            "param": {},
+            "type": "Click"
+        },
+        "doc": "进入钓鱼界面",
+        "next": [
+            "Fishing_InMap",
+            "[JumpBack]Fishing_InMap_TalkSkip"
+        ],
+        "post_delay": 8000,
         "recognition": {
-            "type": "OCR",
             "param": {
+                "expected": [
+                    "立刻前往"
+                ],
                 "roi": [
                     757,
                     358,
                     97,
                     35
-                ],
-                "expected": [
-                    "立刻前往"
                 ]
-            }
-        },
-        "action": {
-            "type": "Click",
-            "param": {}
-        },
-        "post_delay": 8000,
-        "doc": "进入钓鱼界面",
-        "$__mpe_code": {
-            "position": {
-                "x": 600,
-                "y": 1230
-            }
-        },
-        "next": [
-            "Fishing_InMap",
-            "[JumpBack]Fishing_InMap_TalkSkip"
-        ]
-    },
-    "Fishing_InMap_TalkSkip": {
-        "focus": "消除广场教程对话",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1005,
-            15,
-            99,
-            66
-        ],
-        "template": [
-            "UI_talk.png"
-        ],
-        "action": "Click",
-        "post_delay": 1000,
-        "next": [
-            "Fishing_InMap_TalkSkip_Ck"
-        ]
-    },
-    "Fishing_InMap_TalkSkip_Ck": {
-        "recognition": "OCR",
-        "roi": [
-            553,
-            350,
-            333,
-            327
-        ],
-        "expected": [
-            "确认"
-        ],
-        "action": "Click",
-        "post_delay": 1000
+            },
+            "type": "OCR"
+        }
     },
     "Fishing_InMap": {
+        "action": {
+            "param": {},
+            "type": "Click"
+        },
+        "doc": "进入地图选择界面",
+        "next": [
+            "Fishing_MapNavigate"
+        ],
+        "post_delay": 2000,
         "recognition": {
-            "type": "OCR",
             "param": {
                 "expected": [
                     "开始钓鱼"
@@ -521,105 +332,73 @@
                     107,
                     42
                 ]
-            }
-        },
-        "action": {
-            "type": "Click",
-            "param": {}
-        },
-        "post_delay": 2000,
-        "doc": "进入地图选择界面",
-        "$__mpe_code": {
-            "position": {
-                "x": 900,
-                "y": 1230
-            }
-        },
-        "next": [
-            "Fishing_MapNavigate"
-        ]
+            },
+            "type": "OCR"
+        }
     },
-    "Fishing_EnterFishingSpot_Lake": {
-        "recognition": {
-            "type": "DirectHit",
-            "param": {}
-        },
+    "Fishing_InMap_TalkSkip": {
         "action": {
-            "type": "Click",
-            "param": {
-                "target": [
-                    407,
-                    492,
-                    22,
-                    27
-                ]
-            }
+            "param": {},
+            "type": "Click"
         },
-        "$__mpe_code": {
-            "position": {
-                "x": 1500,
-                "y": 1285
-            }
-        },
+        "focus": "消除广场教程对话",
         "next": [
-            "Fishing_SetSail"
-        ]
+            "Fishing_InMap_TalkSkip_Ck"
+        ],
+        "post_delay": 1000,
+        "recognition": {
+            "param": {
+                "roi": [
+                    1005,
+                    15,
+                    99,
+                    66
+                ],
+                "template": [
+                    "UI_talk.png"
+                ]
+            },
+            "type": "TemplateMatch"
+        }
     },
-    "Fishing_EnterFishingSpot_Shallow": {
-        "recognition": {
-            "type": "DirectHit",
-            "param": {}
-        },
+    "Fishing_InMap_TalkSkip_Ck": {
         "action": {
-            "type": "Click",
+            "param": {},
+            "type": "Click"
+        },
+        "post_delay": 1000,
+        "recognition": {
             "param": {
-                "target": [
-                    369,
-                    315,
-                    22,
-                    25
+                "expected": [
+                    "确认"
+                ],
+                "roi": [
+                    553,
+                    350,
+                    333,
+                    327
                 ]
-            }
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 1500,
-                "y": 1488
-            }
-        },
-        "next": [
-            "Fishing_SetSail"
-        ]
+            },
+            "type": "OCR"
+        }
     },
-    "Fishing_EnterFishingSpot_Frost": {
-        "recognition": {
-            "type": "DirectHit",
-            "param": {}
-        },
-        "action": {
-            "type": "Click",
-            "param": {
-                "target": [
-                    221,
-                    83,
-                    27,
-                    29
-                ]
-            }
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 1500,
-                "y": 1691
-            }
-        },
+    "Fishing_MapNavigate": {
         "next": [
-            "Fishing_SetSail"
+            "Fishing_EnterFishingSpot_Lake",
+            "Fishing_EnterFishingSpot_Shallow",
+            "Fishing_EnterFishingSpot_Frost"
         ]
     },
     "Fishing_SetSail": {
+        "action": {
+            "param": {},
+            "type": "Click"
+        },
+        "next": [
+            "Fishing_Start"
+        ],
+        "post_delay": 10000,
         "recognition": {
-            "type": "OCR",
             "param": {
                 "expected": [
                     "启航"
@@ -630,42 +409,49 @@
                     56,
                     32
                 ]
-            }
-        },
+            },
+            "type": "OCR"
+        }
+    },
+    "Fishing_Start": {
+        "next": [
+            "Custom_Fishing_Task"
+        ],
+        "post_wait_freezes": 100
+    },
+    "Move_Forward": {
         "action": {
-            "type": "Click",
-            "param": {}
-        },
-        "post_delay": 10000,
-        "$__mpe_code": {
-            "position": {
-                "x": 1800,
-                "y": 1449
-            }
+            "param": {
+                "begin": [
+                    230,
+                    580
+                ],
+                "duration": 1000,
+                "end": [
+                    230,
+                    620
+                ]
+            },
+            "type": "Swipe"
         },
         "next": [
-            "Fishing_Start"
+            "Casting_Rod"
         ]
     },
-    "Fishing_MapNavigate": {
+    "Reco_Minigame_Total_Time": {
         "recognition": {
-            "type": "DirectHit",
-            "param": {}
-        },
-        "action": {
-            "type": "DoNothing",
-            "param": {}
-        },
-        "$__mpe_code": {
-            "position": {
-                "x": 1200,
-                "y": 1307
-            }
-        },
-        "next": [
-            "Fishing_EnterFishingSpot_Lake",
-            "Fishing_EnterFishingSpot_Shallow",
-            "Fishing_EnterFishingSpot_Frost"
-        ]
+            "param": {
+                "expected": [
+                    "^[1-9]\\d*$"
+                ],
+                "roi": [
+                    384,
+                    571,
+                    46,
+                    40
+                ]
+            },
+            "type": "OCR"
+        }
     }
 }

@@ -57,9 +57,7 @@
     ],
     "target": [
       129,
-      642,
-      0,
-      0
+      642
     ],
     "doc": "识别左下抽抽乐-点击抽卡"
   },
@@ -131,9 +129,7 @@
     ],
     "target": [
       139,
-      178,
-      0,
-      0
+      178
     ],
     "action": "Click",
     "focus": "GA.服装类卡池",
@@ -167,16 +163,16 @@
       8
     ],
     "lower": [
-      242,
-      244,
-      248
+      241,
+      243,
+      247
     ],
     "upper": [
-      254,
-      254,
+      255,
+      255,
       255
     ],
-    "count": 10,
+    "count": 6,
     "next": [
       "GachaADV_AREA1#_Post",
       "[JumpBack]GachaADV_Location1",
@@ -239,9 +235,7 @@
     "action": "Click",
     "target": [
       138,
-      265,
-      0,
-      0
+      265
     ],
     "focus": "GA.装备类卡池",
     "next": [
@@ -349,7 +343,11 @@
       10
     ],
     "post_delay": 500,
+    "anchor": {
+      "GachaADV_NextPool": "GachaADV_Location2_Pre"
+    },
     "next": [
+      "GachaADV_Special_SaveGuaranteed",
       "GachaADV_Location1_Ck",
       "GachaADV_Special_ReservedRights_1",
       "GachaADV_Location1",
@@ -471,7 +469,11 @@
       10
     ],
     "post_delay": 500,
+    "anchor": {
+      "GachaADV_NextPool": "GachaADV_Location3_Pre"
+    },
     "next": [
+      "GachaADV_Special_SaveGuaranteed",
       "GachaADV_Location2_Ck",
       "GachaADV_Special_ReservedRights_2",
       "GachaADV_Location2",
@@ -589,7 +591,11 @@
       10
     ],
     "post_delay": 500,
+    "anchor": {
+      "GachaADV_NextPool": "GachaADV_Location4_Pre"
+    },
     "next": [
+      "GachaADV_Special_SaveGuaranteed",
       "GachaADV_Location3_Ck",
       "GachaADV_Special_ReservedRights_3",
       "GachaADV_Location3",
@@ -704,7 +710,11 @@
       10
     ],
     "post_delay": 500,
+    "anchor": {
+      "GachaADV_NextPool": "GachaADV_Location5_Pre"
+    },
     "next": [
+      "GachaADV_Special_SaveGuaranteed",
       "GachaADV_Location4_Ck",
       "GachaADV_Special_ReservedRights_4",
       "GachaADV_Location4",
@@ -816,7 +826,11 @@
       10
     ],
     "post_delay": 500,
+    "anchor": {
+      "GachaADV_NextPool": "GachaADV_LocationEnd_Pre"
+    },
     "next": [
+      "GachaADV_Special_SaveGuaranteed",
       "GachaADV_Location5_Ck",
       "GachaADV_Special_ReservedRights_5",
       "GachaADV_Location5",
@@ -1158,6 +1172,42 @@
     ],
     "doc": "中断发现点数超过200但用户决定保留的情况"
   },
+  "GachaADV_Special_SaveGuaranteed": {
+    "recognition": "OCR",
+    "roi": [
+      761,
+      403,
+      86,
+      39
+    ],
+    "expected": [
+      "99/100",
+      "99"
+    ],
+    "replace": [
+      [
+        "I",
+        "/"
+      ],
+      [
+        "o",
+        "0"
+      ],
+      [
+        "g",
+        "9"
+      ],
+      [
+        " ",
+        ""
+      ]
+    ],
+    "next": [
+      "[Anchor]GachaADV_NextPool"
+    ],
+    "enabled": false,
+    "focus": "GAM.必中5星保留功能触发，无视并跳过此池免费抽"
+  },
   "GachaADV_Slip": {
     "recognition": "OCR",
     "next": [
@@ -1214,15 +1264,11 @@
     ],
     "begin": [
       210,
-      450,
-      0,
-      0
+      450
     ],
     "end": [
       210,
-      116,
-      0,
-      0
+      116
     ],
     "duration": 600,
     "end_hold": 1000,
@@ -1427,9 +1473,7 @@
     ],
     "target": [
       1160,
-      47,
-      0,
-      0
+      47
     ],
     "doc": "五星卡"
   },
@@ -1454,9 +1498,7 @@
     ],
     "target": [
       1157,
-      50,
-      0,
-      0
+      50
     ],
     "doc": "五星卡2"
   },
@@ -1491,9 +1533,7 @@
     ],
     "target": [
       1160,
-      46,
-      0,
-      0
+      46
     ]
   },
   "GachaADV_5XBug_LightningBall": {
@@ -1533,9 +1573,7 @@
     ],
     "target": [
       120,
-      35,
-      0,
-      0
+      35
     ],
     "doc": "抽卡结果页返回"
   },
@@ -1575,9 +1613,7 @@
     ],
     "target": [
       120,
-      35,
-      0,
-      0
+      35
     ],
     "doc": "返回首页"
   },

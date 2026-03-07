@@ -183,24 +183,37 @@ class OCR_RankAndPatch(CustomAction):
                 if text is None and isinstance(item, dict): text = item.get("text", "")
                 if text is None: text = str(item)
 
+                matches = []
                 if number_mode == "int":
                     # 暴力清洗：将所有 非数字 (0-9) 的字符全部替换为空
                     # 作用：把 "29:717" 变成 "29717"，把 "1,234" 变成 "1234"
                     clean_text = re.sub(r"[^\d]", "", text)
-                    # 只要清洗后还有东西，就视为匹配成功，作为一个整体数字处理
                     matches = [clean_text] if clean_text else []
                 else:
                     # float 模式保持原样，仅去除常见干扰
                     clean_text = text.replace(",", "")
-                    matches = re.findall(r"(\d+\.?\d*)", clean_text)
+                    # 使用用户传入的 filter_regex，而不是写死的正则
+                    try:
+                        matches = re.findall(filter_regex, clean_text)
+                    except Exception as e:
+                        utils.mfaalog.error(f"[Py] 正则匹配错误: {e}，回退默认正则")
+                        matches = re.findall(r"(\d+\.?\d*)", clean_text)
                 
                 if matches:
-                    val = float(matches[0])
-                    clean_data.append({
-                        "val": val,
-                        "original_idx": idx, # 物理位置索引
-                        "text": text
-                    })
+                    # 如果用户的正则有多个括号(捕获组)，findall 会返回 tuple 列表，这里取第一个元素
+                    first_match = matches[0]
+                    if isinstance(first_match, tuple):
+                        first_match = first_match[0]
+                        
+                    try:
+                        val = float(first_match)
+                        clean_data.append({
+                            "val": val,
+                            "original_idx": idx, # 物理位置索引
+                            "text": text
+                        })
+                    except ValueError:
+                        pass # 转换浮点数失败则跳过该条目
             
             if not clean_data:
                 utils.mfaalog.warning(f"[Py] ⚠️ 无有效数字")

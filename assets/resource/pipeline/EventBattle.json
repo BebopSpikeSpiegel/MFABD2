@@ -26,9 +26,7 @@
     ],
     "target": [
       1118,
-      387,
-      0,
-      0
+      387
     ],
     "doc": "识别左下抽抽乐-点击活动"
   },
@@ -192,16 +190,35 @@
     ],
     "doc": "判定，处于一般/挑战 战斗页面"
   },
-  "Event_FastNormalBattle": {
-    "recognition": "OCR",
+  "Event_Battle_BattleStatus_Enable": {
+    "recognition": "ColorMatch",
+    "roi": "Event_FastNormalBattle",
+    "roi_offset": [
+      -5,
+      -2,
+      10,
+      4
+    ],
+    "lower": [
+      222,
+      218,
+      208
+    ],
+    "upper": [
+      222,
+      220,
+      211
+    ],
     "action": "Click",
+    "post_delay": 1000,
     "next": [
       "Event_FreeAP_Verdict_Ispass",
       "Event_FreeAP_Verdict_NOpass",
       "Event_NoHaveAP"
-    ],
-    "post_delay": 1000,
-    "focus": "EM.活动.快速战斗",
+    ]
+  },
+  "Event_FastNormalBattle": {
+    "recognition": "OCR",
     "roi": [
       143,
       519,
@@ -210,6 +227,15 @@
     ],
     "expected": [
       "快速战斗"
+    ],
+    "next": [
+      "Event_Battle_BattleStatus_Enable"
+    ],
+    "focus": "EM.活动.快速战斗",
+    "timeout": 4000,
+    "on_error": [
+      "Event_Event_Main_Return",
+      "[JumpBack]Global_BackPageHub_Once"
     ],
     "doc": "识别并点击子菜单快速战斗"
   },
@@ -288,9 +314,7 @@
     ],
     "target": [
       120,
-      35,
-      0,
-      0
+      35
     ]
   },
   "Event_NoHaveAPBackEventIndex": {
@@ -300,9 +324,7 @@
     ],
     "target": [
       120,
-      35,
-      0,
-      0
+      35
     ]
   },
   "Event_NormalBattleMAX": {
@@ -325,9 +347,7 @@
     ],
     "target": [
       800,
-      390,
-      0,
-      0
+      390
     ],
     "doc": "快速战斗MAX",
     "max_hit": 5
@@ -397,9 +417,7 @@
     ],
     "target": [
       40,
-      560,
-      0,
-      0
+      560
     ],
     "doc": "奖励返回"
   },
@@ -423,9 +441,7 @@
     ],
     "target": [
       40,
-      560,
-      0,
-      0
+      560
     ],
     "doc": "判定，处于一般/挑战 战斗页面，用于流程结束位置判定。动作，空白处点击"
   },
@@ -449,9 +465,7 @@
     ],
     "target": [
       120,
-      35,
-      0,
-      0
+      35
     ],
     "doc": "离开活动页，Dub与LeaveEvent相同且不可删除，上一步error与Inf重复next，会出错且不报错"
   },
@@ -475,9 +489,7 @@
     ],
     "target": [
       120,
-      35,
-      0,
-      0
+      35
     ],
     "doc": "判断在挑战or普通战斗关卡选择页面"
   },
@@ -578,7 +590,7 @@
     "lower": [
       216,
       216,
-      210
+      209
     ],
     "upper": [
       227,
@@ -587,9 +599,7 @@
     ],
     "target": [
       851,
-      113,
-      0,
-      0
+      113
     ]
   },
   "Even_MamonoFollowUp_MmnHpNoCk_Clr": {
@@ -607,7 +617,7 @@
     "lower": [
       216,
       216,
-      210
+      209
     ],
     "upper": [
       227,
@@ -649,9 +659,7 @@
     "focus": "EM.EM.等级上调",
     "target": [
       974,
-      114,
-      0,
-      0
+      114
     ]
   },
   "Even_MamonoFollowUp_MmnHaveHpCk_color": {

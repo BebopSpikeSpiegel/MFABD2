@@ -207,15 +207,11 @@
       {
         "begin": [
           1025,
-          640,
-          0,
-          0
+          640
         ],
         "end": [
           117,
-          640,
-          0,
-          0
+          640
         ],
         "duration": 500
       },
@@ -223,15 +219,11 @@
         "starting": 520,
         "begin": [
           117,
-          640,
-          0,
-          0
+          640
         ],
         "end": [
           120,
-          500,
-          0,
-          0
+          500
         ],
         "duration": 600
       }
@@ -260,15 +252,11 @@
     "action": "Swipe",
     "begin": [
       1025,
-      640,
-      0,
-      0
+      640
     ],
     "end": [
       117,
-      640,
-      0,
-      0
+      640
     ],
     "duration": 500,
     "end_hold": 1000
@@ -296,22 +284,16 @@
     "action": "Swipe",
     "begin": [
       1025,
-      640,
-      0,
-      0
+      640
     ],
     "end": [
       [
         117,
-        640,
-        0,
-        0
+        640
       ],
       [
         1200,
-        500,
-        0,
-        0
+        500
       ]
     ],
     "duration": [
@@ -334,15 +316,11 @@
       "action": "Swipe",
       "begin": [
         1025,
-        640,
-        0,
-        0
+        640
       ],
       "end": [
         117,
-        640,
-        0,
-        0
+        640
       ],
       "detect_roi": [
         1062,
@@ -380,33 +358,23 @@
       "replacement_list": [
         [
           230,
-          120,
-          0,
-          0
+          120
         ],
         [
           230,
-          175,
-          0,
-          0
+          175
         ],
         [
           230,
-          230,
-          0,
-          0
+          230
         ],
         [
           230,
-          290,
-          0,
-          0
+          290
         ],
         [
           230,
-          350,
-          0,
-          0
+          350
         ]
       ],
       "target_node": "Buy_Best_Item",
@@ -419,8 +387,6 @@
   "Buy_Best_Item": {
     "action": "Click",
     "target": [
-      0,
-      0,
       0,
       0
     ]
@@ -632,5 +598,41 @@
       "[JumpBack]Level_4_Start",
       "[JumpBack]Level_5_Start"
     ]
+  },
+  "test_Max&custom_HUB": {
+    "next": [
+      "[JumpBack]test_Max&custom_1",
+      "[JumpBack]test_Max&custom_2"
+    ]
+  },
+  "test_Max&custom_1": {
+    "recognition": "TemplateMatch",
+    "template": [
+      "Cook_app.png"
+    ],
+    "action": "Custom",
+    "custom_action": "PatchByRegex",
+    "custom_action_param": {
+      "pattern": "^test_Max&custom_2$",
+      "patch": {
+        "roi": "$box"
+      },
+      "origin": {
+        "roi": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "max_hit": 1
+  },
+  "test_Max&custom_2": {
+    "recognition": "TemplateMatch",
+    "template": [
+      "cook_hone.png"
+    ],
+    "max_hit": 1
   }
 }

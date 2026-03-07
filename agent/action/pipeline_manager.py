@@ -11,293 +11,169 @@ import utils
 from recognition.counter import TAG_STORE
 
 # ==============================================================================
-# 🔧 Pipeline 动态管理器 
+# 🔧 Pipeline 动态管理器 (Python 扩展)
 # ==============================================================================
-# 实现了“影子账本”机制，支持自动记录原值、单点还原、批量重置。
-# 同时集成了“旁作用(Side Effect)”机制，支持在执行动作时顺手重置计数器。
+# 本脚本实现了“影子账本 (Shadow Ledger)”机制：
+#   支持自动记录节点原值、单点精准还原、批量重置。防止由于动态修改导致管线永久性污染。
+#
+# 本脚本集成了“旁作用 (Side Effect)”机制：
+#   所有 Custom Action 均支持传入 "reset_tags" 数组，在执行动作的同时顺手重置计数器。
+# ==============================================================================
+# ------------------------------------------------------------------------------
+#
+#  # 警告:当前版本的origin影子账本机制，使用先到先得方法，写入即锁定。故，当多层替换时，新的origin会不生效。未来可能增加可控合并、替换、保留等行为分化。
 #
 # ------------------------------------------------------------------------------
-# 1. PatchNode (打补丁 + 自动注册备份 + 旁作用重置)
+# 1. PatchNode (单点打补丁 + 自动注册备份 + 旁作用重置)
 # ------------------------------------------------------------------------------
 # "action": "Custom",
 # "custom_action": "PatchNode",
 # "custom_action_param": {
 #     "node": "Battle_Node",                                  // [必填] 目标节点名
-#     "patch": { "next": ["Boss_Win"], "timeout": 30000 },    // [必填] 要修改的参数字典
-#     "origin": { "next": ["Normal_Win"], "timeout": 10000 }, // [选填] 原版数据备份。若缺略：首次运行时不会记录备份，导致无法还原。
-#     "reset_tags": ["Battle_Count", "Win_Count"]             // [选填] 旁作用：顺手重置这些计数器。若缺略：不执行重置。
+#     "patch": { "next": ["Boss_Win"], "timeout": 30000 },    // [必填] 要覆盖/修改的参数字典
+#     "origin": { "next": ["Normal_Win"], "timeout": 10000 }, // [选填] 原版数据备份。若缺省，首次运行时不会记录备份，导致后续无法还原。
+#     "reset_tags": ["Battle_Count", "Win_Count"]             // [选填] 旁作用：顺手重置这些计数器标签。
 # }
-# * 注意：如果你填了 'origin'，系统会自动把它存入内存。
-# * 以后调用 RestoreNode 或 ResetAll 时，不需要再填数据，系统会自动查找。
+
 # ------------------------------------------------------------------------------
-# 2. PatchBatch (批量修改 + 自动注册备份 + 旁作用重置)
+# 2. PatchBatch (多点批量修改 + 自动注册备份 + 旁作用重置)
 # ------------------------------------------------------------------------------
 # "action": "Custom",
 # "custom_action": "PatchBatch",
-# "custom_action_param": {
-#     "patches": {                                            // [必填] 补丁字典 {节点: 参数}
+# "custom_action_param": {                             
+#     "patches": {                                            // [必填] 补丁字典 {目标节点: 参数字典}
 #         "Battle_Node": { "next": ["Boss_Win"], "timeout": 30000 },
 #         "Swipe_Common": { "duration": 500 }
 #     },
-#     "origins": {                                            // [选填] 原版字典 {节点: 参数}。若缺略：不记录备份。
+#     "origins": {                                            // [选填] 原版字典 {目标节点: 参数字典}。登记影子账本用。
 #         "Battle_Node": { "next": ["Normal_Win"], "timeout": 10000 },
 #         "Swipe_Common": { "duration": 1000 }
 #     },
-#     "reset_tags": ["Daily_Loop_Count"]                      // [选填] 旁作用：顺手重置计数器。若缺略：不执行重置。
+#     "reset_tags": ["Daily_Loop_Count"]                      // [选填] 旁作用：顺手清零。
 # }
+
 # ------------------------------------------------------------------------------
 # 3. PatchAndClick (魔改 + 偏移点击 + 旁作用重置)
 # ------------------------------------------------------------------------------
-# 场景：识别到入口 -> 1.修改后续节点参数 -> 2.点击当前识别位置(支持偏移)
-#
+# 场景：识别到某个入口后 -> 先修改后续节点参数 -> 再点击当前识别到的位置(支持自定义偏移)。
 # "action": "Custom",
 # "custom_action": "PatchAndClick",
 # "custom_action_param": {
-#     "node": "Battle_Logic",                                 // [选填] 目标节点。若缺略：不执行Patch，仅执行点击。
-#     "patch": { "next": ["Boss_Win"] },                      // [选填] 修改内容。若缺略：同上。
+#     "node": "Battle_Logic",                                 // [选填] 目标节点。若缺省：不执行Patch，仅执行点击。
+#     "patch": { "next": ["Boss_Win"] },                      // [选填] 修改内容。
 #     "origin": { "next": ["Common_Win"] },                   // [选填] 原版备份。
-#     "target_offset": [100, 50, 0, 0],                       // [选填] 点击偏移量 [x, y, w, h]。X正向右，Y正向下。若缺略：点击识别框中心。
-#     "reset_tags": ["Click_Count"]                           // [选填] 旁作用：顺手重置计数器。
+#     "target_offset": [100, 50, 0, 0],                       // [选填] 🎯 精确点击偏移 [dx, dy, w, h]。计算公式: X=原x+dx+(w/2)。若缺省：点击原识别框中心。
+#     "reset_tags": ["Click_Count"]                           // [选填] 旁作用。
 # }
-# ==============================================================================
+
 # ------------------------------------------------------------------------------
-# 4. RestoreNode (单点还原)
+# 4. RestoreNode & 4-2. RestoreBatch (精准还原)
 # ------------------------------------------------------------------------------
+# 场景：只还原指定的单个或几个节点，其他被改过的节点保持不变。
 # "action": "Custom",
-# "custom_action": "RestoreNode",
+# "custom_action": "RestoreNode",  // 批量还原请填 "RestoreBatch"
 # "custom_action_param": {
-#     "node": "Battle_Node"  <-- 只要名字，系统去账本里找原版数据
+#     "node": "Battle_Node",       // 单点还原用法 (系统会自动去影子账本里找它的 origin 数据)
+#     // "nodes": ["Node_A", "Node_B"], // 批量还原用法 (RestoreBatch 专属)
+#     // "reset_tags": ["TagA"]    // [选填] 顺手重置计数器
 # }
-#
+
 # ------------------------------------------------------------------------------
-# 5. ResetAll (一键重置/批量还原)
+# 5. ResetAll (一键全部还原)
 # ------------------------------------------------------------------------------
+# 场景：任务跑完了，把所有改过的节点全部重置回最初的状态，并清空影子账本。
 # "action": "Custom",
-# "custom_action": "ResetAll"  <-- 不需要参数，把所有改过的节点都恢复
-#
+# "custom_action": "ResetAll"      // <-- 无需 param 参数，直接调用即可。
+
 # ------------------------------------------------------------------------------
-# 6. RunTask (调用子任务 + 旁作用重置)
+# 6. RunTask (调用子任务/带参注入 + 旁作用重置)
 # ------------------------------------------------------------------------------
-# 作用: 运行另一个任务/节点，支持传入临时参数。注意，流程级别调用，参数修改节点跑完就清除了。
+# 场景：运行另一个独立流程，支持传入临时参数覆盖。运行结束后，参数自动失效，不污染全局。
 # "action": "Custom",
 # "custom_action": "RunTask",
 # "custom_action_param": {
-#     "entry": "Swipe_Common_Node",           // [必填] 入口节点名
-#     "param": {                              // [选填] 临时覆盖参数 (只在这次调用生效)。若缺略：使用原参数运行。
+#     "entry": "Swipe_Common_Node",           // [必填] 想要调用的入口节点名
+#     "param": {                              // [选填] 临时参数注入 (仅在本次子任务中生效)
 #         "Swipe_Common_Node": {              
 #             "begin": [100, 200, 0, 0],
 #             "duration": 500
 #         }
 #     },
-#     "reset_tags": ["SubTask_Counter"]       // [选填] 旁作用：在启动子任务前重置计数器。若缺略：不重置。
-# }
-# ==============================================================================
-# ==============================================================================
-# 🔧 Pipeline 动态管理器 
-# ==============================================================================
-# 实现了“影子账本”机制，支持自动记录原值、单点还原、批量重置。
-# 同时集成了“旁作用(Side Effect)”机制，支持在执行动作时顺手重置计数器。
-#
-# ------------------------------------------------------------------------------
-# 1. PatchNode (打补丁 + 自动注册备份 + 旁作用重置)
-# ------------------------------------------------------------------------------
-# "action": {
-#     "type": "Custom",
-#     "param": {
-#         "custom_action": "PatchNode",
-#         "custom_action_param": {
-#             "node": "Battle_Node",                                  // [必填] 目标节点名
-#             "patch": { "next": ["Boss_Win"], "timeout": 30000 },    // [必填] 要修改的参数字典
-#             "origin": { "next": ["Normal_Win"], "timeout": 10000 }, // [选填] 原版数据备份。若缺略：首次运行时不会记录备份，导致无法还原。
-#             "reset_tags": ["Battle_Count", "Win_Count"]             // [选填] 旁作用：顺手重置这些计数器。若缺略：不执行重置。
-#         }
-#     }
-# }
-# * 注意：如果你填了 'origin'，系统会自动把它存入内存。
-# * 以后调用 RestoreNode 或 ResetAll 时，不需要再填数据，系统会自动查找。
-# ------------------------------------------------------------------------------
-# 2. PatchBatch (批量修改 + 自动注册备份 + 旁作用重置)
-# ------------------------------------------------------------------------------
-# "action": {
-#     "type": "Custom",
-#     "param": {
-#         "custom_action": "PatchBatch",
-#         "custom_action_param": {
-#             "patches": {                                            // [必填] 补丁字典 {节点: 参数}
-#                 "Battle_Node": { "next": ["Boss_Win"], "timeout": 30000 },
-#                 "Swipe_Common": { "duration": 500 }
-#             },
-#             "origins": {                                            // [选填] 原版字典 {节点: 参数}。若缺略：不记录备份。
-#                 "Battle_Node": { "next": ["Normal_Win"], "timeout": 10000 },
-#                 "Swipe_Common": { "duration": 1000 }
-#             },
-#             "reset_tags": ["Daily_Loop_Count"]                      // [选填] 旁作用：顺手重置计数器。若缺略：不执行重置。
-#         }
-#     }
-# }
-# ------------------------------------------------------------------------------
-# 3. PatchAndClick (魔改 + 偏移点击 + 旁作用重置)
-# ------------------------------------------------------------------------------
-# 场景：识别到入口 -> 1.修改后续节点参数 -> 2.点击当前识别位置(支持偏移)
-#
-# "action": {
-#     "type": "Custom",
-#     "param": {
-#         "custom_action": "PatchAndClick",
-#         "custom_action_param": {
-#             "node": "Battle_Logic",                                 // [选填] 目标节点。若缺略：不执行Patch，仅执行点击。
-#             "patch": { "next": ["Boss_Win"] },                      // [选填] 修改内容。若缺略：同上。
-#             "origin": { "next": ["Common_Win"] },                   // [选填] 原版备份。
-#             "target_offset": [100, 50, 0, 0],                       // [选填] 点击偏移量 [x, y, w, h]。X正向右，Y正向下。若缺略：点击识别框中心。
-#             "reset_tags": ["Click_Count"]                           // [选填] 旁作用：顺手重置计数器。
-#         }
-#     }
-# }
-# ==============================================================================
-# ------------------------------------------------------------------------------
-# 4. RestoreNode (单点还原)
-# ------------------------------------------------------------------------------
-# "action": {
-#     "type": "Custom",
-#     "param": {
-#         "custom_action": "RestoreNode",
-        # "custom_action_param": {
-        #     "node": "Battle_Node"  <-- 只要名字，系统去账本里找原版数据
-        # }
-#     }
-# }
-#
-# ------------------------------------------------------------------------------
-# 4-2. RestoreBatch (复数还原)
-# ------------------------------------------------------------------------------
-# "action": {
-#     "type": "Custom",
-#     "param": {
-#         "custom_action": "RestoreBatch",
-        # "custom_action_param": {
-        #     "nodes": ["Node_A", "Node_B", "Node_C"],  <-- 只要名字，系统去账本里找原版数据
-        #     "reset_tags": ["Tag_To_Reset"] // [可选] 顺手重置计数器
-        # }
-#     }
-# }
-# ------------------------------------------------------------------------------
-# 5. ResetAll (一键重置/批量还原)
-# ------------------------------------------------------------------------------
-# "action": {
-#     "type": "Custom",
-#     "param": {
-#         "custom_action": "ResetAll"  <-- 不需要参数，把所有改过的节点都恢复
-#     }
-# }
-#
-# ------------------------------------------------------------------------------
-# 6. RunTask (调用子任务 + 旁作用重置)
-# ------------------------------------------------------------------------------
-# 作用: 运行另一个任务/节点，支持传入临时参数。注意，流程级别调用，参数修改节点跑完就清除了。
-# "action": {
-#     "type": "Custom",
-#     "param": {
-#         "custom_action": "RunTask",
-#         "custom_action_param": {
-#             "entry": "Swipe_Common_Node",           // [必填] 入口节点名
-#             "param": {                              // [选填] 临时覆盖参数 (只在这次调用生效)。若缺略：使用原参数运行。
-#                 "Swipe_Common_Node": {              
-#                     "begin": [100, 200, 0, 0],
-#                     "duration": 500
-#                 }
-#             },
-#             "reset_tags": ["SubTask_Counter"]       // [选填] 旁作用：在启动子任务前重置计数器。若缺略：不重置。
-#         }
-#     }
+#     "reset_tags": ["SubTask_Counter"]       // [选填] 启动子任务前，先清零特定计数器。
 # }
 # ==============================================================================
 # 7. PatchByRegex (正则批量覆写 - 增强账本支持版)
 # ------------------------------------------------------------------------------
-# 场景：通过正则表达式一次性修改大批节点。完全支持影子账本和多规则并发。
+# 场景：通过正则表达式一次性修改大批节点。完全支持影子账本、多规则并发和动态占位符。
 #
-# "action": "Custom",
-# "custom_action": "PatchByRegex",
-# "custom_action_param": {
-#     "reset_tags": ["TagA"],                 // [选填] 旁作用：顺手重置计数器
-#     "rules": [                              // 规则数组（如果是单套规则，可省略 rules 直接写在外层）
-#         {
-#             "pattern": ".*_Swip_.*",                // [必填] 要匹配的节点正则
-#             "patch": { "timeout": 5000 },           // [选填] 修改方案 1: 浅层合并覆盖
-#             "origin": { "timeout": 10000 }          // [关键] 登记账本：为所有匹配到的节点统一指定此还原数据
-#         },
-#         {
-#             "pattern": "^Collect_Pack_.*",
-#             "target_path": ["all_of", 0, "roi"],    // [选填] 修改方案 2: 深度路径替换(专用于替换数组内字段,先全部获取,由py合并后再全量覆盖)
-#             "value": "$box",
-#             "origin": {                             // 对于深度修改，origin 依然需要填写合并用字典格式
-#                 "all_of": [{"roi": [0,0,0,0]}] 
+# 🪄 魔法占位符速查（可以在 patch 或 value 中使用）：
+#   $box    : 动态获取当前 MAA 识别成功时的目标框坐标 [x, y, w, h]。
+#             - 在 patch (浅层) 模式下：硬编码绑定，只能写成 `"roi": "$box"`。
+#             - 在 target_path (深层) 模式下：无限制，可以替换任何指定路径的值。
+#   $self   : 动态替换为当前正在被正则修改的“目标节点真名”。
+#   $caller : 动态替换为发起本次调用的“起始节点真名”（需在配置中主动声明 "caller"）。
+#
+# ------------------------------------------------------------------------------
+# 【情况一：单套规则简写】（如果只想执行一条规则，可省略 "rules" 数组，直接写在外层）
+# ------------------------------------------------------------------------------
+# "action": {
+#     "type": "Custom",
+#     "param": {
+#         "custom_action": "PatchByRegex",
+#         "custom_action_param": {
+#             "caller": "My_Start_Node",              // [选填] 声明我是谁，供后文 $caller 使用
+#             "reset_tags": ["Some_Tag"],             // [选填] 旁作用：顺手重置计数器
+#             "pattern": "^Enemy_.*_Swip$",           // [必填] 要匹配的节点正则 (支持字符串或数组)
+#             "patch": {                              // [方案A] 浅层合并覆盖 (适合修改顶层属性)
+#                 "timeout": 5000,                    //         直接写死修改超时时间
+#                 "roi": "$box"                       //         使用魔法变量抓取真实识别坐标
+#             },
+#             "origin": {                             // [关键]  影子账本：为所有匹配到的节点统一登记还原数据
+#                 "timeout": 15000,
+#                 "roi": [0,0,0,0]
 #             }
-#         },
-#         {
-#             "pattern": "^Collect_LocatePackFrame_Loc[2-9]$", 
-#             "patch": {                              // [选填] 修改方案 3: 动态自我引用 ($self) #这里有问题,可能会拿到匹配节点名称
-#                 "next": [
-#                     "Collect_Loc_OutToSwip_Hub_Ingress",
-#                     "[JumpBack]$self"               // $self 会在运行时被自动替换为实际匹配到的节点真名
-#                 ]                                   // (例如匹配到 Loc9 时，这里会变成 [JumpBack]Collect_LocatePackFrame_Loc9)
-#             }
-#     ]
+#         }
+#     }
 # }
+#
+# ------------------------------------------------------------------------------
+# 【情况二：多套规则混合的高阶实战】（使用 "rules" 数组，支持独立互不干涉的多宇宙操作）
 # ------------------------------------------------------------------------------
 # {
-#     "💡模板_单套正则修改_附带账本记录": {
+#     "💡模板_多套规则_高级独立账本与动态跳转": {                //←节点名
 #         "action": "Custom",
 #         "custom_action": "PatchByRegex",
 #         "custom_action_param": {
-#             "reset_tags": [
-#                 "PackLocation_ToggleSwitch"
-#             ],
-#             "pattern": [
-#                 "^Collect_LocatePackFrame_Smart_Swip$"
-#             ],
-#             "target_path": [
-#                 "custom_recognition_param",
-#                 "max"
-#             ],
-#             "value": 3,
-#             "origin": {
-#                 "custom_recognition_param": {
-#                     "max": 0,
-#                     "tag": "LocPage_SmartSwip"
-#                 }
-#             }
-#         },
-#         "doc": "用法：把正则匹配到的节点，按照 target_path 修改。同时把 origin 字典塞入账本。下次无论用单点 RestoreNode 还是 ResetAll，系统都会取这个 origin 来恢复它。"
-#     },
-#     "💡模板_多套规则_高级独立账本操作": {
-#         "action": "Custom",
-#         "custom_action": "PatchByRegex",
-#         "custom_action_param": {
+#             "caller": "💡模板_多套规则_高级独立账本与动态跳转", // 告诉系统本次动作的发起者是谁
 #             "rules": [
+#                 // --- 规则 1：深度路径精准替换 ($box 的高阶用法) ---
+#                 // 适用场景：只想改数组里某一个元素的属性，不想破坏数组里的其他内容。
 #                 {
-#                     "pattern": [
-#                         "^Collect_Pack_(Story|Character|Event)_\\d+$"
-#                     ],
-#                     "target_path": [
-#                         "all_of",
-#                         0,
-#                         "roi"
-#                     ],
-#                     "value": "$box",
-#                     "origin": {
-#                         "all_of": [
-#                             {
-#                                 "roi": [1183, 603, 51, 56]
-#                             }
+#                     "pattern": "^Collect_Pack_(Story|Event)_\\d+$", 
+#                     "target_path": ["all_of", 0, "roi"], // [方案B] 游标寻址：修改 "all_of" 数组第 0 个元素的 "roi"
+#                     "value": "$box",                     // 必须与 target_path 成对出现。将识别框赋值过去。
+#                     "origin": {                          // 登记账本的结构必须与原始节点结构对应
+#                         "all_of": [ { "roi": [1183, 603, 51, 56] } ] 
+#                     }
+#                 },
+#                 // --- 规则 2：动态跳转与自我引用 ($caller 和 $self 配合) ---
+#                 // 适用场景：让一批节点执行完某事后，统一跳回发起者，或者跳回它们自己。
+#                 {
+#                     "pattern": "^Collect_LocatePackFrame_Loc[2-9]$",
+#                     "patch": {
+#                         "next": [
+#                             "Do_Something_Else",
+#                             "[JumpBack]$caller"          // 运行时会自动变成 "[JumpBack]💡模板_多套规则_高级..."
+#                             // 💡 扩展思路：如果这里写 "[JumpBack]$self"，遇到 Loc5 时就会变成 "[JumpBack]Collect_LocatePackFrame_Loc5"
 #                         ]
 #                     }
 #                 },
+#                 // --- 规则 3：写死固定值的浅层修改 ---
+#                 // 适用场景：大面积覆盖常规属性
 #                 {
-#                     "pattern": [
-#                         "^Shop_Buy_Item_.*$"
-#                     ],
+#                     "pattern": "^Shop_Buy_Item_.*$",
 #                     "patch": {
-#                         "timeout": 5000,
+#                         "timeout": 5000,                 
 #                         "next": ["Shop_Out"]
 #                     },
 #                     "origin": {
@@ -307,8 +183,12 @@ from recognition.counter import TAG_STORE
 #                 }
 #             ]
 #         },
-#         "doc": "用法：每个 rule 是独立的宇宙。A 类节点登记 A 类的 origin，B 类节点登记 B 类的 origin，互不干涉。"
+#         "doc": "用法：每个 rule 是独立的宇宙。各路规则根据 pattern 寻找目标，互不干涉地执行深度修改或浅层合并。"
 #     },
+#
+# ------------------------------------------------------------------------------
+# 【配套动作：精准单点还原】
+# ------------------------------------------------------------------------------
 #     "💡模板_单点还原_精准恢复某个特定节点": {
 #         "action": "Custom",
 #         "custom_action": "RestoreNode",
@@ -318,7 +198,7 @@ from recognition.counter import TAG_STORE
 #         "next": [
 #             "Next_Pipeline_Node"
 #         ],
-#         "doc": "高阶运用：上面的正则虽然改了所有的 Shop_Buy_Item，但我现在只觉得 3 号买完了，我单独对 3 号调用 RestoreNode，把它从影子账本里单独拉出来恢复。"
+#         "doc": "高阶运用：上面的规则 3 虽然改了所有的 Shop_Buy_Item，但我现在觉得 3 号买完了，我单独对 3 号调用 RestoreNode，把它从影子账本里单独拉出来恢复。"
 #     }
 # }
 # ==============================================================================
@@ -692,6 +572,8 @@ class PatchBatch(CustomAction):
         global NODE_BACKUPS
         params = parse_json_arg(argv)
         
+        
+
         # 1. [旁作用] 处理计数器重置
         _process_reset_tags(params)
 
@@ -728,6 +610,10 @@ class PatchByRegex(CustomAction):
         global NODE_BACKUPS 
         
         params = parse_json_arg(argv)
+
+        # 提取调用者名称 (如果在 JSON 中未提供，则默认为空字符串)
+        caller_name = params.get("caller", "")
+
         _process_reset_tags(params)
 
         _ensure_cache_loaded()
@@ -762,13 +648,23 @@ class PatchByRegex(CustomAction):
             return tgt
 
         # --- 内部辅助函数：动态替换 $self 占位符 ---
-        def replace_self(data, node_name):
+        def replace_placeholders(data, node_name, caller): 
             if isinstance(data, str):
-                return data.replace("$self", node_name)
+                # 拦截定时炸弹：如果字符串里有 $caller 但没传 caller 参数，直接报错
+                if "$caller" in data and not caller:
+                    raise ValueError(f"配置错误: 节点 [{node_name}] 的动作使用了 $caller，但未提供 caller 参数！")
+                # 先替换 $self
+                res = data.replace("$self", node_name)
+                # 再替换 $caller
+                if caller:
+                    res = res.replace("$caller", caller)
+                return res
             elif isinstance(data, list):
-                return [replace_self(item, node_name) for item in data]
+                # 递归调用时，也把 caller 传下去
+                return [replace_placeholders(item, node_name, caller) for item in data]
             elif isinstance(data, dict):
-                return {k: replace_self(v, node_name) for k, v in data.items()}
+                # 递归调用时，也把 caller 传下去
+                return {k: replace_placeholders(v, node_name, caller) for k, v in data.items()}
             return data
         
         try:
@@ -789,8 +685,10 @@ class PatchByRegex(CustomAction):
                 for pat in patterns:
                     regex = re.compile(pat)
                     for node_name, original_config in ALL_NODES_CACHE.items():
-                        # 获取当前节点的最新状态（可能是原始配置，也可能是被前一条规则修改过的配置）
-                        base_config = override_dict.get(node_name, original_config)
+                        # 每次都基于原配置，把已有的极简补丁“临时合并”上来，模拟出完整的当前状态
+                        base_config = copy.deepcopy(original_config)
+                    if node_name in override_dict:
+                        deep_merge(base_config, override_dict[node_name])
                         
                         if regex.search(node_name):
                             # ------------------------------------------------------
@@ -820,8 +718,8 @@ class PatchByRegex(CustomAction):
                                             continue 
                                         actual_val = current_roi
                                     
-                                    # 处理 $self
-                                    actual_val = replace_self(actual_val, node_name)
+                                    # 处理 $self 和 $caller
+                                    actual_val = replace_placeholders(actual_val, node_name, caller_name)
                                     
                                     cursor[target_path[-1]] = actual_val
                                     override_dict[node_name] = new_config
@@ -832,7 +730,7 @@ class PatchByRegex(CustomAction):
                                     
                             # === 模式 2: 浅层补丁合并 ===
                             elif simple_patch:
-                                new_config = copy.deepcopy(base_config)
+                                new_config = override_dict.get(node_name, {})
                                 patch_copy = copy.deepcopy(simple_patch)
                                 
                                 # 处理 $box
@@ -844,8 +742,8 @@ class PatchByRegex(CustomAction):
                                     else:
                                         patch_copy["roi"] = current_roi
                                 
-                                # 处理 $self
-                                patch_copy = replace_self(patch_copy, node_name)
+                                # 处理 $self 和 $caller
+                                patch_copy = replace_placeholders(patch_copy, node_name, caller_name)
                                 
                                 # 使用 deep_merge 安全合并，防止抹除原节点其他属性
                                 deep_merge(new_config, patch_copy)

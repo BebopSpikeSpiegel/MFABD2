@@ -458,8 +458,6 @@
             "maxItems": 4,
             "default": [
                 0,
-                0,
-                0,
                 0
             ]
         },
@@ -480,8 +478,6 @@
                 }
             ],
             "default": [
-                0,
-                0,
                 0,
                 0
             ]
@@ -526,8 +522,6 @@
                 }
             ],
             "default": [
-                0,
-                0,
                 0,
                 0
             ]
@@ -585,7 +579,7 @@
                     "title": "ROI Property",
                     "description": "识别区域坐标。可选，默认 [0, 0, 0, 0] ，即全屏。",
                     "$ref": "#/$defs/jsonRoi",
-                    "markdownDescription": "*array<int, 4>* | *string*\n\n识别区域坐标。可选，默认 [0, 0, 0, 0] ，即全屏。\n\n- *array<int, 4>*: 识别区域坐标，[x, y, w, h]，若希望全屏可设为 [0, 0, 0, 0] 。\n\n- *string*: 填写节点名，在之前执行过的某节点识别到的目标范围内识别。"
+                    "markdownDescription": "*array<int, 4>* | *string*\n\n识别区域坐标。可选，默认 [0, 0] ，即全屏。\n\n- *array<int, 4>*: 识别区域坐标，[x, y, w, h]，若希望全屏可设为 [0, 0, 0, 0] 。\n\n- *string*: 填写节点名，在之前执行过的某节点识别到的目标范围内识别。"
                 },
                 "roi_offset": {
                     "title": "ROI Offset Property",

@@ -1,6 +1,5 @@
 import json
 import time
-import random
 import numpy as np
 from maa.agent.agent_server import AgentServer
 from maa.custom_action import CustomAction
@@ -92,27 +91,28 @@ class SmartSwipe(CustomAction):
             total_attempts = 1 + retry_times
             
             for i in range(total_attempts):
-                # A. 动作前采样
+                # A. 动作前采样 (同时获取到了屏幕尺寸，用于解析 detect_roi)
                 img_before = context.tasker.controller.post_screencap().wait().get()
-                roi_before = self._crop_image(img_before, detect_roi)
+                if img_before is None:
+                    utils.mfaalog.error("[Py] 截图获取失败")
+                    return False
 
-                # B. 计算随机坐标
-                start_pt = self._get_random_point(begin_area)
-                end_pt = self._get_random_point(end_area)
+                # B. 设定坐标
+                roi_before = self._crop_image(img_before, detect_roi)
                 
                 # C. 代理调用
                 swipe_override = {
                     proxy_node: {
                         "action": "Swipe",
-                        "begin": start_pt,
-                        "end": end_pt,
+                        "begin": begin_area,
+                        "end": end_area,
                         "duration": duration,
                         "end_hold": end_hold
                     }
                 }
                 context.run_task(proxy_node, swipe_override)
                 
-                # D. UI 沉淀
+                # D. UI 沉淀(等待动画或回弹结束)
                 if settle_delay > 0:
                     time.sleep(settle_delay)
 
@@ -120,7 +120,7 @@ class SmartSwipe(CustomAction):
                 img_after = context.tasker.controller.post_screencap().wait().get()
                 roi_after = self._crop_image(img_after, detect_roi)
 
-                # F. 特征比对 (纯 Numpy 实现)
+                # F. 特征比对 (纯 Numpy 实现)(判断是否发生位移)
                 diff = self._calc_diff_numpy(roi_before, roi_after)
                 
                 if diff >= threshold:
@@ -139,23 +139,44 @@ class SmartSwipe(CustomAction):
 
     # --- 辅助函数 ---
     
+    def _parse_area(self, area, img_shape):
+        """核心：按照框架 v5.6 规则将 ROI 坐标转换为 NumPy 支持的绝对坐标"""
+        x, y, w, h = area
+        h_img, w_img = img_shape[:2]
+
+        # 1. x/y 负数表示从右/下边缘计算
+        if x < 0: x += w_img
+        if y < 0: y += h_img
+
+        # 2. w/h 为负数时取绝对值，并将 (x,y) 视为右下角
+        if w < 0:
+            w = abs(w)
+            x -= w
+        if h < 0:
+            h = abs(h)
+            y -= h
+
+        # 3. w/h 为 0 表示延伸至边缘
+        if w == 0: w = w_img - x
+        if h == 0: h = h_img - y
+
+        # 4. 边界安全限制（防止溢出导致报错）
+        x = max(0, min(int(x), w_img))
+        y = max(0, min(int(y), h_img))
+        w = max(1, min(int(w), w_img - x))
+        h = max(1, min(int(h), h_img - y))
+
+        return x, y, w, h
+
     def _crop_image(self, img, roi):
         if img is None: return None
-        x, y, w, h = roi
-        h_img, w_img = img.shape[:2]
-        x = max(0, min(x, w_img))
-        y = max(0, min(y, h_img))
-        w = max(1, min(w, w_img - x))
-        h = max(1, min(h, h_img - y))
+        # 如果填写的不是 4位数组 (例如填了 string 导致异常)，做个容错防御
+        if not isinstance(roi, (list, tuple)) or len(roi) != 4:
+            utils.mfaalog.warning(f"[Py] detect_roi 格式错误: {roi}，退回全屏比对")
+            return img 
+            
+        x, y, w, h = self._parse_area(roi, img.shape)
         return img[y:y+h, x:x+w]
-
-    def _get_random_point(self, area):
-        if len(area) == 2: return area
-        x, y, w, h = area
-        pad_w, pad_h = w * 0.1, h * 0.1
-        rx = random.randint(int(x + pad_w), int(x + w - pad_w))
-        ry = random.randint(int(y + pad_h), int(y + h - pad_h))
-        return [rx, ry]
 
     def _calc_diff_numpy(self, img1, img2):
         """
@@ -164,6 +185,11 @@ class SmartSwipe(CustomAction):
         """
         if img1 is None or img2 is None: return 0.0
         try:
+            # 确保两张图尺寸一致，防报错
+            if img1.shape != img2.shape:
+                utils.mfaalog.warning(f"[Py] ⚠️ 图像尺寸不匹配: {img1.shape} vs {img2.shape}，强行视为画面静止以防死循环")
+                return 0.0  # 如果图像大小不一致，返回报错，并且返回‘完全一致’欺骗,跳出滑动。数学上撒谎，但业务上安全。
+                
             # 1. 确保是浮点数，防止 uint8 减法溢出 (2 - 5 变成 253)
             # img1 是 (H, W, 3) 的 BGR 数组
             arr1 = img1.astype(float)
@@ -175,5 +201,6 @@ class SmartSwipe(CustomAction):
             # 3. 直接求所有像素所有通道的平均值
             # (OpenCV 转灰度其实是加权平均，这里直接平均效果一样好，甚至更灵敏)
             return np.mean(diff_arr)
-        except:
+        except Exception as e:
+            utils.mfaalog.error(f"[Py] Diff计算错误: {e}")
             return 0.0

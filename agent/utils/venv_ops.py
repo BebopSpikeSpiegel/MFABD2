@@ -10,7 +10,10 @@ from . import mfaalog  # 日志工具
 # =========================================================
 # [配置区] 环境与依赖设定
 # =========================================================
-DEV_MAAFW_VERSION = "5.5.0" 
+# MAAFW的py库版本需要手动指定,与C++库版号一致。
+DEV_MAAFW_VERSION = "5.7.1" 
+# 精确安装失败时的回退范围。更新上方版本时，请务必同步更新此处！
+FALLBACK_MAAFW_SPEC = "maafw>=5.7,<5.8"
 VENV_NAME = ".venv"
 PREFERRED_PYTHON_VERSION = "3.10"
 # =========================================================
@@ -100,22 +103,22 @@ def install_deps(venv_python: Path, project_root: Path, venv_path: Path):
     marker_file = venv_path / ".deps_marker"
     current_hash = get_deps_hash(project_root)
 
-    # [升级] 检查指纹是否一致，并快速校验核心库是否存在
+    # --- 1. 检查缓存，如果一致就跳出 (极速启动的核心) ---
     if marker_file.exists():
         if marker_file.read_text(encoding='utf-8').strip() == current_hash:
-            # 额外做一个毫秒级的完整性探测，防止只删了 Lib 但没删标记文件的情况
             try:
-                # 使用虚拟环境的 Python 尝试导入 maa，不输出多余信息
+                # 仅做毫秒级探测，绝不执行 pip install
                 subprocess.check_call(
                     [str(venv_python), "-c", "import maa"], 
                     stdout=subprocess.DEVNULL, 
                     stderr=subprocess.DEVNULL
                 )
                 mfaalog.info("⚡ 依赖库指纹一致且核心库完整，跳过 pip 安装步骤。")
-                return
+                return  # 👈 必须有这个 return，程序才会在这里完美刹车！
             except subprocess.CalledProcessError:
-                mfaalog.warning("⚠️ 发现缓存指纹匹配，但核心库 (maa) 丢失！可能是环境被手动破坏。准备重新安装...")
+                mfaalog.warning("⚠️ 发现缓存指纹匹配，但核心库 (maa) 丢失！准备重新安装...")
 
+    # --- 2. 如果没有缓存，或者核心库损坏，开始拉取依赖 ---
     mfaalog.info("📦 依赖配置有更新或未安装，开始拉取依赖...")
     
     req_file = project_root / "requirements.txt"
@@ -126,6 +129,7 @@ def install_deps(venv_python: Path, project_root: Path, venv_path: Path):
             "-r", str(req_file)
         ])
     
+    # --- 3. 安装框架，完美引用顶部的变量 ---
     try:
         subprocess.check_call([
             str(venv_python), "-m", "pip", "install",
@@ -133,14 +137,14 @@ def install_deps(venv_python: Path, project_root: Path, venv_path: Path):
             f"maafw=={DEV_MAAFW_VERSION}"
         ])
     except Exception as e:
-        mfaalog.warning(f"指定版本安装失败: {e}，尝试模糊匹配...")
+        mfaalog.warning(f"指定版本 {DEV_MAAFW_VERSION} 安装失败: {e}，将使用备用范围 ({FALLBACK_MAAFW_SPEC}) 尝试重新安装...")
         subprocess.check_call([
             str(venv_python), "-m", "pip", "install",
             "-i", "https://pypi.tuna.tsinghua.edu.cn/simple",
-            "maafw>=5.4,<5.5"
+            f"{FALLBACK_MAAFW_SPEC}"
         ])
     
-    # 全部安装成功后，写入新指纹
+    # --- 4. 全部安装成功后，写入新缓存 ---
     marker_file.write_text(current_hash, encoding='utf-8')
     mfaalog.info("✅ 依赖安装完成并已更新指纹缓存。")
 
