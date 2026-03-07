@@ -1399,6 +1399,7 @@
                     "name": "Yes",
                     "pipeline_override": {},
                     "option": [
+                        "料理制作保险",
                         "料理制作周期（每次|每周）",
                         "5星料理开关"
                     ]
@@ -1408,6 +1409,28 @@
                     "pipeline_override": {
                         "Arbitrage_Cooking": {
                             "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
+        "料理制作保险": {
+            "type": "switch",
+            "description": "开启后仅制作1个,测试用。",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {}
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "Arbitrage_Cooking_NubMenu_Max": {
+                            "action": "Click",
+                            "target": [
+                                576,
+                                563
+                            ]
                         }
                     }
                 }

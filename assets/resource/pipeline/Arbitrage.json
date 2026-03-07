@@ -2,6 +2,8 @@
     "Arbitrage_Start": {
         "doc": "总流程启动器。现在设定3个子开关，购买、制作、出售，按次序JB。其中出售部分‘Arbitrage_Buy’多置一个空节点节点引导到单独文件",
         "next": [
+            "[JumpBack]Arbitrage_Cooking_Weekly",
+            "[JumpBack]Arbitrage_Cooking",
             "Arbitrage_Merchant_Ico",
             "Arbitrage_Merchant_Menu",
             "Arbitrage_HomePageOldCardMenu_Goin",
@@ -134,6 +136,8 @@
     "Arbitrage_OperationsMain_Sandplay": {
         "recognition": "TemplateMatch",
         "next": [
+            "[JumpBack]Arbitrage_Cooking_Weekly",
+            "[JumpBack]Arbitrage_Cooking",
             "Arbitrage_Merchant_Ico",
             "Arbitrage_Sandplay_SeeMerchant",
             "[JumpBack]Collect_FindTeleporCircle0.9",
@@ -384,8 +388,6 @@
     "Arbitrage_Action_Hub": {
         "next": [
             "[JumpBack]Arbitrage_BuyItem",
-            "[JumpBack]Arbitrage_Cooking_Weekly",
-            "[JumpBack]Arbitrage_Cooking",
             "[JumpBack]Arbitrage_SellItem",
             "[JumpBack]Arbitrage_Merchant_Close_Ck",
             "[JumpBack]Global_BackPageHub_Once",
@@ -1816,7 +1818,8 @@
         "action": "Click",
         "post_delay": 1000,
         "next": [
-            "Arbitrage_Cooking_MenuEnter"
+            "Arbitrage_Cooking_MenuEnter",
+            "Arbitrage_Cooking_SetupToSkill"
         ],
         "doc": "技能菜单出口"
     },
@@ -2445,9 +2448,11 @@
             16,
             224
         ],
+        "post_delay": 1000,
         "action": "Click",
         "next": [
-            "Arbitrage_Cooking_Doing_Starus"
+            "Arbitrage_Cooking_Doing_Starus",
+            "Arbitrage_Cooking_NubMenu_Doing"
         ]
     },
     "Arbitrage_Cooking_Doing_Starus": {
@@ -2463,7 +2468,12 @@
         ],
         "green_mask": true,
         "inverse": true,
-        "post_delay": 3000,
+        "action": "Click",
+        "target": [
+            1,
+            1
+        ],
+        "post_delay": 2000,
         "focus": "Arb.料理制作动画中...",
         "next": [
             "Arbitrage_Cooking_Doing_ReBack",
