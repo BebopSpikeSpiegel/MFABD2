@@ -101,7 +101,7 @@ if current_mode == 'release':
 else:
     # 【开发模式】：绝对不要乱指路！
     # 开发环境下，Python 会自动去 venv/site-packages 里找 pip 安装好的最新 DLL
-    # 如果这里强行指向 runtimes，就会导致“代码是新的，DLL 是旧的”版本冲突
+    # 如果这里强行指向 runtimes，就会导致"代码是新的，DLL 是旧的"版本冲突
     mfaalog.info("开发模式: 跳过 DLL 路径注入 (使用 Python 库自带 DLL)  | agent//utils//venv_ops.py的maafw版本需要手动指定与agent一致")
 
 from maa.agent.agent_server import AgentServer
@@ -111,6 +111,7 @@ from maa.toolkit import Toolkit
 import action # action子文件夹:agent/action/__init__.py里声明的全部
 import recognition
 from utils.persistent_store import PersistentStore # Agent配置文件热备份
+from utils.instance_resolver import resolve_account_id  # [新增] 实例探测器
 import fishing_agent # 钓鱼~
 
 def main():
@@ -119,6 +120,22 @@ def main():
         sys.stdout.reconfigure(encoding='utf-8') # type: ignore
 
     print(f"Agent 正在启动... 根目录: {project_root}")
+
+    # =========================================================================
+    # [核心变更] 启动时一次性解析实例与存档号
+    # =========================================================================
+    # 获取 socket_id (由 MaaFramework 传入)
+    socket_id = sys.argv[-1] if len(sys.argv) >= 2 else ""
+    # 去除可能的 "socket_id=" 前缀
+    if socket_id.startswith("socket_id="):
+        socket_id = socket_id.split("=", 1)[1]
+
+    if socket_id:
+        account_id = resolve_account_id(socket_id, project_root)
+        if account_id != "0":
+            PersistentStore.switch_account(account_id)
+    # =========================================================================
+
     PersistentStore.load() 
     mfaalog.info("✅ [Agent] 存档/备份系统已就绪")
 
@@ -131,7 +148,7 @@ def main():
         print("错误: 未收到 socket_id 参数，请勿直接运行此脚本，需由 MAA 启动。")
         return
     
-    socket_id = sys.argv[-1]
+    # [调整] socket_id 已在上方提取，此处直接使用
     print(f"Socket ID: {socket_id}")
 
     # 3. 启动服务

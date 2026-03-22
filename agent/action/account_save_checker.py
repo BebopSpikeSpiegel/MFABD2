@@ -7,21 +7,22 @@ from maa.context import Context
 from maa.agent.agent_server import AgentServer
 
 # ==============================================================================
-# 🔄 账号切换检查点 (Account Switch Checkpoint)
+# 🔄 账号切换检查点 (Account Switch Checkpoint) — 降级为兜底验证
 # ==============================================================================
-# 核心功能：在流程中途静默读取 account_id，并切换底层存档路径。
-# 配合 pipeline_override 或自定义参数使用，无缝衔接多开需求。
+# 多存档隔离现已在 Agent 启动时由 instance_resolver 一次性完成。
+# 本 Action 保留为兜底: 若 Pipeline 通过 custom_action_param 显式传入
+# account_id，仍会触发切换。跨 Task 参数丢失时，依靠进程级常驻的
+# _current_account_id 继续运行，无需任何操作。
 # ==============================================================================
 
 @AgentServer.custom_action("SwitchAccountCheckpoint")
 class SwitchAccountCheckpointAction(CustomAction):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         """
-        执行账号切换逻辑。
-        无论成功与否，始终返回 True，以确保不阻断 Pipeline 主流程。
+        兜底账号切换。始终返回 True，不阻断 Pipeline。
         """
         try:
-            # 1. 解析参数
+            # 解析参数
             if hasattr(argv, 'custom_action_param'):
                 param_str = getattr(argv, 'custom_action_param', '{}')
                 params = json.loads(param_str) if isinstance(param_str, str) else param_str
@@ -30,15 +31,11 @@ class SwitchAccountCheckpointAction(CustomAction):
             else:
                 params = {}
             
-            # 2. 【核心修复】只有参数存在时才提取，否则跳过
+            # 仅在显式传入 account_id 时才触发切换
             if "account_id" in params:
                 account_id = params["account_id"]
-                # 调用底层切换逻辑，它会作为类变量保存在进程中
                 PersistentStore.switch_account(account_id)
-            else:
-                # 跨任务参数丢失时，走这里。我们不做任何操作，
-                # 依靠 PersistentStore 进程中常驻的 _current_account_id 继续运行
-                pass
+            # 否则静默通过 — instance_resolver 已在启动时完成挂载
             
             return True
             
