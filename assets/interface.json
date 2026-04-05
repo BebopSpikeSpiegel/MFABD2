@@ -572,43 +572,21 @@
         "仅精炼<17 或 <10": {
             "cases": [
                 {
-                    "name": "关闭",
+                    "name": "关闭"
+                },
+                {
+                    "name": "CLv. < 17",
                     "pipeline_override": {
                         "Equip_filter<C17": {
-                            "recognition": "DirectHit",
-                            "action": "DoNothing",
-                            "focus": null
-                        },
-                        "Equip_filter<C17Ck": {
-                            "recognition": "DirectHit",
-                            "action": "DoNothing",
-                            "focus": null
+                            "enabled": true
                         }
                     }
                 },
                 {
-                    "name": "CLv. < 17",
-                    "pipeline_override": {}
-                },
-                {
                     "name": "CLv. < 10",
                     "pipeline_override": {
-                        "Equip_filter<C17": {
-                            "focus": "EM.装备精炼.<C10",
-                            "target": [
-                                720,
-                                320
-                            ],
-                            "recognition": "DirectHit"
-                        },
-                        "Equip_filter<C17Ck": {
-                            "focus": "EM.色核通过.<C10",
-                            "roi": [
-                                683,
-                                304,
-                                74,
-                                33
-                            ]
+                        "Equip_filter<C10": {
+                            "enabled": true
                         }
                     }
                 }
@@ -619,17 +597,13 @@
             "type": "switch",
             "cases": [
                 {
-                    "name": "No",
-                    "pipeline_override": {}
+                    "name": "No"
                 },
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "Equip_filterON": {
-                            "next": [
-                                "Equip_Sequen_Menu",
-                                "Equip_filterON"
-                            ]
+                        "Equip_Sequen_Menu": {
+                            "enabled": true
                         }
                     }
                 }
