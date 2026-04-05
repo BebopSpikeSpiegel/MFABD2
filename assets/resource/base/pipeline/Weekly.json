@@ -38,6 +38,7 @@
   "Weekly_Flishing_Hub": {
     "enabled": true,
     "next": [
+      "[JumpBack]Global_ToHomePage",
       "Weekly_Fishing_Start"
     ],
     "timeout": 1,
