@@ -1,8 +1,8 @@
 {
   "Mail_HomePage": {
     "next": [
-      "Mail_GoinMail",
-      "[JumpBack]Global_ToHomePage"
+      "[JumpBack]Global_ToHomePage",
+      "Mail_GoinMail"
     ]
   },
   "Mail_GoinMail": {
