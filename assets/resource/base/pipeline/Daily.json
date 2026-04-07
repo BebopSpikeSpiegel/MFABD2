@@ -270,12 +270,17 @@
             "立刻前往",
             "累计奖励"
         ],
+        "timeout": 8000,
         "next": [
             "[JumpBack]Daily_GetBusin_SubMenu_Claim",
             "[JumpBack]Daily_GetBusinRewardBack",
             "Daily_Busin_Enter"
         ],
-        "focus": "DM.经营子菜单"
+        "on_error": [
+            "Daily_Busin_Hub_Post",
+            "Global_Null_Exception"
+        ],
+        "focus": "DM.经营子菜单 | Err,如果点多了会回到一级主菜单,用err回去"
     },
     "Daily_GetBusin_SubMenu_Claim": {
         "desc": "在子菜单中ocr领取,结合色核依次点击-获取,与结算分离",
@@ -333,7 +338,8 @@
         "target": [
             1,
             1
-        ]
+        ],
+        "post_delay": 500
     },
     "Daily_Busin_Enter": {
         "desc": "餐馆结算页，进入餐馆",
