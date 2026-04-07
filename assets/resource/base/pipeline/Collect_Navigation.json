@@ -155,17 +155,25 @@
         ]
     },
     "Collect_TargetMap1-1": {
-        "desc": "详细地图内左图标，目的移动到最左",
-        "recognition": "TemplateMatch",
+        "desc": "色核详细地图内左图标位置，暗色足量为白图标消失，即为最左。【依赖ROI】",
+        "recognition": "ColorMatch",
         "roi": [
-            270,
-            317,
-            68,
-            54
+            269,
+            313,
+            70,
+            60
         ],
-        "template": [
-            "TpMapLeft-no.png"
+        "lower": [
+            0,
+            0,
+            0
         ],
+        "upper": [
+            180,
+            255,
+            150
+        ],
+        "count": 4100,
         "next": [
             "Collect_TargetMap1_Special_PerRight",
             "Collect_TargetMap1-2"
