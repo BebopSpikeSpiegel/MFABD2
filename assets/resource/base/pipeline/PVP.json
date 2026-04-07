@@ -299,33 +299,47 @@
         "focus": "PM.PVP.自动战斗(关键节点)-菜单ck"
     },
     "PVP_JustUseFree": {
+        "recognition": "ColorMatch",
+        "roi": [
+            895,
+            252,
+            37,
+            20
+        ],
+        "lower": [
+            0,
+            0,
+            0
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "anchor": "SliderSwitchColor",
+        "timeout": 4000,
         "next": [
-            "PVP_JustUseFreeNO",
+            "[JumpBack]PVP_JustUseFree_To_On",
             "PVP_JustUseFreeOK"
+        ],
+        "on_error": [
+            "Global_BackToQC1",
+            "[JumpBack]Global_ToSandBox"
         ],
         "focus": "PM.PVP.开始验证免费鸡尾酒策略"
     },
+    "PVP_JustUseFree_To_On": {
+        "desc": "修改freeap滑块",
+        "max_hit": 2,
+        "recognition": "And",
+        "all_of": ["Global_SliderSwitch_StateOff"],
+        "action": "Click",
+        "post_delay": 2000
+    },
     "PVP_JustUseFreeOK": {
         "desc": "识别是否仅用免费鸡尾酒",
-        "enabled": true,
-        "recognition": "ColorMatch",
-        "roi": [
-            873,
-            234,
-            73,
-            47
-        ],
-        "lower": [
-            171,
-            131,
-            41
-        ],
-        "upper": [
-            171,
-            131,
-            41
-        ],
-        "inverse": false,
+        "recognition": "And",
+        "all_of": ["Global_SliderSwitch_StateOn"],
         "timeout": 5000,
         "next": [
             "PVP_Multiplier_Verify"
@@ -334,83 +348,6 @@
             "PVP_Multiplier_Adjust_Gomenu"
         ],
         "focus": "PM.PVP.免费AP确认"
-    },
-    "PVP_JustUseFreeNO": {
-        "desc": "识别灰黑色 | 识别是否仅用免费鸡尾酒",
-        "recognition": "ColorMatch",
-        "roi": [
-            888,
-            242,
-            46,
-            38
-        ],
-        "lower": [
-            30,
-            34,
-            40
-        ],
-        "upper": [
-            30,
-            34,
-            40
-        ],
-        "action": "Click",
-        "post_delay": 2000,
-        "timeout": 8000,
-        "next": [
-            "PVP_JustUseFreeOK"
-        ],
-        "on_error": [
-            "PVP_JustUseFree2",
-            "Global_Null_Exception",
-            "Global_Null_Panic"
-        ],
-        "focus": "PM.PVP.免费AP未勾选！"
-    },
-    "PVP_JustUseFree2": {
-        "desc": "非免费鸡尾酒时的退出x",
-        "recognition": "OCR",
-        "roi": [
-            895,
-            619,
-            124,
-            73
-        ],
-        "expected": [
-            "自动战斗"
-        ],
-        "action": "Click",
-        "target": [
-            120,
-            35
-        ],
-        "post_wait_freezes": 500,
-        "next": [
-            "PVP_JustUseFree3"
-        ],
-        "focus": "PE.PVP.终止.免费AP确认异常"
-    },
-    "PVP_JustUseFree3": {
-        "desc": "非免费鸡尾酒时的退出",
-        "recognition": "OCR",
-        "roi": [
-            895,
-            619,
-            124,
-            73
-        ],
-        "expected": [
-            "自动战斗"
-        ],
-        "pre_wait_freezes": 500,
-        "action": "Click",
-        "target": [
-            120,
-            35
-        ],
-        "next": [
-            "PVP_BackPVEPage"
-        ]
     },
     "PVP_AutoBattleMAX": {
         "desc": "点击MAX Mini",

@@ -1031,6 +1031,15 @@
     "Equip_FindRefining": {
         "desc": "点击第一个装备",
         "max_hit": 10,
+        "recognition": "OCR",
+        "roi": [
+            226,
+            21,
+            55,
+            39
+        ],
+        "expected": ["装备"],
+        "only_rec": true,
         "action": "Click",
         "target": [
             622,

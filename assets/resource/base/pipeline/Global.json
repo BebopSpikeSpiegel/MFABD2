@@ -621,6 +621,7 @@
             44
         ],
         "count": 25,
+        "timeout": 3000,
         "next": [
             "Global_SliderSwitch_StateOn",
             "[JumpBack]Global_SliderSwitch_ToggleActive"
@@ -642,6 +643,7 @@
             185
         ],
         "count": 25,
+        "timeout": 3000,
         "next": [
             "Global_SliderSwitch_StateOff",
             "[JumpBack]Global_SliderSwitch_ToggleActive"
