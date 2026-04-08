@@ -106,7 +106,7 @@
                 "lower": [
                     0,
                     0,
-                    218
+                    200
                 ],
                 "upper": [
                     149,
@@ -227,14 +227,14 @@
                 "lower": [
                     0,
                     0,
-                    218
+                    225
                 ],
                 "upper": [
-                    149,
-                    5,
+                    180,
+                    225,
                     255
                 ],
-                "count": 150
+                "count": 50
             }
         ]
     },
@@ -752,5 +752,21 @@
         "action": "Click",
         "post_delay": 2000,
         "next": ["[JumpBack]Global_WaitingForLoading"]
+    },
+    "Global_Main_Clr": {
+        "recognition": "ColorMatch",
+        "roi": "Main_OCR",
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            225
+        ],
+        "upper": [
+            180,
+            225,
+            255
+        ],
+        "count": 50
     }
 }

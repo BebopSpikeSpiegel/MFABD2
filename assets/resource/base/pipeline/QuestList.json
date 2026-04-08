@@ -7,15 +7,22 @@
     },
     "RewardsDaily_DailyReward": {
         "desc": "界面确认",
-        "recognition": "OCR",
-        "roi": [
-            520,
-            658,
-            52,
-            32
-        ],
-        "expected": [
-            "任务"
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Main_OCR",
+                "recognition": "OCR",
+                "roi": [
+                    520,
+                    658,
+                    52,
+                    32
+                ],
+                "expected": [
+                    "任务"
+                ]
+            },
+            "Global_Main_Clr"
         ],
         "timeout": 2000,
         "next": [
