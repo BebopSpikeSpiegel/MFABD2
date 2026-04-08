@@ -235,7 +235,10 @@ def _ensure_cache_loaded(force_refresh=False):
         if _fallback.exists():
             target_path = _fallback
         else:
-            found = [p for p in _project_root.rglob("pipeline") if p.is_dir()]
+            # 优先级列表：父目录名越靠前越优先；同时过滤掉不含 json 的空文件夹
+            _preferred_parents = ["base", "pc"]
+            found = [p for p in _project_root.rglob("pipeline") if p.is_dir() and any(p.rglob("*.json"))]
+            found.sort(key=lambda p: _preferred_parents.index(p.parent.name) if p.parent.name in _preferred_parents else len(_preferred_parents))
             if found: target_path = found[0]
 
     if not target_path.exists():
