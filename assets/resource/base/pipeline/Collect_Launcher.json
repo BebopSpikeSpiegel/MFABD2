@@ -186,31 +186,41 @@
         ]
     },
     "Collect_StoryPack_SetSimpleSkip": {
+        "desc": "简单类跳过实现逻辑:发射锚点使得smart动作报err后进入特定存档节点,其他行为一致。此节点启用后读取存档，若通过，直接进入下一个节点链。",
         "enabled": false,
+        "recognition": "Custom",
+        "custom_recognition": "CheckCoolDown",
+        "custom_recognition_param": {
+            "card_name": "Pack_Story_SimpleDone",
+            "cycle_type": "g_weekly"
+        },
         "anchor": {
             "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Story"
-        },
-        "next": [
-            "Collect_QuickCart_SelectType_StoryPack"
-        ]
+        }
     },
     "Collect_CharacterPack_SetSimpleSkip": {
         "enabled": false,
+        "recognition": "Custom",
+        "custom_recognition": "CheckCoolDown",
+        "custom_recognition_param": {
+            "card_name": "Pack_Character_SimpleDone",
+            "cycle_type": "g_weekly"
+        },
         "anchor": {
             "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Character"
-        },
-        "next": [
-            "Collect_QuickCart_SelectType_CharacterPack"
-        ]
+        }
     },
     "Collect_EventPack_SetSimpleSkip": {
         "enabled": false,
+        "recognition": "Custom",
+        "custom_recognition": "CheckCoolDown",
+        "custom_recognition_param": {
+            "card_name": "Pack_Event_SimpleDone",
+            "cycle_type": "g_weekly"
+        },
         "anchor": {
             "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Event"
-        },
-        "next": [
-            "Collect_QuickCart_SelectType_EventPack"
-        ]
+        }
     },
     "Collect_QuickCart_SelectType_StoryPack": {
         "recognition": "OCR",
