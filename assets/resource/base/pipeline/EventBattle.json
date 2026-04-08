@@ -10,6 +10,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "Main_OCR",
                 "recognition": "OCR",
                 "roi": [
                     98,
@@ -169,6 +170,7 @@
         ],
         "on_error": [
             "Event_Event_Main_Return",
+            "Event_GoinEvent",
             "[JumpBack]Global_BackPageHub_Once",
             "Global_Null_Exception",
             "Global_Null_Panic"
@@ -190,10 +192,12 @@
         "post_delay": 1000,
         "timeout": 4000,
         "next": [
-            "Event_FastNormalBattle"
+            "Event_FastNormalBattle",
+            "Event_FastBattle_NoHave"
         ],
         "on_error": [
             "Event_Event_Main_Return",
+            "Event_GoinEvent",
             "[JumpBack]Global_BackPageHub_Once",
             "Global_Null_Exception",
             "Global_Null_Panic"
@@ -201,24 +205,8 @@
         "focus": "EM.活动.战斗关卡页面"
     },
     "Event_Battle_BattleStatus_Enable": {
-        "recognition": "ColorMatch",
-        "roi": "Event_FastNormalBattle",
-        "roi_offset": [
-            -5,
-            -2,
-            10,
-            4
-        ],
-        "lower": [
-            222,
-            218,
-            208
-        ],
-        "upper": [
-            222,
-            220,
-            211
-        ],
+        "recognition": "And",
+        "all_of": ["Global_Ocr_Clr_Enable"],
         "action": "Click",
         "post_delay": 1000,
         "next": [
@@ -226,6 +214,11 @@
             "Event_FreeAP_Verdict_NOpass",
             "Event_NoHaveAP"
         ]
+    },
+    "Event_Battle_BattleStatus_Unable": {
+        "recognition": "And",
+        "all_of": ["Global_Ocr_Clr_Unable"],
+        "focus": "快速战斗不可用"
     },
     "Event_FastNormalBattle": {
         "desc": "识别并点击子菜单快速战斗",
@@ -239,17 +232,32 @@
         "expected": [
             "快速战斗"
         ],
+        "anchor": "Ocr_clr",
         "timeout": 4000,
         "next": [
-            "Event_Battle_BattleStatus_Enable"
+            "Event_Battle_BattleStatus_Enable",
+            "Event_Battle_BattleStatus_Unable"
         ],
         "on_error": [
             "Event_Event_Main_Return",
+            "Event_GoinEvent",
             "[JumpBack]Global_BackPageHub_Once",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
         "focus": "EM.活动.快速战斗"
+    },
+    "Event_FastBattle_NoHave": {
+        "recognition": "OCR",
+        "roi": [
+            952,
+            634,
+            37,
+            26
+        ],
+        "expected": "战斗",
+        "only_rec": true,
+        "focus": "E.难度进度不足以自动战斗"
     },
     "Event_FreeAP_Verdict_Ispass": {
         "recognition": "ColorMatch",
@@ -406,6 +414,7 @@
             "Event_NormalBattleIsOver",
             "Event_NormalBattleBack",
             "Event_TouchNormalBattle",
+            "Event_GoinEvent",
             "[JumpBack]Global_BackPageHub_Once"
         ]
     },
