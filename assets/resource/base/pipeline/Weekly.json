@@ -41,9 +41,16 @@
         "max_hit": 1,
         "timeout": 1,
         "next": [
-            "[JumpBack]Global_ToHomePage",
-            "Weekly_Fishing_Start"
+            "Weekly_Fishing_Start_pre",
+            "[JumpBack]Global_ToHomePage"
         ]
+    },
+    "Weekly_Fishing_Start_pre": {
+        "desc": "先恢复到主界面",
+        "recognition": "And",
+        "all_of": ["Global_ToHomePage_Enter"],
+        "timeout": 1,
+        "next": ["Weekly_Fishing_Start"]
     },
     "Weekly_Fishing_Start": {
         "recognition": "Custom",
