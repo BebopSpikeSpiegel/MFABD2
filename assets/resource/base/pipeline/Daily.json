@@ -18,15 +18,22 @@
     },
     "Daily_Union_Hub_Post": {
         "desc": "识别左下抽抽乐",
-        "recognition": "OCR",
-        "roi": [
-            98,
-            656,
-            66,
-            32
-        ],
-        "expected": [
-            "抽抽乐"
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Main_OCR",
+                "recognition": "OCR",
+                "roi": [
+                    98,
+                    656,
+                    66,
+                    32
+                ],
+                "expected": [
+                    "抽抽乐"
+                ]
+            },
+            "Global_Main_Clr"
         ],
         "timeout": 5000,
         "next": [
@@ -172,6 +179,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "Main_OCR",
                 "recognition": "OCR",
                 "roi": [
                     98,
@@ -183,27 +191,7 @@
                     "抽抽乐"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    104,
-                    664,
-                    51,
-                    17
-                ],
-                "method": 40,
-                "lower": [
-                    0,
-                    0,
-                    218
-                ],
-                "upper": [
-                    149,
-                    5,
-                    255
-                ],
-                "count": 150
-            }
+            "Global_Main_Clr"
         ],
         "next": [
             "Daily_Busin_Claim"

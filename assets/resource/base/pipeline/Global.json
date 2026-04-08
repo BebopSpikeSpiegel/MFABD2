@@ -33,6 +33,7 @@
     },
     "Global_BackPageHub_Once": {
         "desc": "其他页面，返回按钮(一次性)",
+        "max_hit": 35,
         "recognition": "TemplateMatch",
         "roi": [
             1,
@@ -45,6 +46,7 @@
             "BackButGe2.png"
         ],
         "green_mask": true,
+        "pre_delay": 500,
         "action": "Click",
         "post_delay": 2000,
         "focus": "GO.点击返回按钮"
@@ -83,6 +85,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "Main_OCR",
                 "recognition": "OCR",
                 "roi": [
                     98,
@@ -106,7 +109,7 @@
                 "lower": [
                     0,
                     0,
-                    218
+                    200
                 ],
                 "upper": [
                     149,
@@ -171,7 +174,8 @@
         "post_delay": 3000,
         "next": [
             "Global_ToHomePage_Enter",
-            "Global_ToHomePage_HomeButton"
+            "Global_ToHomePage_HomeButton",
+            "[JumpBack]Global_BackPageHub_Once"
         ],
         "focus": "G.箱庭地图已确认"
     },
@@ -195,7 +199,8 @@
             "Global_ToHomePage_Enter",
             "Global_ToHomePage_HomeButton",
             "Global_ToHomePage_Reset",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]Global_BackPageHub_Once"
         ],
         "focus": "G=1.页面非预期，点击返回按钮"
     },
@@ -204,6 +209,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "Main_OCR",
                 "recognition": "OCR",
                 "roi": [
                     98,
@@ -215,27 +221,7 @@
                     "抽抽乐"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    104,
-                    664,
-                    51,
-                    17
-                ],
-                "method": 40,
-                "lower": [
-                    0,
-                    0,
-                    218
-                ],
-                "upper": [
-                    149,
-                    5,
-                    255
-                ],
-                "count": 150
-            }
+            "Global_Main_Clr"
         ]
     },
     "Global_ToSandBox": {
@@ -322,15 +308,22 @@
     },
     "Global_BackToPve2#_ToCardMenu": {
         "desc": "识别左下抽抽乐-主页-点击选择章节",
-        "recognition": "OCR",
-        "roi": [
-            89,
-            655,
-            77,
-            37
-        ],
-        "expected": [
-            "抽抽乐"
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Main_OCR",
+                "recognition": "OCR",
+                "roi": [
+                    98,
+                    656,
+                    66,
+                    32
+                ],
+                "expected": [
+                    "抽抽乐"
+                ]
+            },
+            "Global_Main_Clr"
         ],
         "action": "Click",
         "target": [
@@ -752,5 +745,56 @@
         "action": "Click",
         "post_delay": 2000,
         "next": ["[JumpBack]Global_WaitingForLoading"]
+    },
+    "Global_Main_Clr": {
+        "desc": "【被引用节点】主界面是否无二级浮窗遮蔽",
+        "recognition": "ColorMatch",
+        "roi": "Main_OCR",
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            180
+        ],
+        "upper": [
+            180,
+            225,
+            255
+        ],
+        "count": 50
+    },
+    "Global_Ocr_Clr_Enable": {
+        "desc": "【被引用节点】对Ocr节点再次色核,亮色",
+        "recognition": "ColorMatch",
+        "roi": "[Anchor]Ocr_clr",
+        "method": 40,
+        "lower": [
+            10,
+            10,
+            200
+        ],
+        "upper": [
+            50,
+            40,
+            240
+        ],
+        "count": 25
+    },
+    "Global_Ocr_Clr_Unable": {
+        "desc": "【被引用节点】对Ocr节点再次色核,灰色",
+        "recognition": "ColorMatch",
+        "roi": "[Anchor]Ocr_clr",
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            0
+        ],
+        "upper": [
+            180,
+            20,
+            100
+        ],
+        "count": 25
     }
 }

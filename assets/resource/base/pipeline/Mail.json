@@ -1,21 +1,28 @@
 {
     "Mail_HomePage": {
         "next": [
-            "[JumpBack]Global_ToHomePage",
-            "Mail_GoinMail"
+            "Mail_GoinMail",
+            "[JumpBack]Global_ToHomePage"
         ]
     },
     "Mail_GoinMail": {
         "desc": "识别左下抽抽乐-点击邮件",
-        "recognition": "OCR",
-        "roi": [
-            98,
-            656,
-            66,
-            32
-        ],
-        "expected": [
-            "抽抽乐"
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Main_OCR",
+                "recognition": "OCR",
+                "roi": [
+                    98,
+                    656,
+                    66,
+                    32
+                ],
+                "expected": [
+                    "抽抽乐"
+                ]
+            },
+            "Global_Main_Clr"
         ],
         "target": [
             1030,

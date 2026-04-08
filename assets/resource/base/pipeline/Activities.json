@@ -11,6 +11,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "Main_OCR",
                 "recognition": "OCR",
                 "roi": [
                     98,
@@ -22,27 +23,7 @@
                     "抽抽乐"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    104,
-                    664,
-                    51,
-                    17
-                ],
-                "method": 40,
-                "lower": [
-                    0,
-                    0,
-                    218
-                ],
-                "upper": [
-                    149,
-                    5,
-                    255
-                ],
-                "count": 150
-            }
+            "Global_Main_Clr"
         ],
         "next": [
             "Activities_InIndex",
@@ -597,6 +578,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "Main_OCR",
                 "recognition": "OCR",
                 "roi": [
                     98,
@@ -608,27 +590,7 @@
                     "抽抽乐"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    104,
-                    664,
-                    51,
-                    17
-                ],
-                "method": 40,
-                "lower": [
-                    0,
-                    0,
-                    218
-                ],
-                "upper": [
-                    149,
-                    5,
-                    255
-                ],
-                "count": 150
-            }
+            "Global_Main_Clr"
         ],
         "next": [
             "Activities_InIndex",

@@ -946,20 +946,28 @@
         "post_delay": 3000,
         "next": [
             "Setup_Main_Into",
-            "Setup_Main_Into_Pre"
+            "Setup_Main_Into_Pre",
+            "[JumpBack]Global_ToHomePage"
         ],
         "focus": "Setup.主设置修改开始"
     },
     "Setup_Main_Into": {
-        "recognition": "OCR",
-        "roi": [
-            98,
-            656,
-            66,
-            32
-        ],
-        "expected": [
-            "抽抽乐"
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Main_OCR",
+                "recognition": "OCR",
+                "roi": [
+                    98,
+                    656,
+                    66,
+                    32
+                ],
+                "expected": [
+                    "抽抽乐"
+                ]
+            },
+            "Global_Main_Clr"
         ],
         "action": "Click",
         "target": [
@@ -1597,20 +1605,28 @@
         "post_delay": 3000,
         "next": [
             "Setup_Equip_Into",
-            "Setup_Equip_Into_Pre"
+            "Setup_Equip_Into_Pre",
+            "[JumpBack]Global_ToHomePage"
         ],
         "focus": "Setup.装备强化选项修改开始"
     },
     "Setup_Equip_Into": {
-        "recognition": "OCR",
-        "roi": [
-            98,
-            656,
-            66,
-            32
-        ],
-        "expected": [
-            "抽抽乐"
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Main_OCR",
+                "recognition": "OCR",
+                "roi": [
+                    98,
+                    656,
+                    66,
+                    32
+                ],
+                "expected": [
+                    "抽抽乐"
+                ]
+            },
+            "Global_Main_Clr"
         ],
         "action": "Click",
         "target": [

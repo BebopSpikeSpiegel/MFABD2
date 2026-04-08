@@ -13,15 +13,22 @@
     "#1总控与进图寻路": {},
     "Arbitrage_HomePageOldCardMenu_Goin": {
         "desc": "进入卡带界面",
-        "recognition": "OCR",
-        "roi": [
-            98,
-            656,
-            66,
-            32
-        ],
-        "expected": [
-            "抽抽乐"
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Main_OCR",
+                "recognition": "OCR",
+                "roi": [
+                    98,
+                    656,
+                    66,
+                    32
+                ],
+                "expected": [
+                    "抽抽乐"
+                ]
+            },
+            "Global_Main_Clr"
         ],
         "action": "Click",
         "target": [
