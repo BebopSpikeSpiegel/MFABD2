@@ -48,20 +48,6 @@
     },
     {
       "file": "EventBattle.json",
-      "node": "Event_Battle_BattleStatus_Enable",
-      "field": "lower",
-      "upstream_original": [222, 218, 208],
-      "patched": [200, 195, 185]
-    },
-    {
-      "file": "EventBattle.json",
-      "node": "Event_Battle_BattleStatus_Enable",
-      "field": "upper",
-      "upstream_original": [222, 220, 211],
-      "patched": [245, 242, 235]
-    },
-    {
-      "file": "EventBattle.json",
       "node": "Even_MamonoFollowUp_QuickBattle_color",
       "field": "lower",
       "upstream_original": [216, 216, 210],
