@@ -10,14 +10,13 @@ on:
       - ".github/workflows/install.yml"
       - "assets/**"
       - "**.py"
-  # 防止在PR中运行两次    
-  # pull_request:
-  #   branches:
-  #     - "**"
-  #   paths:
-  #     - ".github/workflows/install.yml"
-  #     - "assets/**"
-  #     - "**.py"
+  pull_request:
+    branches:
+      - "**"
+    paths:
+      - ".github/workflows/install.yml"
+      - "assets/**"
+      - "**.py"
   workflow_dispatch:
     inputs:
       deploy_beta:
@@ -253,6 +252,8 @@ jobs:
             python ./check_resource.py ./assets/resource/
   install:
     needs: [meta, resource_check]
+    # PR 只跑资源检查，不跑完整构建
+    if: github.event_name != 'pull_request'
     # 动态选择运行环境：Win跑Win，Mac跑Mac，Linux/安卓跑Ubuntu
     runs-on: ${{ matrix.runner }}
 
