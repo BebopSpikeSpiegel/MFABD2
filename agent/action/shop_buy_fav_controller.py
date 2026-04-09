@@ -191,6 +191,8 @@ class ShopBuyFavController(CustomAction):
                 time.sleep(VERIFY_DELAY)
 
         # 最终验证
+        if context.tasker.stopping:
+            return False
         mfaalog.info(f"[ShopBuy] 🔎 [{cart_name}] 最终验证...")
         time.sleep(VERIFY_DELAY)
 
