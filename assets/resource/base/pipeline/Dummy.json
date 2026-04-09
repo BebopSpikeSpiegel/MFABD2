@@ -3,38 +3,39 @@
         "focus": "占位符.需要正确的资源选择."
     },
     "Custom_Proxy_Swipe": {
-        "doc": "不要使用,不要删除。这是验证滑动custom的预留节点。",
+        "desc": "不要使用,不要删除。这是验证滑动custom的预留节点。",
         "action": "Swipe",
         "post_delay": 1000
     },
     "Env_AccountSave_Switch": {
+        "desc": "一个存储存档名称/呼叫检查动作的,可复用节点. | 默认节点为0,此时生成不带额外名称的存档文件.| max_hit,利用流程级变量只运行一次,流程结束会销毁",
+        "max_hit": 1,
         "action": "Custom",
         "custom_action": "SwitchAccountCheckpoint",
         "custom_action_param": {
             "account_id": "0"
         },
-        "focus": "Env.存档检查器",
-        "max_hit": 1,
-        "doc": "一个存储存档名称/呼叫检查动作的,可复用节点. | 默认节点为0,此时生成不带额外名称的存档文件.| max_hit,利用流程级变量只运行一次,流程结束会销毁"
+        "focus": "Env.存档检查器"
     },
     "Global_Null": {
+        "desc": "【全局默认空on_error覆盖】Jumpback链路崩毁默认节点",
         "recognition": "DirectHit",
-        "action": "DoNothing",
-        "post_delay": 0,
         "pre_delay": 0,
-        "doc": "【全局默认空on_error覆盖】Jumpback链路崩毁默认节点"
+        "action": "DoNothing",
+        "post_delay": 0
     },
     "Global_Null_Exception": {
-        "focus": "[WRN] 捕捉到 1219 引入的逻辑真空，执行静默旁路以维系环境。",
+        "desc": "【非空on_error,手动替换】Jumpback链路崩毁-但不要StopTask",
+        "max_hit": 35,
         "recognition": "DirectHit",
+        "pre_delay": 0,
         "action": "Screencap",
         "post_delay": 0,
-        "pre_delay": 0,
-        "max_hit": 35,
-        "doc": "【非空on_error,手动替换】Jumpback链路崩毁-但不要StopTask"
+        "focus": "[WRN] 捕捉到 1219 引入的逻辑真空，执行静默旁路以维系环境。"
     },
     "Global_Null_Panic": {
-        "focus": "[color:red][WRN] 管路逻辑失控，无法恢复。\n\n→→准备重启减少损失。[/color]",
+        "desc": "【非空on_error,手动替换,紧跟Exception】如果Exception反复运行超过maxhit,认定为死循环。重启游戏后抛弃本任务，让队列其他任务继续跑",
+        "max_hit": 3,
         "recognition": "DirectHit",
         "action": "StopApp",
         "package": "com.neowizgames.game.browndust2",
@@ -42,7 +43,21 @@
         "next": [
             "StartGame_Check_App_Alive"
         ],
-        "max_hit": 3,
-        "doc": "【非空on_error,手动替换,紧跟Exception】如果Exception反复运行超过maxhit,认定为死循环。重启游戏后抛弃本任务，让队列其他任务继续跑"
+        "focus": "[color:red][WRN] 管路逻辑失控，无法恢复。\n\n→→准备重启减少损失。[/color]"
+    },
+    "Dummy_StartGame_TouchStart_Clr": {
+        "desc": "数据1,闪乱神乐",
+        "recognition": "ColorMatch",
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            120
+        ],
+        "upper": [
+            180,
+            100,
+            255
+        ]
     }
 }

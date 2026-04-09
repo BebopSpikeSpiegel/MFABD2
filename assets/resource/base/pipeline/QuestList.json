@@ -1,153 +1,160 @@
 {
-  "RewardsDaily_Start": {
-    "next": [
-      "RewardsDaily_DailyReward",
-      "[JumpBack]Global_ToHomePage"
-    ]
-  },
-  "RewardsDaily_DailyReward": {
-    "recognition": "OCR",
-    "next": [
-      "RewardsDaily_InIndex"
-    ],
-    "roi": [
-      520,
-      658,
-      52,
-      32
-    ],
-    "expected": [
-      "任务"
-    ],
-    "doc": "界面确认",
-    "timeout": 2000
-  },
-  "RewardsDaily_InIndex": {
-    "recognition": "TemplateMatch",
-    "action": "Click",
-    "next": [
-      "RewardsDaily_GetDailyReward",
-      "RewardsDaily_InIndex"
-    ],
-    "focus": "GDM.有可关注‘任务’奖励",
-    "roi": [
-      522,
-      610,
-      57,
-      84
-    ],
-    "template": [
-      "MissionsGE.png",
-      "ActiveGe.png"
-    ],
-    "green_mask": true,
-    "threshold": 0.6,
-    "target_offset": [
-      -5,
-      5,
-      0,
-      0
-    ],
-    "on_error": [
-      "Global_ToHomePage",
-      "Global_Null_Exception",
-      "Global_Null_Panic"
-    ]
-  },
-  "RewardsDaily_GetDailyReward": {
-    "recognition": "OCR",
-    "next": [
-      "[JumpBack]RewardsDaily_Get",
-      "[JumpBack]RewardsDaily_GetDailyRewardBack",
-      "RewardsDaily_TabWeeklyReward",
-      "Global_ToHomePage"
-    ],
-    "timeout": 3000,
-    "roi": [
-      218,
-      19,
-      113,
-      44
-    ],
-    "expected": [
-      "每日任务"
-    ],
-    "doc": "任务页面,界面确认"
-  },
-  "RewardsDaily_Get": {
-    "recognition": "And",
-    "all_of": [
-      {
-        "recognition": "ColorMatch",
-        "roi": [
-          1022,
-          640,
-          138,
-          38
-        ],
-        "count": 200,
-        "lower": [
-          222,
-          218,
-          208
-        ],
-        "upper": [
-          222,
-          220,
-          211
+    "RewardsDaily_Start": {
+        "next": [
+            "RewardsDaily_DailyReward",
+            "[JumpBack]Global_ToHomePage"
         ]
-      },
-      {
+    },
+    "RewardsDaily_DailyReward": {
+        "desc": "界面确认",
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Main_OCR",
+                "recognition": "OCR",
+                "roi": [
+                    520,
+                    658,
+                    52,
+                    32
+                ],
+                "expected": [
+                    "任务"
+                ]
+            },
+            "Global_Main_Clr"
+        ],
+        "timeout": 2000,
+        "next": [
+            "RewardsDaily_InIndex"
+        ]
+    },
+    "RewardsDaily_InIndex": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            522,
+            610,
+            57,
+            84
+        ],
+        "template": [
+            "MissionsGE.png",
+            "ActiveGe.png"
+        ],
+        "green_mask": true,
+        "threshold": 0.6,
+        "action": "Click",
+        "target_offset": [
+            -5,
+            5,
+            0,
+            0
+        ],
+        "next": [
+            "RewardsDaily_GetDailyReward",
+            "RewardsDaily_InIndex"
+        ],
+        "on_error": [
+            "Global_ToHomePage",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "GDM.有可关注‘任务’奖励"
+    },
+    "RewardsDaily_GetDailyReward": {
+        "desc": "任务页面,界面确认",
         "recognition": "OCR",
         "roi": [
-          1022,
-          640,
-          138,
-          38
+            218,
+            19,
+            113,
+            44
         ],
         "expected": [
-          "全部获得"
+            "每日任务"
+        ],
+        "timeout": 3000,
+        "next": [
+            "[JumpBack]RewardsDaily_Get",
+            "[JumpBack]RewardsDaily_GetDailyRewardBack",
+            "RewardsDaily_TabWeeklyReward",
+            "Global_ToHomePage"
         ]
-      }
-    ],
-    "box_index": 1,
-    "action": "Click",
-    "post_delay": 3000
-  },
-  "RewardsDaily_GetDailyRewardBack": {
-    "recognition": "OCR",
-    "action": "Click",
-    "post_delay": 3000,
-    "roi": [
-      558,
-      630,
-      147,
-      34
-    ],
-    "expected": [
-      "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-    ],
-    "doc": "点击领取全部返回"
-  },
-  "RewardsDaily_TabWeeklyReward": {
-    "recognition": "TemplateMatch",
-    "action": "Click",
-    "next": [
-      "[JumpBack]RewardsDaily_Get",
-      "[JumpBack]RewardsDaily_GetDailyRewardBack",
-      "RewardsDaily_TabWeeklyReward",
-      "Global_ToHomePage"
-    ],
-    "timeout": 3000,
-    "roi": [
-      189,
-      146,
-      169,
-      73
-    ],
-    "post_delay": 2000,
-    "template": [
-      "MailRedPr.png"
-    ]
-  }
+    },
+    "RewardsDaily_Get": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "ColorMatch",
+                "roi": [
+                    1022,
+                    640,
+                    138,
+                    38
+                ],
+                "lower": [
+                    222,
+                    218,
+                    208
+                ],
+                "upper": [
+                    222,
+                    220,
+                    211
+                ],
+                "count": 200
+            },
+            {
+                "recognition": "OCR",
+                "roi": [
+                    1022,
+                    640,
+                    138,
+                    38
+                ],
+                "expected": [
+                    "全部获得"
+                ]
+            }
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "post_delay": 3000
+    },
+    "RewardsDaily_GetDailyRewardBack": {
+        "desc": "点击领取全部返回",
+        "recognition": "OCR",
+        "roi": [
+            558,
+            630,
+            147,
+            34
+        ],
+        "expected": [
+            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
+        ],
+        "action": "Click",
+        "post_delay": 3000
+    },
+    "RewardsDaily_TabWeeklyReward": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            189,
+            146,
+            169,
+            73
+        ],
+        "template": [
+            "MailRedPr.png"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "timeout": 3000,
+        "next": [
+            "[JumpBack]RewardsDaily_Get",
+            "[JumpBack]RewardsDaily_GetDailyRewardBack",
+            "RewardsDaily_TabWeeklyReward",
+            "Global_ToHomePage"
+        ]
+    }
 }

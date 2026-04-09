@@ -11,15 +11,15 @@
     },
     "Practise_Merchant_Menu_Return": {
         "recognition": "OCR",
-        "expected": [
-            "购买",
-            "出售"
-        ],
         "roi": [
             110,
             92,
             51,
             149
+        ],
+        "expected": [
+            "购买",
+            "出售"
         ],
         "action": "Click",
         "target": [
@@ -34,62 +34,62 @@
     },
     "Practise_Merchant_Menu_Return_Ck": {
         "recognition": "OCR",
-        "expected": [
-            "关闭商店"
-        ],
         "roi": [
             607,
             342,
             201,
             191
         ],
+        "expected": [
+            "关闭商店"
+        ],
         "action": "Click",
         "post_delay": 1000
     },
     "Practise_Skill_Bargaining_Verify": {
+        "desc": "确认到砍价技能,准备判定等级",
         "recognition": "OCR",
-        "expected": [
-            "砍价"
-        ],
         "roi": [
             129,
             589,
             43,
             21
+        ],
+        "expected": [
+            "砍价"
         ],
         "next": [
             "Practise_Skill_Bargaining_Until",
             "[JumpBack]Practise_Skill_Bargaining_Upgrade",
             "Practise_Skill_Bargaining_Succeed"
-        ],
-        "doc": "确认到砍价技能,准备判定等级"
+        ]
     },
     "Practise_Skill_Bargaining_Verify_Err": {
         "recognition": "OCR",
-        "expected": [
-            "偷窃"
-        ],
         "roi": [
             129,
             589,
             43,
             21
         ],
+        "expected": [
+            "偷窃"
+        ],
         "focus": "[ERR]技能顺序错误 或 没有砍价技能"
     },
     "Practise_Skill_Bargaining_Until": {
         "recognition": "OCR",
-        "expected": [
-            "新手",
-            "进阶",
-            "高手",
-            "达人"
-        ],
         "roi": [
             126,
             636,
             43,
             22
+        ],
+        "expected": [
+            "新手",
+            "进阶",
+            "高手",
+            "达人"
         ],
         "next": [
             "Arbitrage_Bargaining_SkillList"
@@ -97,30 +97,30 @@
     },
     "Practise_Skill_Bargaining_Succeed": {
         "recognition": "OCR",
-        "expected": [
-            "传说"
-        ],
         "roi": [
             126,
             636,
             43,
             22
         ],
-        "focus": "砍价技能已为传说级",
+        "expected": [
+            "传说"
+        ],
         "next": [
             "Global_ToSandBox"
-        ]
+        ],
+        "focus": "砍价技能已为传说级"
     },
     "Practise_Skill_Bargaining_Upgrade": {
         "recognition": "OCR",
-        "expected": [
-            "升星"
-        ],
         "roi": [
             126,
             646,
             50,
             21
+        ],
+        "expected": [
+            "升星"
         ],
         "action": "Click",
         "post_wait_freezes": 200,
@@ -131,33 +131,33 @@
         "focus": "技能可以升星"
     },
     "Practise_Skill_Bargaining_Upgrade_Ck": {
+        "desc": "改成色核!",
         "recognition": "OCR",
-        "expected": [
-            "升星"
-        ],
         "roi": [
             905,
             633,
             194,
             37
         ],
+        "expected": [
+            "升星"
+        ],
         "action": "Click",
         "post_wait_freezes": 200,
-        "doc": "改成色核!",
         "next": [
             "Practise_Skill_Bargaining_Upgrade_Return"
         ]
     },
     "Practise_Skill_Bargaining_Upgrade_Return": {
         "recognition": "OCR",
-        "expected": [
-            "升星"
-        ],
         "roi": [
             572,
             659,
             124,
             50
+        ],
+        "expected": [
+            "升星"
         ],
         "action": "Click",
         "post_wait_freezes": 200,

@@ -1,12 +1,7 @@
 {
     "Collect_Skill_Start": {
+        "desc": "PVE点击技能队列开启（识别到3个中的2",
         "recognition": "TemplateMatch",
-        "next": [
-            "Collect_Skill_Tap3_Enable",
-            "[JumpBack]Collect_Skill_Tap3"
-        ],
-        "post_delay": 1000,
-        "focus": "CSB.技能组调用开始",
         "roi": [
             1108,
             637,
@@ -16,11 +11,14 @@
         "template": [
             "pin.png"
         ],
-        "doc": "PVE点击技能队列开启（识别到3个中的2"
+        "post_delay": 1000,
+        "next": [
+            "Collect_Skill_Tap3_Enable",
+            "[JumpBack]Collect_Skill_Tap3"
+        ],
+        "focus": "CSB.技能组调用开始"
     },
     "Collect_Skill_Tap3": {
-        "action": "Click",
-        "post_delay": 800,
         "roi": [
             1174,
             633,
@@ -30,15 +28,18 @@
         "template": [
             "pin.png"
         ],
+        "action": "Click",
         "target": [
             1203,
             664,
             3,
             5
         ],
+        "post_delay": 800,
         "focus": "第3页技能图标点击"
     },
     "Collect_Skill_Tap3_Enable": {
+        "desc": "色核识别完成.开始施放技能组",
         "recognition": "And",
         "all_of": [
             {
@@ -61,7 +62,6 @@
                     32,
                     29
                 ],
-                "count": 200,
                 "lower": [
                     192,
                     141,
@@ -71,28 +71,22 @@
                     223,
                     194,
                     129
-                ]
+                ],
+                "count": 200
             }
         ],
-        "focus": "CSB.技能页3-正确",
-        "doc": "色核识别完成.开始施放技能组",
         "next": [
             "[JumpBack]Setup_Entry5",
             "Collect_Skill3_2_Depleted",
             "Collect_Skill3_1_Nothing",
             "Collect_Skill1_Used",
             "Collect_Skill1"
-        ]
+        ],
+        "focus": "CSB.技能页3-正确"
     },
     "Collect_Skill1": {
+        "desc": "技能1设定为探查。识别位，技能环左1",
         "recognition": "TemplateMatch",
-        "action": "Click",
-        "next": [
-            "Collect_Skill1_Used",
-            "Collect_Skill1"
-        ],
-        "focus": "SCB.'探查'技能施放(无判定),栏位1-1",
-        "post_delay": 2000,
         "roi": [
             970,
             620,
@@ -102,21 +96,27 @@
         "template": [
             "Skill1-1.png"
         ],
+        "action": "Click",
         "target": [
             1002,
             651,
             10,
             10
         ],
-        "doc": "技能1设定为探查。识别位，技能环左1"
+        "post_delay": 2000,
+        "next": [
+            "Collect_Skill1_Used",
+            "Collect_Skill1"
+        ],
+        "focus": "SCB.'探查'技能施放(无判定),栏位1-1"
     },
     "Collect_Skill1_Used": {
         "recognition": "OCR",
-        "next": [
-            "Collect_Skill3_2_Nothing",
-            "Collect_Skill3_2_Depleted",
-            "Collect_Skill3_2",
-            "Collect_Skill3_2_Used"
+        "roi": [
+            970,
+            620,
+            66,
+            67
         ],
         "expected": [
             "\\d+"
@@ -135,14 +135,13 @@
                 ""
             ]
         ],
-        "focus": "SCB.'探查'技能施放-通过",
-        "roi": [
-            970,
-            620,
-            66,
-            67
-        ],
         "timeout": 4000,
+        "next": [
+            "Collect_Skill3_2_Nothing",
+            "Collect_Skill3_2_Depleted",
+            "Collect_Skill3_2",
+            "Collect_Skill3_2_Used"
+        ],
         "on_error": [
             "Collect_Skill3_3_perOcr",
             "Collect_Skill3_3_Nothing",
@@ -150,12 +149,12 @@
             "Collect_Skill_TapReset",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ]
+        ],
+        "focus": "SCB.'探查'技能施放-通过"
     },
     "Collect_Skill3_1_Nothing": {
+        "desc": "按需启用技能设置功能",
         "recognition": "TemplateMatch",
-        "timeout": 8000,
-        "focus": "CSB.无技能被设置,栏位3-1",
         "roi": [
             963,
             607,
@@ -165,11 +164,12 @@
         "template": [
             "Skill-Nothing.png"
         ],
-        "doc": "按需启用技能设置功能"
+        "timeout": 8000,
+        "focus": "CSB.无技能被设置,栏位3-1"
     },
     "Collect_Skill1_Unable": {
+        "desc": "设置不对.???不严谨，暂时不删",
         "recognition": "ColorMatch",
-        "focus": "技能1非正常",
         "roi": [
             970,
             620,
@@ -186,7 +186,7 @@
             166,
             179
         ],
-        "doc": "设置不对.???不严谨，暂时不删"
+        "focus": "技能1非正常"
     },
     "Collect_Skill3_2": {
         "recognition": "And",
@@ -211,7 +211,6 @@
                     8,
                     13
                 ],
-                "count": 25,
                 "method": 40,
                 "lower": [
                     0,
@@ -222,10 +221,12 @@
                     30,
                     3,
                     255
-                ]
+                ],
+                "count": 25
             }
         ],
         "action": "Click",
+        "post_delay": 2000,
         "next": [
             "Collect_Skill3_2",
             "Collect_Skill3_2_Used",
@@ -234,8 +235,7 @@
             "Collect_Skill3_3",
             "Collect_Skill_TapReset"
         ],
-        "focus": "CSB.施放'吸取'技能,栏位3-2",
-        "post_delay": 2000
+        "focus": "CSB.施放'吸取'技能,栏位3-2"
     },
     "Collect_Skill3_3": {
         "recognition": "And",
@@ -260,7 +260,6 @@
                     13,
                     9
                 ],
-                "count": 80,
                 "method": 40,
                 "lower": [
                     0,
@@ -271,7 +270,8 @@
                     30,
                     3,
                     255
-                ]
+                ],
+                "count": 80
             }
         ],
         "action": "Click",
@@ -305,7 +305,6 @@
                     8,
                     13
                 ],
-                "count": 50,
                 "lower": [
                     138,
                     138,
@@ -315,7 +314,8 @@
                     158,
                     158,
                     158
-                ]
+                ],
+                "count": 50
             }
         ],
         "next": [
@@ -327,48 +327,51 @@
         "focus": "CSB.'吸取'技能已无法使用(OCR耗尽已在Collect_Skill3_2_Depleted判定)"
     },
     "Collect_Skill3_2_Depleted": {
+        "desc": "当类似3/3左边与右边相同时,必定用完次数.直接结束流程,此条件作为整个吸取的出口.(已移除灰色色核,认为不必要)",
         "recognition": "OCR",
         "roi": [
-            942,
-            564,
-            54,
-            34
+            946,
+            572,
+            44,
+            20
         ],
         "expected": [
             "(\\d+)\\s*[/:：|\\-~]\\s*\\1(?!\\d)"
         ],
+        "only_rec": true,
         "action": "StopTask",
-        "focus": "CSB.技能'吸取'施放次数已满,结束流程.",
-        "doc": "当类似3/3左边与右边相同时,必定用完次数.直接结束流程,此条件作为整个吸取的出口.(已移除灰色色核,认为不必要)"
+        "focus": "CSB.技能'吸取'施放次数已满,结束流程."
     },
     "Collect_Skill3_3_perOcr": {
+        "desc": "当3/3左边捕获与右边相同时,必定用完次数",
         "recognition": "OCR",
-        "next": [
-            "Collect_Skill_TapReset"
-        ],
-        "timeout": 5000,
-        "focus": "CSB.施放次数已满,栏位3-3",
         "roi": [
-            976,
-            484,
-            56,
-            32
+            975,
+            487,
+            52,
+            27
         ],
         "expected": [
             "(\\d+)\\s*[/:：|\\-~]?\\s*\\1(?!\\d)"
         ],
-        "doc": "当3/3左边捕获与右边相同时,必定用完次数"
+        "only_rec": true,
+        "timeout": 5000,
+        "next": [
+            "Collect_Skill_TapReset"
+        ],
+        "focus": "CSB.施放次数已满,栏位3-3"
     },
     "Collect_Skill3_2_Nothing": {
+        "desc": "如果吸取技能不存在，流程无意义。用一次召集就可以杀流程了。用注入custom给召集设maxhit=1，并附加error直接去结束节点。",
         "recognition": "TemplateMatch",
-        "template": [
-            "Skill-Nothing.png"
-        ],
         "roi": [
             933,
             526,
             75,
             73
+        ],
+        "template": [
+            "Skill-Nothing.png"
         ],
         "action": {
             "type": "Custom",
@@ -383,23 +386,18 @@
                 }
             }
         },
+        "timeout": 2000,
         "next": [
             "Collect_Skill3_3"
         ],
         "on_error": [
             "Collect_Skill_KillFocus"
         ],
-        "timeout": 2000,
-        "focus": "CSB.[WRN]无技能被设置,栏位3-2 吸取技能不存在",
-        "doc": "如果吸取技能不存在，流程无意义。用一次召集就可以杀流程了。用注入custom给召集设maxhit=1，并附加error直接去结束节点。"
+        "focus": "CSB.[WRN]无技能被设置,栏位3-2 吸取技能不存在"
     },
     "Collect_Skill3_3_Nothing": {
+        "desc": "PVE点击技能2",
         "recognition": "TemplateMatch",
-        "next": [
-            "Collect_Skill_TapReset"
-        ],
-        "focus": "CSB.无技能被设置，栏位3-3",
-        "timeout": 8000,
         "roi": [
             966,
             437,
@@ -409,7 +407,11 @@
         "template": [
             "Skill-Nothing.png"
         ],
-        "doc": "PVE点击技能2"
+        "timeout": 8000,
+        "next": [
+            "Collect_Skill_TapReset"
+        ],
+        "focus": "CSB.无技能被设置，栏位3-3"
     },
     "Collect_Skill2_5_OCRERR": {
         "next": [
@@ -417,16 +419,13 @@
         ]
     },
     "Collect_Skill2_1~5_Unable": {
-        "focus": "CSB.[WRM]'吸取'技能施放错误",
         "next": [
-            "Collect_Skill_TapReset"
-        ]
-    },
-    "Collect_Skill_TapReset": {
-        "next": [
-            "Collect_Skill_End",
             "Collect_Skill_TapReset"
         ],
+        "focus": "CSB.[WRM]'吸取'技能施放错误"
+    },
+    "Collect_Skill_TapReset": {
+        "desc": "第一页技能点击现在已不需要，保留结构备用",
         "roi": [
             1049,
             632,
@@ -437,29 +436,20 @@
             "pin.png"
         ],
         "threshold": 0.9,
-        "doc": "第一页技能点击现在已不需要，保留结构备用"
+        "next": [
+            "Collect_Skill_End",
+            "Collect_Skill_TapReset"
+        ]
     },
     "Collect_Skill_End": {
+        "desc": "技能页1，结束复位色核识别",
         "recognition": "ColorMatch",
-        "next": [
-            "Collect_OperationsMain_OperationsEnd",
-            "[JumpBack]Collect_FindTeleporCircle0.9",
-            "[JumpBack]Collect_FindTeleporCircle"
-        ],
-        "timeout": 5000,
-        "on_error": [
-            "Collect_ForceTeleporCircle",
-            "Global_Null_Exception",
-            "Global_Null_Panic"
-        ],
-        "focus": "CSB.技能组复位-色核通过",
         "roi": [
             1173,
             633,
             59,
             60
         ],
-        "count": 200,
         "lower": [
             192,
             141,
@@ -470,10 +460,22 @@
             194,
             129
         ],
-        "doc": "技能页1，结束复位色核识别"
+        "count": 200,
+        "timeout": 5000,
+        "next": [
+            "Collect_OperationsMain_OperationsEnd",
+            "[JumpBack]Collect_FindTeleporCircle0.9",
+            "[JumpBack]Collect_FindTeleporCircle"
+        ],
+        "on_error": [
+            "Collect_ForceTeleporCircle",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "CSB.技能组复位-色核通过"
     },
     "Collect_Skill_KillFocus": {
-        "focus": "CM.S. 技能配置不足-结束流程",
-        "action": "StopTask"
+        "action": "StopTask",
+        "focus": "CM.S. 技能配置不足-结束流程"
     }
 }

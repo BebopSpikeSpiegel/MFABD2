@@ -1,233 +1,223 @@
 {
-  "Pass_HomePage": {
-    "next": [
-      "Pass_InToPass",
-      "[JumpBack]Global_ToHomePage"
-    ]
-  },
-  "Pass_InToPass": {
-    "recognition": "And",
-    "all_of": [
-      {
+    "Pass_HomePage": {
+        "next": [
+            "Pass_InToPass",
+            "[JumpBack]Global_ToHomePage"
+        ]
+    },
+    "Pass_InToPass": {
+        "desc": "识别左下抽抽乐-点击通行证",
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Main_OCR",
+                "recognition": "OCR",
+                "roi": [
+                    98,
+                    656,
+                    66,
+                    32
+                ],
+                "expected": [
+                    "抽抽乐"
+                ]
+            },
+            "Global_Main_Clr"
+        ],
+        "action": "Click",
+        "target": [
+            1063,
+            210
+        ],
+        "post_delay": 1000,
+        "timeout": 5000,
+        "next": [
+            "Pass_EnterPass",
+            "Pass_InToPass"
+        ],
+        "focus": "PM.尝试进入通行证页面"
+    },
+    "Pass_EnterPass": {
         "recognition": "OCR",
         "roi": [
-          98,
-          656,
-          66,
-          32
+            179,
+            6,
+            148,
+            65
+        ],
+        "expected": "通行证",
+        "next": [
+            "Pass_SelectPass",
+            "[JumpBack]Pass_TrySwip"
+        ],
+        "focus": "PM.通行证页面确认"
+    },
+    "Pass_TrySwip": {
+        "max_hit": 2,
+        "action": "Swipe",
+        "begin": [
+            216,
+            518
+        ],
+        "end": [
+            214,
+            190
+        ],
+        "end_hold": 500,
+        "duration": 500,
+        "focus": "PM.尝试滑动寻找红点"
+    },
+    "Pass_SelectPass": {
+        "desc": "选择通行证",
+        "recognition": "TemplateMatch",
+        "roi": [
+            207,
+            130,
+            93,
+            478
+        ],
+        "template": [
+            "pass1.png"
+        ],
+        "threshold": 0.9,
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "[JumpBack]Pass_SelectPassTask1",
+            "Pass_GetAll"
+        ]
+    },
+    "Pass_SelectPassTask1": {
+        "desc": "选择通行证任务",
+        "recognition": "Or",
+        "any_of": [
+            {
+                "recognition": "OCR",
+                "roi": [
+                    620,
+                    167,
+                    53,
+                    32
+                ],
+                "expected": [
+                    "LEVEL"
+                ],
+                "only_rec": true
+            },
+            {
+                "recognition": "OCR",
+                "roi": [
+                    760,
+                    169,
+                    45,
+                    26
+                ],
+                "expected": [
+                    "基础"
+                ],
+                "only_rec": true
+            }
+        ],
+        "action": "Click",
+        "target": [
+            1145,
+            460
+        ],
+        "post_delay": 1500,
+        "focus": "任务子项页色核检查"
+    },
+    "Pass_GetAll": {
+        "desc": "全部获得",
+        "recognition": "OCR",
+        "roi": [
+            757,
+            514,
+            361,
+            66
         ],
         "expected": [
-          "抽抽乐"
-        ]
-      },
-      {
-        "recognition": "ColorMatch",
+            "全部获得"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Pass_GetAllBack"
+        ],
+        "focus": "PM.点击领取"
+    },
+    "Pass_GetAllBack": {
+        "desc": "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$",
+        "recognition": "OCR",
         "roi": [
-          104,
-          664,
-          51,
-          17
+            556,
+            628,
+            148,
+            36
         ],
-        "method": 40,
-        "lower": [
-          0,
-          0,
-          218
+        "expected": [
+            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
         ],
-        "upper": [
-          149,
-          5,
-          255
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Pass_SelectPass",
+            "Pass_Back"
+        ]
+    },
+    "Pass_SelectPassLev": {
+        "desc": "选择通行证等级",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1145,
+            230,
+            34,
+            37
         ],
-        "count": 150
-      }
-    ],
-    "action": "Click",
-    "target": [
-      1063,
-      210
-    ],
-    "post_delay": 1000,
-    "next": [
-      "Pass_EnterPass",
-      "Pass_InToPass"
-    ],
-    "timeout": 5000,
-    "focus": "PM.尝试进入通行证页面",
-    "doc": "识别左下抽抽乐-点击通行证"
-  },
-  "Pass_EnterPass": {
-    "recognition": "OCR",
-    "expected": "通行证",
-    "roi": [
-      179,
-      6,
-      148,
-      65
-    ],
-    "focus": "PM.通行证页面确认",
-    "next": [
-      "Pass_SelectPass",
-      "[JumpBack]Pass_TrySwip"
-    ]
-  },
-  "Pass_TrySwip": {
-    "action": "Swipe",
-    "begin": [
-      216,
-      518
-    ],
-    "end": [
-      214,
-      190
-    ],
-    "duration": 500,
-    "end_hold": 500,
-    "focus": "PM.尝试滑动寻找红点",
-    "max_hit": 2
-  },
-  "Pass_SelectPass": {
-    "recognition": "TemplateMatch",
-    "action": "Click",
-    "next": [
-      "Pass_SelectPassTask1",
-      "Pass_GetAll"
-    ],
-    "post_delay": 1000,
-    "roi": [
-      207,
-      130,
-      93,
-      478
-    ],
-    "template": [
-      "pass1.png"
-    ],
-    "threshold": 0.9,
-    "doc": "选择通行证"
-  },
-  "Pass_SelectPassTask1": {
-    "recognition": "ColorMatch",
-    "action": "Click",
-    "next": [
-      "Pass_GetAll",
-      "Pass_SelectPassTask1"
-    ],
-    "post_delay": 1000,
-    "focus": "任务子项页色核检查",
-    "count": 100,
-    "lower": [
-      [
-        153,
-        151,
-        146
-      ]
-    ],
-    "upper": [
-      [
-        153,
-        151,
-        146
-      ]
-    ],
-    "target": [
-      1145,
-      460
-    ],
-    "doc": "选择通行证任务"
-  },
-  "Pass_GetAll": {
-    "recognition": "OCR",
-    "action": "Click",
-    "next": [
-      "Pass_GetAllBack"
-    ],
-    "focus": "PM.点击领取",
-    "post_delay": 1000,
-    "roi": [
-      757,
-      514,
-      361,
-      66
-    ],
-    "expected": [
-      "全部获得"
-    ],
-    "doc": "全部获得"
-  },
-  "Pass_GetAllBack": {
-    "recognition": "OCR",
-    "action": "Click",
-    "next": [
-      "Pass_SelectPass",
-      "Pass_Back"
-    ],
-    "post_delay": 1000,
-    "roi": [
-      556,
-      628,
-      148,
-      36
-    ],
-    "expected": [
-      "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-    ],
-    "doc": "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-  },
-  "Pass_SelectPassLev": {
-    "recognition": "TemplateMatch",
-    "action": "Click",
-    "next": [
-      "Pass_LevGetAll"
-    ],
-    "post_delay": 1000,
-    "roi": [
-      1145,
-      230,
-      34,
-      37
-    ],
-    "template": [
-      "Pass.png"
-    ],
-    "doc": "选择通行证等级"
-  },
-  "Pass_LevGetAll": {
-    "recognition": "OCR",
-    "action": "Click",
-    "next": [
-      "Pass_SelectPass",
-      "Pass_Back"
-    ],
-    "focus": "PM.点击领取",
-    "post_delay": 5000,
-    "roi": [
-      981,
-      559,
-      82,
-      36
-    ],
-    "expected": [
-      "全部获得"
-    ],
-    "doc": "全部获得"
-  },
-  "Pass_Back": {
-    "recognition": "OCR",
-    "action": "Click",
-    "next": [
-      "Global_ToHomePage"
-    ],
-    "post_delay": 1000,
-    "roi": [
-      212,
-      19,
-      115,
-      43
-    ],
-    "expected": [
-      "通行证"
-    ],
-    "doc": "刷完了"
-  }
+        "template": [
+            "Pass.png"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Pass_LevGetAll"
+        ]
+    },
+    "Pass_LevGetAll": {
+        "desc": "全部获得",
+        "recognition": "OCR",
+        "roi": [
+            981,
+            559,
+            82,
+            36
+        ],
+        "expected": [
+            "全部获得"
+        ],
+        "action": "Click",
+        "post_delay": 5000,
+        "next": [
+            "Pass_SelectPass",
+            "Pass_Back"
+        ],
+        "focus": "PM.点击领取"
+    },
+    "Pass_Back": {
+        "desc": "刷完了",
+        "recognition": "OCR",
+        "roi": [
+            212,
+            19,
+            115,
+            43
+        ],
+        "expected": [
+            "通行证"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Global_ToHomePage"
+        ]
+    }
 }

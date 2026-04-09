@@ -502,9 +502,6 @@ class FishingBot:
         print(f"最大次数: {max_count if max_count else '无限'}")
         print("==================================================")
 
-        # 开始执行前先卖一次鱼防止卡住
-        self.sell_all_fish()
-
         try:
             while self.running and not self.context.tasker.stopping:
                 if max_count and self.fish_count >= max_count:

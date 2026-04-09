@@ -221,16 +221,31 @@ def _ensure_cache_loaded(force_refresh=False):
     global ALL_NODES_CACHE, CACHE_LOADED
     if CACHE_LOADED and not force_refresh: return
 
+    # 每次重建前先复位状态，避免"空缓存 + 已加载"脏状态（force_refresh 场景）
+    CACHE_LOADED = False
+    ALL_NODES_CACHE = {}
     utils.mfaalog.info("[Py] 💾 正在建立节点数据库 (Deep Cache)...")
-    ALL_NODES_CACHE = {} 
-    base_dir = Path(".") 
-    target_path = base_dir / "resource" / "pipeline"
+
+    # 用 __file__ 反推项目根目录，规避 CWD 不可靠的问题
+    # pipeline_manager.py: agent/action/ -> agent/ -> project_root/
+    _project_root = Path(__file__).resolve().parent.parent.parent
+    target_path = _project_root / "assets" / "resource" / "base" / "pipeline"
+
+    # fallback：路径结构调整时的保底
     if not target_path.exists():
-        found = list(base_dir.rglob("pipeline"))
-        if found: target_path = found[0]
+        _fallback = _project_root / "resource" / "pipeline"
+        if _fallback.exists():
+            target_path = _fallback
+        else:
+            # 优先级列表：父目录名越靠前越优先；同时过滤掉不含 json 的空文件夹
+            _preferred_parents = ["base", "pc"]
+            found = [p for p in _project_root.rglob("pipeline") if p.is_dir() and any(p.rglob("*.json"))]
+            found.sort(key=lambda p: _preferred_parents.index(p.parent.name) if p.parent.name in _preferred_parents else len(_preferred_parents))
+            if found: 
+                target_path = found[0]
 
     if not target_path.exists():
-        utils.mfaalog.error(f"[Py] ❌ 找不到 pipeline 目录")
+        utils.mfaalog.error(f"[Py] ❌ 找不到 pipeline 目录，project_root={_project_root}")
         return
 
     count = 0
@@ -247,8 +262,12 @@ def _ensure_cache_loaded(force_refresh=False):
         except Exception as e:
             utils.mfaalog.warning(f"[Py] 读取跳过 {file_path.name}: {e}")
 
-    CACHE_LOADED = True
-    utils.mfaalog.info(f"[Py] 💾 数据库构建完成！已索引 {count} 个节点的原始配置。")
+    if count > 0:
+        CACHE_LOADED = True
+        utils.mfaalog.info(f"[Py] 💾 数据库构建完成！已索引 {count} 个节点的原始配置。")
+    else:
+        CACHE_LOADED = False
+        utils.mfaalog.error(f"[Py] ❌ 数据库构建异常：索引到 0 个节点！请检查 pipeline 目录: {target_path}")
 
 def _process_reset_tags(params: dict):
     """

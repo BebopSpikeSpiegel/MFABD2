@@ -1,197 +1,204 @@
 {
-  "Mail_HomePage": {
-    "next": [
-      "Mail_GoinMail",
-      "[JumpBack]Global_ToHomePage"
-    ]
-  },
-  "Mail_GoinMail": {
-    "recognition": "OCR",
-    "next": [
-      "Mail_NewRed"
-    ],
-    "post_delay": 1000,
-    "roi": [
-      98,
-      656,
-      66,
-      32
-    ],
-    "focus": "GM.主页面已确认",
-    "expected": [
-      "抽抽乐"
-    ],
-    "target": [
-      1030,
-      45
-    ],
-    "timeout": 3000,
-    "on_error": [
-      "Mail_NormalEnd",
-      "Global_Null_Exception",
-      "Global_Null_Panic"
-    ],
-    "doc": "识别左下抽抽乐-点击邮件"
-  },
-  "Mail_NewRed": {
-    "recognition": "TemplateMatch",
-    "template": "MailAtMainRedGe.png",
-    "green_mask": true,
-    "roi": [
-      1003,
-      14,
-      64,
-      58
-    ],
-    "action": "Click",
-    "target_offset": [
-      -15,
-      20,
-      0,
-      0
-    ],
-    "post_wait_freezes": 500,
-    "next": [
-      "Mail_Check_MailPage",
-      "Mail_NewRed"
-    ],
-    "focus": "GM.新邮件红点确认"
-  },
-  "Mail_Check_MailPage": {
-    "recognition": "OCR",
-    "expected": [
-      "邮箱",
-      "记录"
-    ],
-    "roi": [
-      209,
-      15,
-      137,
-      54
-    ],
-    "focus": "GM.邮箱页面已确认",
-    "next": [
-      "Mail_GetAllBack",
-      "Mail_GetAll",
-      "Mail_TabBus"
-    ],
-    "on_error": [
-      "Mail_ERRlEnd",
-      "Global_Null_Exception",
-      "Global_Null_Panic"
-    ]
-  },
-  "Mail_GetAll": {
-    "recognition": "ColorMatch",
-    "action": "Click",
-    "next": [
-      "Mail_GetAllBack",
-      "Mail_GetAll",
-      "Mail_TabBus"
-    ],
-    "focus": "GM.一般邮件领取",
-    "post_delay": 2000,
-    "roi": [
-      1048,
-      641,
-      87,
-      35
-    ],
-    "lower": [
-      212,
-      210,
-      201
-    ],
-    "upper": [
-      213,
-      212,
-      203
-    ],
-    "doc": "全部领取"
-  },
-  "Mail_GetAllBack": {
-    "recognition": "OCR",
-    "action": "Click",
-    "next": [
-      "Mail_GetAllBack",
-      "Mail_TabBus",
-      "Mail_NormalEnd"
-    ],
-    "post_delay": 1000,
-    "roi": [
-      556,
-      628,
-      148,
-      36
-    ],
-    "expected": [
-      "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-    ],
-    "focus": "GM.邮件已收取",
-    "doc": "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-  },
-  "Mail_TabBus": {
-    "recognition": "TemplateMatch",
-    "action": "Click",
-    "next": [
-      "Mail_GetBusAll",
-      "Mail_TabBus"
-    ],
-    "post_delay": 2000,
-    "roi": [
-      184,
-      146,
-      185,
-      62
-    ],
-    "template": [
-      "FreeGacha.png"
-    ],
-    "doc": "切换to月卡信箱",
-    "timeout": 5000,
-    "on_error": [
-      "Mail_ERRlEnd",
-      "Global_Null_Exception",
-      "Global_Null_Panic"
-    ]
-  },
-  "Mail_GetBusAll": {
-    "recognition": "ColorMatch",
-    "action": "Click",
-    "next": [
-      "Mail_GetAllBack",
-      "Mail_GetBusAll"
-    ],
-    "post_delay": 2000,
-    "roi": [
-      1048,
-      641,
-      87,
-      35
-    ],
-    "lower": [
-      212,
-      210,
-      201
-    ],
-    "upper": [
-      213,
-      212,
-      203
-    ],
-    "focus": "GM.商品邮件领取",
-    "doc": "全部领取"
-  },
-  "Mail_NormalEnd": {
-    "next": [
-      "Global_ToSandBox"
-    ],
-    "focus": "GM.通常结束"
-  },
-  "Mail_ERRlEnd": {
-    "next": [
-      "Global_ToSandBox"
-    ],
-    "focus": "GM.异常结束"
-  }
+    "Mail_HomePage": {
+        "next": [
+            "Mail_GoinMail",
+            "[JumpBack]Global_ToHomePage"
+        ]
+    },
+    "Mail_GoinMail": {
+        "desc": "识别左下抽抽乐-点击邮件",
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Main_OCR",
+                "recognition": "OCR",
+                "roi": [
+                    98,
+                    656,
+                    66,
+                    32
+                ],
+                "expected": [
+                    "抽抽乐"
+                ]
+            },
+            "Global_Main_Clr"
+        ],
+        "target": [
+            1030,
+            45
+        ],
+        "post_delay": 1000,
+        "timeout": 3000,
+        "next": [
+            "Mail_NewRed"
+        ],
+        "on_error": [
+            "Mail_NormalEnd",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "GM.主页面已确认"
+    },
+    "Mail_NewRed": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1003,
+            14,
+            64,
+            58
+        ],
+        "template": "MailAtMainRedGe.png",
+        "green_mask": true,
+        "action": "Click",
+        "target_offset": [
+            -15,
+            20,
+            0,
+            0
+        ],
+        "post_wait_freezes": 500,
+        "next": [
+            "Mail_Check_MailPage",
+            "Mail_NewRed"
+        ],
+        "focus": "GM.新邮件红点确认"
+    },
+    "Mail_Check_MailPage": {
+        "recognition": "OCR",
+        "roi": [
+            209,
+            15,
+            137,
+            54
+        ],
+        "expected": [
+            "邮箱",
+            "记录"
+        ],
+        "next": [
+            "Mail_GetAllBack",
+            "Mail_GetAll",
+            "Mail_TabBus"
+        ],
+        "on_error": [
+            "Mail_ERRlEnd",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "GM.邮箱页面已确认"
+    },
+    "Mail_GetAll": {
+        "desc": "全部领取",
+        "recognition": "ColorMatch",
+        "roi": [
+            1048,
+            641,
+            87,
+            35
+        ],
+        "lower": [
+            212,
+            210,
+            201
+        ],
+        "upper": [
+            213,
+            212,
+            203
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Mail_GetAllBack",
+            "Mail_GetAll",
+            "Mail_TabBus"
+        ],
+        "focus": "GM.一般邮件领取"
+    },
+    "Mail_GetAllBack": {
+        "desc": "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$",
+        "recognition": "OCR",
+        "roi": [
+            556,
+            628,
+            148,
+            36
+        ],
+        "expected": [
+            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Mail_GetAllBack",
+            "Mail_TabBus",
+            "Mail_NormalEnd"
+        ],
+        "focus": "GM.邮件已收取"
+    },
+    "Mail_TabBus": {
+        "desc": "切换to月卡信箱",
+        "recognition": "TemplateMatch",
+        "roi": [
+            184,
+            146,
+            185,
+            62
+        ],
+        "template": [
+            "FreeGacha.png"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "timeout": 5000,
+        "next": [
+            "Mail_GetBusAll",
+            "Mail_TabBus"
+        ],
+        "on_error": [
+            "Mail_ERRlEnd",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Mail_GetBusAll": {
+        "desc": "全部领取",
+        "recognition": "ColorMatch",
+        "roi": [
+            1048,
+            641,
+            87,
+            35
+        ],
+        "lower": [
+            212,
+            210,
+            201
+        ],
+        "upper": [
+            213,
+            212,
+            203
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Mail_GetAllBack",
+            "Mail_GetBusAll"
+        ],
+        "focus": "GM.商品邮件领取"
+    },
+    "Mail_NormalEnd": {
+        "next": [
+            "Global_ToSandBox"
+        ],
+        "focus": "GM.通常结束"
+    },
+    "Mail_ERRlEnd": {
+        "next": [
+            "Global_ToSandBox"
+        ],
+        "focus": "GM.异常结束"
+    }
 }

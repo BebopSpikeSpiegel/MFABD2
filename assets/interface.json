@@ -75,7 +75,7 @@
             "name": "[执行]装备制作&炼制日常",
             "entry": "Equip_HomePage",
             "default_check": true,
-            "description": "**装备制作：**依次进行 `N稀有短剑打造`、将其`强化`、将其`分解`、`精炼`。<br> 如果有相关装备非正常锁定，可能会失败。 **尤其初次运行**流程运行无需事先锁定装备。<br> `精炼`只会以SR 或 UR 稀有度装备为对象进行<br>若将`仅精炼...`和`自定义标志排序`同时配置，能“合成”出——低精炼等级强化队列：排列优先装备1号超出`仅精炼`条件会被筛选掉、下一次开始精炼优先装备2号。**自定义标志规则参见子项说明**。 ",
+            "description": "**装备制作：**依次进行 `N稀有短剑打造`、将其`强化`同时`分解`、`精炼`。<br> 如果有相关装备非正常锁定，可能会失败。 **尤其初次运行**流程运行无需事先锁定装备。<br> `精炼`只会以SR 或 UR 稀有度装备为对象进行<br>若将`仅精炼...`和`自定义标志排序`同时配置，能“合成”出——低精炼等级强化队列：排列优先装备1号超出`仅精炼`条件会被筛选掉、下一次开始精炼优先装备2号。**自定义标志规则参见子项说明**。 ",
             "option": [
                 "精炼装备阶级",
                 "仅精炼<17 或 <10",
@@ -255,14 +255,14 @@
                             "enabled": true
                         },
                         "QuickHunt_CollectMapHuntingGrounds": {
-                            "expected": [
-                                "蜥蜴人祭坛"
-                            ],
                             "roi": [
                                 298,
                                 369,
                                 134,
                                 88
+                            ],
+                            "expected": [
+                                "蜥蜴人祭坛"
                             ]
                         }
                     }
@@ -274,14 +274,14 @@
                             "enabled": true
                         },
                         "QuickHunt_CollectMapHuntingGrounds": {
-                            "expected": [
-                                "守山人休息处"
-                            ],
                             "roi": [
                                 448,
                                 409,
                                 167,
                                 74
+                            ],
+                            "expected": [
+                                "守山人休息处"
                             ]
                         }
                     }
@@ -504,14 +504,14 @@
                     "name": "UR",
                     "pipeline_override": {
                         "Equip_filterSR": {
-                            "template": [
-                                "filterUR.png"
-                            ],
                             "roi": [
                                 548,
                                 399,
                                 55,
                                 34
+                            ],
+                            "template": [
+                                "filterUR.png"
                             ]
                         }
                     }
@@ -572,43 +572,21 @@
         "仅精炼<17 或 <10": {
             "cases": [
                 {
-                    "name": "关闭",
+                    "name": "关闭"
+                },
+                {
+                    "name": "CLv. < 17",
                     "pipeline_override": {
                         "Equip_filter<C17": {
-                            "recognition": "DirectHit",
-                            "action": "DoNothing",
-                            "focus": null
-                        },
-                        "Equip_filter<C17Ck": {
-                            "recognition": "DirectHit",
-                            "action": "DoNothing",
-                            "focus": null
+                            "enabled": true
                         }
                     }
                 },
                 {
-                    "name": "CLv. < 17",
-                    "pipeline_override": {}
-                },
-                {
                     "name": "CLv. < 10",
                     "pipeline_override": {
-                        "Equip_filter<C17": {
-                            "focus": "EM.装备精炼.<C10",
-                            "target": [
-                                720,
-                                320
-                            ],
-                            "recognition": "DirectHit"
-                        },
-                        "Equip_filter<C17Ck": {
-                            "focus": "EM.色核通过.<C10",
-                            "roi": [
-                                683,
-                                304,
-                                74,
-                                33
-                            ]
+                        "Equip_filter<C10": {
+                            "enabled": true
                         }
                     }
                 }
@@ -619,17 +597,13 @@
             "type": "switch",
             "cases": [
                 {
-                    "name": "No",
-                    "pipeline_override": {}
+                    "name": "No"
                 },
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "Equip_filterON": {
-                            "next": [
-                                "Equip_Sequen_Menu",
-                                "Equip_filterON"
-                            ]
+                        "Equip_Sequen_Menu": {
+                            "enabled": true
                         }
                     }
                 }
@@ -1221,11 +1195,8 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "Collect_Sandplay": {
-                            "next": [
-                                "Collect_BlackList_User",
-                                "[JumpBack]Global_QuickCart_MenuReset"
-                            ]
+                        "Collect_BlackList_User": {
+                            "enabled": true
                         }
                     },
                     "option": [
@@ -1334,10 +1305,8 @@
             "pipeline_override": {
                 "Custom_Fishing_Task": {
                     "action": {
-                        "param": {
-                            "custom_action_param": {
-                                "max_count": "{目标钓鱼条数}"
-                            }
+                        "custom_action_param": {
+                            "max_count": "{目标钓鱼条数}"
                         }
                     }
                 }
@@ -1705,7 +1674,7 @@
     },
     "interface_version": 2,
     "name": "MFABD2",
-    "title": "MFABD2 | 棕色尘埃2自动化助手(sunyink/MFABD2)v0.0.20 | 游戏版本：20260312 ( Psyche Artist )",
+    "title": "MFABD2 | 棕色尘埃2自动化助手(sunyink/MFABD2)v0.0.20 | 游戏版本：20260409 ( SHINOBI ROAD )",
     "github": "https://github.com/sunyink/MFABD2",
     "mirrorchyan_rid": "MFABD2",
     "mirrorchyan_multiplatform": true,
