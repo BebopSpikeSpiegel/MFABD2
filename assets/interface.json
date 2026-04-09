@@ -1195,11 +1195,8 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "Collect_Sandplay": {
-                            "next": [
-                                "Collect_BlackList_User",
-                                "[JumpBack]Global_QuickCart_MenuReset"
-                            ]
+                        "Collect_BlackList_User": {
+                            "enabled": true
                         }
                     },
                     "option": [

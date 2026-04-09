@@ -87,12 +87,22 @@
         "template": [
             "pin.png"
         ],
+        "action": "Click",
+        "target": [
+            1203,
+            664,
+            3,
+            5
+        ],
         "next": [
+            "Collect_Skill3_2_Depleted",
+            "Collect_BlackList_User",
             "Collect_QuickCart_Menu",
             "[JumpBack]Global_QuickCart_MenuReset"
         ]
     },
     "Collect_BlackList_User": {
+        "enabled": false,
         "action": "Custom",
         "custom_action": "BatchNumericPatch",
         "custom_action_param": {
