@@ -255,14 +255,14 @@
                             "enabled": true
                         },
                         "QuickHunt_CollectMapHuntingGrounds": {
-                            "expected": [
-                                "蜥蜴人祭坛"
-                            ],
                             "roi": [
                                 298,
                                 369,
                                 134,
                                 88
+                            ],
+                            "expected": [
+                                "蜥蜴人祭坛"
                             ]
                         }
                     }
@@ -274,14 +274,14 @@
                             "enabled": true
                         },
                         "QuickHunt_CollectMapHuntingGrounds": {
-                            "expected": [
-                                "守山人休息处"
-                            ],
                             "roi": [
                                 448,
                                 409,
                                 167,
                                 74
+                            ],
+                            "expected": [
+                                "守山人休息处"
                             ]
                         }
                     }
@@ -504,14 +504,14 @@
                     "name": "UR",
                     "pipeline_override": {
                         "Equip_filterSR": {
-                            "template": [
-                                "filterUR.png"
-                            ],
                             "roi": [
                                 548,
                                 399,
                                 55,
                                 34
+                            ],
+                            "template": [
+                                "filterUR.png"
                             ]
                         }
                     }
