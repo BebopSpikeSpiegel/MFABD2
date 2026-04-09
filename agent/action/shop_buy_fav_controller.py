@@ -78,6 +78,11 @@ class ShopBuyFavController(CustomAction):
             target_items, ocr_exclude = self._load_config(context, cart_name)
             if target_items is None:
                 return False
+            if not target_items:
+                mfaalog.info(
+                    f"[ShopBuy] [{cart_name}] 购物清单为空，跳过购买。"
+                )
+                return True
 
             mfaalog.debug(
                 f"[ShopBuy] 📋 [{cart_name}] 目标商品 ({len(target_items)}项): "
@@ -107,15 +112,10 @@ class ShopBuyFavController(CustomAction):
         attach = node_obj.attach
 
         items_str = attach.get(cart_name)
-        if not items_str or not isinstance(items_str, str):
+        if items_str is None or not isinstance(items_str, str):
             mfaalog.warning(
                 f"[ShopBuy] ⚠️ 未找到卡带 [{cart_name}] 的购物清单。"
             )
-            return None, None
-
-        target_items = self._parse_item_list(items_str)
-        if not target_items:
-            mfaalog.warning(f"[ShopBuy] ⚠️ [{cart_name}] 购物清单解析为空。")
             return None, None
 
         exclude_str = attach.get("ocr_exclude", "")
@@ -126,6 +126,15 @@ class ShopBuyFavController(CustomAction):
             f"[ShopBuy] 🔧 ocr_exclude ({len(ocr_exclude)}项): "
             f"{ocr_exclude if ocr_exclude else '空！'}"
         )
+
+        if not items_str:
+            # 空字符串 = 有意配置为"无需购买"，返回空集合
+            return set(), ocr_exclude
+
+        target_items = self._parse_item_list(items_str)
+        if not target_items:
+            mfaalog.warning(f"[ShopBuy] ⚠️ [{cart_name}] 购物清单解析为空。")
+            return None, None
 
         return target_items, ocr_exclude
 
