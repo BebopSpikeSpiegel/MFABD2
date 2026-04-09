@@ -536,7 +536,12 @@
             "[JumpBack]StartGame_AtPack_FantasiaSquare",
             "[JumpBack]StartGame_AtPack_GoldenColosseum",
             "StartGame_FinBackMapPage",
-            "[JumpBack]StartGame_BackMapPage"
+            "[JumpBack]StartGame_BackMapPage",
+            "[JumpBack]PVP_PerPetTask",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]PVP_PerOperationsMain_Error",
+            "[JumpBack]Global_BackPageHub_Once"
         ],
         "focus": "SM.返回箱庭"
     },
@@ -664,7 +669,9 @@
         ],
         "expected": [
             "赛季奖励",
-            "奖励已发放至"
+            "奖励已发放至",
+            "奖励已通过",
+            "邮件发放"
         ],
         "action": "Click",
         "target": [
