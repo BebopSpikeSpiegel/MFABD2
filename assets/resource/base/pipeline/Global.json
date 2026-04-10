@@ -1,6 +1,6 @@
 {
     "Global_Index": {
-        "focus": "公共复用节点目录。开发整理用，别真引用此节点",
+        "desc": "依次为:回到主页面|回到箱庭|调出快速卡带菜单|回到快速卡带1|回到传统卡带2|点一次返回按钮 | 卡带读取界面循环等待",
         "on_error": [
             "Global_ToHomePage",
             "Global_ToSandBox",
@@ -12,7 +12,7 @@
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
-        "doc": "依次为:回到主页面|回到箱庭|调出快速卡带菜单|回到快速卡带1|回到传统卡带2|点一次返回按钮 | 卡带读取界面循环等待"
+        "focus": "公共复用节点目录。开发整理用，别真引用此节点"
     },
     "Global_OnceHomeButton": {
         "recognition": "TemplateMatch",
@@ -22,20 +22,18 @@
             122,
             77
         ],
-        "green_mask": true,
         "template": [
             "MainHomeIceGE.png",
             "MainHomeRIceGE.png"
         ],
+        "green_mask": true,
         "action": "Click",
         "post_delay": 2000,
         "focus": "G.点击一次主页面图标"
     },
     "Global_BackPageHub_Once": {
+        "desc": "其他页面，返回按钮(一次性)",
         "recognition": "TemplateMatch",
-        "action": "Click",
-        "post_delay": 2000,
-        "focus": "GO.点击返回按钮",
         "roi": [
             1,
             1,
@@ -47,26 +45,28 @@
             "BackButGe2.png"
         ],
         "green_mask": true,
-        "doc": "其他页面，返回按钮(一次性)"
+        "action": "Click",
+        "post_delay": 2000,
+        "focus": "GO.点击返回按钮"
     },
     "Global_QuickCart_MenuReset": {
+        "desc": "调出快速卡带1/2,操作",
         "recognition": "TemplateMatch",
-        "action": "Click",
-        "next": [
-            "Global_QuickCart_MenuReset_Ocr",
-            "Global_QuickCart_MenuReset"
-        ],
-        "post_delay": 1000,
-        "focus": "GO.调出快速卡带",
         "template": [
             "QuickCartGeadai.png"
         ],
         "green_mask": true,
-        "doc": "调出快速卡带1/2,操作"
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Global_QuickCart_MenuReset_Ocr",
+            "Global_QuickCart_MenuReset"
+        ],
+        "focus": "GO.调出快速卡带"
     },
     "Global_QuickCart_MenuReset_Ocr": {
+        "desc": "调出快速卡带2/2,核对",
         "recognition": "OCR",
-        "focus": "GO.快速卡带调出成功",
         "roi": [
             32,
             506,
@@ -76,9 +76,10 @@
         "expected": [
             "最近"
         ],
-        "doc": "调出快速卡带2/2,核对"
+        "focus": "GO.快速卡带调出成功"
     },
     "Global_ToHomePage": {
+        "desc": "[通用复位]复位到主界面模块,开始,中继调用",
         "recognition": "And",
         "all_of": [
             {
@@ -116,13 +117,12 @@
             }
         ],
         "inverse": true,
+        "timeout": 8000,
         "next": [
             "Global_ToHomePage_Enter",
             "Global_ToHomePage_HomeButton",
             "Global_ToHomePage_Reset"
         ],
-        "doc": "[通用复位]复位到主界面模块,开始,中继调用",
-        "timeout": 8000,
         "on_error": [
             "[JumpBack]StartGame_SeasonSet",
             "[JumpBack]StartGame_Special",
@@ -133,6 +133,7 @@
         ]
     },
     "Global_ToHomePage_HomeButton": {
+        "desc": "找到run-点击返回主页",
         "recognition": "Or",
         "any_of": [
             {
@@ -171,20 +172,11 @@
             "Global_ToHomePage_Enter",
             "Global_ToHomePage_HomeButton"
         ],
-        "focus": "G.箱庭地图已确认",
-        "doc": "找到run-点击返回主页"
+        "focus": "G.箱庭地图已确认"
     },
     "Global_ToHomePage_Reset": {
+        "desc": "其他页面，返回按钮",
         "recognition": "TemplateMatch",
-        "action": "Click",
-        "next": [
-            "Global_ToHomePage_Enter",
-            "Global_ToHomePage_HomeButton",
-            "Global_ToHomePage_Reset",
-            "[JumpBack]Global_WaitingForLoading"
-        ],
-        "post_delay": 3000,
-        "focus": "G=1.页面非预期，点击返回按钮",
         "roi": [
             1,
             1,
@@ -196,9 +188,18 @@
             "BackButGe2.png"
         ],
         "green_mask": true,
-        "doc": "其他页面，返回按钮"
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage_HomeButton",
+            "Global_ToHomePage_Reset",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G=1.页面非预期，点击返回按钮"
     },
     "Global_ToHomePage_Enter": {
+        "desc": "[通用复位]复位到主界面模块,结束,中继调用",
         "recognition": "And",
         "all_of": [
             {
@@ -234,16 +235,16 @@
                 ],
                 "count": 150
             }
-        ],
-        "doc": "[通用复位]复位到主界面模块,结束,中继调用"
+        ]
     },
     "Global_ToSandBox": {
+        "desc": "[通用复位]复位到主界面模块,开始,中继调用",
+        "timeout": 10000,
         "next": [
             "Global_ToSandBox_Enter",
             "Global_ToSandBox_Reset",
             "[JumpBack]Global_WaitingForLoading"
         ],
-        "timeout": 10000,
         "on_error": [
             "Global_BackToQC1",
             "[JumpBack]StartGame_SeasonSet",
@@ -252,19 +253,11 @@
             "[JumpBack]PVP_PerOperationsMain_Error",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ],
-        "doc": "[通用复位]复位到主界面模块,开始,中继调用"
+        ]
     },
     "Global_ToSandBox_Reset": {
+        "desc": "其他页面，返回按钮",
         "recognition": "TemplateMatch",
-        "action": "Click",
-        "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Global_ToSandBox_Enter",
-            "Global_ToSandBox_Reset"
-        ],
-        "post_delay": 4000,
-        "focus": "G=1.页面非预期，点击返回按钮",
         "roi": [
             1,
             1,
@@ -277,7 +270,14 @@
             "UI_qsback.png"
         ],
         "green_mask": true,
-        "doc": "其他页面，返回按钮"
+        "action": "Click",
+        "post_delay": 4000,
+        "next": [
+            "[JumpBack]Global_WaitingForLoading",
+            "Global_ToSandBox_Enter",
+            "Global_ToSandBox_Reset"
+        ],
+        "focus": "G=1.页面非预期，点击返回按钮"
     },
     "Global_ToSandBox_Enter": {
         "recognition": "Or",
@@ -319,12 +319,8 @@
         "focus": "G.复位卡带开始"
     },
     "Global_BackToPve2#_ToCardMenu": {
+        "desc": "识别左下抽抽乐-主页-点击选择章节",
         "recognition": "OCR",
-        "action": "Click",
-        "next": [
-            "Global_BackToPve2#_CardMenu",
-            "Global_BackToPve2#_ToCardMenu"
-        ],
         "roi": [
             89,
             655,
@@ -334,22 +330,26 @@
         "expected": [
             "抽抽乐"
         ],
+        "action": "Click",
         "target": [
             1111,
             650
         ],
-        "doc": "识别左下抽抽乐-主页-点击选择章节"
+        "next": [
+            "Global_BackToPve2#_CardMenu",
+            "Global_BackToPve2#_ToCardMenu"
+        ]
     },
     "Global_BackToPve2#_CardMenu": {
         "recognition": "OCR",
-        "expected": [
-            "游戏卡珍藏集"
-        ],
         "roi": [
             175,
             8,
             176,
             62
+        ],
+        "expected": [
+            "游戏卡珍藏集"
         ],
         "next": [
             "Global_BackToPve2#_TouchPVEBook",
@@ -358,8 +358,8 @@
         ]
     },
     "Global_BackToPve2#_PVEBookSwipe": {
+        "desc": "识别活动游戏卡-上划",
         "recognition": "OCR",
-        "action": "Swipe",
         "roi": [
             118,
             505,
@@ -369,6 +369,7 @@
         "expected": [
             "活动游戏卡"
         ],
+        "action": "Swipe",
         "begin": [
             30,
             300
@@ -376,15 +377,11 @@
         "end": [
             30,
             700
-        ],
-        "doc": "识别活动游戏卡-上划"
+        ]
     },
     "Global_BackToPve2#_PVEBookSwipe_Lift": {
+        "desc": "识别活动游戏卡-上划",
         "recognition": "OCR",
-        "action": "Swipe",
-        "duration": 500,
-        "end_hold": 800,
-        "post_delay": 1500,
         "roi": [
             111,
             95,
@@ -394,6 +391,7 @@
         "expected": [
             "剧情游戏卡"
         ],
+        "action": "Swipe",
         "begin": [
             150,
             215
@@ -402,24 +400,13 @@
             1264,
             215
         ],
-        "doc": "识别活动游戏卡-上划"
+        "end_hold": 800,
+        "duration": 500,
+        "post_delay": 1500
     },
     "Global_BackToPve2#_TouchPVEBook": {
+        "desc": "点击PVE本子2",
         "recognition": "TemplateMatch",
-        "action": "Click",
-        "target_offset": [
-            -20,
-            25,
-            0,
-            0
-        ],
-        "next": [
-            "Global_BackToPve2#_FinBackMapPage",
-            "Global_BackToPve2#_TouchPVEBook",
-            "[JumpBack]Global_WaitingForLoading"
-        ],
-        "post_delay": 5000,
-        "focus": "G.复位用卡带已找到",
         "roi": [
             385,
             143,
@@ -429,11 +416,24 @@
         "template": [
             "pve2.png"
         ],
-        "doc": "点击PVE本子2"
+        "action": "Click",
+        "target_offset": [
+            -20,
+            25,
+            0,
+            0
+        ],
+        "post_delay": 5000,
+        "next": [
+            "Global_BackToPve2#_FinBackMapPage",
+            "Global_BackToPve2#_TouchPVEBook",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G.复位用卡带已找到"
     },
     "Global_BackToPve2#_FinBackMapPage": {
+        "desc": "识别右下图钉-章节主页",
         "recognition": "TemplateMatch",
-        "focus": "G.Global复位完成，结束~",
         "roi": [
             1122,
             646,
@@ -443,32 +443,26 @@
         "template": [
             "pin.png"
         ],
-        "doc": "识别右下图钉-章节主页"
+        "focus": "G.Global复位完成，结束~"
     },
     "Global_BackToQC1": {
+        "desc": "50次多半是卡死了,死死透别截图了",
+        "max_hit": 50,
         "recognition": "TemplateMatch",
-        "action": "Click",
-        "next": [
-            "Global_BackToQC1_Menu",
-            "Global_BackToQC1"
-        ],
-        "post_delay": 2000,
-        "focus": "GO.快速卡带-复位到QC1",
         "template": [
             "BusinQuickIcoGE.png"
         ],
         "green_mask": true,
-        "max_hit": 50,
-        "doc": "50次多半是卡死了,死死透别截图了"
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Global_BackToQC1_Menu",
+            "Global_BackToQC1"
+        ],
+        "focus": "GO.快速卡带-复位到QC1"
     },
     "Global_BackToQC1_Menu": {
         "recognition": "OCR",
-        "action": "Click",
-        "next": [
-            "Global_BackToQC1_Menu_Cor",
-            "Global_BackToQC1_Menu"
-        ],
-        "focus": "GO.快速卡带离开-菜单模式",
         "roi": [
             185,
             530,
@@ -477,21 +471,22 @@
         ],
         "expected": [
             "剧情游戏卡"
-        ]
+        ],
+        "action": "Click",
+        "next": [
+            "Global_BackToQC1_Menu_Cor",
+            "Global_BackToQC1_Menu"
+        ],
+        "focus": "GO.快速卡带离开-菜单模式"
     },
     "Global_BackToQC1_Menu_Cor": {
         "recognition": "ColorMatch",
-        "next": [
-            "Global_BackToQC1_Pvemap"
-        ],
-        "focus": "GO.菜单模式-色核通过",
         "roi": [
             185,
             530,
             173,
             51
         ],
-        "count": 200,
         "lower": [
             203,
             203,
@@ -501,17 +496,15 @@
             255,
             255,
             255
-        ]
+        ],
+        "count": 200,
+        "next": [
+            "Global_BackToQC1_Pvemap"
+        ],
+        "focus": "GO.菜单模式-色核通过"
     },
     "Global_BackToQC1_Pvemap": {
         "recognition": "TemplateMatch",
-        "action": "Click",
-        "next": [
-            "Global_BackToQC1_Fin",
-            "Global_BackToQC1_Pvemap",
-            "[JumpBack]Global_WaitingForLoading"
-        ],
-        "post_delay": 4000,
         "roi": [
             51,
             582,
@@ -522,17 +515,23 @@
             "KadaiGe.png"
         ],
         "green_mask": true,
+        "action": "Click",
         "target_offset": [
             -35,
             25,
             0,
             0
+        ],
+        "post_delay": 4000,
+        "next": [
+            "Global_BackToQC1_Fin",
+            "Global_BackToQC1_Pvemap",
+            "[JumpBack]Global_WaitingForLoading"
         ]
     },
     "Global_BackToQC1_Fin": {
+        "desc": "找到图钉-点击返回主页",
         "recognition": "TemplateMatch",
-        "post_delay": 1000,
-        "focus": "GO.卡带复位成功",
         "roi": [
             1122,
             646,
@@ -546,10 +545,11 @@
             1186,
             46
         ],
-        "doc": "找到图钉-点击返回主页"
+        "post_delay": 1000,
+        "focus": "GO.卡带复位成功"
     },
     "Global_WaitingForLoading": {
-        "focus": "GO.等待卡带or转场载入",
+        "desc": "循环等待转场页面",
         "recognition": "Or",
         "any_of": [
             {
@@ -601,9 +601,9 @@
             }
         ],
         "post_delay": 5000,
-        "doc": "循环等待转场页面"
+        "focus": "GO.等待卡带or转场载入"
     },
     "Global_Hub_End": {
-        "doc": "避免正常结束时,报错跳出"
+        "desc": "避免正常结束时,报错跳出"
     }
 }

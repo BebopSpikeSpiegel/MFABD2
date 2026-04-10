@@ -28,21 +28,21 @@
         "expected": [
             "^(?=.*[没有])(?=.*[可出售的道具]).{4,10}$"
         ],
-        "focus": "没有鱼获",
         "next": [
             "SellFish_Step6"
-        ]
+        ],
+        "focus": "没有鱼获"
     },
     "SellFish_Step2": {
         "recognition": "OCR",
-        "expected": [
-            "一键出售"
-        ],
         "roi": [
             981,
             638,
             193,
             48
+        ],
+        "expected": [
+            "一键出售"
         ],
         "action": "Click",
         "post_delay": 2000,
@@ -82,16 +82,16 @@
     },
     "SellFish_Step5": {
         "recognition": "OCR",
-        "expected": [
-            "确认"
-        ],
-        "action": "Click",
         "roi": [
             662,
             399,
             153,
             94
         ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
         "post_delay": 2000,
         "next": [
             "SellFish_Step6"
@@ -99,16 +99,16 @@
     },
     "SellFish_Step6": {
         "recognition": "TemplateMatch",
-        "template": [
-            "Fish/back.png"
-        ],
-        "action": "Click",
         "roi": [
             120,
             20,
             39,
             43
         ],
+        "template": [
+            "Fish/back.png"
+        ],
+        "action": "Click",
         "post_delay": 2000,
         "focus": "返回钓鱼"
     }

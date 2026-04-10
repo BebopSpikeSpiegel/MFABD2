@@ -1,20 +1,16 @@
 {
     "Chapter1Shop": {
+        "max_hit": 1,
+        "timeout": 8000,
         "next": [
             "[JumpBack]MerchantBuy1.1",
             "[JumpBack]MerchantBuy1.2",
             "[JumpBack]MerchantBuy1.3"
-        ],
-        "max_hit": 1,
-        "timeout": 8000
+        ]
     },
     "MerchantBuy1.1": {
-        "action": "Click",
-        "next": [
-            "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy1.1"
-        ],
-        "post_delay": 1000,
+        "desc": "蘑菇,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             386,
@@ -22,19 +18,19 @@
             101,
             91
         ],
-        "doc": "蘑菇,400",
         "template": "Shop/Mushroom.png",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy1.2": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy1.2"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy1.1"
+        ]
+    },
+    "MerchantBuy1.2": {
+        "desc": "胡萝卜,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             660,
@@ -42,19 +38,19 @@
             82,
             81
         ],
-        "doc": "胡萝卜,400",
         "template": "Shop/Carrot.png",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy1.3": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy1.3"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy1.2"
+        ]
+    },
+    "MerchantBuy1.3": {
+        "desc": "甜辣酱,100",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             665,
@@ -62,10 +58,14 @@
             80,
             79
         ],
-        "doc": "甜辣酱,100",
         "template": "Shop/SweetChiliSauce.png",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
+        "next": [
+            "Arbitrage_Merchant_BuyMsg",
+            "MerchantBuy1.3"
+        ]
     }
 }

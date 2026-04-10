@@ -1,22 +1,18 @@
 {
     "Chapter2Shop": {
+        "max_hit": 1,
         "action": "DoNothing",
+        "timeout": 8000,
         "next": [
             "[JumpBack]MerchantBuy2.1",
             "[JumpBack]MerchantBuy2.2",
             "[JumpBack]MerchantBuy2.3",
             "[JumpBack]MerchantBuy2.4"
-        ],
-        "max_hit": 1,
-        "timeout": 8000
+        ]
     },
     "MerchantBuy2.1": {
-        "action": "Click",
-        "next": [
-            "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy2.1"
-        ],
-        "post_delay": 1000,
+        "desc": "牛奶,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             664,
@@ -25,18 +21,18 @@
             75
         ],
         "template": "Shop/Milk.png",
-        "doc": "牛奶,400",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy2.2": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy2.2"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy2.1"
+        ]
+    },
+    "MerchantBuy2.2": {
+        "desc": "黄油,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             930,
@@ -45,18 +41,18 @@
             74
         ],
         "template": "Shop/Butter.png",
-        "doc": "黄油,400",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy2.3": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy2.3"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy2.2"
+        ]
+    },
+    "MerchantBuy2.3": {
+        "desc": "白糖,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             929,
@@ -65,17 +61,18 @@
             74
         ],
         "template": "Shop/Sugar.png",
-        "doc": "白糖,400",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
+        "next": [
+            "Arbitrage_Merchant_BuyMsg",
+            "MerchantBuy2.3"
+        ]
     },
     "MerchantBuy2.4": {
-        "action": "Click",
-        "next": [
-            "Arbitrage_Merchant_BuyMsg"
-        ],
-        "post_delay": 1000,
+        "desc": "鸡蛋,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             665,
@@ -84,9 +81,12 @@
             71
         ],
         "template": "Shop/Egg.png",
-        "doc": "鸡蛋,400",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
+        "next": [
+            "Arbitrage_Merchant_BuyMsg"
+        ]
     }
 }

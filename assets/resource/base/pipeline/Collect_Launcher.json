@@ -51,10 +51,9 @@
         ]
     },
     "Collect_PerPetTask": {
+        "desc": "宠物派遣",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
-        "action": "Click",
-        "post_delay": 5000,
-        "focus": "CM.宠物派遣(调试中...错误请回报)",
         "roi": [
             234,
             217,
@@ -64,18 +63,20 @@
         "template": [
             "tanhaoGE.png"
         ],
-        "threshold": 0.85,
         "green_mask": true,
+        "threshold": 0.85,
+        "action": "Click",
         "target_offset": [
             -3,
             -4,
             6,
             6
         ],
-        "doc": "宠物派遣",
-        "max_hit": 1
+        "post_delay": 5000,
+        "focus": "CM.宠物派遣(调试中...错误请回报)"
     },
     "Collect_Sandplay": {
+        "desc": "拉起成功,进入箱庭",
         "recognition": "TemplateMatch",
         "roi": [
             1122,
@@ -86,14 +87,12 @@
         "template": [
             "pin.png"
         ],
-        "doc": "拉起成功,进入箱庭",
         "next": [
             "Collect_QuickCart_Menu",
             "[JumpBack]Global_QuickCart_MenuReset"
         ]
     },
     "Collect_BlackList_User": {
-        "focus": "<span style=\"color:Crimson\">CM.P.检查用户卡带黑名单</span>",
         "action": "Custom",
         "custom_action": "BatchNumericPatch",
         "custom_action_param": {
@@ -131,11 +130,12 @@
         "next": [
             "Collect_QuickCart_Menu",
             "[JumpBack]Global_QuickCart_MenuReset"
-        ]
+        ],
+        "focus": "<span style=\"color:Crimson\">CM.P.检查用户卡带黑名单</span>"
     },
     "Collect_QuickCart_Menu": {
+        "desc": "快速卡带已调出,等待后续",
         "recognition": "OCR",
-        "focus": "CM.L.调度器",
         "roi": [
             32,
             506,
@@ -145,76 +145,75 @@
         "expected": [
             "最近"
         ],
-        "doc": "快速卡带已调出,等待后续",
         "next": [
             "[JumpBack]Collect_FeatureSwitch_StoryPack",
             "[JumpBack]Collect_FeatureSwitch_CharacterPack",
             "[JumpBack]Collect_FeatureSwitch_EvenPack"
-        ]
+        ],
+        "focus": "CM.L.调度器"
     },
     "Collect_FeatureSwitch_StoryPack": {
+        "enabled": true,
+        "max_hit": 1,
         "anchor": {
             "SmartSwipOut": ""
         },
         "next": [
             "Collect_StoryPack_SetSimpleSkip",
             "Collect_QuickCart_SelectType_StoryPack"
-        ],
-        "enabled": true,
-        "max_hit": 1
+        ]
     },
     "Collect_FeatureSwitch_CharacterPack": {
+        "enabled": true,
+        "max_hit": 1,
         "anchor": {
             "SmartSwipOut": ""
         },
         "next": [
             "Collect_CharacterPack_SetSimpleSkip",
             "Collect_QuickCart_SelectType_CharacterPack"
-        ],
-        "enabled": true,
-        "max_hit": 1
+        ]
     },
     "Collect_FeatureSwitch_EvenPack": {
+        "enabled": true,
+        "max_hit": 1,
         "anchor": {
             "SmartSwipOut": ""
         },
         "next": [
             "Collect_EventPack_SetSimpleSkip",
             "Collect_QuickCart_SelectType_EventPack"
-        ],
-        "enabled": true,
-        "max_hit": 1
+        ]
     },
     "Collect_StoryPack_SetSimpleSkip": {
+        "enabled": false,
         "anchor": {
             "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Story"
         },
         "next": [
             "Collect_QuickCart_SelectType_StoryPack"
-        ],
-        "enabled": false
+        ]
     },
     "Collect_CharacterPack_SetSimpleSkip": {
+        "enabled": false,
         "anchor": {
             "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Character"
         },
         "next": [
             "Collect_QuickCart_SelectType_CharacterPack"
-        ],
-        "enabled": false
+        ]
     },
     "Collect_EventPack_SetSimpleSkip": {
+        "enabled": false,
         "anchor": {
             "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Event"
         },
         "next": [
             "Collect_QuickCart_SelectType_EventPack"
-        ],
-        "enabled": false
+        ]
     },
     "Collect_QuickCart_SelectType_StoryPack": {
         "recognition": "OCR",
-        "focus": "CM.L.剧情游戏卡带集",
         "roi": [
             185,
             530,
@@ -229,11 +228,11 @@
         "next": [
             "Collect_QuickCart_StoryPack_OcrCheck",
             "Collect_QuickCart_SelectType_StoryPack"
-        ]
+        ],
+        "focus": "CM.L.剧情游戏卡带集"
     },
     "Collect_QuickCart_SelectType_CharacterPack": {
         "recognition": "OCR",
-        "focus": "CM.L.角色游戏卡带集",
         "roi": [
             36,
             527,
@@ -248,11 +247,11 @@
         "next": [
             "Collect_QuickCart_CharacterPack_OcrCheck",
             "Collect_QuickCart_SelectType_CharacterPack"
-        ]
+        ],
+        "focus": "CM.L.角色游戏卡带集"
     },
     "Collect_QuickCart_SelectType_EventPack": {
         "recognition": "OCR",
-        "focus": "CM.L.活动游戏卡带集",
         "roi": [
             36,
             527,
@@ -267,16 +266,13 @@
         "next": [
             "Collect_QuickCart_EventPack_OcrCheck",
             "Collect_QuickCart_SelectType_EventPack"
-        ]
+        ],
+        "focus": "CM.L.活动游戏卡带集"
     },
     "Collect_QuickCart_StoryPack_OcrCheck": {
+        "desc": "当前节点链层数标记：2。初次调取卡带菜单完毕，开始初次点击卡带.先复位再to1,to1没判定的!不可直接IsPresent,防止用户行为干扰",
         "recognition": "ColorMatch",
-        "next": [
-            "Collect_FirstBootPack"
-        ],
-        "focus": "CM.L.剧情-卡带调取完毕",
         "roi": "Collect_QuickCart_SelectType_StoryPack",
-        "count": 200,
         "lower": [
             203,
             203,
@@ -287,6 +283,7 @@
             255,
             255
         ],
+        "count": 200,
         "action": "Custom",
         "custom_action": "RestoreBatch",
         "custom_action_param": {
@@ -295,24 +292,25 @@
                 "Collect_Loc_OutToSwip_Hub_Egress"
             ]
         },
-        "doc": "当前节点链层数标记：2。初次调取卡带菜单完毕，开始初次点击卡带.先复位再to1,to1没判定的!不可直接IsPresent,防止用户行为干扰"
-    },
-    "Collect_QuickCart_CharacterPack_OcrCheck": {
-        "recognition": "ColorMatch",
         "next": [
             "Collect_FirstBootPack"
         ],
+        "focus": "CM.L.剧情-卡带调取完毕"
+    },
+    "Collect_QuickCart_CharacterPack_OcrCheck": {
+        "recognition": "ColorMatch",
         "roi": "Collect_QuickCart_SelectType_CharacterPack",
-        "upper": [
-            255,
-            255,
-            255
-        ],
         "lower": [
             167,
             167,
             165
         ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 300,
         "action": "Custom",
         "custom_action": "RestoreBatch",
         "custom_action_param": {
@@ -321,25 +319,25 @@
                 "Collect_Loc_OutToSwip_Hub_Egress"
             ]
         },
-        "count": 300,
+        "next": [
+            "Collect_FirstBootPack"
+        ],
         "focus": "CM.L.角色-卡带调取完毕"
     },
     "Collect_QuickCart_EventPack_OcrCheck": {
         "recognition": "ColorMatch",
-        "next": [
-            "Collect_FirstBootPack"
-        ],
         "roi": "Collect_QuickCart_SelectType_EventPack",
-        "upper": [
-            255,
-            255,
-            255
-        ],
         "lower": [
             167,
             167,
             165
         ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 500,
         "action": "Custom",
         "custom_action": "RestoreBatch",
         "custom_action_param": {
@@ -348,7 +346,9 @@
                 "Collect_Loc_OutToSwip_Hub_Egress"
             ]
         },
-        "count": 500,
+        "next": [
+            "Collect_FirstBootPack"
+        ],
         "focus": "CM.L.活动-卡带调取完毕"
     },
     "Collect_FirstBootPack": {
@@ -367,14 +367,15 @@
             14
         ],
         "post_delay": 5000,
-        "focus": "CM.L.卡带类型初次启动,进入1#位置",
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "[JumpBack]Global_QuickCart_MenuReset",
             "Collect_LocatePackFrame_Loc1"
-        ]
+        ],
+        "focus": "CM.L.卡带类型初次启动,进入1#位置"
     },
     "Collect_FirstBootPack_ProbeIsPresent": {
+        "desc": "卡带1位置存在指针",
         "recognition": "ColorMatch",
         "roi": [
             0,
@@ -394,15 +395,13 @@
             255
         ],
         "count": 2,
-        "focus": "CM.L.初次启动探针确认",
+        "timeout": 2000,
         "next": [
             "Collect_PackProbe_IsPresent"
         ],
-        "timeout": 2000,
-        "doc": "卡带1位置存在指针"
+        "focus": "CM.L.初次启动探针确认"
     },
     "Collect_PackProbe_IsPresent": {
-        "focus": "CM.L.当前卡带位置探针存在",
         "recognition": "OCR",
         "roi": [
             32,
@@ -413,6 +412,7 @@
         "expected": [
             "最近"
         ],
+        "timeout": 2000,
         "next": [
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
             "Collect_PackProbe_Loc1",
@@ -426,7 +426,7 @@
             "Collect_PackProbe_Loc9",
             "Collect_PackProbe_NotPresent"
         ],
-        "timeout": 2000
+        "focus": "CM.L.当前卡带位置探针存在"
     },
     "Collect_PackProbe_Loc1": {
         "recognition": "ColorMatch",
@@ -448,10 +448,10 @@
             255
         ],
         "count": 2,
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Loc2"
-        ],
-        "timeout": 2000
+        ]
     },
     "Collect_PackProbe_Loc2": {
         "recognition": "ColorMatch",
@@ -473,10 +473,10 @@
             255
         ],
         "count": 2,
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Loc3"
-        ],
-        "timeout": 2000
+        ]
     },
     "Collect_PackProbe_Loc3": {
         "recognition": "ColorMatch",
@@ -498,10 +498,10 @@
             255
         ],
         "count": 2,
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Loc4"
-        ],
-        "timeout": 2000
+        ]
     },
     "Collect_PackProbe_Loc4": {
         "recognition": "ColorMatch",
@@ -523,10 +523,10 @@
             255
         ],
         "count": 2,
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Loc5"
-        ],
-        "timeout": 2000
+        ]
     },
     "Collect_PackProbe_Loc5": {
         "recognition": "ColorMatch",
@@ -548,10 +548,10 @@
             255
         ],
         "count": 2,
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Loc6"
-        ],
-        "timeout": 2000
+        ]
     },
     "Collect_PackProbe_Loc6": {
         "recognition": "ColorMatch",
@@ -573,10 +573,10 @@
             255
         ],
         "count": 2,
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Loc7"
-        ],
-        "timeout": 2000
+        ]
     },
     "Collect_PackProbe_Loc7": {
         "recognition": "ColorMatch",
@@ -598,10 +598,10 @@
             255
         ],
         "count": 2,
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Loc8"
-        ],
-        "timeout": 2000
+        ]
     },
     "Collect_PackProbe_Loc8": {
         "recognition": "ColorMatch",
@@ -623,10 +623,10 @@
             255
         ],
         "count": 2,
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Loc9"
-        ],
-        "timeout": 2000
+        ]
     },
     "Collect_PackProbe_Loc9": {
         "recognition": "ColorMatch",
@@ -648,10 +648,10 @@
             255
         ],
         "count": 2,
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip"
-        ],
-        "timeout": 2000
+        ]
     },
     "Collect_PackProbe_NotPresent": {
         "recognition": "ColorMatch",
@@ -674,26 +674,27 @@
         ],
         "count": 2,
         "inverse": true,
-        "focus": "<span style=\"color:GoldenRod;\">CM.L.位置探针不存在</span>",
         "next": [
             "Collect_LocatePackFrame_Loc1",
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc"
-        ]
+        ],
+        "focus": "<span style=\"color:GoldenRod;\">CM.L.位置探针不存在</span>"
     },
     "Collect_LocatePackFrame_Loc1": {
+        "desc": "正常范围:[41,580,163,114]/缩小范围:[47,580,145,114],让滑动复位更精确|custom动作解析:批量替换卡带识别节点、修改swip使得next返回此处、重置swip的计数器",
         "recognition": "TemplateMatch",
-        "template": [
-            "UI_StoryPack.png",
-            "UI_CharacterPack.png",
-            "UI_EventPack.png"
-        ],
-        "green_mask": true,
         "roi": [
             0,
             580,
             197,
             114
         ],
+        "template": [
+            "UI_StoryPack.png",
+            "UI_CharacterPack.png",
+            "UI_EventPack.png"
+        ],
+        "green_mask": true,
         "action": "Custom",
         "custom_action": "PatchByRegex",
         "custom_action_param": {
@@ -732,15 +733,13 @@
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
             "[JumpBack]Collect_PackLocation_PassFieldsAndHub",
             "Collect_LocatePackFrame_Loc2"
         ],
-        "timeout": 2000,
-        "focus": "CM.L.快速卡带盒定位-位置1",
-        "doc": "正常范围:[41,580,163,114]/缩小范围:[47,580,145,114],让滑动复位更精确|custom动作解析:批量替换卡带识别节点、修改swip使得next返回此处、重置swip的计数器",
         "on_error": [
             "Collect_LocatePackFrame_Loc3",
             "Collect_LocatePackFrame_Loc4",
@@ -751,22 +750,23 @@
             "Collect_LocatePackFrame_Loc9",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ]
+        ],
+        "focus": "CM.L.快速卡带盒定位-位置1"
     },
     "Collect_LocatePackFrame_Loc2": {
         "recognition": "TemplateMatch",
-        "template": [
-            "UI_StoryPack.png",
-            "UI_CharacterPack.png",
-            "UI_EventPack.png"
-        ],
-        "green_mask": true,
         "roi": [
             119,
             580,
             230,
             114
         ],
+        "template": [
+            "UI_StoryPack.png",
+            "UI_CharacterPack.png",
+            "UI_EventPack.png"
+        ],
+        "green_mask": true,
         "action": "Custom",
         "custom_action": "PatchByRegex",
         "custom_action_param": {
@@ -805,13 +805,13 @@
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
             "[JumpBack]Collect_PackLocation_PassFieldsAndHub",
             "Collect_LocatePackFrame_Loc3"
         ],
-        "timeout": 2000,
         "on_error": [
             "Collect_LocatePackFrame_Loc4",
             "Collect_LocatePackFrame_Loc5",
@@ -826,18 +826,18 @@
     },
     "Collect_LocatePackFrame_Loc3": {
         "recognition": "TemplateMatch",
-        "template": [
-            "UI_StoryPack.png",
-            "UI_CharacterPack.png",
-            "UI_EventPack.png"
-        ],
-        "green_mask": true,
         "roi": [
             262,
             580,
             232,
             114
         ],
+        "template": [
+            "UI_StoryPack.png",
+            "UI_CharacterPack.png",
+            "UI_EventPack.png"
+        ],
+        "green_mask": true,
         "action": "Custom",
         "custom_action": "PatchByRegex",
         "custom_action_param": {
@@ -876,13 +876,13 @@
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
             "[JumpBack]Collect_PackLocation_PassFieldsAndHub",
             "Collect_LocatePackFrame_Loc4"
         ],
-        "timeout": 2000,
         "on_error": [
             "Collect_LocatePackFrame_Loc5",
             "Collect_LocatePackFrame_Loc6",
@@ -896,18 +896,18 @@
     },
     "Collect_LocatePackFrame_Loc4": {
         "recognition": "TemplateMatch",
-        "template": [
-            "UI_StoryPack.png",
-            "UI_CharacterPack.png",
-            "UI_EventPack.png"
-        ],
-        "green_mask": true,
         "roi": [
             406,
             580,
             233,
             114
         ],
+        "template": [
+            "UI_StoryPack.png",
+            "UI_CharacterPack.png",
+            "UI_EventPack.png"
+        ],
+        "green_mask": true,
         "action": "Custom",
         "custom_action": "PatchByRegex",
         "custom_action_param": {
@@ -946,13 +946,13 @@
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
             "[JumpBack]Collect_PackLocation_PassFieldsAndHub",
             "Collect_LocatePackFrame_Loc5"
         ],
-        "timeout": 2000,
         "on_error": [
             "Collect_LocatePackFrame_Loc6",
             "Collect_LocatePackFrame_Loc7",
@@ -965,18 +965,18 @@
     },
     "Collect_LocatePackFrame_Loc5": {
         "recognition": "TemplateMatch",
-        "template": [
-            "UI_StoryPack.png",
-            "UI_CharacterPack.png",
-            "UI_EventPack.png"
-        ],
-        "green_mask": true,
         "roi": [
             552,
             580,
             228,
             114
         ],
+        "template": [
+            "UI_StoryPack.png",
+            "UI_CharacterPack.png",
+            "UI_EventPack.png"
+        ],
+        "green_mask": true,
         "action": "Custom",
         "custom_action": "PatchByRegex",
         "custom_action_param": {
@@ -1015,13 +1015,13 @@
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
             "[JumpBack]Collect_PackLocation_PassFieldsAndHub",
             "Collect_LocatePackFrame_Loc6"
         ],
-        "timeout": 2000,
         "on_error": [
             "Collect_LocatePackFrame_Loc7",
             "Collect_LocatePackFrame_Loc8",
@@ -1033,18 +1033,18 @@
     },
     "Collect_LocatePackFrame_Loc6": {
         "recognition": "TemplateMatch",
-        "template": [
-            "UI_StoryPack.png",
-            "UI_CharacterPack.png",
-            "UI_EventPack.png"
-        ],
-        "green_mask": true,
         "roi": [
             697,
             580,
             230,
             114
         ],
+        "template": [
+            "UI_StoryPack.png",
+            "UI_CharacterPack.png",
+            "UI_EventPack.png"
+        ],
+        "green_mask": true,
         "action": "Custom",
         "custom_action": "PatchByRegex",
         "custom_action_param": {
@@ -1083,13 +1083,13 @@
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
             "[JumpBack]Collect_PackLocation_PassFieldsAndHub",
             "Collect_LocatePackFrame_Loc7"
         ],
-        "timeout": 2000,
         "on_error": [
             "Collect_LocatePackFrame_Loc8",
             "Collect_LocatePackFrame_Loc9",
@@ -1100,18 +1100,18 @@
     },
     "Collect_LocatePackFrame_Loc7": {
         "recognition": "TemplateMatch",
-        "template": [
-            "UI_StoryPack.png",
-            "UI_CharacterPack.png",
-            "UI_EventPack.png"
-        ],
-        "green_mask": true,
         "roi": [
             841,
             580,
             229,
             114
         ],
+        "template": [
+            "UI_StoryPack.png",
+            "UI_CharacterPack.png",
+            "UI_EventPack.png"
+        ],
+        "green_mask": true,
         "action": "Custom",
         "custom_action": "PatchByRegex",
         "custom_action_param": {
@@ -1150,13 +1150,13 @@
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
             "[JumpBack]Collect_PackLocation_PassFieldsAndHub",
             "Collect_LocatePackFrame_Loc8"
         ],
-        "timeout": 2000,
         "on_error": [
             "Collect_LocatePackFrame_Loc9",
             "Global_Null_Exception",
@@ -1166,18 +1166,18 @@
     },
     "Collect_LocatePackFrame_Loc8": {
         "recognition": "TemplateMatch",
-        "template": [
-            "UI_StoryPack.png",
-            "UI_CharacterPack.png",
-            "UI_EventPack.png"
-        ],
-        "green_mask": true,
         "roi": [
             985,
             580,
             228,
             114
         ],
+        "template": [
+            "UI_StoryPack.png",
+            "UI_CharacterPack.png",
+            "UI_EventPack.png"
+        ],
+        "green_mask": true,
         "action": "Custom",
         "custom_action": "PatchByRegex",
         "custom_action_param": {
@@ -1216,6 +1216,7 @@
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
@@ -1223,23 +1224,22 @@
             "Collect_LocatePackFrame_Loc9",
             "Collect_Loc_OutToSwip_Hub_Ingress"
         ],
-        "timeout": 2000,
         "focus": "CM.L.快速卡带盒定位-位置8"
     },
     "Collect_LocatePackFrame_Loc9": {
         "recognition": "TemplateMatch",
-        "template": [
-            "UI_StoryPack.png",
-            "UI_CharacterPack.png",
-            "UI_EventPack.png"
-        ],
-        "green_mask": true,
         "roi": [
             1136,
             580,
             143,
             114
         ],
+        "template": [
+            "UI_StoryPack.png",
+            "UI_CharacterPack.png",
+            "UI_EventPack.png"
+        ],
+        "green_mask": true,
         "action": "Custom",
         "custom_action": "PatchByRegex",
         "custom_action_param": {
@@ -1287,6 +1287,8 @@
         "focus": "CM.L.快速卡带盒定位-位置9"
     },
     "Collect_LocatePackFrame_Loc1_ResetLoc": {
+        "desc": "稍微回移复位第一张卡带,向右。注意留够延迟等待动画消除。",
+        "max_hit": 40,
         "recognition": "TemplateMatch",
         "roi": [
             0,
@@ -1310,9 +1312,7 @@
             1
         ],
         "end_hold": 500,
-        "post_wait_freezes": 1000,
-        "doc": "稍微回移复位第一张卡带,向右。注意留够延迟等待动画消除。",
-        "max_hit": 40
+        "post_wait_freezes": 1000
     },
     "Collect_Loc_OutToSwip_Hub_Ingress": {
         "action": "Custom",
@@ -1326,11 +1326,8 @@
         ]
     },
     "Collect_Loc_OutToSwip_Hub_Enter_Pin": {
+        "desc": "[通用复位]复位到主界面模块,结束,中继调用",
         "recognition": "TemplateMatch",
-        "next": [
-            "Collect_Loc_OutToSwip_Hub_Enter_QuickCart_Menu",
-            "[JumpBack]Global_QuickCart_MenuReset"
-        ],
         "roi": [
             1122,
             646,
@@ -1340,11 +1337,14 @@
         "template": [
             "pin.png"
         ],
-        "doc": "[通用复位]复位到主界面模块,结束,中继调用"
+        "next": [
+            "Collect_Loc_OutToSwip_Hub_Enter_QuickCart_Menu",
+            "[JumpBack]Global_QuickCart_MenuReset"
+        ]
     },
     "Collect_Loc_OutToSwip_Hub_Enter_QuickCart_Menu": {
+        "desc": "快速卡带已调出,等待后续",
         "recognition": "OCR",
-        "focus": "CM.L.调度器",
         "roi": [
             32,
             506,
@@ -1354,13 +1354,13 @@
         "expected": [
             "最近"
         ],
-        "doc": "快速卡带已调出,等待后续",
         "next": [
             "Collect_Loc_OutToSwip_Hub_Egress"
-        ]
+        ],
+        "focus": "CM.L.调度器"
     },
     "Collect_Loc_OutToSwip_Hub_Egress": {
-        "doc": "【next修改无效】卡带位识别到页翻页模块接口",
+        "desc": "【next修改无效】卡带位识别到页翻页模块接口",
         "action": "Custom",
         "custom_action": "ResetTag",
         "custom_action_param": {
@@ -1517,6 +1517,7 @@
         ]
     },
     "Collect_Loc_Swip_5Page": {
+        "desc": "只做到兼容6页,目前已200%溢出非常足够.",
         "action": "Custom",
         "custom_action": "PatchBatch",
         "custom_action_param": {
@@ -1544,8 +1545,7 @@
         },
         "next": [
             "Collect_LocatePackFrame_Smart_Swip"
-        ],
-        "doc": "只做到兼容6页,目前已200%溢出非常足够."
+        ]
     },
     "Collect_LocatePackFrame_Smart_Swip": {
         "recognition": "Custom",
@@ -1604,7 +1604,7 @@
         ]
     },
     "Collect_Loc_SwipToIn_Hub": {
-        "doc": "卡带页翻页到位识别模块接口",
+        "desc": "卡带页翻页到位识别模块接口",
         "next": [
             "Collect_PackProbe_IsPresent"
         ]
@@ -1637,19 +1637,22 @@
         "focus": "Py.剧情卡简单全完成标记"
     },
     "Collect_PackLocation_PassFieldsAndHub": {
+        "desc": "[路由节点]不可删除。计数器开关，防止同一节点多次进入，下一个节点的action阶段重置计数。",
         "recognition": "Custom",
         "custom_recognition": "CheckTag",
         "custom_recognition_param": {
             "tag": "PackLocation_ToggleSwitch",
             "max": 1
         },
+        "pre_delay": 0,
         "action": "Custom",
         "custom_action": "UpdateTag",
         "custom_action_param": {
             "tag": "PackLocation_ToggleSwitch",
             "value": 1
         },
-        "doc": "[路由节点]不可删除。计数器开关，防止同一节点多次进入，下一个节点的action阶段重置计数。",
+        "post_delay": 0,
+        "timeout": 1,
         "next": [
             "Collect_Pack_Story_1",
             "Collect_Pack_Story_2",
@@ -1683,20 +1686,17 @@
             "Collect_Pack_Event_2",
             "Collect_Pack_Event_3",
             "Collect_Pack_Event_4"
-        ],
-        "timeout": 1,
-        "pre_delay": 0,
-        "post_delay": 0
+        ]
     },
     "Collect_Pack_Story_1": {
         "recognition": "And",
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp1.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -1727,8 +1727,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -1740,10 +1740,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp2.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -1774,8 +1774,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -1787,10 +1787,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp3.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -1821,8 +1821,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -1834,10 +1834,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp4.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -1868,8 +1868,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -1881,10 +1881,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp5.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -1915,8 +1915,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -1928,10 +1928,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp6.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -1962,8 +1962,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -1975,10 +1975,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp7.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2009,8 +2009,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2022,10 +2022,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp8.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2056,8 +2056,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2069,10 +2069,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp9.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2103,8 +2103,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2116,10 +2116,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp10.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2150,8 +2150,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2163,10 +2163,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp11.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2197,8 +2197,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2210,10 +2210,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp12.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2244,8 +2244,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2257,10 +2257,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp13.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2291,8 +2291,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2304,10 +2304,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp14.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2338,8 +2338,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2351,10 +2351,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp15.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2385,8 +2385,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2398,10 +2398,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp16.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2432,8 +2432,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2445,10 +2445,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp17.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2479,8 +2479,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2492,11 +2492,11 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp18.png"
                 ],
-                "threshold": 0.85,
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                "threshold": 0.85
             },
             {
                 "recognition": "Custom",
@@ -2527,8 +2527,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2540,10 +2540,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp19.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2574,8 +2574,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2583,14 +2583,15 @@
         ]
     },
     "Collect_Pack_Story_20": {
+        "enabled": false,
         "recognition": "And",
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_sp20.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2621,9 +2622,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
-        "enabled": false,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2635,10 +2635,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_cp1.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2669,8 +2669,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2682,10 +2682,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_cp2.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2716,8 +2716,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2729,10 +2729,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_cp3.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2763,8 +2763,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2776,10 +2776,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_cp4.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2810,8 +2810,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2823,11 +2823,11 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_cp5.png"
                 ],
-                "threshold": 0.85,
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                "threshold": 0.85
             },
             {
                 "recognition": "Custom",
@@ -2858,8 +2858,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2871,10 +2871,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_cp6.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2905,8 +2905,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2918,10 +2918,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_cp7.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -2952,8 +2952,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -2966,10 +2966,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_cp8.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -3000,8 +3000,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -3009,14 +3009,15 @@
         ]
     },
     "Collect_Pack_Event_1": {
+        "desc": "特殊地图特殊处理.此地图没有传送阵",
         "recognition": "And",
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_vp1.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -3047,24 +3048,23 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_Pack_Event_1",
             "Collect_TeleporCircle_OnFoot_GoinNviMap"
-        ],
-        "doc": "特殊地图特殊处理.此地图没有传送阵"
+        ]
     },
     "Collect_Pack_Event_2": {
         "recognition": "And",
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_vp2.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -3095,8 +3095,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -3108,10 +3108,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_vp3.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -3142,8 +3142,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
@@ -3155,10 +3155,10 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
+                "roi": "Collect_PackLocation_PassFieldsAndHub",
                 "template": [
                     "Cartridges/Q_vp4.png"
-                ],
-                "roi": "Collect_PackLocation_PassFieldsAndHub"
+                ]
             },
             {
                 "recognition": "Custom",
@@ -3189,8 +3189,8 @@
                 0
             ]
         },
-        "timeout": 1,
         "post_delay": 5000,
+        "timeout": 1,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",

@@ -1,1141 +1,1141 @@
 {
-  "Collect_Navigation_ReadMe": {
-    "doc": "《卡带内导航模块》>>●开始>>【主流程】从进入箱庭开始，Collect_TargetMap系列主流程，每一个地图节点都包含大量子流程。通过下方地图名称通用前缀控制系列进度与退出（另一种思路是录入全部小地图名称）（另：起始包含一个图标点击托举异物Collect_FindPickupCat 不完善）。注意主流程子节点顺序。●>>找传送门>>【子流程1】初始节点_OperationsMain_Sandplay特殊卡带恢复。 | 【子流程2 FTC】找不到传送门。初始节点的error为进入强制传送门恢复模块。●>>进入传送地图后>>【子流程3】区域图强制进入白名单。Collect_TargetMap_Special_ClickTpCircleIco可复用的、无视地图前缀强制进入传送门（【重要】必须置于后面黑名单出口前。TargetMap系列主流程也要加上地图名）。 | 【子流程4】区域图越过黑名单，Collect_ClickTelepor_ButNotActive温和正则地图提示无传送阵、Collect_TeleporNotFind激进越过inverse判定故日常不应该触发（考虑删掉）。●>>命中出口>>● Collect_ClickTeleporCircleIco进入【技能模组】，技能模组结束会复位到下一站区域地图 ●>>非命中出口>>●【子流程5】拥有一套退出正则：Collect_QuickCart_TargetMapEnd温和识别关键词、Collect_Architecture_Underlying_Logic_Protection激进全局退出、Collect_OperationsEnd_NORight区域图到底、Collect_MapRight_NoFind区域图到底。"
-  },
-  "Collect_OperationsMain_Sandplay": {
-    "recognition": "TemplateMatch",
-    "roi": [
-      1122,
-      646,
-      40,
-      38
-    ],
-    "template": [
-      "pin.png"
-    ],
-    "action": "Custom",
-    "custom_action": "ResetTag",
-    "custom_action_param": {
-      "tags": [
-        "LocPage_SmartSwip"
-      ]
+    "Collect_Navigation_ReadMe": {
+        "desc": "《卡带内导航模块》>>●开始>>【主流程】从进入箱庭开始，Collect_TargetMap系列主流程，每一个地图节点都包含大量子流程。通过下方地图名称通用前缀控制系列进度与退出（另一种思路是录入全部小地图名称）（另：起始包含一个图标点击托举异物Collect_FindPickupCat 不完善）。注意主流程子节点顺序。●>>找传送门>>【子流程1】初始节点_OperationsMain_Sandplay特殊卡带恢复。 | 【子流程2 FTC】找不到传送门。初始节点的error为进入强制传送门恢复模块。●>>进入传送地图后>>【子流程3】区域图强制进入白名单。Collect_TargetMap_Special_ClickTpCircleIco可复用的、无视地图前缀强制进入传送门（【重要】必须置于后面黑名单出口前。TargetMap系列主流程也要加上地图名）。 | 【子流程4】区域图越过黑名单，Collect_ClickTelepor_ButNotActive温和正则地图提示无传送阵、Collect_TeleporNotFind激进越过inverse判定故日常不应该触发（考虑删掉）。●>>命中出口>>● Collect_ClickTeleporCircleIco进入【技能模组】，技能模组结束会复位到下一站区域地图 ●>>非命中出口>>●【子流程5】拥有一套退出正则：Collect_QuickCart_TargetMapEnd温和识别关键词、Collect_Architecture_Underlying_Logic_Protection激进全局退出、Collect_OperationsEnd_NORight区域图到底、Collect_MapRight_NoFind区域图到底。"
     },
-    "post_delay": 1000,
-    "next": [
-      "Collect_OperationsMain_ToAreaMap",
-      "[JumpBack]Collect_Special_EP6",
-      "[JumpBack]Collect_Special_QR7-CW",
-      "[JumpBack]Collect_FindPickupCat",
-      "[JumpBack]StartGame_PerPetTask",
-      "[JumpBack]Collect_FindTeleporCircle0.9",
-      "[JumpBack]Collect_FindTeleporCircle"
-    ],
-    "timeout": 5000,
-    "on_error": [
-      "[JumpBack]Collect_Tab3",
-      "Global_Null_Exception",
-      "Global_Null_Panic"
-    ],
-    "focus": "CM.N.箱庭模块启动",
-    "doc": "中断：章节内主要操作开始。找到图钉，确认进入箱庭"
-  },
-  "Collect_FindPickupCat": {
-    "recognition": "TemplateMatch",
-    "next": [
-      "Collect_FindPickupCat_LeaveCircle_Ty1"
-    ],
-    "roi": [
-      820,
-      516,
-      105,
-      102
-    ],
-    "template": [
-      "PickupCatGE.png"
-    ],
-    "green_mask": true,
-    "doc": "找到猫咪图标，"
-  },
-  "Collect_FindPickupCat_LeaveCircle_Ty1": {
-    "action": "Click",
-    "next": [
-      "Collect_FindPickupCat_LeaveCircle_Ty2"
-    ],
-    "post_delay": 800,
-    "target": [
-      229,
-      88
-    ],
-    "doc": "自动寻路菜单"
-  },
-  "Collect_FindPickupCat_LeaveCircle_Ty2": {
-    "action": "Click",
-    "next": [
-      "Collect_FindPickupCat_LeaveCircle_Ty3"
-    ],
-    "post_delay": 800,
-    "target": [
-      304,
-      183,
-      31,
-      9
-    ],
-    "doc": "自动寻路酒馆"
-  },
-  "Collect_FindPickupCat_LeaveCircle_Ty3": {
-    "action": "Click",
-    "next": [
-      "Collect_FindPickupCat_LeaveCircle_Ty4"
-    ],
-    "post_delay": 3000,
-    "target": [
-      722,
-      446,
-      31,
-      13
-    ],
-    "doc": "自动寻路酒馆-确认，等待x秒"
-  },
-  "Collect_FindPickupCat_LeaveCircle_Ty4": {
-    "action": "Click",
-    "next": [
-      "Collect_FindPickupCat_LeaveCircle_Ty5"
-    ],
-    "post_delay": 800,
-    "target": [
-      638,
-      640,
-      8,
-      9
-    ],
-    "doc": "停止自动寻路"
-  },
-  "Collect_FindPickupCat_LeaveCircle_Ty5": {
-    "recognition": "TemplateMatch",
-    "action": "Click",
-    "post_delay": 4000,
-    "roi": [
-      820,
-      516,
-      105,
-      102
-    ],
-    "template": [
-      "PickupCatGE.png"
-    ],
-    "green_mask": true,
-    "doc": "放下猫咪，等待x秒，让它走开"
-  },
-  "Collect_OperationsMain_ToAreaMap": {
-    "recognition": "OCR",
-    "next": [
-      "[JumpBack]Collect_MapLift",
-      "Collect_TargetMap1-1"
-    ],
-    "roi": [
-      183,
-      11,
-      249,
-      53
-    ],
-    "expected": [
-      "移动魔法阵"
-    ],
-    "post_wait_freezes": {
-      "time": 50,
-      "timeout": 10000,
-      "target": [
-        272,
-        314,
-        66,
-        58
-      ],
-      "rate_limit": 500
+    "Collect_OperationsMain_Sandplay": {
+        "desc": "中断：章节内主要操作开始。找到图钉，确认进入箱庭",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1122,
+            646,
+            40,
+            38
+        ],
+        "template": [
+            "pin.png"
+        ],
+        "action": "Custom",
+        "custom_action": "ResetTag",
+        "custom_action_param": {
+            "tags": [
+                "LocPage_SmartSwip"
+            ]
+        },
+        "post_delay": 1000,
+        "timeout": 5000,
+        "next": [
+            "Collect_OperationsMain_ToAreaMap",
+            "[JumpBack]Collect_Special_EP6",
+            "[JumpBack]Collect_Special_QR7-CW",
+            "[JumpBack]Collect_FindPickupCat",
+            "[JumpBack]StartGame_PerPetTask",
+            "[JumpBack]Collect_FindTeleporCircle0.9",
+            "[JumpBack]Collect_FindTeleporCircle"
+        ],
+        "on_error": [
+            "[JumpBack]Collect_Tab3",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "CM.N.箱庭模块启动"
     },
-    "doc": "判断是否为区域地图界面"
-  },
-  "Collect_TargetMap1-1": {
-    "recognition": "TemplateMatch",
-    "next": [
-      "Collect_TargetMap1_Special_PerRight",
-      "Collect_TargetMap1-2"
-    ],
-    "inverse": true,
-    "roi": [
-      270,
-      317,
-      68,
-      54
-    ],
-    "template": [
-      "TpMapLeft.png"
-    ],
-    "green_mask": true,
-    "doc": "详细地图内左图标，目的移动到最左"
-  },
-  "Collect_TargetMap1-2": {
-    "recognition": "OCR",
-    "next": [
-      "Collect_TargetMap1_Special_Right",
-      "Collect_TargetMap2",
-      "Collect_TargetMap3",
-      "Collect_TargetMap4",
-      "[JumpBack]Collect_ClickTelepor_ButNotActive",
-      "[JumpBack]Collect_TargetMap_Special_ClickTpCircleIco",
-      "[JumpBack]Collect_ClickTeleporCircleIco",
-      "[JumpBack]Collect_ClickBackOnSecureMap",
-      "[JumpBack]Collect_ClickTelepor_Abnormal_Overlap",
-      "Collect_QuickCart_FastUI",
-      "[JumpBack]Collect_TeleporNotFind"
-    ],
-    "focus": "确认区域地图tp1",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "达普雷镇",
-      "雷瓦汀基地",
-      "拉勒凯镇",
-      "罗戴夫镇",
-      "科库托斯圣域",
-      "学校1楼",
-      "恶梦之城1",
-      "恶梦之城I",
-      "安全"
-    ],
-    "replace": [
-      [
-        "1",
-        "I"
-      ],
-      [
-        "T",
-        "I"
-      ],
-      [
-        "í",
-        "I"
-      ],
-      [
-        "!",
-        "I"
-      ],
-      [
-        "\\|",
-        "I"
-      ],
-      [
-        "l",
-        "I"
-      ]
-    ],
-    "doc": "详细地图确定位置"
-  },
-  "Collect_TargetMap2": {
-    "recognition": "OCR",
-    "next": [
-      "Collect_TargetMap2_Special_Right",
-      "Collect_TargetMap3",
-      "Collect_TargetMap4",
-      "[JumpBack]Collect_TargetMap_Special_ClickTpCircleIco",
-      "Collect_QuickCart_TargetMapEnd",
-      "Collect_Architecture_Underlying_Logic_Protection",
-      "[JumpBack]Collect_ClickTelepor_ButNotActive",
-      "[JumpBack]Collect_ClickTeleporCircleIco",
-      "[JumpBack]Collect_Protection_ReturnToAreaMap",
-      "[JumpBack]Collect_ClickTelepor_Abnormal_Overlap",
-      "Collect_QuickCart_FastUI",
-      "[JumpBack]Collect_TeleporNotFind"
-    ],
-    "focus": "确认区域地图tp2",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "卢戈森林",
-      "封锁矿山",
-      "加尔顿山前段",
-      "洞穴神殿",
-      "贫民区",
-      "剑之神殿左侧回廊",
-      "童话镇旅馆",
-      "儿童房",
-      "官邸地",
-      "学校2楼",
-      "恶梦之城2",
-      "战斗I",
-      "战斗 I",
-      "战斗\\s*[1IⅠ!！](?!I)(?!Ⅰ)(?!！)(?!!)",
-      "战斗[1IⅠ](?!I)(?!Ⅰ)"
-    ],
-    "replace": [
-      [
-        "1",
-        "I"
-      ],
-      [
-        "T",
-        "I"
-      ],
-      [
-        "í",
-        "I"
-      ],
-      [
-        "!",
-        "I"
-      ],
-      [
-        "\\|",
-        "I"
-      ],
-      [
-        "l",
-        "I"
-      ]
-    ],
-    "doc": "详细地图确定位置2"
-  },
-  "Collect_TargetMap3": {
-    "recognition": "OCR",
-    "next": [
-      "Collect_TargetMap4",
-      "[JumpBack]Collect_TargetMap_Special_ClickTpCircleIco",
-      "Collect_QuickCart_TargetMapEnd",
-      "Collect_Architecture_Underlying_Logic_Protection",
-      "[JumpBack]Collect_ClickTelepor_ButNotActive",
-      "[JumpBack]Collect_ClickTeleporCircleIco",
-      "[JumpBack]Collect_Protection_ReturnToAreaMap",
-      "[JumpBack]Collect_ClickTelepor_Abnormal_Overlap",
-      "Collect_QuickCart_FastUI",
-      "[JumpBack]Collect_TeleporNotFind"
-    ],
-    "timeout": 3000,
-    "on_error": [
-      "Collect_MapRight_NoFind",
-      "Global_Null_Exception",
-      "Global_Null_Panic"
-    ],
-    "focus": "确认区域地图tp3",
-    "post_delay": 200,
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "卢戈森林深处",
-      "禁地矿山",
-      "加尔顿山后段",
-      "隐藏神殿",
-      "盗贼据点",
-      "剑之神殿右侧回廊",
-      "童话镇旅馆",
-      "第一记忆空间",
-      "学校3楼",
-      "雷瓦汀据点",
-      "战斗II",
-      "战斗Ⅱ",
-      "战斗 II",
-      "战斗 Ⅱ",
-      "战斗\\s*([1Il|Ⅰ!！][1Il|Ⅰ!！]|Ⅱ|II)(?!\\d)(?![a-zA-Z])",
-      "战斗([1Il|Ⅰ!！][1Il|Ⅰ!！]|Ⅱ|II)(?!\\d)(?![a-zA-Z])"
-    ],
-    "replace": [
-      [
-        "1",
-        "I"
-      ],
-      [
-        "T",
-        "I"
-      ],
-      [
-        "í",
-        "I"
-      ],
-      [
-        "!",
-        "I"
-      ],
-      [
-        "\\|",
-        "I"
-      ],
-      [
-        "l",
-        "I"
-      ]
-    ],
-    "doc": "详细地图确定位置3"
-  },
-  "Collect_TargetMap4": {
-    "recognition": "OCR",
-    "next": [
-      "[JumpBack]Collect_TargetMap_Special_ClickTpCircleIco",
-      "Collect_QuickCart_TargetMapEnd",
-      "Collect_QuickCart_FastUI",
-      "Collect_Architecture_Underlying_Logic_Protection",
-      "[JumpBack]Collect_ClickTelepor_ButNotActive",
-      "[JumpBack]Collect_ClickTeleporCircleIco",
-      "[JumpBack]Collect_Protection_ReturnToAreaMap",
-      "[JumpBack]Collect_ClickTelepor_Abnormal_Overlap",
-      "[JumpBack]Collect_TeleporNotFind"
-    ],
-    "timeout": 3000,
-    "on_error": [
-      "Collect_MapRight_NoFind",
-      "Global_Null_Exception",
-      "Global_Null_Panic"
-    ],
-    "focus": "确认区域地图tp4",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "商场1楼",
-      "妖怪镇",
-      "学校地下"
-    ],
-    "doc": "详细地图额外位置4。白名单制,每一张图名称都要手动指定."
-  },
-  "Collect_TargetMap1_Special_PerRight": {
-    "doc": "[维护点C05]复位到箱庭1图时需要特殊跳过的图,用来跳过图1非目标图,(EP18)需要持续维护!",
-    "recognition": "OCR",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "科库托斯暗黑神殿",
-      "记忆岔路口"
-    ],
-    "action": "Click",
-    "target": [
-      977,
-      342,
-      2,
-      2
-    ],
-    "next": [
-      "Collect_TargetMap1_Special_PerRight",
-      "Collect_TargetMap1-2"
-    ]
-  },
-  "Collect_TargetMap1_Special_Right": {
-    "doc": "[维护点C04]箱庭1图转2图时,特殊跳过的节点,因为若跳过图有传送阵图标,则不能依赖_MapRight_NoFind,最后还是得多写一组节点,与nofind不同,这里是定向识别,需要持续维护!",
-    "recognition": "OCR",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "凯那尔工业2楼"
-    ],
-    "action": "Click",
-    "target": [
-      977,
-      342,
-      2,
-      2
-    ],
-    "next": [
-      "Collect_TargetMap2",
-      "Collect_TargetMap1_Special_Right"
-    ]
-  },
-  "Collect_TargetMap2_Special_Right": {
-    "doc": "[维护点C04]箱庭2图转3图时,特殊跳过的节点,因为若跳过图有传送阵图标,则不能依赖_MapRight_NoFind,最后还是得多写一组节点,与nofind不同,这里是定向识别,需要持续维护!",
-    "recognition": "OCR",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "施塔因之塔第8层",
-      "施塔因之塔宿舍"
-    ],
-    "action": "Click",
-    "target": [
-      977,
-      342,
-      2,
-      2
-    ],
-    "next": [
-      "Collect_TargetMap3",
-      "Collect_TargetMap2_Special_Right"
-    ]
-  },
-  "Collect_MapRight_NoFind": {
-    "recognition": "TemplateMatch",
-    "inverse": true,
-    "next": [
-      "Collect_QuickCart_HomePageHub2"
-    ],
-    "roi": [
-      838,
-      311,
-      418,
-      63
-    ],
-    "focus": "QBC.[INF]特殊地图.类EP6区域地图到底",
-    "template": [
-      "TpMapRight.png"
-    ],
-    "green_mask": true,
-    "doc": "EP6.特殊地图，最后一图是紧接战斗2的狩猎图,特征是无右侧箭头。处理，直接结束箱庭内流程"
-  },
-  "Collect_TargetMapEnd": {
-    "recognition": "OCR",
-    "next": [],
-    "focus": "CM.N.卡带内流程进入END环节",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "达雷普旅馆",
-      "雷瓦汀基地救护站",
-      "拉勒凯旅馆",
-      "罗戴夫旅馆",
-      "安全"
-    ],
-    "target": [
-      120,
-      35
-    ],
-    "doc": "维护点C02开端"
-  },
-  "Collect_TargetMapEnd_End": {
-    "recognition": "OCR",
-    "focus": "卡带出口",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "达雷普旅馆",
-      "雷瓦汀基地救护站",
-      "拉勒凯旅馆",
-      "罗戴夫旅馆",
-      "安全",
-      "^禁闭室"
-    ],
-    "target": [
-      120,
-      35
-    ],
-    "doc": "维护点C02末端.快速卡带pipeline_override了此处next，去了C_QuickCart_TargetMapEnd,因为是中断内next，故必须结束退回上一个流程，单独end"
-  },
-  "Collect_Architecture_Underlying_Logic_Protection": {
-    "recognition": "OCR",
-    "focus": "CM-P.[WRN]状态机底层逻辑防护被触发\n直接结束卡带",
-    "next": [
-      "Collect_QuickCart_HomePageHub2"
-    ],
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "达雷普旅馆",
-      "雷瓦汀基地救护站",
-      "拉勒凯旅馆",
-      "罗戴夫旅馆",
-      "施塔因之塔宿舍",
-      "旅馆",
-      "救护站"
-    ],
-    "replace": [
-      [
-        "安全",
-        ""
-      ],
-      [
-        "战斗",
-        ""
-      ]
-    ],
-    "target": [
-      120,
-      35
-    ],
-    "doc": "维护点C06.切图状态机如果OCR识别出错,可能导致脚本停留在图1,但实际已执行到图2,最后过量切图到旅店后面,会循环卡住。定性为状态机思维框架底层bug，难修危害大。此节点作为额外守护，放入next中。直接结束卡带内流程，最多断臂卡带内剩下资源，但不会全部卡死。"
-  },
-  "Collect_TargetMap_Special_ClickTpCircleIco": {
-    "focus": "CM.N.特殊选中触发",
-    "doc": "此节点置于'TargetMapEnd'之前，对需要吸取的安全节点做单独适配，否则会提前结束吸取。起因：杰登之门卡带有3张安全图。",
-    "next": [
-      "Collect_ClickTeleporCircleIco"
-    ],
-    "recognition": "OCR",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "学校1楼",
-      "学校2楼",
-      "学校3楼"
-    ]
-  },
-  "Collect_Protection_ReturnToAreaMap": {
-    "recognition": "TemplateMatch",
-    "next": [
-      "Collect_FindTeleporCircle0.9",
-      "Collect_ClickTelepor_ButNotActive"
-    ],
-    "focus": "CM-P.[WRN]状态机守护被触发-切图环节-恢复到区域地图界面",
-    "roi": [
-      1047,
-      516,
-      107,
-      110
-    ],
-    "template": [
-      "Run.png"
-    ],
-    "green_mask": true,
-    "doc": "找到run,此时应该在区域地图,但在主页,异常处理"
-  },
-  "Collect_TeleporNotFind": {
-    "recognition": "TemplateMatch",
-    "next": [
-      "Collect_TeleporNotFind_Right",
-      "Collect_TeleporNotFind_NORight"
-    ],
-    "inverse": true,
-    "post_delay": 1000,
-    "focus": "CBB.[WRN]未识别到传送阵，执行特殊换页（正常不应该触发）",
-    "roi": [
-      209,
-      82,
-      912,
-      487
-    ],
-    "template": [
-      "TpCircleMapGE.png"
-    ],
-    "green_mask": true,
-    "doc": "[维护点末端，前手interface的 采集方案 op]主线13的区域图的2#、5#均不是正常图，特征是没有传送阵。在此写一个原中断吸取的反向‘找不到’中断来应对.然后存在两种情况:存在右按钮,切1次图.不存在,这就是最后一图,如火片,操作切到卡带,来给中断外传递退出信号"
-  },
-  "Collect_TeleporNotFind_Right": {
-    "recognition": "TemplateMatch",
-    "action": "Click",
-    "next": [
-      "Collect_QuickCart_TargetMapEnd_End",
-      "Collect_ClickTeleporCircleIco",
-      "Collect_TeleporNotFind"
-    ],
-    "post_delay": 1000,
-    "focus": "CBB.[WRN]特殊换页-存在右换页-方案1",
-    "roi": [
-      943,
-      309,
-      67,
-      72
-    ],
-    "template": [
-      "TpMapRight.png"
-    ],
-    "green_mask": true,
-    "target": [
-      977,
-      342,
-      2,
-      2
-    ],
-    "doc": "方案1:识别到存在右侧按键,点一下.next:1.若是旅馆安全图,异常消除,退出中断/2.有传送阵,点进去(非安全),尝试吸取【？，万一是狩猎场呢，逻辑又漏洞！】/3.还是没传送标,前位循环"
-  },
-  "Collect_TeleporNotFind_NORight": {
-    "recognition": "TemplateMatch",
-    "next": [
-      "Global_QuickCart_MenuReset",
-      "[JumpBack]Global_BackPageHub_Once"
-    ],
-    "post_delay": 1000,
-    "focus": "CBB.[WRN]特殊换页-不存在右换页-方案2",
-    "roi": [
-      943,
-      309,
-      67,
-      72
-    ],
-    "inverse": true,
-    "template": [
-      "TpMapRight.png"
-    ],
-    "green_mask": true,
-    "doc": "方案2:识别到右侧按键不存在,这是卡带中最后一图,如火片.操作,切到快速卡带界面,传递退出信号"
-  },
-  "Collect_TargetMap_Special_Right": {
-    "recognition": "OCR",
-    "action": "Click",
-    "focus": "CBB.特殊地图，处理",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "剑之神殿中央回廊",
-      "封印指定室",
-      "施塔因之塔第8层",
-      "施塔因之塔宿舍"
-    ],
-    "target": [
-      977,
-      342,
-      2,
-      2
-    ]
-  },
-  "Collect_Special_EP6": {
-    "recognition": "OCR",
-    "expected": "魔塔见习魔法师",
-    "focus": "CQB.[INF]检测到EP6,进行魔塔特殊操作",
-    "roi": [
-      481,
-      197,
-      310,
-      252
-    ],
-    "action": "Click",
-    "target": [
-      1271,
-      628
-    ],
-    "post_delay": 4000,
-    "doc": "EP6主城默认位置异常,需要点右下角传送阵物件"
-  },
-  "Collect_Special_QR7-CW": {
-    "recognition": "TemplateMatch",
-    "roi": [
-      670,
-      356,
-      203,
-      287
-    ],
-    "template": [
-      "QR6CW.png"
-    ],
-    "focus": "CQB.[INF]检测到QR6,进行合约之战特殊操作",
-    "action": "Click",
-    "target": [
-      950,
-      458
-    ],
-    "post_delay": 2000
-  },
-  "Collect_ClickTeleporCircleIco": {
-    "recognition": "TemplateMatch",
-    "next": [
-      "Collect_ClickTelepor_TargetClass_Purple",
-      "Collect_ClickTelepor_TargetClass_White"
-    ],
-    "focus": "CM.N.区域地图.tp1.找到传送阵图标",
-    "roi": [
-      100,
-      71,
-      1133,
-      534
-    ],
-    "template": [
-      "TpCircleMap.png"
-    ],
-    "doc": "详细地图内传送阵选择"
-  },
-  "Collect_ClickTelepor_TargetClass_Purple": {
-    "recognition": "ColorMatch",
-    "roi": "Collect_ClickTeleporCircleIco",
-    "lower": [
-      119,
-      90,
-      145
-    ],
-    "upper": [
-      210,
-      144,
-      255
-    ],
-    "count": 1,
-    "next": [
-      "Collect_ClickTelepor_TargetClass_PurpleProcess"
-    ],
-    "timeout": 3000,
-    "on_error": [
-      "Collect_ClickTelepor_TargetClass_White",
-      "Global_Null_Exception",
-      "Global_Null_Panic"
-    ],
-    "focus": "CTB.[WRN]识别首选为紫色技能传送阵,尝试规避",
-    "doc": "紫色传送阵,点一次就消失了,留下一个位置异常.应该去点白色"
-  },
-  "Collect_ClickTelepor_TargetClass_PurpleProcess": {
-    "recognition": "TemplateMatch",
-    "next": [
-      "[Anchor]Arbitrage5",
-      "Collect_Skill_Start",
-      "Collect_ClickTelepor_TargetClass_PurpleProcess",
-      "[JumpBack]Global_WaitingForLoading"
-    ],
-    "post_delay": 5000,
-    "focus": "CM.N.选择次选传送阵",
-    "roi": [
-      100,
-      71,
-      1133,
-      534
-    ],
-    "template": [
-      "TpCircleMap.png"
-    ],
-    "index": 1,
-    "action": "Click"
-  },
-  "Collect_ClickTelepor_TargetClass_White": {
-    "recognition": "TemplateMatch",
-    "roi": [
-      100,
-      71,
-      1133,
-      534
-    ],
-    "template": [
-      "TpCircleMap.png"
-    ],
-    "next": [
-      "[Anchor]Arbitrage5",
-      "Collect_Skill_Start",
-      "Collect_ClickTelepor_TargetClass_White",
-      "[JumpBack]Global_WaitingForLoading"
-    ],
-    "post_delay": 5000,
-    "focus": "CM.N.区域地图.tp1.选择首选传送阵图标",
-    "action": "Click",
-    "doc": "详细地图内传送阵选择"
-  },
-  "Collect_ClickTelepor_ButNotActive": {
-    "doc": "如果传送阵没有激活,需要从这里决定中断",
-    "next": [
-      "Collect_OperationsMain_OperationsEnd"
-    ],
-    "recognition": "OCR",
-    "roi": [
-      511,
-      577,
-      262,
-      47
-    ],
-    "expected": "^(?=.*[没有])(?=.*[已激活的])(?=.*[魔法阵]).{6,}$",
-    "focus": "CM.N.[WRN]区域地图传送阵没有激活!"
-  },
-  "Collect_ClickTelepor_Abnormal_Overlap": {
-    "doc": "当传送阵地图中存在重叠时的处理,找三角(无法处理紫色情况) | 注意:特征太泛,少用",
-    "recognition": "TemplateMatch",
-    "next": [
-      "Collect_Skill_Start",
-      "Collect_ClickTelepor_TargetClass_White",
-      "[JumpBack]Global_WaitingForLoading"
-    ],
-    "post_delay": 5000,
-    "focus": "CM.N.区域地图.tp1.找到传送阵图标",
-    "roi": [
-      100,
-      71,
-      1133,
-      534
-    ],
-    "template": [
-      "map_tcArrowGE.png"
-    ],
-    "green_mask": true,
-    "threshold": [
-      0.82
-    ],
-    "order_by": "Score",
-    "action": "Click",
-    "target_offset": [
-      0,
-      28,
-      0,
-      0
-    ]
-  },
-  "Collect_ClickBackOnSecureMap": {
-    "recognition": "OCR",
-    "action": "Click",
-    "next": [
-      "Collect_Skill_Start",
-      "Collect_ClickBackOnSecureMap"
-    ],
-    "focus": "CM.N.区域地图.tp1.已正确",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "达普雷镇",
-      "雷瓦汀基地",
-      "拉勒凯镇",
-      "罗戴夫镇",
-      "安全"
-    ],
-    "post_wait_freezes": 1500,
-    "target": [
-      120,
-      35
-    ],
-    "doc": "详细地图确定位置"
-  },
-  "Collect_OperationsMain_OperationsEnd": {
-    "recognition": "OCR",
-    "next": [
-      "Collect_MapRight",
-      "Collect_OperationsEnd_NORight",
-      "[JumpBack]Collect_FindTeleporCircle"
-    ],
-    "timeout": 3000,
-    "roi": [
-      128,
-      13,
-      329,
-      55
-    ],
-    "expected": [
-      "移动魔法阵"
-    ],
-    "doc": "找到图钉 ，进入区域地图"
-  },
-  "Collect_OperationsEnd_NORight": {
-    "recognition": "TemplateMatch",
-    "post_delay": 1000,
-    "focus": "CBB.[WRN]中继特殊结束-不存在右换页",
-    "roi": [
-      267,
-      298,
-      743,
-      84
-    ],
-    "threshold": 0.85,
-    "template": [
-      "MapOlayLeftButt.png"
-    ],
-    "green_mask": true,
-    "next": [
-      "Collect_QuickCart_HomePageHub2"
-    ],
-    "doc": "防止识别不到右键/且能误识别FindTeleporCircle的离谱情况."
-  },
-  "Collect_MapRight": {
-    "recognition": "TemplateMatch",
-    "action": "Click",
-    "post_delay": 5000,
-    "roi": [
-      838,
-      311,
-      418,
-      63
-    ],
-    "template": [
-      "TpMapRight.png"
-    ],
-    "green_mask": true,
-    "doc": "详细地图内右图标，目的右移动1格[缺陷，此步骤缺乏验证方法]"
-  },
-  "Collect_FindTeleporCircle0.9": {
-    "recognition": "TemplateMatch",
-    "action": "Click",
-    "focus": "CM.N.箱庭地图内找到传送阵-按钮标",
-    "roi": [
-      828,
-      519,
-      91,
-      90
-    ],
-    "post_delay": 1000,
-    "template": [
-      "IcoHand.png"
-    ],
-    "threshold": 0.9,
-    "green_mask": true,
-    "doc": "0.9是否过高待评，图案两侧边缘有黑色纹路，另外有场景没有纹路（每日派遣），区别待深入考证"
-  },
-  "Collect_FindTeleporCircle": {
-    "recognition": "FeatureMatch",
-    "action": "Click",
-    "target_offset": [
-      20,
-      10,
-      0,
-      0
-    ],
-    "post_delay": 5000,
-    "focus": "CM.N.箱庭地图内找到传送阵-物件",
-    "template": [
-      "TpCircle2.png",
-      "TpCircle0.9.png",
-      "TpCircle0.92.png",
-      "TpCircle0.93.png"
-    ],
-    "count": 9,
-    "ratio": 0.5,
-    "green_mask": true,
-    "doc": "场景地图内传送阵选择"
-  },
-  "Collect_MapLift": {
-    "recognition": "TemplateMatch",
-    "action": "Click",
-    "roi": [
-      270,
-      317,
-      68,
-      54
-    ],
-    "template": [
-      "TpMapLeft.png"
-    ],
-    "repeat": 5,
-    "green_mask": true,
-    "doc": "详细地图内左图标，目的移动到最左,直接5连击."
-  },
-  "Collect_QuickCart_FastUI": {
-    "recognition": "OCR",
-    "focus": "QCB.确认快速卡带",
-    "roi": [
-      32,
-      506,
-      306,
-      125
-    ],
-    "next": [
-      "Collect_PackEnd_Ck"
-    ],
-    "expected": [
-      "最近"
-    ]
-  },
-  "Collect_PackEnd_Ck": {
-    "focus": "CM.卡带内流程结束-执行完成打标记",
-    "doc": "预留节点,禁止删除,远端传入action打完成卡带标记。"
-  },
-  "Collect_QuickCart_TargetMapEnd": {
-    "recognition": "OCR",
-    "next": [
-      "Collect_QuickCart_HomePageHub2"
-    ],
-    "focus": "CCB.快速卡带-卡带内流程进入END环节",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "达雷普旅馆",
-      "雷瓦汀基地救护站",
-      "拉勒凯旅馆",
-      "罗戴夫旅馆",
-      "封印指定室",
-      "禁闭室",
-      "旅馆",
-      "安全"
-    ],
-    "doc": "维护点C02开端"
-  },
-  "Collect_QuickCart_TargetMapEnd_End": {
-    "recognition": "OCR",
-    "focus": "CCB.[退出中断]快速卡带-卡带内流程进入END环节",
-    "roi": [
-      408,
-      622,
-      466,
-      47
-    ],
-    "expected": [
-      "达雷普旅馆",
-      "雷瓦汀基地救护站",
-      "拉勒凯旅馆",
-      "罗戴夫旅馆",
-      "旅馆",
-      "安全"
-    ],
-    "doc": "维护点C02末端，同步_QuickCart_TargetMapEnd判定与动作，保留后续空节点"
-  },
-  "Collect_QuickCart_HomePageHub2": {
-    "recognition": "TemplateMatch",
-    "action": "Click",
-    "next": [
-      "Collect_QuickCart_FastUI",
-      "Collect_QuickCart_HomePageHub2",
-      "[JumpBack]Global_QuickCart_MenuReset"
-    ],
-    "post_delay": 2000,
-    "focus": "CM.N.开始卡带退出",
-    "roi": [
-      1,
-      1,
-      231,
-      124
-    ],
-    "template": [
-      "BackButGe.png",
-      "BackButGe2.png"
-    ],
-    "green_mask": true,
-    "doc": "其他页面，返回按钮"
-  },
-  "Collect_OnlyOnce_SkillUsed": {
-    "focus": "CB.单次吸取已完成",
-    "next": [
-      "Collect_OnlyOnce_SkillUsed_Active"
-    ],
-    "max_hit": 1
-  },
-  "Collect_OnlyOnce_SkillUsed_Active": {
-    "action": "Custom",
-    "custom_action": "PatchNode",
-    "custom_action_param": {
-      "node": "Collect_PackEnd_Ck_OnlyOnce",
-      "patch": {
-        "enabled": true
-      },
-      "origin": {
-        "enabled": false
-      }
+    "Collect_FindPickupCat": {
+        "desc": "找到猫咪图标，",
+        "recognition": "TemplateMatch",
+        "roi": [
+            820,
+            516,
+            105,
+            102
+        ],
+        "template": [
+            "PickupCatGE.png"
+        ],
+        "green_mask": true,
+        "next": [
+            "Collect_FindPickupCat_LeaveCircle_Ty1"
+        ]
+    },
+    "Collect_FindPickupCat_LeaveCircle_Ty1": {
+        "desc": "自动寻路菜单",
+        "action": "Click",
+        "target": [
+            229,
+            88
+        ],
+        "post_delay": 800,
+        "next": [
+            "Collect_FindPickupCat_LeaveCircle_Ty2"
+        ]
+    },
+    "Collect_FindPickupCat_LeaveCircle_Ty2": {
+        "desc": "自动寻路酒馆",
+        "action": "Click",
+        "target": [
+            304,
+            183,
+            31,
+            9
+        ],
+        "post_delay": 800,
+        "next": [
+            "Collect_FindPickupCat_LeaveCircle_Ty3"
+        ]
+    },
+    "Collect_FindPickupCat_LeaveCircle_Ty3": {
+        "desc": "自动寻路酒馆-确认，等待x秒",
+        "action": "Click",
+        "target": [
+            722,
+            446,
+            31,
+            13
+        ],
+        "post_delay": 3000,
+        "next": [
+            "Collect_FindPickupCat_LeaveCircle_Ty4"
+        ]
+    },
+    "Collect_FindPickupCat_LeaveCircle_Ty4": {
+        "desc": "停止自动寻路",
+        "action": "Click",
+        "target": [
+            638,
+            640,
+            8,
+            9
+        ],
+        "post_delay": 800,
+        "next": [
+            "Collect_FindPickupCat_LeaveCircle_Ty5"
+        ]
+    },
+    "Collect_FindPickupCat_LeaveCircle_Ty5": {
+        "desc": "放下猫咪，等待x秒，让它走开",
+        "recognition": "TemplateMatch",
+        "roi": [
+            820,
+            516,
+            105,
+            102
+        ],
+        "template": [
+            "PickupCatGE.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 4000
+    },
+    "Collect_OperationsMain_ToAreaMap": {
+        "desc": "判断是否为区域地图界面",
+        "recognition": "OCR",
+        "roi": [
+            183,
+            11,
+            249,
+            53
+        ],
+        "expected": [
+            "移动魔法阵"
+        ],
+        "post_wait_freezes": {
+            "time": 50,
+            "timeout": 10000,
+            "target": [
+                272,
+                314,
+                66,
+                58
+            ],
+            "rate_limit": 500
+        },
+        "next": [
+            "[JumpBack]Collect_MapLift",
+            "Collect_TargetMap1-1"
+        ]
+    },
+    "Collect_TargetMap1-1": {
+        "desc": "详细地图内左图标，目的移动到最左",
+        "recognition": "TemplateMatch",
+        "roi": [
+            270,
+            317,
+            68,
+            54
+        ],
+        "template": [
+            "TpMapLeft.png"
+        ],
+        "green_mask": true,
+        "inverse": true,
+        "next": [
+            "Collect_TargetMap1_Special_PerRight",
+            "Collect_TargetMap1-2"
+        ]
+    },
+    "Collect_TargetMap1-2": {
+        "desc": "详细地图确定位置",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "达普雷镇",
+            "雷瓦汀基地",
+            "拉勒凯镇",
+            "罗戴夫镇",
+            "科库托斯圣域",
+            "学校1楼",
+            "恶梦之城1",
+            "恶梦之城I",
+            "安全"
+        ],
+        "replace": [
+            [
+                "1",
+                "I"
+            ],
+            [
+                "T",
+                "I"
+            ],
+            [
+                "í",
+                "I"
+            ],
+            [
+                "!",
+                "I"
+            ],
+            [
+                "\\|",
+                "I"
+            ],
+            [
+                "l",
+                "I"
+            ]
+        ],
+        "next": [
+            "Collect_TargetMap1_Special_Right",
+            "Collect_TargetMap2",
+            "Collect_TargetMap3",
+            "Collect_TargetMap4",
+            "[JumpBack]Collect_ClickTelepor_ButNotActive",
+            "[JumpBack]Collect_TargetMap_Special_ClickTpCircleIco",
+            "[JumpBack]Collect_ClickTeleporCircleIco",
+            "[JumpBack]Collect_ClickBackOnSecureMap",
+            "[JumpBack]Collect_ClickTelepor_Abnormal_Overlap",
+            "Collect_QuickCart_FastUI",
+            "[JumpBack]Collect_TeleporNotFind"
+        ],
+        "focus": "确认区域地图tp1"
+    },
+    "Collect_TargetMap2": {
+        "desc": "详细地图确定位置2",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "卢戈森林",
+            "封锁矿山",
+            "加尔顿山前段",
+            "洞穴神殿",
+            "贫民区",
+            "剑之神殿左侧回廊",
+            "童话镇旅馆",
+            "儿童房",
+            "官邸地",
+            "学校2楼",
+            "恶梦之城2",
+            "战斗I",
+            "战斗 I",
+            "战斗\\s*[1IⅠ!！](?!I)(?!Ⅰ)(?!！)(?!!)",
+            "战斗[1IⅠ](?!I)(?!Ⅰ)"
+        ],
+        "replace": [
+            [
+                "1",
+                "I"
+            ],
+            [
+                "T",
+                "I"
+            ],
+            [
+                "í",
+                "I"
+            ],
+            [
+                "!",
+                "I"
+            ],
+            [
+                "\\|",
+                "I"
+            ],
+            [
+                "l",
+                "I"
+            ]
+        ],
+        "next": [
+            "Collect_TargetMap2_Special_Right",
+            "Collect_TargetMap3",
+            "Collect_TargetMap4",
+            "[JumpBack]Collect_TargetMap_Special_ClickTpCircleIco",
+            "Collect_QuickCart_TargetMapEnd",
+            "Collect_Architecture_Underlying_Logic_Protection",
+            "[JumpBack]Collect_ClickTelepor_ButNotActive",
+            "[JumpBack]Collect_ClickTeleporCircleIco",
+            "[JumpBack]Collect_Protection_ReturnToAreaMap",
+            "[JumpBack]Collect_ClickTelepor_Abnormal_Overlap",
+            "Collect_QuickCart_FastUI",
+            "[JumpBack]Collect_TeleporNotFind"
+        ],
+        "focus": "确认区域地图tp2"
+    },
+    "Collect_TargetMap3": {
+        "desc": "详细地图确定位置3",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "卢戈森林深处",
+            "禁地矿山",
+            "加尔顿山后段",
+            "隐藏神殿",
+            "盗贼据点",
+            "剑之神殿右侧回廊",
+            "童话镇旅馆",
+            "第一记忆空间",
+            "学校3楼",
+            "雷瓦汀据点",
+            "战斗II",
+            "战斗Ⅱ",
+            "战斗 II",
+            "战斗 Ⅱ",
+            "战斗\\s*([1Il|Ⅰ!！][1Il|Ⅰ!！]|Ⅱ|II)(?!\\d)(?![a-zA-Z])",
+            "战斗([1Il|Ⅰ!！][1Il|Ⅰ!！]|Ⅱ|II)(?!\\d)(?![a-zA-Z])"
+        ],
+        "replace": [
+            [
+                "1",
+                "I"
+            ],
+            [
+                "T",
+                "I"
+            ],
+            [
+                "í",
+                "I"
+            ],
+            [
+                "!",
+                "I"
+            ],
+            [
+                "\\|",
+                "I"
+            ],
+            [
+                "l",
+                "I"
+            ]
+        ],
+        "post_delay": 200,
+        "timeout": 3000,
+        "next": [
+            "Collect_TargetMap4",
+            "[JumpBack]Collect_TargetMap_Special_ClickTpCircleIco",
+            "Collect_QuickCart_TargetMapEnd",
+            "Collect_Architecture_Underlying_Logic_Protection",
+            "[JumpBack]Collect_ClickTelepor_ButNotActive",
+            "[JumpBack]Collect_ClickTeleporCircleIco",
+            "[JumpBack]Collect_Protection_ReturnToAreaMap",
+            "[JumpBack]Collect_ClickTelepor_Abnormal_Overlap",
+            "Collect_QuickCart_FastUI",
+            "[JumpBack]Collect_TeleporNotFind"
+        ],
+        "on_error": [
+            "Collect_MapRight_NoFind",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "确认区域地图tp3"
+    },
+    "Collect_TargetMap4": {
+        "desc": "详细地图额外位置4。白名单制,每一张图名称都要手动指定.",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "商场1楼",
+            "妖怪镇",
+            "学校地下"
+        ],
+        "timeout": 3000,
+        "next": [
+            "[JumpBack]Collect_TargetMap_Special_ClickTpCircleIco",
+            "Collect_QuickCart_TargetMapEnd",
+            "Collect_QuickCart_FastUI",
+            "Collect_Architecture_Underlying_Logic_Protection",
+            "[JumpBack]Collect_ClickTelepor_ButNotActive",
+            "[JumpBack]Collect_ClickTeleporCircleIco",
+            "[JumpBack]Collect_Protection_ReturnToAreaMap",
+            "[JumpBack]Collect_ClickTelepor_Abnormal_Overlap",
+            "[JumpBack]Collect_TeleporNotFind"
+        ],
+        "on_error": [
+            "Collect_MapRight_NoFind",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "确认区域地图tp4"
+    },
+    "Collect_TargetMap1_Special_PerRight": {
+        "desc": "[维护点C05]复位到箱庭1图时需要特殊跳过的图,用来跳过图1非目标图,(EP18)需要持续维护!",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "科库托斯暗黑神殿",
+            "记忆岔路口"
+        ],
+        "action": "Click",
+        "target": [
+            977,
+            342,
+            2,
+            2
+        ],
+        "next": [
+            "Collect_TargetMap1_Special_PerRight",
+            "Collect_TargetMap1-2"
+        ]
+    },
+    "Collect_TargetMap1_Special_Right": {
+        "desc": "[维护点C04]箱庭1图转2图时,特殊跳过的节点,因为若跳过图有传送阵图标,则不能依赖_MapRight_NoFind,最后还是得多写一组节点,与nofind不同,这里是定向识别,需要持续维护!",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "凯那尔工业2楼"
+        ],
+        "action": "Click",
+        "target": [
+            977,
+            342,
+            2,
+            2
+        ],
+        "next": [
+            "Collect_TargetMap2",
+            "Collect_TargetMap1_Special_Right"
+        ]
+    },
+    "Collect_TargetMap2_Special_Right": {
+        "desc": "[维护点C04]箱庭2图转3图时,特殊跳过的节点,因为若跳过图有传送阵图标,则不能依赖_MapRight_NoFind,最后还是得多写一组节点,与nofind不同,这里是定向识别,需要持续维护!",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "施塔因之塔第8层",
+            "施塔因之塔宿舍"
+        ],
+        "action": "Click",
+        "target": [
+            977,
+            342,
+            2,
+            2
+        ],
+        "next": [
+            "Collect_TargetMap3",
+            "Collect_TargetMap2_Special_Right"
+        ]
+    },
+    "Collect_MapRight_NoFind": {
+        "desc": "EP6.特殊地图，最后一图是紧接战斗2的狩猎图,特征是无右侧箭头。处理，直接结束箱庭内流程",
+        "recognition": "TemplateMatch",
+        "roi": [
+            838,
+            311,
+            418,
+            63
+        ],
+        "template": [
+            "TpMapRight.png"
+        ],
+        "green_mask": true,
+        "inverse": true,
+        "next": [
+            "Collect_QuickCart_HomePageHub2"
+        ],
+        "focus": "QBC.[INF]特殊地图.类EP6区域地图到底"
+    },
+    "Collect_TargetMapEnd": {
+        "desc": "维护点C02开端",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "达雷普旅馆",
+            "雷瓦汀基地救护站",
+            "拉勒凯旅馆",
+            "罗戴夫旅馆",
+            "安全"
+        ],
+        "target": [
+            120,
+            35
+        ],
+        "next": [],
+        "focus": "CM.N.卡带内流程进入END环节"
+    },
+    "Collect_TargetMapEnd_End": {
+        "desc": "维护点C02末端.快速卡带pipeline_override了此处next，去了C_QuickCart_TargetMapEnd,因为是中断内next，故必须结束退回上一个流程，单独end",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "达雷普旅馆",
+            "雷瓦汀基地救护站",
+            "拉勒凯旅馆",
+            "罗戴夫旅馆",
+            "安全",
+            "^禁闭室"
+        ],
+        "target": [
+            120,
+            35
+        ],
+        "focus": "卡带出口"
+    },
+    "Collect_Architecture_Underlying_Logic_Protection": {
+        "desc": "维护点C06.切图状态机如果OCR识别出错,可能导致脚本停留在图1,但实际已执行到图2,最后过量切图到旅店后面,会循环卡住。定性为状态机思维框架底层bug，难修危害大。此节点作为额外守护，放入next中。直接结束卡带内流程，最多断臂卡带内剩下资源，但不会全部卡死。",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "达雷普旅馆",
+            "雷瓦汀基地救护站",
+            "拉勒凯旅馆",
+            "罗戴夫旅馆",
+            "施塔因之塔宿舍",
+            "旅馆",
+            "救护站"
+        ],
+        "replace": [
+            [
+                "安全",
+                ""
+            ],
+            [
+                "战斗",
+                ""
+            ]
+        ],
+        "target": [
+            120,
+            35
+        ],
+        "next": [
+            "Collect_QuickCart_HomePageHub2"
+        ],
+        "focus": "CM-P.[WRN]状态机底层逻辑防护被触发\n直接结束卡带"
+    },
+    "Collect_TargetMap_Special_ClickTpCircleIco": {
+        "desc": "此节点置于'TargetMapEnd'之前，对需要吸取的安全节点做单独适配，否则会提前结束吸取。起因：杰登之门卡带有3张安全图。",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "学校1楼",
+            "学校2楼",
+            "学校3楼"
+        ],
+        "next": [
+            "Collect_ClickTeleporCircleIco"
+        ],
+        "focus": "CM.N.特殊选中触发"
+    },
+    "Collect_Protection_ReturnToAreaMap": {
+        "desc": "找到run,此时应该在区域地图,但在主页,异常处理",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1047,
+            516,
+            107,
+            110
+        ],
+        "template": [
+            "Run.png"
+        ],
+        "green_mask": true,
+        "next": [
+            "Collect_FindTeleporCircle0.9",
+            "Collect_ClickTelepor_ButNotActive"
+        ],
+        "focus": "CM-P.[WRN]状态机守护被触发-切图环节-恢复到区域地图界面"
+    },
+    "Collect_TeleporNotFind": {
+        "desc": "[维护点末端，前手interface的 采集方案 op]主线13的区域图的2#、5#均不是正常图，特征是没有传送阵。在此写一个原中断吸取的反向‘找不到’中断来应对.然后存在两种情况:存在右按钮,切1次图.不存在,这就是最后一图,如火片,操作切到卡带,来给中断外传递退出信号",
+        "recognition": "TemplateMatch",
+        "roi": [
+            209,
+            82,
+            912,
+            487
+        ],
+        "template": [
+            "TpCircleMapGE.png"
+        ],
+        "green_mask": true,
+        "inverse": true,
+        "post_delay": 1000,
+        "next": [
+            "Collect_TeleporNotFind_Right",
+            "Collect_TeleporNotFind_NORight"
+        ],
+        "focus": "CBB.[WRN]未识别到传送阵，执行特殊换页（正常不应该触发）"
+    },
+    "Collect_TeleporNotFind_Right": {
+        "desc": "方案1:识别到存在右侧按键,点一下.next:1.若是旅馆安全图,异常消除,退出中断/2.有传送阵,点进去(非安全),尝试吸取【？，万一是狩猎场呢，逻辑又漏洞！】/3.还是没传送标,前位循环",
+        "recognition": "TemplateMatch",
+        "roi": [
+            943,
+            309,
+            67,
+            72
+        ],
+        "template": [
+            "TpMapRight.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "target": [
+            977,
+            342,
+            2,
+            2
+        ],
+        "post_delay": 1000,
+        "next": [
+            "Collect_QuickCart_TargetMapEnd_End",
+            "Collect_ClickTeleporCircleIco",
+            "Collect_TeleporNotFind"
+        ],
+        "focus": "CBB.[WRN]特殊换页-存在右换页-方案1"
+    },
+    "Collect_TeleporNotFind_NORight": {
+        "desc": "方案2:识别到右侧按键不存在,这是卡带中最后一图,如火片.操作,切到快速卡带界面,传递退出信号",
+        "recognition": "TemplateMatch",
+        "roi": [
+            943,
+            309,
+            67,
+            72
+        ],
+        "template": [
+            "TpMapRight.png"
+        ],
+        "green_mask": true,
+        "inverse": true,
+        "post_delay": 1000,
+        "next": [
+            "Global_QuickCart_MenuReset",
+            "[JumpBack]Global_BackPageHub_Once"
+        ],
+        "focus": "CBB.[WRN]特殊换页-不存在右换页-方案2"
+    },
+    "Collect_TargetMap_Special_Right": {
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "剑之神殿中央回廊",
+            "封印指定室",
+            "施塔因之塔第8层",
+            "施塔因之塔宿舍"
+        ],
+        "action": "Click",
+        "target": [
+            977,
+            342,
+            2,
+            2
+        ],
+        "focus": "CBB.特殊地图，处理"
+    },
+    "Collect_Special_EP6": {
+        "desc": "EP6主城默认位置异常,需要点右下角传送阵物件",
+        "recognition": "OCR",
+        "roi": [
+            481,
+            197,
+            310,
+            252
+        ],
+        "expected": "魔塔见习魔法师",
+        "action": "Click",
+        "target": [
+            1271,
+            628
+        ],
+        "post_delay": 4000,
+        "focus": "CQB.[INF]检测到EP6,进行魔塔特殊操作"
+    },
+    "Collect_Special_QR7-CW": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            670,
+            356,
+            203,
+            287
+        ],
+        "template": [
+            "QR6CW.png"
+        ],
+        "action": "Click",
+        "target": [
+            950,
+            458
+        ],
+        "post_delay": 2000,
+        "focus": "CQB.[INF]检测到QR6,进行合约之战特殊操作"
+    },
+    "Collect_ClickTeleporCircleIco": {
+        "desc": "详细地图内传送阵选择",
+        "recognition": "TemplateMatch",
+        "roi": [
+            100,
+            71,
+            1133,
+            534
+        ],
+        "template": [
+            "TpCircleMap.png"
+        ],
+        "next": [
+            "Collect_ClickTelepor_TargetClass_Purple",
+            "Collect_ClickTelepor_TargetClass_White"
+        ],
+        "focus": "CM.N.区域地图.tp1.找到传送阵图标"
+    },
+    "Collect_ClickTelepor_TargetClass_Purple": {
+        "desc": "紫色传送阵,点一次就消失了,留下一个位置异常.应该去点白色",
+        "recognition": "ColorMatch",
+        "roi": "Collect_ClickTeleporCircleIco",
+        "lower": [
+            119,
+            90,
+            145
+        ],
+        "upper": [
+            210,
+            144,
+            255
+        ],
+        "count": 1,
+        "timeout": 3000,
+        "next": [
+            "Collect_ClickTelepor_TargetClass_PurpleProcess"
+        ],
+        "on_error": [
+            "Collect_ClickTelepor_TargetClass_White",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "CTB.[WRN]识别首选为紫色技能传送阵,尝试规避"
+    },
+    "Collect_ClickTelepor_TargetClass_PurpleProcess": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            100,
+            71,
+            1133,
+            534
+        ],
+        "template": [
+            "TpCircleMap.png"
+        ],
+        "index": 1,
+        "action": "Click",
+        "post_delay": 5000,
+        "next": [
+            "[Anchor]Arbitrage5",
+            "Collect_Skill_Start",
+            "Collect_ClickTelepor_TargetClass_PurpleProcess",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "CM.N.选择次选传送阵"
+    },
+    "Collect_ClickTelepor_TargetClass_White": {
+        "desc": "详细地图内传送阵选择",
+        "recognition": "TemplateMatch",
+        "roi": [
+            100,
+            71,
+            1133,
+            534
+        ],
+        "template": [
+            "TpCircleMap.png"
+        ],
+        "action": "Click",
+        "post_delay": 5000,
+        "next": [
+            "[Anchor]Arbitrage5",
+            "Collect_Skill_Start",
+            "Collect_ClickTelepor_TargetClass_White",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "CM.N.区域地图.tp1.选择首选传送阵图标"
+    },
+    "Collect_ClickTelepor_ButNotActive": {
+        "desc": "如果传送阵没有激活,需要从这里决定中断",
+        "recognition": "OCR",
+        "roi": [
+            511,
+            577,
+            262,
+            47
+        ],
+        "expected": "^(?=.*[没有])(?=.*[已激活的])(?=.*[魔法阵]).{6,}$",
+        "next": [
+            "Collect_OperationsMain_OperationsEnd"
+        ],
+        "focus": "CM.N.[WRN]区域地图传送阵没有激活!"
+    },
+    "Collect_ClickTelepor_Abnormal_Overlap": {
+        "desc": "当传送阵地图中存在重叠时的处理,找三角(无法处理紫色情况) | 注意:特征太泛,少用",
+        "recognition": "TemplateMatch",
+        "roi": [
+            100,
+            71,
+            1133,
+            534
+        ],
+        "template": [
+            "map_tcArrowGE.png"
+        ],
+        "green_mask": true,
+        "threshold": [
+            0.82
+        ],
+        "order_by": "Score",
+        "action": "Click",
+        "target_offset": [
+            0,
+            28,
+            0,
+            0
+        ],
+        "post_delay": 5000,
+        "next": [
+            "Collect_Skill_Start",
+            "Collect_ClickTelepor_TargetClass_White",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "CM.N.区域地图.tp1.找到传送阵图标"
+    },
+    "Collect_ClickBackOnSecureMap": {
+        "desc": "详细地图确定位置",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "达普雷镇",
+            "雷瓦汀基地",
+            "拉勒凯镇",
+            "罗戴夫镇",
+            "安全"
+        ],
+        "action": "Click",
+        "target": [
+            120,
+            35
+        ],
+        "post_wait_freezes": 1500,
+        "next": [
+            "Collect_Skill_Start",
+            "Collect_ClickBackOnSecureMap"
+        ],
+        "focus": "CM.N.区域地图.tp1.已正确"
+    },
+    "Collect_OperationsMain_OperationsEnd": {
+        "desc": "找到图钉 ，进入区域地图",
+        "recognition": "OCR",
+        "roi": [
+            128,
+            13,
+            329,
+            55
+        ],
+        "expected": [
+            "移动魔法阵"
+        ],
+        "timeout": 3000,
+        "next": [
+            "Collect_MapRight",
+            "Collect_OperationsEnd_NORight",
+            "[JumpBack]Collect_FindTeleporCircle"
+        ]
+    },
+    "Collect_OperationsEnd_NORight": {
+        "desc": "防止识别不到右键/且能误识别FindTeleporCircle的离谱情况.",
+        "recognition": "TemplateMatch",
+        "roi": [
+            267,
+            298,
+            743,
+            84
+        ],
+        "template": [
+            "MapOlayLeftButt.png"
+        ],
+        "green_mask": true,
+        "threshold": 0.85,
+        "post_delay": 1000,
+        "next": [
+            "Collect_QuickCart_HomePageHub2"
+        ],
+        "focus": "CBB.[WRN]中继特殊结束-不存在右换页"
+    },
+    "Collect_MapRight": {
+        "desc": "详细地图内右图标，目的右移动1格[缺陷，此步骤缺乏验证方法]",
+        "recognition": "TemplateMatch",
+        "roi": [
+            838,
+            311,
+            418,
+            63
+        ],
+        "template": [
+            "TpMapRight.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 5000
+    },
+    "Collect_FindTeleporCircle0.9": {
+        "desc": "0.9是否过高待评，图案两侧边缘有黑色纹路，另外有场景没有纹路（每日派遣），区别待深入考证",
+        "recognition": "TemplateMatch",
+        "roi": [
+            828,
+            519,
+            91,
+            90
+        ],
+        "template": [
+            "IcoHand.png"
+        ],
+        "green_mask": true,
+        "threshold": 0.9,
+        "action": "Click",
+        "post_delay": 1000,
+        "focus": "CM.N.箱庭地图内找到传送阵-按钮标"
+    },
+    "Collect_FindTeleporCircle": {
+        "desc": "场景地图内传送阵选择",
+        "recognition": "FeatureMatch",
+        "template": [
+            "TpCircle2.png",
+            "TpCircle0.9.png",
+            "TpCircle0.92.png",
+            "TpCircle0.93.png"
+        ],
+        "green_mask": true,
+        "ratio": 0.5,
+        "count": 9,
+        "action": "Click",
+        "target_offset": [
+            20,
+            10,
+            0,
+            0
+        ],
+        "post_delay": 5000,
+        "focus": "CM.N.箱庭地图内找到传送阵-物件"
+    },
+    "Collect_MapLift": {
+        "desc": "详细地图内左图标，目的移动到最左,直接5连击.",
+        "recognition": "TemplateMatch",
+        "roi": [
+            270,
+            317,
+            68,
+            54
+        ],
+        "template": [
+            "TpMapLeft.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "repeat": 5
+    },
+    "Collect_QuickCart_FastUI": {
+        "recognition": "OCR",
+        "roi": [
+            32,
+            506,
+            306,
+            125
+        ],
+        "expected": [
+            "最近"
+        ],
+        "next": [
+            "Collect_PackEnd_Ck"
+        ],
+        "focus": "QCB.确认快速卡带"
+    },
+    "Collect_PackEnd_Ck": {
+        "desc": "预留节点,禁止删除,远端传入action打完成卡带标记。",
+        "focus": "CM.卡带内流程结束-执行完成打标记"
+    },
+    "Collect_QuickCart_TargetMapEnd": {
+        "desc": "维护点C02开端",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "达雷普旅馆",
+            "雷瓦汀基地救护站",
+            "拉勒凯旅馆",
+            "罗戴夫旅馆",
+            "封印指定室",
+            "禁闭室",
+            "旅馆",
+            "安全"
+        ],
+        "next": [
+            "Collect_QuickCart_HomePageHub2"
+        ],
+        "focus": "CCB.快速卡带-卡带内流程进入END环节"
+    },
+    "Collect_QuickCart_TargetMapEnd_End": {
+        "desc": "维护点C02末端，同步_QuickCart_TargetMapEnd判定与动作，保留后续空节点",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "达雷普旅馆",
+            "雷瓦汀基地救护站",
+            "拉勒凯旅馆",
+            "罗戴夫旅馆",
+            "旅馆",
+            "安全"
+        ],
+        "focus": "CCB.[退出中断]快速卡带-卡带内流程进入END环节"
+    },
+    "Collect_QuickCart_HomePageHub2": {
+        "desc": "其他页面，返回按钮",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1,
+            1,
+            231,
+            124
+        ],
+        "template": [
+            "BackButGe.png",
+            "BackButGe2.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Collect_QuickCart_FastUI",
+            "Collect_QuickCart_HomePageHub2",
+            "[JumpBack]Global_QuickCart_MenuReset"
+        ],
+        "focus": "CM.N.开始卡带退出"
+    },
+    "Collect_OnlyOnce_SkillUsed": {
+        "max_hit": 1,
+        "next": [
+            "Collect_OnlyOnce_SkillUsed_Active"
+        ],
+        "focus": "CB.单次吸取已完成"
+    },
+    "Collect_OnlyOnce_SkillUsed_Active": {
+        "action": "Custom",
+        "custom_action": "PatchNode",
+        "custom_action_param": {
+            "node": "Collect_PackEnd_Ck_OnlyOnce",
+            "patch": {
+                "enabled": true
+            },
+            "origin": {
+                "enabled": false
+            }
+        }
+    },
+    "Collect_PackEnd_Ck_OnlyOnce": {
+        "enabled": false,
+        "action": "StopTask",
+        "focus": "CM.N.仅进行1张卡带策略-强制结束流程"
     }
-  },
-  "Collect_PackEnd_Ck_OnlyOnce": {
-    "enabled": false,
-    "action": "StopTask",
-    "focus": "CM.N.仅进行1张卡带策略-强制结束流程"
-  }
 }

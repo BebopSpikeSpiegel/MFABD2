@@ -1,23 +1,19 @@
 {
     "Chapter7Shop": {
+        "max_hit": 1,
         "action": "DoNothing",
+        "timeout": 8000,
         "next": [
             "[JumpBack]MerchantBuy7.1",
             "[JumpBack]MerchantBuy7.2",
             "[JumpBack]MerchantBuy7.3",
             "[JumpBack]MerchantBuy7.4",
             "[JumpBack]MerchantBuy7.5"
-        ],
-        "max_hit": 1,
-        "timeout": 8000
+        ]
     },
     "MerchantBuy7.1": {
-        "action": "Click",
-        "next": [
-            "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy7.1"
-        ],
-        "post_delay": 1000,
+        "desc": "三文鱼,100",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             401,
@@ -26,18 +22,18 @@
             72
         ],
         "template": "Shop/Salmon.png",
-        "doc": "三文鱼,100",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy7.2": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy7.2"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy7.1"
+        ]
+    },
+    "MerchantBuy7.2": {
+        "desc": "番茄,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             930,
@@ -46,18 +42,18 @@
             74
         ],
         "template": "Shop/Tomato.png",
-        "doc": "番茄,400",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy7.3": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy7.3"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy7.2"
+        ]
+    },
+    "MerchantBuy7.3": {
+        "desc": "芥末,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             398,
@@ -66,18 +62,18 @@
             76
         ],
         "template": "Shop/Mustard.png",
-        "doc": "芥末,400",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy7.4": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy7.4"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy7.3"
+        ]
+    },
+    "MerchantBuy7.4": {
+        "desc": "奶酪,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             398,
@@ -86,18 +82,18 @@
             73
         ],
         "template": "Shop/Cheese.png",
-        "doc": "奶酪,400",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy7.5": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy7.5"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy7.4"
+        ]
+    },
+    "MerchantBuy7.5": {
+        "desc": "萝卜缨,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             665,
@@ -106,9 +102,13 @@
             71
         ],
         "template": "Shop/Radish leaf.png",
-        "doc": "萝卜缨,400",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
+        "next": [
+            "Arbitrage_Merchant_BuyMsg",
+            "MerchantBuy7.5"
+        ]
     }
 }

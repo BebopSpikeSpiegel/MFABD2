@@ -1,22 +1,18 @@
 {
     "Chapter12Shop": {
+        "max_hit": 1,
         "action": "DoNothing",
+        "timeout": 8000,
         "next": [
             "[JumpBack]MerchantBuy12.1",
             "[JumpBack]MerchantBuy12.2",
             "[JumpBack]MerchantBuy12.3",
             "[JumpBack]MerchantBuy12.4"
-        ],
-        "max_hit": 1,
-        "timeout": 8000
+        ]
     },
     "MerchantBuy12.1": {
-        "action": "Click",
-        "next": [
-            "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy12.1"
-        ],
-        "post_delay": 1000,
+        "desc": "咖啡豆,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             401,
@@ -25,18 +21,18 @@
             72
         ],
         "template": "Shop/CoffeeBean.png",
-        "doc": "咖啡豆,400",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy12.2": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy12.2"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy12.1"
+        ]
+    },
+    "MerchantBuy12.2": {
+        "desc": "三文鱼,100",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             665,
@@ -45,18 +41,18 @@
             75
         ],
         "template": "Shop/Salmon.png",
-        "doc": "三文鱼,100",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy12.3": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy12.3"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy12.2"
+        ]
+    },
+    "MerchantBuy12.3": {
+        "desc": "牛奶,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             664,
@@ -65,18 +61,18 @@
             75
         ],
         "template": "Shop/Milk.png",
-        "doc": "牛奶,400",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy12.4": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy12.4"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy12.3"
+        ]
+    },
+    "MerchantBuy12.4": {
+        "desc": "香草,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             398,
@@ -85,9 +81,13 @@
             73
         ],
         "template": "Shop/Vanilla.png",
-        "doc": "香草,400",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
+        "next": [
+            "Arbitrage_Merchant_BuyMsg",
+            "MerchantBuy12.4"
+        ]
     }
 }

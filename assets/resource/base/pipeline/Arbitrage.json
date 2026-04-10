@@ -1,6 +1,6 @@
 {
     "Arbitrage_Start": {
-        "doc": "总流程启动器。现在设定3个子开关，购买、制作、出售，按次序JB。其中出售部分‘Arbitrage_Buy’多置一个空节点节点引导到单独文件",
+        "desc": "总流程启动器。现在设定3个子开关，购买、制作、出售，按次序JB。其中出售部分‘Arbitrage_Buy’多置一个空节点节点引导到单独文件",
         "next": [
             "[JumpBack]Arbitrage_Cooking_Weekly",
             "[JumpBack]Arbitrage_Cooking",
@@ -12,13 +12,8 @@
     },
     "#1总控与进图寻路": {},
     "Arbitrage_HomePageOldCardMenu_Goin": {
+        "desc": "进入卡带界面",
         "recognition": "OCR",
-        "action": "Click",
-        "next": [
-            "Arbitrage_HomePageOldCardMenu_Ck&Top",
-            "Arbitrage_HomePageOldCardMenu_Goin"
-        ],
-        "post_delay": 2000,
         "roi": [
             98,
             656,
@@ -28,21 +23,20 @@
         "expected": [
             "抽抽乐"
         ],
+        "action": "Click",
         "target": [
             1111,
             650
         ],
-        "doc": "进入卡带界面"
+        "post_delay": 2000,
+        "next": [
+            "Arbitrage_HomePageOldCardMenu_Ck&Top",
+            "Arbitrage_HomePageOldCardMenu_Goin"
+        ]
     },
     "Arbitrage_HomePageOldCardMenu_Ck&Top": {
-        "anchor": "Oldpack_swip",
+        "desc": "卡带界面复位拖动1，最上",
         "recognition": "OCR",
-        "action": "Swipe",
-        "next": [
-            "Arbitrage_HomePageOldCardMenu_CheakReset",
-            "Arbitrage_HomePageOldCardMenu_ResetLift"
-        ],
-        "post_delay": 1000,
         "roi": [
             165,
             0,
@@ -52,6 +46,7 @@
         "expected": [
             "游戏卡珍藏集"
         ],
+        "action": "Swipe",
         "begin": [
             70,
             270
@@ -61,16 +56,17 @@
             640
         ],
         "duration": 500,
-        "doc": "卡带界面复位拖动1，最上"
+        "anchor": "Oldpack_swip",
+        "post_delay": 1000,
+        "next": [
+            "Arbitrage_HomePageOldCardMenu_CheakReset",
+            "Arbitrage_HomePageOldCardMenu_ResetLift"
+        ]
     },
     "Arbitrage_HomePageOldCardMenu_ResetLift": {
+        "desc": "卡带界面复位拖动2，最左",
+        "max_hit": 30,
         "recognition": "OCR",
-        "action": "Swipe",
-        "next": [
-            "[Anchor]Oldpack_swip"
-        ],
-        "post_delay": 1000,
-        "post_wait_freezes": 800,
         "roi": [
             103,
             82,
@@ -80,6 +76,7 @@
         "expected": [
             "剧情游戏卡"
         ],
+        "action": "Swipe",
         "begin": [
             145,
             200
@@ -89,12 +86,15 @@
             200
         ],
         "duration": 500,
-        "doc": "卡带界面复位拖动2，最左",
-        "max_hit": 30
+        "post_wait_freezes": 800,
+        "post_delay": 1000,
+        "next": [
+            "[Anchor]Oldpack_swip"
+        ]
     },
     "Arbitrage_HomePageOldCardMenu_CheakReset": {
+        "desc": "判定已复位到最左",
         "recognition": "TemplateMatch",
-        "focus": "CB.卡带已复位",
         "roi": [
             108,
             128,
@@ -107,23 +107,11 @@
         "next": [
             "Arbitrage_Card5#_Goin"
         ],
-        "doc": "判定已复位到最左"
+        "focus": "CB.卡带已复位"
     },
     "Arbitrage_Card5#_Goin": {
+        "desc": "点击PVE本子5",
         "recognition": "TemplateMatch",
-        "action": "Click",
-        "target_offset": [
-            -20,
-            25,
-            0,
-            0
-        ],
-        "next": [
-            "Arbitrage_OperationsMain_Sandplay",
-            "Arbitrage_Card5#_Goin",
-            "[JumpBack]Global_WaitingForLoading"
-        ],
-        "post_delay": 3000,
         "roi": [
             1029,
             150,
@@ -134,10 +122,34 @@
             "pve5.png"
         ],
         "threshold": 0.95,
-        "doc": "点击PVE本子5"
+        "action": "Click",
+        "target_offset": [
+            -20,
+            25,
+            0,
+            0
+        ],
+        "post_delay": 3000,
+        "next": [
+            "Arbitrage_OperationsMain_Sandplay",
+            "Arbitrage_Card5#_Goin",
+            "[JumpBack]Global_WaitingForLoading"
+        ]
     },
     "Arbitrage_OperationsMain_Sandplay": {
+        "desc": "中断：章节内主要操作开始。找到图钉，确认进入箱庭",
         "recognition": "TemplateMatch",
+        "roi": [
+            1122,
+            646,
+            40,
+            38
+        ],
+        "template": [
+            "pin.png"
+        ],
+        "anchor": "Arbitrage5",
+        "post_delay": 1000,
         "next": [
             "[JumpBack]Arbitrage_Cooking_Weekly",
             "[JumpBack]Arbitrage_Cooking",
@@ -148,86 +160,74 @@
             "[JumpBack]Collect_ForceTeleporCircle",
             "Collect_OperationsMain_ToAreaMap"
         ],
-        "post_delay": 1000,
-        "focus": "箱庭模块启动",
-        "anchor": "Arbitrage5",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
-        ],
-        "doc": "中断：章节内主要操作开始。找到图钉，确认进入箱庭"
+        "focus": "箱庭模块启动"
     },
     "Arbitrage_Sandplay_SeeMerchant": {
         "recognition": "TemplateMatch",
-        "template": [
-            "Map_Merchant.png"
-        ],
         "roi": [
             163,
             142,
             129,
             115
         ],
-        "focus": "小地图发现商人",
+        "template": [
+            "Map_Merchant.png"
+        ],
         "next": [
             "Arbitrage_NviGuide_Butt"
-        ]
+        ],
+        "focus": "小地图发现商人"
     },
     "Arbitrage_NviGuide_Butt": {
         "recognition": "TemplateMatch",
-        "template": [
-            "Nvi_SandGuideButt.png"
-        ],
         "roi": [
             208,
             72,
             138,
             43
         ],
-        "action": "Click",
-        "focus": "点击小地图导航按钮",
+        "template": [
+            "Nvi_SandGuideButt.png"
+        ],
         "pre_delay": 500,
+        "action": "Click",
         "next": [
             "Arbitrage_NviGuide_Merchant_Ocr",
             "Arbitrage_NviGuide_Butt"
-        ]
+        ],
+        "focus": "点击小地图导航按钮"
     },
     "Arbitrage_NviGuide_Merchant_Ocr": {
         "recognition": "OCR",
-        "expected": [
-            "商店"
-        ],
         "roi": [
             256,
             64,
             291,
             300
         ],
+        "expected": [
+            "商店"
+        ],
         "action": "Click",
         "post_delay": 800,
-        "focus": "点击商店",
         "next": [
             "Arbitrage_NviGuide_CKMsgBox_Ocr",
             "Arbitrage_NviGuide_Merchant_Ocr",
             "[JumpBack]Arbitrage_NviGuide_Onfoot_Loop",
             "Arbitrage_Merchant_Ico"
-        ]
+        ],
+        "focus": "点击商店"
     },
     "Arbitrage_NviGuide_CKMsgBox_Ocr": {
         "recognition": "OCR",
-        "expected": [
-            "确认"
-        ],
         "roi": [
             690,
             436,
             93,
             135
+        ],
+        "expected": [
+            "确认"
         ],
         "action": "Click",
         "post_delay": 1000,
@@ -239,14 +239,14 @@
     },
     "Arbitrage_NviGuide_Onfoot_Loop": {
         "recognition": "TemplateMatch",
-        "template": [
-            "AutoNvi_ico.png"
-        ],
         "roi": [
             619,
             623,
             41,
             41
+        ],
+        "template": [
+            "AutoNvi_ico.png"
         ],
         "post_delay": 5000,
         "focus": "行路中..."
@@ -254,91 +254,91 @@
     "#2商人交互与分支总枢纽": {},
     "Arbitrage_Merchant_Ico": {
         "recognition": "TemplateMatch",
-        "template": [
-            "Merchant_IcoGE.png"
-        ],
         "roi": [
             838,
             534,
             71,
             69
         ],
+        "template": [
+            "Merchant_IcoGE.png"
+        ],
         "green_mask": true,
         "action": "Click",
         "post_delay": 2000,
-        "focus": "商店已到位...",
         "next": [
             "Arbitrage_Merchant_Dialog",
             "Arbitrage_Merchant_Ico"
-        ]
+        ],
+        "focus": "商店已到位..."
     },
     "Arbitrage_Merchant_Dialog": {
+        "desc": "右上角天赋药图标,已在对话界面",
         "recognition": "TemplateMatch",
-        "template": [
-            "Mer_Dialog_TalMed.png"
-        ],
         "roi": [
             963,
             32,
             224,
             31
         ],
+        "template": [
+            "Mer_Dialog_TalMed.png"
+        ],
         "next": [
             "[Anchor]PractiseBargaining_Per",
             "Arbitrage_Bargaining_SkillList"
-        ],
-        "doc": "右上角天赋药图标,已在对话界面"
+        ]
     },
     "Arbitrage_Bargaining_SkillList": {
         "recognition": "OCR",
-        "expected": [
-            "砍价"
-        ],
         "roi": [
             108,
             582,
             857,
             51
         ],
+        "expected": [
+            "砍价"
+        ],
         "action": "Click",
+        "post_wait_freezes": 500,
+        "post_delay": 500,
         "next": [
             "Arbitrage_Bargaining_Msgbox_NoMedicine",
             "Arbitrage_Bargaining_Msgbox_Ck",
             "Arbitrage_Bargaining_SkillList"
-        ],
-        "post_delay": 500,
-        "post_wait_freezes": 500
+        ]
     },
     "Arbitrage_Bargaining_Msgbox_Ck": {
         "recognition": "OCR",
-        "expected": [
-            "砍价"
-        ],
         "roi": [
             648,
             407,
             137,
             82
         ],
+        "expected": [
+            "砍价"
+        ],
         "action": "Click",
         "post_delay": 500,
-        "focus": "使用技能砍价,进入商店",
         "next": [
             "Arbitrage_Merchant_Menu",
             "Arbitrage_Bargaining_Msgbox_Ck",
             "[JumpBack]Arbitrage_Bargaining_SkipAm"
-        ]
+        ],
+        "focus": "使用技能砍价,进入商店"
     },
     "Arbitrage_Bargaining_SkipAm": {
         "recognition": "TemplateMatch",
-        "template": [
-            "Mer_Dialog_TalMed.png"
-        ],
         "roi": [
             963,
             32,
             224,
             31
+        ],
+        "template": [
+            "Mer_Dialog_TalMed.png"
         ],
         "inverse": true,
         "action": "Click",
@@ -350,7 +350,14 @@
         "rate_limit": 500
     },
     "Arbitrage_Bargaining_Msgbox_NoMedicine": {
+        "desc": "云书写,没有测试过",
         "recognition": "ColorMatch",
+        "roi": [
+            649,
+            421,
+            122,
+            29
+        ],
         "lower": [
             241,
             0,
@@ -362,26 +369,19 @@
             133
         ],
         "count": 40,
-        "roi": [
-            649,
-            421,
-            122,
-            29
-        ],
-        "focus": "天赋神药不足！",
-        "doc": "云书写,没有测试过"
+        "focus": "天赋神药不足！"
     },
     "Arbitrage_Merchant_Menu": {
         "recognition": "OCR",
-        "expected": [
-            "购买",
-            "出售"
-        ],
         "roi": [
             110,
             92,
             51,
             149
+        ],
+        "expected": [
+            "购买",
+            "出售"
         ],
         "next": [
             "[Anchor]PractiseBargaining_Per",
@@ -389,19 +389,17 @@
         ]
     },
     "Arbitrage_Action_Hub": {
+        "desc": "商店内动作路由",
+        "timeout": 3000,
         "next": [
             "[JumpBack]Arbitrage_BuyItem",
             "[JumpBack]Arbitrage_SellItem",
             "[JumpBack]Arbitrage_Merchant_Close_Ck",
             "[JumpBack]Global_BackPageHub_Once",
             "Global_ToSandBox"
-        ],
-        "timeout": 3000,
-        "doc": "商店内动作路由"
+        ]
     },
     "Arbitrage_Merchant_Close_Ck": {
-        "action": "Click",
-        "pre_delay": 500,
         "recognition": "OCR",
         "roi": [
             667,
@@ -411,17 +409,19 @@
         ],
         "expected": [
             "关闭商店"
-        ]
+        ],
+        "pre_delay": 500,
+        "action": "Click"
     },
     "#3购买流程": {},
     "Arbitrage_BuyItem": {
-        "focus": "Arb.M.购入模块启动",
+        "desc": "商店内购买",
+        "enabled": true,
+        "max_hit": 1,
         "next": [
             "Arbitrage_Buy_Select_QC1"
         ],
-        "enabled": true,
-        "max_hit": 1,
-        "doc": "商店内购买"
+        "focus": "Arb.M.购入模块启动"
     },
     "Arbitrage_Buy_Select_QC1": {
         "recognition": "OCR",
@@ -1122,24 +1122,25 @@
         ]
     },
     "Arbitrage_Buy_Select_End": {
-        "focus": "Arb.B.购买模块结束",
+        "timeout": 1005,
         "next": [
             "Arbitrage_PackList_ResetEnter",
             "[JumpBack]Arbitrage_PackList_ResetSwip"
         ],
-        "timeout": 1005
+        "focus": "Arb.B.购买模块结束"
     },
     "Arbitrage_Select_Swip": {
+        "desc": "商店卡带列表滑动.使用特殊的anchor来实现同层级类JumpBack复用,因为smartswip的跳出是节点链级,Jb会+1级导致失效、循环",
         "recognition": "OCR",
-        "expected": [
-            "购买",
-            "出售"
-        ],
         "roi": [
             110,
             92,
             51,
             149
+        ],
+        "expected": [
+            "购买",
+            "出售"
         ],
         "action": "Custom",
         "custom_action": "SmartSwipe",
@@ -1168,55 +1169,52 @@
             "threshold": 3.0
         },
         "post_wait_freezes": 1000,
+        "timeout": 2000,
         "next": [
             "[Anchor]PackSwip_End",
             "[Anchor]PackSwip_Str"
         ],
-        "timeout": 2000,
-        "focus": "滑动商店卡带表",
-        "doc": "商店卡带列表滑动.使用特殊的anchor来实现同层级类JumpBack复用,因为smartswip的跳出是节点链级,Jb会+1级导致失效、循环"
+        "focus": "滑动商店卡带表"
     },
     "Arbitrage_Merchant_BuyMsg": {
-        "action": "Click",
-        "post_wait_freezes": 500,
-        "next": [
-            "Arbitrage_Merchant_BuyMsg_Clr",
-            "Arbitrage_Merchant_BuyMsg"
-        ],
         "recognition": "OCR",
-        "expected": "MAX",
         "roi": [
             563,
             490,
             62,
             32
+        ],
+        "expected": "MAX",
+        "action": "Click",
+        "post_wait_freezes": 500,
+        "next": [
+            "Arbitrage_Merchant_BuyMsg_Clr",
+            "Arbitrage_Merchant_BuyMsg"
         ]
     },
     "Arbitrage_Merchant_BuyMsg_Clr": {
         "recognition": "ColorMatch",
-        "upper": [
-            255,
-            255,
-            255
-        ],
-        "lower": [
-            244,
-            244,
-            243
-        ],
         "roi": [
             572,
             449,
             7,
             23
         ],
+        "lower": [
+            244,
+            244,
+            243
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
         "next": [
             "Arbitrage_Merchant_BuyMsg_Button"
         ]
     },
     "Arbitrage_Merchant_BuyMsg_Button": {
-        "action": "Click",
-        "pre_delay": 500,
         "recognition": "OCR",
         "roi": [
             884,
@@ -1227,14 +1225,14 @@
         "expected": [
             "购买"
         ],
+        "pre_delay": 500,
+        "action": "Click",
         "post_delay": 1000,
         "next": [
             "Arbitrage_Merchant_BuyMsg_Button_IsDone"
         ]
     },
     "Arbitrage_Merchant_BuyMsg_Button_IsDone": {
-        "action": "Click",
-        "pre_delay": 500,
         "recognition": "OCR",
         "roi": [
             884,
@@ -1245,19 +1243,22 @@
         "expected": [
             "购买"
         ],
-        "inverse": true
+        "inverse": true,
+        "pre_delay": 500,
+        "action": "Click"
     },
     "#4出售侦察与调度": {},
     "Arbitrage_SellItem": {
-        "focus": "Arb.M.出售模块启动",
+        "desc": "商店内出售",
+        "enabled": true,
+        "max_hit": 1,
         "next": [
             "Arbitrage_Sell_Type_Ocr"
         ],
-        "enabled": true,
-        "max_hit": 1,
-        "doc": "商店内出售"
+        "focus": "Arb.M.出售模块启动"
     },
     "Arbitrage_Sell_Type_Ocr": {
+        "desc": "类型确认为-出售",
         "recognition": "OCR",
         "roi": [
             66,
@@ -1273,10 +1274,10 @@
         "next": [
             "Arbitrage_Sell_Type_Clr",
             "Arbitrage_Sell_Type_Ocr"
-        ],
-        "doc": "类型确认为-出售"
+        ]
     },
     "Arbitrage_Sell_Type_Clr": {
+        "desc": "验证类型-出售",
         "recognition": "ColorMatch",
         "roi": [
             118,
@@ -1296,13 +1297,13 @@
             255
         ],
         "count": 30,
+        "timeout": 5000,
         "next": [
             "Arbitrage_Sell_PriceList"
-        ],
-        "timeout": 5000,
-        "doc": "验证类型-出售"
+        ]
     },
     "Arbitrage_Sell_PriceList": {
+        "desc": "点击价目表按钮",
         "recognition": "OCR",
         "roi": [
             863,
@@ -1318,10 +1319,10 @@
         "next": [
             "Arbitrage_Sell_PriceList_Enter",
             "Arbitrage_Sell_PriceList"
-        ],
-        "doc": "点击价目表按钮"
+        ]
     },
     "Arbitrage_Sell_PriceList_Enter": {
+        "desc": "确认价目表子菜单",
         "recognition": "OCR",
         "roi": [
             165,
@@ -1332,30 +1333,30 @@
         "expected": [
             "价目表"
         ],
-        "doc": "确认价目表子菜单",
         "next": [
             "[JumpBack]Arbitrage_Sell_PriceList_FirstCalibration",
             "Arbitrage_ShopSell_Active"
         ]
     },
     "Arbitrage_Sell_PriceList_FirstCalibration": {
+        "desc": "初次打开价目表,将4行价格纵向对齐",
+        "max_hit": 1,
         "next": [
             "Arbitrage_Swip_Calibration_Hub"
-        ],
-        "doc": "初次打开价目表,将4行价格纵向对齐",
-        "max_hit": 1
+        ]
     },
     "Arbitrage_ShopSell_Active": {
+        "desc": "由此开始出售模块,拉起Py",
         "action": "Custom",
         "custom_action": "ArbitrageSellController",
+        "focus": "出售模块启动",
         "attach": {
             "default": "烤蜂蜜苹果,蜂蜜黄油杏仁,三角美乃滋饭团,鱼子酱蛋包饭,炸三文鱼便当,桑格利亚酒",
             "Drops": "巧克力鸡尾酒,火烤鱼板棒,鱼子酱蛋包饭,炸三文鱼便当,卢戈山参烤串,煤炭饼干,闪闪铁板虾,透明沙拉,地狱火紫菜包饭"
-        },
-        "focus": "出售模块启动",
-        "doc": "由此开始出售模块,拉起Py"
+        }
     },
     "Arbitrage_Swip_PriceList": {
+        "desc": "【非孤立节点】由Agent调用,价目表下滑Runtask入口",
         "action": "Swipe",
         "begin": [
             653,
@@ -1365,40 +1366,40 @@
             653,
             150
         ],
-        "duration": 700,
         "end_hold": 500,
-        "doc": "【非孤立节点】由Agent调用,价目表下滑Runtask入口",
+        "duration": 700,
         "next": [
             "Arbitrage_Swip_Calibration_Hub"
         ]
     },
     "Arbitrage_Swip_Calibration_Hub": {
+        "desc": "滑动后微调,使价目表完整显示,设定多种情况不同力度调整,反复运作后能准确控制位置",
+        "timeout": 1,
         "next": [
             "[JumpBack]Arbitrage_Swip_Calibration_Down",
             "[JumpBack]Arbitrage_Swip_Calibration_Up",
             "[JumpBack]Arbitrage_Swip_Calibration_Up_FineTuning"
-        ],
-        "timeout": 1,
-        "doc": "滑动后微调,使价目表完整显示,设定多种情况不同力度调整,反复运作后能准确控制位置"
+        ]
     },
     "Arbitrage_Swip_Calibration_Down": {
+        "desc": "区域识别到物品框,应向下滑动,宁可多识别一次",
         "recognition": "ColorMatch",
-        "method": 40,
-        "upper": [
-            120,
-            62,
-            75
-        ],
-        "lower": [
-            102,
-            30,
-            59
-        ],
         "roi": [
             416,
             213,
             10,
             4
+        ],
+        "method": 40,
+        "lower": [
+            102,
+            30,
+            59
+        ],
+        "upper": [
+            120,
+            62,
+            75
         ],
         "action": "Swipe",
         "begin": [
@@ -1410,81 +1411,81 @@
             228
         ],
         "end_hold": 250,
-        "post_delay": 800,
-        "doc": "区域识别到物品框,应向下滑动,宁可多识别一次"
+        "post_delay": 800
     },
     "Arbitrage_Swip_Calibration_Up": {
+        "desc": "区域识别到分割线,应向上滑动,下滑过头。同时力度为6,配合下滑10使得可以反复来微调",
         "recognition": "ColorMatch",
-        "method": 40,
-        "upper": [
-            110,
-            29,
-            78
-        ],
-        "lower": [
-            103,
-            23,
-            75
-        ],
         "roi": [
             416,
             211,
             7,
             7
         ],
-        "action": "Swipe",
-        "end": [
-            635,
-            218
+        "method": 40,
+        "lower": [
+            103,
+            23,
+            75
         ],
+        "upper": [
+            110,
+            29,
+            78
+        ],
+        "action": "Swipe",
         "begin": [
             635,
             224
         ],
+        "end": [
+            635,
+            218
+        ],
         "end_hold": 250,
-        "post_delay": 800,
-        "doc": "区域识别到分割线,应向上滑动,下滑过头。同时力度为6,配合下滑10使得可以反复来微调"
+        "post_delay": 800
     },
     "Arbitrage_Swip_Calibration_Up_FineTuning": {
+        "desc": "高精度识别,调整小上划,让下方文字",
         "recognition": "ColorMatch",
-        "method": 40,
-        "upper": [
-            109,
-            76,
-            55
-        ],
-        "lower": [
-            106,
-            65,
-            50
-        ],
         "roi": [
             419,
             221,
             26,
             3
         ],
-        "action": "Swipe",
-        "end": [
-            635,
-            218
+        "method": 40,
+        "lower": [
+            106,
+            65,
+            50
         ],
+        "upper": [
+            109,
+            76,
+            55
+        ],
+        "action": "Swipe",
         "begin": [
             635,
             222
         ],
+        "end": [
+            635,
+            218
+        ],
         "end_hold": 250,
-        "post_delay": 800,
-        "doc": "高精度识别,调整小上划,让下方文字"
+        "post_delay": 800
     },
     "5#复用出售动作链(必须调用才能正常运行)": {},
     "Arbitrage_Sell_HUB": {
-        "doc": "可复用出售环节",
+        "desc": "可复用出售环节",
         "next": [
             "Arbitrage_Sell_Button_Ocr"
         ]
     },
     "Arbitrage_Sell_Button_Ocr": {
+        "desc": "类型确认为-出售",
         "recognition": "OCR",
         "roi": [
             66,
@@ -1500,10 +1501,10 @@
         "next": [
             "Arbitrage_Sell_Button_Clr",
             "Arbitrage_Sell_Button_Ocr"
-        ],
-        "doc": "类型确认为-出售"
+        ]
     },
     "Arbitrage_Sell_Button_Clr": {
+        "desc": "寻找匹配卡带,如果匹配不到超时跳出。",
         "recognition": "ColorMatch",
         "roi": [
             118,
@@ -1527,14 +1528,14 @@
             "PackSwip_Str": "Arbitrage_Sell_Button_Clr",
             "PackSwip_End": "Arbitrage_Sell_PackShopSwich"
         },
+        "timeout": 5000,
         "next": [
             "Arbitrage_Sell_PackShopSwich",
             "Arbitrage_Select_Swip"
-        ],
-        "timeout": 5000,
-        "doc": "寻找匹配卡带,如果匹配不到超时跳出。"
+        ]
     },
     "Arbitrage_Sell_PackShopSwich": {
+        "desc": "需要[custom]传入正确的名称.出售卡带选择,空格删去匹配cus源,保留默认",
         "recognition": "OCR",
         "roi": [
             236,
@@ -1556,10 +1557,10 @@
         "next": [
             "Arbitrage_Sell_PackShopSwich_Clr",
             "Arbitrage_Sell_PackShopSwich"
-        ],
-        "doc": "需要[custom]传入正确的名称.出售卡带选择,空格删去匹配cus源,保留默认"
+        ]
     },
     "Arbitrage_Sell_PackShopSwich_Clr": {
+        "desc": "卡带是否选中色核",
         "recognition": "ColorMatch",
         "roi": "Arbitrage_Sell_PackShopSwich",
         "roi_offset": [
@@ -1582,10 +1583,10 @@
         "next": [
             "Arbitrage_ItemList_Sorting_AllRight",
             "Arbitrage_ItemList_Sorting_Type_Not"
-        ],
-        "doc": "卡带是否选中色核"
+        ]
     },
     "Arbitrage_ItemList_Sorting_AllRight": {
+        "desc": "确认排序模式完全正确=%模式与降序",
         "recognition": "And",
         "all_of": [
             "Arbitrage_ItemList_Sorting_Type_Ent",
@@ -1594,10 +1595,10 @@
         "next": [
             "Arbitrage_Sell_Item_ListTraverse",
             "Arbitrage_ItemList_Swip"
-        ],
-        "doc": "确认排序模式完全正确=%模式与降序"
+        ]
     },
     "Arbitrage_ItemList_Sorting_Type_Ent": {
+        "desc": "【非孤立节点】由And调用",
         "recognition": "TemplateMatch",
         "roi": [
             1138,
@@ -1607,10 +1608,10 @@
         ],
         "template": [
             "UI_Selltype_0.png"
-        ],
-        "doc": "【非孤立节点】由And调用"
+        ]
     },
     "Arbitrage_ItemList_Sorting_Type_Not": {
+        "desc": "商店内,排序类型错误,切换(删除价格排序图像,因为除了价格图标,%图标但升序也是不对的)",
         "action": "Click",
         "target": [
             1152,
@@ -1622,8 +1623,7 @@
         "next": [
             "Arbitrage_ItemList_Sorting_Type_Not_Change",
             "Arbitrage_ItemList_Sorting_Type_Not"
-        ],
-        "doc": "商店内,排序类型错误,切换(删除价格排序图像,因为除了价格图标,%图标但升序也是不对的)"
+        ]
     },
     "Arbitrage_ItemList_Sorting_Type_Not_Change": {
         "recognition": "OCR",
@@ -1638,13 +1638,14 @@
         ],
         "action": "Click",
         "post_delay": 800,
-        "focus": "选择溢价率模式",
         "next": [
             "Arbitrage_ItemList_Sorting_Type_Not_Enter",
             "Arbitrage_ItemList_Sorting_Type_Not_Change"
-        ]
+        ],
+        "focus": "选择溢价率模式"
     },
     "Arbitrage_ItemList_Sorting_Type_Not_Enter": {
+        "desc": "[验证排序方式,且检查排序方向,否则再点击排序方式]检验溢价点击后是否变黄启用,next检查第一件商品是否高价",
         "recognition": "ColorMatch",
         "roi": "Arbitrage_ItemList_Sorting_Type_Not_Change",
         "method": 40,
@@ -1658,17 +1659,17 @@
             230,
             255
         ],
-        "focus": "溢价排序-模式选中确认",
+        "timeout": 3000,
         "next": [
             "Arbitrage_ItemList_Sorting_Reverse"
         ],
-        "timeout": 3000,
         "on_error": [
             "Arbitrage_ItemList_Sorting_Type_Not_Change"
         ],
-        "doc": "[验证排序方式,且检查排序方向,否则再点击排序方式]检验溢价点击后是否变黄启用,next检查第一件商品是否高价"
+        "focus": "溢价排序-模式选中确认"
     },
     "Arbitrage_ItemList_Sorting_Reverse": {
+        "desc": "确认商品列表第一个是最高价",
         "recognition": "And",
         "all_of": [
             {
@@ -1706,8 +1707,7 @@
             "[JumpBack]Arbitrage_ItemList_Sorting_Remove",
             "Arbitrage_Sell_Item_ListTraverse"
         ],
-        "focus": "Arb.排序结果可以确认",
-        "doc": "确认商品列表第一个是最高价"
+        "focus": "Arb.排序结果可以确认"
     },
     "Arbitrage_ItemList_Sorting_Remove": {
         "recognition": "OCR",
@@ -1725,17 +1725,18 @@
         ]
     },
     "Arbitrage_ItemList_Swip": {
+        "desc": "商店卡带列表滑动(感觉做好排序的话,用不到滑动,停用、先保留",
         "enabled": false,
         "recognition": "OCR",
-        "expected": [
-            "购买",
-            "出售"
-        ],
         "roi": [
             110,
             92,
             51,
             149
+        ],
+        "expected": [
+            "购买",
+            "出售"
         ],
         "action": "Custom",
         "custom_action": "SmartSwipe",
@@ -1764,19 +1765,19 @@
             "threshold": 3.0
         },
         "post_wait_freezes": 1000,
+        "timeout": 1,
         "next": [
             "Arbitrage_ItemList_Swip"
         ],
-        "timeout": 1,
         "on_error": [
             "Arbitrage_Sell_Item_ListTraverse",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
-        "focus": "滑动商店卡带表",
-        "doc": "商店卡带列表滑动(感觉做好排序的话,用不到滑动,停用、先保留"
+        "focus": "滑动商店卡带表"
     },
     "Arbitrage_Sell_Item_ListTraverse": {
+        "desc": "需要[custom]传入特征词.点击目标出售物品 。注意，这里的replace是和py处理一致的。",
         "recognition": "OCR",
         "roi": [
             392,
@@ -1798,10 +1799,10 @@
         "next": [
             "Arbitrage_Sell_Item_SellMenu",
             "Arbitrage_Sell_Item_ListTraverse"
-        ],
-        "doc": "需要[custom]传入特征词.点击目标出售物品 。注意，这里的replace是和py处理一致的。"
+        ]
     },
     "Arbitrage_Sell_Item_SellMenu": {
+        "desc": "确认出售子菜单已弹出",
         "recognition": "Or",
         "any_of": [
             {
@@ -1832,10 +1833,10 @@
         ],
         "next": [
             "Arbitrage_Sell_Item_Number"
-        ],
-        "doc": "确认出售子菜单已弹出"
+        ]
     },
     "Arbitrage_Sell_Item_Number": {
+        "desc": "决定出售个数,未添加验证控制。Intface控制，默认Mix，操作后覆盖成Max",
         "action": "Click",
         "target": [
             318,
@@ -1843,8 +1844,7 @@
         ],
         "next": [
             "Arbitrage_Sell_Item_Selling"
-        ],
-        "doc": "决定出售个数,未添加验证控制。Intface控制，默认Mix，操作后覆盖成Max"
+        ]
     },
     "Arbitrage_Sell_Item_Selling": {
         "recognition": "OCR",
@@ -1867,20 +1867,20 @@
         ]
     },
     "Arbitrage_PackList_ResetSwip": {
+        "desc": "商店卡带列表滑动",
         "action": "Swipe",
-        "end": [
-            285,
-            660
-        ],
         "begin": [
             285,
             135
         ],
-        "duration": 300,
+        "end": [
+            285,
+            660
+        ],
         "end_hold": 500,
+        "duration": 300,
         "post_wait_freezes": 1000,
-        "focus": "复位商店卡带表",
-        "doc": "商店卡带列表滑动"
+        "focus": "复位商店卡带表"
     },
     "Arbitrage_PackList_ResetEnter": {
         "recognition": "OCR",
@@ -1896,30 +1896,31 @@
     },
     "6#料理制作": {},
     "Arbitrage_Cooking_Weekly": {
+        "desc": "料理制作开始",
+        "enabled": false,
+        "max_hit": 1,
         "recognition": "Custom",
         "custom_recognition": "CheckCoolDown",
         "custom_recognition_param": {
             "card_name": "Arbitrage_Cooking",
             "cycle_type": "g_weekly"
         },
-        "focus": "Arb.M.料理制作模块启动",
         "next": [
             "Arbitrage_Cooking_MenuPatch"
         ],
-        "enabled": false,
-        "max_hit": 1,
-        "doc": "料理制作开始"
+        "focus": "Arb.M.料理制作模块启动"
     },
     "Arbitrage_Cooking": {
-        "focus": "Arb.M.料理制作模块启动",
+        "desc": "料理制作开始",
+        "enabled": true,
+        "max_hit": 1,
         "next": [
             "Arbitrage_Cooking_MenuPatch"
         ],
-        "enabled": true,
-        "max_hit": 1,
-        "doc": "料理制作开始"
+        "focus": "Arb.M.料理制作模块启动"
     },
     "Arbitrage_Cooking_MenuPatch": {
+        "desc": "借用setup管路,从技能菜单进入烹饪菜单",
         "action": "Custom",
         "custom_action": "PatchByRegex",
         "custom_action_param": {
@@ -1947,29 +1948,29 @@
         "next": [
             "Setup_SetSkill_Per",
             "Arbitrage_Cooking_SetupToSkill"
-        ],
-        "doc": "借用setup管路,从技能菜单进入烹饪菜单"
+        ]
     },
     "Arbitrage_Cooking_SetupToSkill": {
+        "desc": "技能菜单出口",
         "recognition": "OCR",
-        "expected": [
-            "料理"
-        ],
         "roi": [
             110,
             580,
             1053,
             33
         ],
+        "expected": [
+            "料理"
+        ],
         "action": "Click",
         "post_delay": 1000,
         "next": [
             "Arbitrage_Cooking_MenuEnter",
             "Arbitrage_Cooking_SetupToSkill"
-        ],
-        "doc": "技能菜单出口"
+        ]
     },
     "Arbitrage_Cooking_MenuEnter": {
+        "desc": "确认进了料理菜单。料理项目页逆序排序。兼做页间HUB节点",
         "recognition": "OCR",
         "roi": [
             221,
@@ -1980,25 +1981,25 @@
         "expected": [
             "料理"
         ],
-        "focus": "Arb.料理界面-确认",
+        "timeout": 1,
         "next": [
             "[JumpBack]Arbitrage_Cooking_Page2",
             "[JumpBack]Arbitrage_Cooking_Page1"
         ],
-        "timeout": 1,
-        "doc": "确认进了料理菜单。料理项目页逆序排序。兼做页间HUB节点"
+        "focus": "Arb.料理界面-确认"
     },
     "Arbitrage_Cooking_Page2": {
+        "desc": "先进行第二页，因为高级料理利多，优先。",
+        "max_hit": 1,
         "anchor": {
             "Cooking": "Arbitrage_Cooking_Swip_Page2"
         },
         "next": [
             "Arbitrage_Cooking_Swip_Page2"
-        ],
-        "max_hit": 1,
-        "doc": "先进行第二页，因为高级料理利多，优先。"
+        ]
     },
     "Arbitrage_Cooking_Swip_Page2": {
+        "desc": "滑动到指定页面。兼做页内HUB节点",
         "action": "Swipe",
         "begin": [
             887,
@@ -2010,16 +2011,18 @@
         ],
         "end_hold": 500,
         "post_delay": 1500,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Cooking_B8",
             "Arbitrage_Cooking_B9",
             "Arbitrage_Cooking_B10"
         ],
-        "timeout": 2000,
-        "focus": "Arb.料理页面2",
-        "doc": "滑动到指定页面。兼做页内HUB节点"
+        "focus": "Arb.料理页面2"
     },
     "Arbitrage_Cooking_B8": {
+        "desc": "菜品选择器,进入料理子菜单",
+        "enabled": false,
+        "max_hit": 1,
         "recognition": "And",
         "all_of": [
             {
@@ -2053,15 +2056,15 @@
         ],
         "action": "Click",
         "post_delay": 1000,
-        "max_hit": 1,
         "next": [
             "Arbitrage_Cooking_SubMenu"
         ],
-        "enabled": false,
-        "focus": "Arb.料理制作:[5级]闪闪铁板虾",
-        "doc": "菜品选择器,进入料理子菜单"
+        "focus": "Arb.料理制作:[5级]闪闪铁板虾"
     },
     "Arbitrage_Cooking_B9": {
+        "desc": "菜品选择器,进入料理子菜单",
+        "enabled": false,
+        "max_hit": 1,
         "recognition": "And",
         "all_of": [
             {
@@ -2095,15 +2098,15 @@
         ],
         "action": "Click",
         "post_delay": 1000,
-        "max_hit": 1,
         "next": [
             "Arbitrage_Cooking_SubMenu"
         ],
-        "enabled": false,
-        "focus": "Arb.料理制作:[5级]透明沙拉",
-        "doc": "菜品选择器,进入料理子菜单"
+        "focus": "Arb.料理制作:[5级]透明沙拉"
     },
     "Arbitrage_Cooking_B10": {
+        "desc": "菜品选择器,进入料理子菜单",
+        "enabled": false,
+        "max_hit": 1,
         "recognition": "And",
         "all_of": [
             {
@@ -2137,15 +2140,14 @@
         ],
         "action": "Click",
         "post_delay": 1000,
-        "max_hit": 1,
         "next": [
             "Arbitrage_Cooking_SubMenu"
         ],
-        "enabled": false,
-        "focus": "Arb.料理制作:[5级]地狱火紫菜包饭",
-        "doc": "菜品选择器,进入料理子菜单"
+        "focus": "Arb.料理制作:[5级]地狱火紫菜包饭"
     },
     "Arbitrage_Cooking_Page1": {
+        "desc": "先进行第二页，因为高级料理利多，优先。【实际：】利用发送锚点，从页复位直接进入页1的HUB节点，next中HUB只是为了方便理解，实际不会触发。",
+        "max_hit": 1,
         "anchor": {
             "Cooking": "Arbitrage_Cooking_Hub",
             "Cooking_Menu_Reset": "Arbitrage_Cooking_Hub"
@@ -2153,11 +2155,11 @@
         "next": [
             "Arbitrage_Cooking_Menu_Reset",
             "Arbitrage_Cooking_Hub"
-        ],
-        "max_hit": 1,
-        "doc": "先进行第二页，因为高级料理利多，优先。【实际：】利用发送锚点，从页复位直接进入页1的HUB节点，next中HUB只是为了方便理解，实际不会触发。"
+        ]
     },
     "Arbitrage_Cooking_Hub": {
+        "desc": "第一页料理,路由节点,菜品按等级/价值倒序",
+        "timeout": 2000,
         "next": [
             "Arbitrage_Cooking_B6",
             "Arbitrage_Cooking_B7",
@@ -2168,15 +2170,16 @@
             "Arbitrage_Cooking_A6",
             "Arbitrage_Cooking_A1"
         ],
-        "timeout": 2000,
         "on_error": [
             "Arbitrage_Cooking_ERREND",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ],
-        "doc": "第一页料理,路由节点,菜品按等级/价值倒序"
+        ]
     },
     "Arbitrage_Cooking_B6": {
+        "desc": "菜品选择器,进入料理子菜单",
+        "enabled": false,
+        "max_hit": 1,
         "recognition": "And",
         "all_of": [
             {
@@ -2208,17 +2211,17 @@
                 ]
             }
         ],
-        "enabled": false,
         "action": "Click",
         "post_delay": 1000,
-        "max_hit": 1,
         "next": [
             "Arbitrage_Cooking_SubMenu"
         ],
-        "focus": "Arb.料理制作:[5级]卢戈山参烤串",
-        "doc": "菜品选择器,进入料理子菜单"
+        "focus": "Arb.料理制作:[5级]卢戈山参烤串"
     },
     "Arbitrage_Cooking_B7": {
+        "desc": "菜品选择器,进入料理子菜单",
+        "enabled": false,
+        "max_hit": 1,
         "recognition": "And",
         "all_of": [
             {
@@ -2252,15 +2255,14 @@
         ],
         "action": "Click",
         "post_delay": 1000,
-        "max_hit": 1,
         "next": [
             "Arbitrage_Cooking_SubMenu"
         ],
-        "enabled": false,
-        "focus": "Arb.料理制作:[5级]煤炭饼干",
-        "doc": "菜品选择器,进入料理子菜单"
+        "focus": "Arb.料理制作:[5级]煤炭饼干"
     },
     "Arbitrage_Cooking_A2": {
+        "desc": "菜品选择器,进入料理子菜单",
+        "max_hit": 1,
         "recognition": "And",
         "all_of": [
             {
@@ -2294,14 +2296,14 @@
         ],
         "action": "Click",
         "post_delay": 1000,
-        "max_hit": 1,
         "next": [
             "Arbitrage_Cooking_SubMenu"
         ],
-        "focus": "Arb.料理制作:[3级]蜂蜜黄油杏仁",
-        "doc": "菜品选择器,进入料理子菜单"
+        "focus": "Arb.料理制作:[3级]蜂蜜黄油杏仁"
     },
     "Arbitrage_Cooking_A3": {
+        "desc": "菜品选择器,进入料理子菜单",
+        "max_hit": 1,
         "recognition": "And",
         "all_of": [
             {
@@ -2335,14 +2337,14 @@
         ],
         "action": "Click",
         "post_delay": 1000,
-        "max_hit": 1,
         "next": [
             "Arbitrage_Cooking_SubMenu"
         ],
-        "focus": "Arb.料理制作:[3级]三角美乃滋饭团",
-        "doc": "菜品选择器,进入料理子菜单"
+        "focus": "Arb.料理制作:[3级]三角美乃滋饭团"
     },
     "Arbitrage_Cooking_A4": {
+        "desc": "菜品选择器,进入料理子菜单",
+        "max_hit": 1,
         "recognition": "And",
         "all_of": [
             {
@@ -2376,14 +2378,14 @@
         ],
         "action": "Click",
         "post_delay": 1000,
-        "max_hit": 1,
         "next": [
             "Arbitrage_Cooking_SubMenu"
         ],
-        "focus": "Arb.料理制作:[3级]鱼子酱蛋包饭",
-        "doc": "菜品选择器,进入料理子菜单"
+        "focus": "Arb.料理制作:[3级]鱼子酱蛋包饭"
     },
     "Arbitrage_Cooking_A5": {
+        "desc": "菜品选择器,进入料理子菜单",
+        "max_hit": 1,
         "recognition": "And",
         "all_of": [
             {
@@ -2417,14 +2419,14 @@
         ],
         "action": "Click",
         "post_delay": 1000,
-        "max_hit": 1,
         "next": [
             "Arbitrage_Cooking_SubMenu"
         ],
-        "focus": "Arb.料理制作:[2级]炸三文鱼便当",
-        "doc": "菜品选择器,进入料理子菜单"
+        "focus": "Arb.料理制作:[2级]炸三文鱼便当"
     },
     "Arbitrage_Cooking_A6": {
+        "desc": "菜品选择器,进入料理子菜单",
+        "max_hit": 1,
         "recognition": "And",
         "all_of": [
             {
@@ -2458,14 +2460,14 @@
         ],
         "action": "Click",
         "post_delay": 1000,
-        "max_hit": 1,
         "next": [
             "Arbitrage_Cooking_SubMenu"
         ],
-        "focus": "Arb.料理制作:[2级]桑格利亚酒",
-        "doc": "菜品选择器,进入料理子菜单"
+        "focus": "Arb.料理制作:[2级]桑格利亚酒"
     },
     "Arbitrage_Cooking_A1": {
+        "desc": "菜品选择器,进入料理子菜单",
+        "max_hit": 1,
         "recognition": "And",
         "all_of": [
             {
@@ -2499,14 +2501,14 @@
         ],
         "action": "Click",
         "post_delay": 1000,
-        "max_hit": 1,
         "next": [
             "Arbitrage_Cooking_SubMenu"
         ],
-        "focus": "Arb.料理制作:[1级]烤蜂蜜苹果",
-        "doc": "菜品选择器,进入料理子菜单"
+        "focus": "Arb.料理制作:[1级]烤蜂蜜苹果"
     },
     "Arbitrage_Cooking_Menu_Reset": {
+        "desc": "使用Anchor复用.将菜单复位。通过随机点一个菜品后返回，利用系统机制复位最顶。",
+        "max_hit": 50,
         "action": "Click",
         "target": [
             606,
@@ -2514,13 +2516,11 @@
             271,
             267
         ],
-        "doc": "使用Anchor复用.将菜单复位。通过随机点一个菜品后返回，利用系统机制复位最顶。",
+        "post_delay": 1500,
         "next": [
             "Arbitrage_Cooking_Menu_Reset_SubIn",
             "Arbitrage_Cooking_Menu_Reset"
-        ],
-        "post_delay": 1500,
-        "max_hit": 50
+        ]
     },
     "Arbitrage_Cooking_Menu_Reset_SubIn": {
         "recognition": "TemplateMatch",
@@ -2534,11 +2534,11 @@
             "UI_cooking_submenu.png"
         ],
         "green_mask": true,
+        "post_delay": 3000,
         "next": [
             "Arbitrage_Cooking_Menu_Reset_SubOut",
             "[JumpBack]Global_BackPageHub_Once"
-        ],
-        "post_delay": 3000
+        ]
     },
     "Arbitrage_Cooking_Menu_Reset_SubOut": {
         "recognition": "OCR",
@@ -2551,12 +2551,13 @@
         "expected": [
             "所需材料$"
         ],
-        "focus": "Arb.返回料理菜单\n\n页内复位完成",
         "next": [
             "[Anchor]Cooking_Menu_Reset"
-        ]
+        ],
+        "focus": "Arb.返回料理菜单\n\n页内复位完成"
     },
     "Arbitrage_Cooking_SubMenu": {
+        "desc": "可复用料理流程开始.使用按钮团确定子菜单",
         "recognition": "TemplateMatch",
         "roi": [
             701,
@@ -2568,14 +2569,13 @@
             "UI_cooking_submenu.png"
         ],
         "green_mask": true,
-        "focus": "Arb.料理子菜单-确认",
         "next": [
             "Arbitrage_Cooking_NubMenu_Max"
         ],
-        "doc": "可复用料理流程开始.使用按钮团确定子菜单"
+        "focus": "Arb.料理子菜单-确认"
     },
     "Arbitrage_Cooking_NubMenu_Max": {
-        "doc": "数量预留,测试阶段上保险不改",
+        "desc": "数量预留,测试阶段上保险不改",
         "next": [
             "Arbitrage_Cooking_NubMenu_Doing"
         ]
@@ -2599,14 +2599,15 @@
             16,
             224
         ],
-        "post_delay": 1000,
         "action": "Click",
+        "post_delay": 1000,
         "next": [
             "Arbitrage_Cooking_Doing_Starus",
             "Arbitrage_Cooking_NubMenu_Doing"
         ]
     },
     "Arbitrage_Cooking_Doing_Starus": {
+        "desc": "按钮之前存在,现在不存在,是在动画",
         "recognition": "TemplateMatch",
         "roi": [
             701,
@@ -2625,14 +2626,14 @@
             1
         ],
         "post_delay": 2000,
-        "focus": "Arb.料理制作动画中...",
         "next": [
             "Arbitrage_Cooking_Doing_ReBack",
             "Arbitrage_Cooking_Doing_Starus"
         ],
-        "doc": "按钮之前存在,现在不存在,是在动画"
+        "focus": "Arb.料理制作动画中..."
     },
     "Arbitrage_Cooking_Doing_ReBack": {
+        "desc": "按钮之前不存在,现在存在,动画结束",
         "recognition": "TemplateMatch",
         "roi": [
             701,
@@ -2644,13 +2645,13 @@
             "UI_cooking_submenu.png"
         ],
         "green_mask": true,
-        "doc": "按钮之前不存在,现在存在,动画结束",
         "next": [
             "Arbitrage_Cooking_Menu_ReBack",
             "[JumpBack]Global_BackPageHub_Once"
         ]
     },
     "Arbitrage_Cooking_Menu_ReBack": {
+        "desc": "确认返回料理菜单,回到选择流",
         "recognition": "OCR",
         "roi": [
             566,
@@ -2661,20 +2662,19 @@
         "expected": [
             "所需材料$"
         ],
-        "focus": "Arb.料理菜单已返回",
         "next": [
             "[Anchor]Cooking"
         ],
-        "doc": "确认返回料理菜单,回到选择流"
+        "focus": "Arb.料理菜单已返回"
     },
     "Arbitrage_Cooking_ERREND": {
+        "desc": "料理最后运行的第一页HUB跳出,补个lib打标",
         "action": "Custom",
         "custom_action": "MarkComplete",
         "custom_action_param": {
             "card_name": "Arbitrage_Cooking",
             "cycle_type": "g_weekly"
         },
-        "focus": "Arb.料理模块跳出",
-        "doc": "料理最后运行的第一页HUB跳出,补个lib打标"
+        "focus": "Arb.料理模块跳出"
     }
 }

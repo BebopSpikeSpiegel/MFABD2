@@ -1,21 +1,18 @@
 {
     "Chapter3Shop": {
+        "max_hit": 1,
+        "timeout": 8000,
         "next": [
             "[JumpBack]MerchantBuy3.1",
             "[JumpBack]MerchantBuy3.2",
             "[JumpBack]MerchantBuy3.3",
             "[JumpBack]MerchantBuy3.4",
             "[JumpBack]MerchantBuy3.5"
-        ],
-        "max_hit": 1,
-        "timeout": 8000
+        ]
     },
     "MerchantBuy3.1": {
-        "action": "Click",
-        "next": [
-            "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy3.1"
-        ],
+        "desc": "苹果,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             401,
@@ -25,17 +22,17 @@
         ],
         "template": "Shop/Apple.png",
         "threshold": 0.9,
-        "doc": "苹果,400",
-        "max_hit": 1,
-        "post_delay": 1000,
-        "timeout": 2000
-    },
-    "MerchantBuy3.2": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy3.2"
-        ],
+            "MerchantBuy3.1"
+        ]
+    },
+    "MerchantBuy3.2": {
+        "desc": "葡萄,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             665,
@@ -45,17 +42,17 @@
         ],
         "template": "Shop/Grape.png",
         "threshold": 0.9,
-        "doc": "葡萄,400",
-        "max_hit": 1,
-        "post_delay": 1000,
-        "timeout": 2000
-    },
-    "MerchantBuy3.3": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy3.3"
-        ],
+            "MerchantBuy3.2"
+        ]
+    },
+    "MerchantBuy3.3": {
+        "desc": "蜂蜜,100",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             398,
@@ -65,18 +62,17 @@
         ],
         "template": "Shop/Honey.png",
         "threshold": 0.9,
-        "doc": "蜂蜜,100",
-        "max_hit": 1,
-        "post_delay": 1000,
-        "timeout": 2000
-    },
-    "MerchantBuy3.4": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy3.4"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy3.3"
+        ]
+    },
+    "MerchantBuy3.4": {
+        "desc": "白糖,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             664,
@@ -84,18 +80,19 @@
             77,
             75
         ],
-        "doc": "白糖,400",
         "template": "Shop/Sugar.png",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy3.5": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy3.5"
-        ],
+            "MerchantBuy3.4"
+        ]
+    },
+    "MerchantBuy3.5": {
+        "desc": "黄油,400",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             398,
@@ -103,10 +100,13 @@
             76,
             76
         ],
-        "doc": "黄油,400",
         "template": "Shop/Butter.png",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
+        "action": "Click",
+        "timeout": 2000,
+        "next": [
+            "Arbitrage_Merchant_BuyMsg",
+            "MerchantBuy3.5"
+        ]
     }
 }

@@ -1,18 +1,18 @@
 {
     "Setup_Str": {
+        "desc": "流程开发说明：_Str为总触发器=强制运行所有。| _Entry为选择性入口=按需 | 节点_Switch为开关，运行一次后续操作 | 可根据入口选择需要的操作开关~",
         "next": [
             "[JumpBack]Setup_Main_Switch",
             "[JumpBack]Setup_Equip_Switch",
             "[JumpBack]Setup_SetSkill_Switch"
-        ],
-        "doc": "流程开发说明：_Str为总触发器=强制运行所有。| _Entry为选择性入口=按需 | 节点_Switch为开关，运行一次后续操作 | 可根据入口选择需要的操作开关~"
+        ]
     },
     "Setup_Entry1": {
+        "max_hit": 1,
+        "timeout": 2000,
         "next": [
             "Setup_Entry1_Swich"
-        ],
-        "timeout": 2000,
-        "max_hit": 1
+        ]
     },
     "Setup_Entry1_Swich": {
         "recognition": "Or",
@@ -66,26 +66,27 @@
                 "threshold": 0.6
             }
         ],
+        "timeout": 3000,
         "next": [
             "Setup_Main_Switch"
         ],
-        "timeout": 3000,
         "focus": "SMSP.触发设置按需调整,原因:移动方式不应为方向键"
     },
     "Setup_SkillScan_wasd_Bin": {
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别",
         "recognition": "TemplateMatch",
-        "template": [
-            "Binary/Binary_wasd_Nol.png"
-        ],
         "roi": [
             136,
             475,
             194,
             169
         ],
-        "doc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+        "template": [
+            "Binary/Binary_wasd_Nol.png"
+        ]
     },
     "Setup_Entry2": {
+        "desc": "背包或房子黄点",
         "recognition": "ColorMatch",
         "roi": [
             1106,
@@ -105,14 +106,14 @@
             77
         ],
         "count": 10,
+        "timeout": 3000,
         "next": [
             "[JumpBack]Setup_Main_Switch"
         ],
-        "focus": "SMSP.触发设置按需调整,原因:菜单黄点未禁用",
-        "timeout": 3000,
-        "doc": "背包或房子黄点"
+        "focus": "SMSP.触发设置按需调整,原因:菜单黄点未禁用"
     },
     "Setup_Entry3": {
+        "desc": "主页消息通知黄点",
         "recognition": "ColorMatch",
         "roi": [
             975,
@@ -132,14 +133,15 @@
             77
         ],
         "count": 10,
+        "timeout": 3000,
         "next": [
             "[JumpBack]Setup_Main_Switch"
         ],
-        "focus": "SMSP.触发设置按需调整,原因:菜单黄点未禁用",
-        "timeout": 3000,
-        "doc": "主页消息通知黄点"
+        "focus": "SMSP.触发设置按需调整,原因:菜单黄点未禁用"
     },
     "Setup_Entry4": {
+        "desc": "进入页面为箱庭",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             1047,
@@ -151,23 +153,22 @@
             "Run.png"
         ],
         "green_mask": true,
+        "timeout": 3000,
         "next": [
             "[JumpBack]Setup_Main_Switch"
         ],
-        "doc": "进入页面为箱庭",
-        "focus": "SMSP.触发设置按需调整,原因:启动不应默认在箱庭",
-        "timeout": 3000,
-        "max_hit": 1
+        "focus": "SMSP.触发设置按需调整,原因:启动不应默认在箱庭"
     },
     "Setup_Entry5": {
         "enabled": true,
         "max_hit": 1,
+        "timeout": 1,
         "next": [
             "Setup_Skill_Swich"
-        ],
-        "timeout": 1
+        ]
     },
     "Setup_Skill_Swich": {
+        "desc": "【注意引用位置，应在有pin图标的正常地图 | 需要用JumpBack调用】该节点为开关作用.设计为每日最多运行一次.",
         "max_hit": 1,
         "recognition": "Custom",
         "custom_recognition": "CheckCoolDown",
@@ -181,19 +182,18 @@
             "card_name": "SetSkill",
             "cycle_type": "g_daily"
         },
-        "focus": "SMSP.检测技能是否正确摆放",
         "next": [
             "Setup_SkillScan_Now"
         ],
-        "doc": "【注意引用位置，应在有pin图标的正常地图 | 需要用JumpBack调用】该节点为开关作用.设计为每日最多运行一次."
+        "focus": "SMSP.检测技能是否正确摆放"
     },
     "Setup_Entry6": {
         "enabled": true,
         "max_hit": 1,
+        "timeout": 1,
         "next": [
             "Setup_EquipUp_Swich"
-        ],
-        "timeout": 1
+        ]
     },
     "Setup_EquipUp_Swich": {
         "recognition": "Custom",
@@ -208,7 +208,7 @@
             "card_name": "EquipUpSet",
             "cycle_type": "g_daily"
         },
-        "focus": "SMSP.检测装备强化选项",
+        "timeout": 2000,
         "next": [
             "[JumpBack]Setup_EquipUp_MJ",
             "[JumpBack]Setup_EquipUp_CheckBox_L1",
@@ -216,15 +216,15 @@
             "[JumpBack]Setup_EquipUp_CheckBox_L3",
             "[JumpBack]Setup_EquipUp_CheckBox_L4"
         ],
-        "timeout": 2000
+        "focus": "SMSP.检测装备强化选项"
     },
     "Setup_Entry7": {
         "enabled": true,
         "max_hit": 1,
+        "timeout": 1,
         "next": [
             "Setup_EquipDec_Swich"
-        ],
-        "timeout": 1
+        ]
     },
     "Setup_EquipDec_Swich": {
         "recognition": "Custom",
@@ -239,7 +239,7 @@
             "card_name": "EquipDecSet",
             "cycle_type": "g_daily"
         },
-        "focus": "SMSP.检测装备分解选项",
+        "timeout": 2000,
         "next": [
             "[JumpBack]Setup_EquipDec_UP",
             "[JumpBack]Setup_EquipDec_MJ",
@@ -248,14 +248,14 @@
             "[JumpBack]Setup_EquipDec_CheckBox_L3",
             "[JumpBack]Setup_EquipDec_CheckBox_L4"
         ],
-        "timeout": 2000
+        "focus": "SMSP.检测装备分解选项"
     },
     "Setup_SkillScan_Now": {
-        "focus": "Set.技能放置检查开始",
         "next": [
             "Setup_SkillScan_Check",
             "[JumpBack]Collect_Skill_Tap3"
-        ]
+        ],
+        "focus": "Set.技能放置检查开始"
     },
     "Setup_SkillScan_Check": {
         "recognition": "And",
@@ -280,7 +280,6 @@
                     32,
                     29
                 ],
-                "count": 200,
                 "lower": [
                     192,
                     141,
@@ -290,13 +289,14 @@
                     223,
                     194,
                     129
-                ]
+                ],
+                "count": 200
             }
         ],
-        "focus": "Set.技能页3-正确",
         "next": [
             "Setup_SkillScan_Skill1"
-        ]
+        ],
+        "focus": "Set.技能页3-正确"
     },
     "Setup_SkillScan_Skill1": {
         "recognition": "Or",
@@ -350,32 +350,32 @@
                 "threshold": 0.6
             }
         ],
-        "focus": "Set.检测技能1,通过",
+        "timeout": 8000,
+        "rate_limit": 2000,
         "next": [
             "Setup_SkillScan_Skill2"
         ],
-        "timeout": 8000,
-        "rate_limit": 2000,
         "on_error": [
             "Setup_Scan_Error_PreVerdict",
             "Setup_Scan_Error_FinVerdict"
-        ]
+        ],
+        "focus": "Set.检测技能1,通过"
     },
     "Setup_SkillScan_Skill1_Bin": {
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别",
         "recognition": "TemplateMatch",
-        "template": [
-            "Binary/Binary_skill1_Nol.png",
-            "Binary/Binary_skill1_Lgt.png"
-        ],
-        "threshold": 0.6,
         "roi": [
             970,
             620,
             66,
             67
         ],
+        "template": [
+            "Binary/Binary_skill1_Nol.png",
+            "Binary/Binary_skill1_Lgt.png"
+        ],
         "green_mask": true,
-        "doc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+        "threshold": 0.6
     },
     "Setup_SkillScan_Skill2": {
         "recognition": "Or",
@@ -429,34 +429,34 @@
                 "threshold": 0.6
             }
         ],
-        "focus": "Set.检测技能2,通过",
+        "timeout": 8000,
+        "rate_limit": 2000,
         "next": [
             "Setup_SkillScan_Skill3"
         ],
-        "timeout": 8000,
-        "rate_limit": 2000,
         "on_error": [
             "Setup_Scan_Error_PreVerdict",
             "Setup_Scan_Error_FinVerdict",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ]
+        ],
+        "focus": "Set.检测技能2,通过"
     },
     "Setup_SkillScan_Skill2_Bin": {
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别",
         "recognition": "TemplateMatch",
-        "template": [
-            "Binary/Binary_skill2_Nol.png",
-            "Binary/Binary_skill2_Lgt.png"
-        ],
-        "threshold": 0.6,
         "roi": [
             933,
             526,
             75,
             73
         ],
+        "template": [
+            "Binary/Binary_skill2_Nol.png",
+            "Binary/Binary_skill2_Lgt.png"
+        ],
         "green_mask": true,
-        "doc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+        "threshold": 0.6
     },
     "Setup_SkillScan_Skill3": {
         "recognition": "Or",
@@ -510,34 +510,34 @@
                 "threshold": 0.6
             }
         ],
-        "focus": "Set.检测技能3,通过",
+        "timeout": 8000,
+        "rate_limit": 2000,
         "next": [
             "Setup_SkillScan_Skill5"
         ],
-        "timeout": 8000,
-        "rate_limit": 2000,
         "on_error": [
             "Setup_Scan_Error_PreVerdict",
             "Setup_Scan_Error_FinVerdict",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ]
+        ],
+        "focus": "Set.检测技能3,通过"
     },
     "Setup_SkillScan_Skill3_Bin": {
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别",
         "recognition": "TemplateMatch",
-        "template": [
-            "Binary/Binary_skill3_Nol.png",
-            "Binary/Binary_skill3_Lgt.png"
-        ],
-        "threshold": 0.6,
         "roi": [
             966,
             436,
             81,
             80
         ],
+        "template": [
+            "Binary/Binary_skill3_Nol.png",
+            "Binary/Binary_skill3_Lgt.png"
+        ],
         "green_mask": true,
-        "doc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+        "threshold": 0.6
     },
     "Setup_SkillScan_Skill5": {
         "recognition": "Or",
@@ -591,34 +591,34 @@
                 "threshold": 0.6
             }
         ],
-        "focus": "Set.检测技能5,通过",
+        "timeout": 8000,
+        "rate_limit": 2000,
         "next": [
             "Setup_SkillScan_Skill4"
         ],
-        "timeout": 8000,
-        "rate_limit": 2000,
         "on_error": [
             "Setup_Scan_Error_PreVerdict",
             "Setup_Scan_Error_FinVerdict",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ]
+        ],
+        "focus": "Set.检测技能5,通过"
     },
     "Setup_SkillScan_Skill5_Bin": {
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别",
         "recognition": "TemplateMatch",
-        "template": [
-            "Binary/Binary_skill5_Nol.png",
-            "Binary/Binary_skill5_Lgt.png"
-        ],
-        "threshold": 0.6,
         "roi": [
             1140,
             447,
             83,
             83
         ],
+        "template": [
+            "Binary/Binary_skill5_Nol.png",
+            "Binary/Binary_skill5_Lgt.png"
+        ],
         "green_mask": true,
-        "doc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+        "threshold": 0.6
     },
     "Setup_SkillScan_Skill4": {
         "recognition": "Or",
@@ -672,55 +672,57 @@
                 "threshold": 0.6
             }
         ],
-        "focus": "Set.检测技能4,通过",
+        "timeout": 8000,
+        "rate_limit": 2000,
         "next": [
             "Setup_SkillScan_Success"
         ],
-        "timeout": 8000,
-        "rate_limit": 2000,
         "on_error": [
             "Setup_Scan_Error_PreVerdict",
             "Setup_Scan_Error_FinVerdict",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ]
+        ],
+        "focus": "Set.检测技能4,通过"
     },
     "Setup_SkillScan_Skill4_Bin": {
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别",
         "recognition": "TemplateMatch",
-        "template": [
-            "Binary/Binary_skill4_Nol.png",
-            "Binary/Binary_skill4_Lgt.png"
-        ],
-        "threshold": 0.6,
         "roi": [
             1051,
             400,
             81,
             86
         ],
+        "template": [
+            "Binary/Binary_skill4_Nol.png",
+            "Binary/Binary_skill4_Lgt.png"
+        ],
         "green_mask": true,
-        "doc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+        "threshold": 0.6
     },
     "Setup_SkillScan_Success": {
         "focus": "Set.全技能检查通过~"
     },
     "Setup_Scan_Error_PreVerdict": {
+        "max_hit": 1,
         "next": [
             "Setup_ResetLoc_Str"
         ],
-        "focus": "Set.技能摆放-初审校验不通过",
-        "max_hit": 1
+        "focus": "Set.技能摆放-初审校验不通过"
     },
     "Setup_ResetLoc_Str": {
+        "desc": "模块目的,复位到主线1的森林中.使用固定的背景,再复核识别一次.",
         "next": [
             "[JumpBack]Setup_ResetPack_JumpBackUse",
             "[JumpBack]Setup_ResetLoc_JumpBackUse",
             "[JumpBack]Setup_Patch_Reset",
             "Setup_SkillScan_Check"
-        ],
-        "doc": "模块目的,复位到主线1的森林中.使用固定的背景,再复核识别一次."
+        ]
     },
     "Setup_ResetPack_JumpBackUse": {
+        "desc": "类Anchor实现,偷取公共复位节点,注入修改路进,注意复位",
+        "max_hit": 1,
         "action": "Custom",
         "custom_action": "PatchNode",
         "custom_action_param": {
@@ -751,11 +753,11 @@
         "next": [
             "Global_BackToPve2#"
         ],
-        "focus": "Set.py.卡带复位-主线1",
-        "max_hit": 1,
-        "doc": "类Anchor实现,偷取公共复位节点,注入修改路进,注意复位"
+        "focus": "Set.py.卡带复位-主线1"
     },
     "Setup_ResetLoc_JumpBackUse": {
+        "desc": "类Anchor实现,偷取吸取导航节点链,注入修改路进较多,注意复位",
+        "max_hit": 1,
         "action": "Custom",
         "custom_action": "PatchBatch",
         "custom_action_param": {
@@ -864,14 +866,12 @@
         "next": [
             "Collect_OperationsMain_Sandplay"
         ],
-        "focus": "Set.py.位置复位-卢戈森林",
-        "max_hit": 1,
-        "doc": "类Anchor实现,偷取吸取导航节点链,注入修改路进较多,注意复位"
+        "focus": "Set.py.位置复位-卢戈森林"
     },
     "Setup_ResetLoc_JumpBackUse_Mod": {
+        "desc": "【假孤立节点，不要删除】会patch到coll导航内，处理本就在主城情况。",
+        "max_hit": 2,
         "recognition": "OCR",
-        "action": "Click",
-        "focus": "Set.当前在卢戈村,Mod处理",
         "roi": [
             408,
             622,
@@ -881,17 +881,18 @@
         "expected": [
             "卢戈镇"
         ],
-        "post_wait_freezes": 1500,
+        "action": "Click",
         "target": [
             973,
             339,
             8,
             12
         ],
-        "max_hit": 2,
-        "doc": "【假孤立节点，不要删除】会patch到coll导航内，处理本就在主城情况。"
+        "post_wait_freezes": 1500,
+        "focus": "Set.当前在卢戈村,Mod处理"
     },
     "Setup_Patch_Reset": {
+        "max_hit": 1,
         "action": "Custom",
         "custom_action": "RestoreBatch",
         "custom_action_param": {
@@ -902,8 +903,7 @@
                 "Collect_ClickBackOnSecureMap"
             ]
         },
-        "focus": "Set.复位类Anchor调用的节点",
-        "max_hit": 1
+        "focus": "Set.复位类Anchor调用的节点"
     },
     "Setup_Scan_Error_FinVerdict": {
         "next": [
@@ -912,6 +912,7 @@
         "focus": "Set.技能摆放-复审校验不通过\n\n开始技能复位"
     },
     "Setup_Main_Switch": {
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             1108,
@@ -924,31 +925,30 @@
         ],
         "next": [
             "Setup_Main_Into_Pre"
-        ],
-        "max_hit": 1
+        ]
     },
     "Setup_Main_Into_Pre": {
         "recognition": "TemplateMatch",
+        "roi": [
+            1108,
+            637,
+            65,
+            57
+        ],
+        "template": [
+            "pin.png"
+        ],
         "action": "Click",
+        "target": [
+            1186,
+            46
+        ],
+        "post_delay": 3000,
         "next": [
             "Setup_Main_Into",
             "Setup_Main_Into_Pre"
         ],
-        "post_delay": 3000,
-        "focus": "Setup.主设置修改开始",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
-        ],
-        "target": [
-            1186,
-            46
-        ]
+        "focus": "Setup.主设置修改开始"
     },
     "Setup_Main_Into": {
         "recognition": "OCR",
@@ -976,19 +976,19 @@
     },
     "Setup_Main": {
         "recognition": "OCR",
-        "expected": [
-            "其他"
-        ],
         "roi": [
             217,
             21,
             73,
             38
         ],
-        "focus": "主设置菜单",
+        "expected": [
+            "其他"
+        ],
         "next": [
             "Setup_MainSetup_Into"
-        ]
+        ],
+        "focus": "主设置菜单"
     },
     "Setup_MainSetup_Into": {
         "recognition": "OCR",
@@ -1090,6 +1090,7 @@
         ]
     },
     "Setup_Main_Blurry": {
+        "desc": "小区域,更新位置需要跟进",
         "recognition": "OCR",
         "roi": [
             805,
@@ -1100,7 +1101,6 @@
         "expected": [
             "不使用"
         ],
-        "doc": "小区域,更新位置需要跟进",
         "next": [
             "Setup_Main_Blurry_Ck",
             "[JumpBack]Setup_Main_Blurry_Chg"
@@ -1130,6 +1130,7 @@
         "post_delay": 3000
     },
     "Setup_Main_Resolution": {
+        "desc": "小区域,更新位置需要跟进",
         "recognition": "OCR",
         "roi": [
             448,
@@ -1140,7 +1141,6 @@
         "expected": [
             "FHD"
         ],
-        "doc": "小区域,更新位置需要跟进",
         "next": [
             "Setup_Main_Resolution_Ck",
             "[JumpBack]Setup_Main_Resolution_Chg"
@@ -1170,6 +1170,7 @@
         "post_delay": 3000
     },
     "Setup_Main_StartUI": {
+        "desc": "小区域,更新位置需要跟进",
         "recognition": "OCR",
         "roi": [
             454,
@@ -1180,7 +1181,6 @@
         "expected": [
             "主界面"
         ],
-        "doc": "小区域,更新位置需要跟进",
         "next": [
             "Setup_Main_StartUI_Ck",
             "[JumpBack]Setup_Main_StartUI_Chg"
@@ -1210,6 +1210,7 @@
         "post_delay": 3000
     },
     "Setup_Main_freshRate": {
+        "desc": "小区域,更新位置需要跟进",
         "recognition": "OCR",
         "roi": [
             823,
@@ -1220,7 +1221,6 @@
         "expected": [
             "30"
         ],
-        "doc": "小区域,更新位置需要跟进",
         "next": [
             "Setup_Main_freshRate_Ck",
             "[JumpBack]Setup_Main_freshRate_Chg"
@@ -1278,6 +1278,7 @@
         }
     },
     "Setup_Main_SkipAv": {
+        "desc": "小区域,更新位置需要跟进",
         "recognition": "OCR",
         "roi": [
             816,
@@ -1288,7 +1289,6 @@
         "expected": [
             "关闭"
         ],
-        "doc": "小区域,更新位置需要跟进",
         "next": [
             "Setup_Main_SkipAv_Ck",
             "[JumpBack]Setup_Main_SkipAv_Chg"
@@ -1318,6 +1318,7 @@
         "post_delay": 3000
     },
     "Setup_Main_Silhouette": {
+        "desc": "小区域,更新位置需要跟进",
         "recognition": "OCR",
         "roi": [
             454,
@@ -1328,7 +1329,6 @@
         "expected": [
             "使用"
         ],
-        "doc": "小区域,更新位置需要跟进",
         "next": [
             "Setup_Main_Silhouette_Ck",
             "[JumpBack]Setup_Main_Silhouette_Chg"
@@ -1401,14 +1401,14 @@
     },
     "Setup_Main_ShoundOff": {
         "recognition": "OCR",
-        "expected": [
-            "不使用"
-        ],
         "roi": [
             931,
             130,
             122,
             37
+        ],
+        "expected": [
+            "不使用"
         ],
         "next": [
             "Setup_Main_ShoundOff_Ck",
@@ -1482,6 +1482,7 @@
         ]
     },
     "Setup_Main_YellowPin": {
+        "desc": "小区域,更新位置需要跟进",
         "recognition": "OCR",
         "roi": [
             823,
@@ -1492,7 +1493,6 @@
         "expected": [
             "不使用"
         ],
-        "doc": "小区域,更新位置需要跟进",
         "next": [
             "Setup_Main_YellowPin_Ck",
             "[JumpBack]Setup_Main_YellowPin_Chg"
@@ -1522,6 +1522,7 @@
         "post_delay": 3000
     },
     "Setup_Main_ClothingChange": {
+        "desc": "小区域,更新位置需要跟进",
         "recognition": "OCR",
         "roi": [
             826,
@@ -1532,7 +1533,6 @@
         "expected": [
             "不使用"
         ],
-        "doc": "小区域,更新位置需要跟进",
         "next": [
             "Setup_Main_ClothingChange_Ck",
             "[JumpBack]Setup_Main_ClothingChange_Chg"
@@ -1563,6 +1563,7 @@
         "post_delay": 3000
     },
     "Setup_Equip_Switch": {
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             1108,
@@ -1575,31 +1576,30 @@
         ],
         "next": [
             "Setup_Equip_Into_Pre"
-        ],
-        "max_hit": 1
+        ]
     },
     "Setup_Equip_Into_Pre": {
         "recognition": "TemplateMatch",
+        "roi": [
+            1108,
+            637,
+            65,
+            57
+        ],
+        "template": [
+            "pin.png"
+        ],
         "action": "Click",
+        "target": [
+            1186,
+            46
+        ],
+        "post_delay": 3000,
         "next": [
             "Setup_Equip_Into",
             "Setup_Equip_Into_Pre"
         ],
-        "post_delay": 3000,
-        "focus": "Setup.装备强化选项修改开始",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
-        ],
-        "target": [
-            1186,
-            46
-        ]
+        "focus": "Setup.装备强化选项修改开始"
     },
     "Setup_Equip_Into": {
         "recognition": "OCR",
@@ -1625,55 +1625,55 @@
     },
     "Setup_Equip_Per": {
         "recognition": "OCR",
-        "expected": [
-            "消耗品"
-        ],
         "roi": [
             217,
             21,
             73,
             38
         ],
-        "focus": "背包",
+        "expected": [
+            "消耗品"
+        ],
         "action": "Click",
-        "post_delay": 2000,
         "target": [
             140,
             199
         ],
+        "post_delay": 2000,
         "next": [
             "Setup_Equip",
             "Setup_Equip_Per"
-        ]
+        ],
+        "focus": "背包"
     },
     "Setup_Equip": {
         "recognition": "OCR",
-        "expected": [
-            "装备"
-        ],
         "roi": [
             217,
             21,
             73,
             38
         ],
-        "focus": "背包-装备",
+        "expected": [
+            "装备"
+        ],
         "anchor": "Setup_EquipUp",
         "next": [
             "Setup_EquipUp",
             "Equip_EquipGui"
-        ]
+        ],
+        "focus": "背包-装备"
     },
     "Setup_EquipUp": {
         "recognition": "OCR",
-        "expected": [
-            "级别"
-        ],
         "roi": [
             640,
             288,
             56,
             69
+        ],
+        "expected": [
+            "级别"
         ],
         "next": [
             "[JumpBack]Setup_EquipUp_MJ",
@@ -1692,15 +1692,15 @@
             10,
             17
         ],
-        "upper": [
-            182,
-            142,
-            51
-        ],
         "lower": [
             162,
             122,
             31
+        ],
+        "upper": [
+            182,
+            142,
+            51
         ],
         "action": "Click",
         "post_delay": 1500
@@ -1795,13 +1795,13 @@
     },
     "Setup_EquipUp_MenuQuit": {
         "recognition": "TemplateMatch",
-        "template": "EquipMenuQuit.png",
         "roi": [
             1081,
             638,
             44,
             42
         ],
+        "template": "EquipMenuQuit.png",
         "action": "Click",
         "post_delay": 1000,
         "next": [
@@ -1833,14 +1833,14 @@
     },
     "Setup_EquipDec": {
         "recognition": "OCR",
-        "expected": [
-            "级别"
-        ],
         "roi": [
             632,
             219,
             74,
             56
+        ],
+        "expected": [
+            "级别"
         ],
         "next": [
             "[JumpBack]Setup_EquipDec_UP",
@@ -1860,15 +1860,15 @@
             27,
             16
         ],
-        "upper": [
-            41,
-            45,
-            50
-        ],
         "lower": [
             21,
             25,
             30
+        ],
+        "upper": [
+            41,
+            45,
+            50
         ],
         "action": "Click",
         "post_delay": 1500
@@ -1881,15 +1881,15 @@
             20,
             13
         ],
-        "upper": [
-            182,
-            142,
-            51
-        ],
         "lower": [
             162,
             122,
             31
+        ],
+        "upper": [
+            182,
+            142,
+            51
         ],
         "action": "Click",
         "post_delay": 1500
@@ -1984,13 +1984,13 @@
     },
     "Setup_EquipDec_MenuQuit": {
         "recognition": "TemplateMatch",
-        "template": "EquipMenuQuit.png",
         "roi": [
             1081,
             638,
             44,
             42
         ],
+        "template": "EquipMenuQuit.png",
         "action": "Click",
         "post_delay": 1000,
         "next": [
@@ -1998,6 +1998,7 @@
         ]
     },
     "Setup_SetSkill_Switch": {
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             1108,
@@ -2010,10 +2011,10 @@
         ],
         "next": [
             "Setup_SetSkill_Per"
-        ],
-        "max_hit": 1
+        ]
     },
     "Setup_SetSkill_Per": {
+        "desc": "准备安放技能",
         "recognition": "TemplateMatch",
         "roi": [
             1108,
@@ -2024,11 +2025,10 @@
         "template": [
             "pin.png"
         ],
-        "doc": "准备安放技能",
-        "focus": "Setup.技能位置修改开始",
         "next": [
             "Setup_SetSkill_OpenSklMenu"
-        ]
+        ],
+        "focus": "Setup.技能位置修改开始"
     },
     "Setup_SetSkill_OpenSklMenu": {
         "recognition": "TemplateMatch",
@@ -2049,6 +2049,7 @@
         ]
     },
     "Setup_SetSkill_SwipMini": {
+        "desc": "小幅度滑动,使黄色消失",
         "recognition": "ColorMatch",
         "roi": [
             110,
@@ -2077,20 +2078,19 @@
             118,
             510
         ],
-        "duration": 500,
         "end_hold": 800,
-        "doc": "小幅度滑动,使黄色消失"
+        "duration": 500
     },
     "Setup_SetSkill_tab3": {
         "recognition": "OCR",
-        "expected": [
-            "天赋技能"
-        ],
         "roi": [
             87,
             371,
             97,
             99
+        ],
+        "expected": [
+            "天赋技能"
         ],
         "action": "Click",
         "target": [
@@ -2107,21 +2107,21 @@
     },
     "Setup_SetSkill_tab3_Ck": {
         "recognition": "ColorMatch",
-        "upper": [
-            217,
-            177,
-            55
+        "roi": [
+            366,
+            405,
+            36,
+            22
         ],
         "lower": [
             197,
             157,
             35
         ],
-        "roi": [
-            366,
-            405,
-            36,
-            22
+        "upper": [
+            217,
+            177,
+            55
         ],
         "next": [
             "[JumpBack]Setup_SetSkill_tab3_ReLift",
@@ -2129,32 +2129,32 @@
         ]
     },
     "Setup_SetSkill_tab3_ReLift": {
+        "max_hit": 3,
         "recognition": "OCR",
-        "expected": [
-            "天赋技能"
-        ],
         "roi": [
             87,
             371,
             97,
             99
         ],
-        "action": "Swipe",
-        "end": [
-            1134,
-            592,
-            1,
-            1
+        "expected": [
+            "天赋技能"
         ],
+        "action": "Swipe",
         "begin": [
             115,
             590,
             1,
             1
         ],
-        "duration": 500,
+        "end": [
+            1134,
+            592,
+            1,
+            1
+        ],
         "end_hold": 800,
-        "max_hit": 3
+        "duration": 500
     },
     "Setup_SetSkill_tab3_Reset5": {
         "action": "Click",
@@ -2224,14 +2224,14 @@
     },
     "Setup_SetSkill_3-1": {
         "recognition": "OCR",
-        "expected": [
-            "探查"
-        ],
         "roi": [
             110,
             580,
             1053,
             33
+        ],
+        "expected": [
+            "探查"
         ],
         "action": "Click",
         "target_offset": [
@@ -2245,15 +2245,16 @@
         ]
     },
     "Setup_SetSkill_3-1_Swip": {
+        "max_hit": 2,
         "recognition": "OCR",
-        "expected": [
-            "天赋技能"
-        ],
         "roi": [
             87,
             371,
             97,
             99
+        ],
+        "expected": [
+            "天赋技能"
         ],
         "action": "Swipe",
         "begin": [
@@ -2268,11 +2269,11 @@
             1,
             1
         ],
-        "duration": 500,
         "end_hold": 800,
-        "max_hit": 2
+        "duration": 500
     },
     "Setup_SetSkill_3-1_Shake1": {
+        "desc": "Shake,图钉技能组切出去再切回来，技能就会自动排列——选中的黄色在前，方便滑动隐藏",
         "action": "Click",
         "target": [
             309,
@@ -2283,8 +2284,7 @@
         "post_delay": 500,
         "next": [
             "Setup_SetSkill_3-1_Shake2"
-        ],
-        "doc": "Shake,图钉技能组切出去再切回来，技能就会自动排列——选中的黄色在前，方便滑动隐藏"
+        ]
     },
     "Setup_SetSkill_3-1_Shake2": {
         "action": "Click",
@@ -2328,14 +2328,14 @@
     },
     "Setup_SetSkill_3-2": {
         "recognition": "OCR",
-        "expected": [
-            "吸收"
-        ],
         "roi": [
             110,
             580,
             1053,
             33
+        ],
+        "expected": [
+            "吸收"
         ],
         "action": "Click",
         "target_offset": [
@@ -2350,15 +2350,16 @@
         ]
     },
     "Setup_SetSkill_2to3_Swip": {
+        "max_hit": 2,
         "recognition": "OCR",
-        "expected": [
-            "天赋技能"
-        ],
         "roi": [
             87,
             371,
             97,
             99
+        ],
+        "expected": [
+            "天赋技能"
         ],
         "action": "Swipe",
         "begin": [
@@ -2373,9 +2374,8 @@
             1,
             1
         ],
-        "duration": 500,
         "end_hold": 800,
-        "max_hit": 2
+        "duration": 500
     },
     "Setup_SetSkill_3-2_Shake1": {
         "action": "Click",
@@ -2432,14 +2432,14 @@
     },
     "Setup_SetSkill_3-3": {
         "recognition": "OCR",
-        "expected": [
-            "召集"
-        ],
         "roi": [
             110,
             580,
             1053,
             33
+        ],
+        "expected": [
+            "召集"
         ],
         "action": "Click",
         "target_offset": [
@@ -2453,15 +2453,16 @@
         ]
     },
     "Setup_SetSkill_3to4_Swip": {
+        "max_hit": 2,
         "recognition": "OCR",
-        "expected": [
-            "天赋技能"
-        ],
         "roi": [
             87,
             371,
             97,
             99
+        ],
+        "expected": [
+            "天赋技能"
         ],
         "action": "Swipe",
         "begin": [
@@ -2476,9 +2477,8 @@
             1,
             1
         ],
-        "duration": 500,
         "end_hold": 800,
-        "max_hit": 2
+        "duration": 500
     },
     "Setup_SetSkill_3-3_Shake1": {
         "action": "Click",
@@ -2502,11 +2502,11 @@
             8
         ],
         "post_delay": 500,
+        "timeout": 5000,
         "next": [
             "Setup_SetSkill_3-4_Pre",
             "[JumpBack]Setup_SetSkill_ReLift"
-        ],
-        "timeout": 5000
+        ]
     },
     "Setup_SetSkill_3-4_Pre": {
         "recognition": "ColorMatch",
@@ -2536,14 +2536,14 @@
     },
     "Setup_SetSkill_3-4": {
         "recognition": "OCR",
-        "expected": [
-            "生成魔法阵"
-        ],
         "roi": [
             110,
             580,
             1053,
             33
+        ],
+        "expected": [
+            "生成魔法阵"
         ],
         "action": "Click",
         "target_offset": [
@@ -2557,15 +2557,16 @@
         ]
     },
     "Setup_SetSkill_4to5_Swip": {
+        "max_hit": 2,
         "recognition": "OCR",
-        "expected": [
-            "天赋技能"
-        ],
         "roi": [
             87,
             371,
             97,
             99
+        ],
+        "expected": [
+            "天赋技能"
         ],
         "action": "Swipe",
         "begin": [
@@ -2580,9 +2581,8 @@
             1,
             1
         ],
-        "duration": 500,
         "end_hold": 800,
-        "max_hit": 2
+        "duration": 500
     },
     "Setup_SetSkill_3-4_Shake1": {
         "action": "Click",
@@ -2606,11 +2606,11 @@
             8
         ],
         "post_delay": 500,
+        "timeout": 5000,
         "next": [
             "Setup_SetSkill_3-5_Pre",
             "[JumpBack]Setup_SetSkill_ReLift"
-        ],
-        "timeout": 5000
+        ]
     },
     "Setup_SetSkill_3-5_Pre": {
         "recognition": "ColorMatch",
@@ -2640,14 +2640,14 @@
     },
     "Setup_SetSkill_3-5": {
         "recognition": "OCR",
-        "expected": [
-            "装备制作"
-        ],
         "roi": [
             110,
             580,
             1053,
             33
+        ],
+        "expected": [
+            "装备制作"
         ],
         "action": "Click",
         "target_offset": [
@@ -2689,7 +2689,6 @@
     },
     "Setup_End": {
         "recognition": "TemplateMatch",
-        "focus": "Set.结束",
         "roi": [
             1108,
             637,
@@ -2698,18 +2697,21 @@
         ],
         "template": [
             "pin.png"
-        ]
+        ],
+        "focus": "Set.结束"
     },
     "Setup_SetSkill_1to2_Swip": {
+        "desc": "当页找不到,向后滑动,限定次数",
+        "max_hit": 2,
         "recognition": "OCR",
-        "expected": [
-            "天赋技能"
-        ],
         "roi": [
             87,
             371,
             97,
             99
+        ],
+        "expected": [
+            "天赋技能"
         ],
         "action": "Swipe",
         "begin": [
@@ -2724,12 +2726,11 @@
             1,
             1
         ],
-        "duration": 500,
         "end_hold": 800,
-        "max_hit": 2,
-        "doc": "当页找不到,向后滑动,限定次数"
+        "duration": 500
     },
     "Setup_SetSkill_LiftYew_ReLiftEnd": {
+        "desc": "判断当前页是否包含未选择技能的第一个.方法,左侧识别到黄色图标",
         "recognition": "ColorMatch",
         "roi": [
             110,
@@ -2748,35 +2749,34 @@
             255,
             255
         ],
-        "count": 50,
-        "doc": "判断当前页是否包含未选择技能的第一个.方法,左侧识别到黄色图标"
+        "count": 50
     },
     "Setup_SetSkill_ReLift": {
         "recognition": "OCR",
-        "expected": [
-            "天赋技能"
-        ],
         "roi": [
             87,
             371,
             97,
             99
         ],
-        "action": "Swipe",
-        "end": [
-            1134,
-            592,
-            1,
-            1
+        "expected": [
+            "天赋技能"
         ],
+        "action": "Swipe",
         "begin": [
             115,
             590,
             1,
             1
         ],
-        "duration": 500,
+        "end": [
+            1134,
+            592,
+            1,
+            1
+        ],
         "end_hold": 600,
+        "duration": 500,
         "post_delay": 1000,
         "focus": "将技能列表复位"
     }

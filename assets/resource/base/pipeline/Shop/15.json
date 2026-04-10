@@ -1,6 +1,8 @@
 {
     "Chapter15Shop": {
+        "max_hit": 1,
         "action": "DoNothing",
+        "timeout": 8000,
         "next": [
             "[JumpBack]MerchantBuy15.1",
             "[JumpBack]MerchantBuy15.2",
@@ -8,17 +10,11 @@
             "[JumpBack]MerchantBuy15.4",
             "[JumpBack]MerchantBuy15.5",
             "[JumpBack]MerchantBuy15.6"
-        ],
-        "max_hit": 1,
-        "timeout": 8000
+        ]
     },
     "MerchantBuy15.1": {
-        "action": "Click",
-        "next": [
-            "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy15.1"
-        ],
-        "post_delay": 1000,
+        "desc": "胡萝卜,200",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             665,
@@ -27,18 +23,18 @@
             75
         ],
         "template": "Shop/Carrot.png",
-        "doc": "胡萝卜,200",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy15.2": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy15.2"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy15.1"
+        ]
+    },
+    "MerchantBuy15.2": {
+        "desc": "苹果,500",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             930,
@@ -47,18 +43,18 @@
             74
         ],
         "template": "Shop/Apple.png",
-        "doc": "苹果,500",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy15.3": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy15.3"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy15.2"
+        ]
+    },
+    "MerchantBuy15.3": {
+        "desc": "香草,200",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             398,
@@ -67,18 +63,18 @@
             76
         ],
         "template": "Shop/Vanilla.png",
-        "doc": "香草,200",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy15.4": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy15.4"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy15.3"
+        ]
+    },
+    "MerchantBuy15.4": {
+        "desc": "洋葱,50",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             664,
@@ -87,18 +83,18 @@
             75
         ],
         "template": "Shop/Onion.png",
-        "doc": "洋葱,50",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy15.5": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy15.5"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy15.4"
+        ]
+    },
+    "MerchantBuy15.5": {
+        "desc": "番茄,200",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             929,
@@ -107,18 +103,18 @@
             74
         ],
         "template": "Shop/Tomato.png",
-        "doc": "番茄,200",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
-    },
-    "MerchantBuy15.6": {
         "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
         "next": [
             "Arbitrage_Merchant_BuyMsg",
-            "MerchantBuy15.6"
-        ],
-        "post_delay": 1000,
+            "MerchantBuy15.5"
+        ]
+    },
+    "MerchantBuy15.6": {
+        "desc": "芥末,50",
+        "max_hit": 1,
         "recognition": "TemplateMatch",
         "roi": [
             398,
@@ -127,9 +123,13 @@
             73
         ],
         "template": "Shop/Mustard.png",
-        "doc": "芥末,50",
         "threshold": 0.9,
-        "max_hit": 1,
-        "timeout": 2000
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
+        "next": [
+            "Arbitrage_Merchant_BuyMsg",
+            "MerchantBuy15.6"
+        ]
     }
 }
