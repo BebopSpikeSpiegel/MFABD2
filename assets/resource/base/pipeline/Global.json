@@ -47,7 +47,7 @@
         ],
         "green_mask": true,
         "action": "Click",
-        "post_delay": 2500,
+        "post_delay": 3500,
         "focus": "GO.点击返回按钮"
     },
     "Global_QuickCart_MenuReset": {

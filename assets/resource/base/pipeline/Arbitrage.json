@@ -1825,7 +1825,8 @@
         "action": "Click",
         "post_delay": 1000,
         "next": [
-            "Arbitrage_Merchant_BuyMsg_Button_IsDone"
+            "Arbitrage_Merchant_BuyMsg_Button_IsDone",
+            "Arbitrage_Merchant_BuyMsg_Button"
         ]
     },
     "Arbitrage_Merchant_BuyMsg_Button_IsDone": {
@@ -1839,9 +1840,7 @@
         "expected": [
             "购买"
         ],
-        "inverse": true,
-        "pre_delay": 500,
-        "action": "Click"
+        "inverse": true
     },
     "#4出售侦察与调度": {},
     "Arbitrage_SellItem": {

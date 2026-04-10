@@ -206,7 +206,8 @@
         ],
         "expected": [
             "Play",
-            "启动"
+            "启动",
+            "開始玩"
         ],
         "action": "StopApp",
         "package": "com.android.vending",
@@ -501,12 +502,14 @@
     },
     "StartGame_BackMapPage2": {
         "desc": "开始暴力解决广告，左侧点击10次",
-        "max_hit": 10,
+        "max_hit": 1,
         "action": "Click",
         "target": [
             60,
             460
         ],
+        "repeat": 10,
+        "repeat_delay": 200,
         "post_delay": 1000
     },
     "StartGame_BackMapPageOG": {

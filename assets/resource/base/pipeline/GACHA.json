@@ -629,13 +629,6 @@
         ],
         "green_mask": true,
         "inverse": true,
-        "action": "Click",
-        "target_offset": [
-            -5,
-            5,
-            0,
-            0
-        ],
         "next": [
             "Global_ToHomePage"
         ],
