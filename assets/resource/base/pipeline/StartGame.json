@@ -8,7 +8,7 @@
     "StartGame_Check_App_Alive": {
         "desc": "步骤(shell探针)：查进程。如果活着> next ,>查不到经常on_error尝试抢救",
         "action": "Shell",
-        "cmd": "pidof com.neowizgames.game.browndust2",
+        "cmd": "dumpsys window | grep mCurrentFocus | grep com.neowizgames.game.browndust2",
         "next": [
             "StartGame_TouchStart",
             "Global_ToHomePage_Enter",
