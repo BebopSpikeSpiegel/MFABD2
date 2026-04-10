@@ -67,6 +67,7 @@
                 ]
             }
         ],
+        "timeout": 1000,
         "next": [
             "[JumpBack]Event_Battle_Hub",
             "[JumpBack]Event_Mamono_Hub",
@@ -89,7 +90,9 @@
     },
     "Event_MiniGame_Hub": {
         "max_hit": 1,
+        "timeout": 4000,
         "next": [
+            "Event_Goin_Exploration",
             "[JumpBack]Event_MiniGame_JumpBackTOHome",
             "Event_Goin_MiniGame"
         ]
@@ -257,6 +260,11 @@
         ],
         "expected": "战斗",
         "only_rec": true,
+        "next": [
+            "Event_Event_Main_Return",
+            "[JumpBack]Event_MainMune_To_EventMenu",
+            "[JumpBack]Global_BackPageHub_Once"
+        ],
         "focus": "E.难度进度不足以自动战斗"
     },
     "Event_FreeAP_Verdict_Ispass": {
@@ -826,6 +834,30 @@
             "Global_ToHomePage"
         ]
     },
+    "Event_Goin_Exploration": {
+        "desc": "部分赛季存在战场探索,和小游戏类似.|识别并点击有快速打击的地图",
+        "max_hit": 1,
+        "recognition": "OCR",
+        "roi": [
+            175,
+            574,
+            729,
+            134
+        ],
+        "expected": ["战场探索"],
+        "action": "Click",
+        "target_offset": [
+            5,
+            -30,
+            0,
+            0
+        ],
+        "post_delay": 3000,
+        "next": [
+            "Event_MiniGame_OCR",
+            "[JumpBack]Global_WaitingForLoading"
+        ]
+    },
     "Event_Goin_MiniGame": {
         "recognition": "OCR",
         "roi": [
@@ -954,5 +986,17 @@
             "Global_ToHomePage"
         ],
         "focus": "EM.活动.小游戏模块结束"
+    },
+    "Event_MainMune_To_EventMenu": {
+        "desc": "可复用从主菜单进入赛季活动",
+        "max_hit": 8,
+        "recognition": "And",
+        "all_of": ["Event_GoinEvent"],
+        "action": "Click",
+        "target": [
+            1118,
+            387
+        ],
+        "post_delay": 3000
     }
 }
