@@ -170,7 +170,7 @@
         },
         "timeout": 1,
         "next": [
-            "Collect_StoryPack_SetSimpleSkip"
+            "Collect_QuickCart_SelectType_StoryPack"
         ]
     },
     "Collect_FeatureSwitch_CharacterPack": {
@@ -196,7 +196,7 @@
         ]
     },
     "Collect_StoryPack_SetSimpleSkip": {
-        "desc": "简单类跳过实现逻辑:发射锚点使得smart动作报err后进入特定存档节点,其他行为一致。此节点启用后读取存档，若通过，直接进入下一个节点链。",
+        "desc": "简单类跳过实现逻辑:发射锚点使得smart动作报err后进入特定存档节点,其他行为一致。此节点启用后读取存档，若通过，直接进入下一个节点链。通过锚点,初次必定为剧情卡,进入此;运行此节点后锚点到dit不用再此识别存档,直接下一步",
         "recognition": "Custom",
         "custom_recognition": "CheckCoolDown",
         "custom_recognition_param": {
@@ -204,9 +204,15 @@
             "cycle_type": "g_weekly"
         },
         "anchor": {
-            "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Story"
+            "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Story",
+            "SetSimpleSkip": "Collect_FirstBootPack_To1_Sandbox_Dit"
         },
-        "next": ["Collect_QuickCart_SelectType_StoryPack"]
+        "next": [
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "Collect_LocatePackFrame_Loc1",
+            "[JumpBack]Collect_FirstPack",
+            "[JumpBack]Collect_FirstPack_Talk"
+        ]
     },
     "Collect_CharacterPack_SetSimpleSkip": {
         "recognition": "Custom",
@@ -244,6 +250,7 @@
             "剧情游戏卡"
         ],
         "action": "Click",
+        "anchor": {"SetSimpleSkip": "Collect_StoryPack_SetSimpleSkip"},
         "post_delay": 500,
         "next": [
             "Collect_QuickCart_StoryPack_OcrCheck",
@@ -389,12 +396,27 @@
         "post_delay": 5000,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
+            "Collect_FirstBootPack_To1_Sandbox"
+        ],
+        "focus": "CM.L.卡带类型初次启动,进入1#位置"
+    },
+    "Collect_FirstBootPack_To1_Sandbox": {
+        "desc": "确认已在箱庭中,执行技能检测.之后:对于剧情卡执行简单类判定,对于其他卡,直接下一步.",
+        "recognition": "And",
+        "all_of": ["Global_ToSandBox_Enter"],
+        "next": [
+            "[JumpBack]Setup_Entry5",
+            "[Anchor]SetSimpleSkip"
+        ]
+    },
+    "Collect_FirstBootPack_To1_Sandbox_Dit": {
+        "desc": "其他类别卡带已检测过存档,直接进入选择器",
+        "next": [
             "[JumpBack]Global_QuickCart_MenuReset",
             "Collect_LocatePackFrame_Loc1",
             "[JumpBack]Collect_FirstPack",
             "[JumpBack]Collect_FirstPack_Talk"
-        ],
-        "focus": "CM.L.卡带类型初次启动,进入1#位置"
+        ]
     },
     "Collect_FirstBootPack_ProbeIsPresent": {
         "desc": "卡带1位置存在指针",
