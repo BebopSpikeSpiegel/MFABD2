@@ -71,15 +71,16 @@
         "desc": "选择通行证",
         "recognition": "TemplateMatch",
         "roi": [
-            207,
+            262,
             130,
-            93,
+            40,
             478
         ],
         "template": [
             "pass1.png"
         ],
-        "threshold": 0.9,
+        "threshold": 0.81,
+        "order_by": "Score",
         "action": "Click",
         "post_delay": 1000,
         "next": [
