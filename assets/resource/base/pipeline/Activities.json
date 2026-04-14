@@ -62,6 +62,7 @@
         ]
     },
     "Activities_InIndex": {
+        "max_hit": 3,
         "recognition": "TemplateMatch",
         "roi": [
             694,
@@ -109,17 +110,16 @@
         "desc": "寻找可关注活动|太容易卡后误识别了，加延迟",
         "recognition": "TemplateMatch",
         "roi": [
-            229,
-            131,
-            70,
-            472
+            260,
+            125,
+            39,
+            478
         ],
         "template": [
             "ActivePeerGe.png",
             "ActiveGe.png"
         ],
         "green_mask": true,
-        "threshold": 0.8,
         "action": "Click",
         "target_offset": [
             -50,
@@ -412,6 +412,7 @@
         "focus": "GA.发现活动-轮盘(代币抽) V.02509"
     },
     "Activities_FreeClothing": {
+        "desc": "免费+5",
         "recognition": "OCR",
         "roi": [
             320,
