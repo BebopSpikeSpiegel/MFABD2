@@ -1,7 +1,9 @@
 {
     "Event_HomePage": {
         "next": [
-            "Event_GoinEvent",
+            "Event_Event_Main",
+            "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]Event_GoinEvent",
             "[JumpBack]Global_ToHomePage"
         ]
     },
@@ -30,11 +32,7 @@
             387
         ],
         "post_delay": 2000,
-        "next": [
-            "Event_Event_Main",
-            "[JumpBack]Global_WaitingForLoading",
-            "Event_GoinEvent"
-        ],
+
         "focus": "EM.从主页面进入活动"
     },
     "Event_Event_Main": {
@@ -173,7 +171,8 @@
         ],
         "on_error": [
             "Event_Event_Main_Return",
-            "Event_GoinEvent",
+            "Event_Event_Main",
+            "[JumpBack]Event_GoinEvent",
             "[JumpBack]Global_BackPageHub_Once",
             "Global_Null_Exception",
             "Global_Null_Panic"
@@ -200,7 +199,7 @@
         ],
         "on_error": [
             "Event_Event_Main_Return",
-            "Event_GoinEvent",
+            "Event_Event_Main",
             "[JumpBack]Global_BackPageHub_Once",
             "Global_Null_Exception",
             "Global_Null_Panic"
@@ -217,11 +216,6 @@
             "Event_FreeAP_Verdict_NOpass",
             "Event_NoHaveAP"
         ]
-    },
-    "Event_Battle_BattleStatus_Unable": {
-        "recognition": "And",
-        "all_of": ["Global_Ocr_Clr_Unable"],
-        "focus": "快速战斗不可用"
     },
     "Event_FastNormalBattle": {
         "desc": "识别并点击子菜单快速战斗",
@@ -242,14 +236,22 @@
             "Event_Battle_BattleStatus_Unable"
         ],
         "on_error": [
-            "Event_Event_Main_Return",
-            "Event_GoinEvent",
+            "Event_Battle_BattleStatus_Unable_Except",
+            "[JumpBack]Event_GoinEvent",
             "[JumpBack]Global_BackPageHub_Once",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
         "focus": "EM.活动.快速战斗"
     },
+    "Event_Battle_BattleStatus_Unable_Except": {
+        "desc": "当前无快速战斗,需要获取手动战斗区域,然后判定颜色",
+        "recognition": "Or",
+        "any_of": ["Event_FastBattle_NoHave"],
+        "anchor": "Ocr_clr",
+        "next": ["Event_Battle_BattleStatus_Unable"]
+    },
+
     "Event_FastBattle_NoHave": {
         "recognition": "OCR",
         "roi": [
@@ -422,7 +424,8 @@
             "Event_NormalBattleIsOver",
             "Event_NormalBattleBack",
             "Event_TouchNormalBattle",
-            "Event_GoinEvent",
+            "Event_Event_Main",
+            "[JumpBack]Event_GoinEvent",
             "[JumpBack]Global_BackPageHub_Once"
         ]
     },
@@ -998,5 +1001,161 @@
             387
         ],
         "post_delay": 3000
+    },
+    "Event_Battle_BattleStatus_Unable": {
+        "recognition": "Or",
+        "any_of": [
+            "Global_Ocr_Clr_Unable"
+        ],
+        "next": ["Event_Battle_TabAutoBattle"],
+        "focus": "快速战斗不可用"
+    },
+
+    "Event_Battle_TabAutoBattle": {
+        "desc": "[入口]赛季战斗,由脚本接管自动战斗",
+        "next": [
+            "Event_Battle_TabAutoBattle_General",
+            "Event_Battle_TabAutoBattle_Challenge"
+        ],
+        "focus": "E.自动战斗尝试模块开始"
+    },
+    "Event_Battle_TabAutoBattle_General": {
+        "desc": "判断当前战斗:为普通难度",
+        "recognition": "OCR",
+        "roi": [
+            175,
+            8,
+            296,
+            75
+        ],
+        "expected": [
+            "普通",
+            "修炼"
+        ],
+        "next": [
+            "Event_Battle_TabAutoBattle_Battle",
+            "Event_Battle_TabAutoBattle_ChangeDifficulty_Back"
+        ],
+        "focus": "难度为:普通"
+    },
+    "Event_Battle_TabAutoBattle_Challenge": {
+        "desc": "判断当前战斗:为挑战难度,尝试切回普通一次",
+        "recognition": "OCR",
+        "roi": [
+            175,
+            8,
+            296,
+            75
+        ],
+        "expected": [
+            "挑战"
+        ],
+        "next": [
+            "Event_Battle_TabAutoBattle_ChangeDifficulty",
+            "Event_Battle_TabAutoBattle_Battle_ButChallenge"
+        ],
+        "focus": "难度为:挑战"
+    },
+    "Event_Battle_TabAutoBattle_Battle": {
+        "desc": "点击手动战斗",
+        "recognition": "And",
+        "all_of": ["Event_FastBattle_NoHave"],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "AutoBattle_Entry",
+            "Event_NoHaveAP"
+        ],
+        "focus": "点击非快速战斗按钮"
+    },
+    "Event_Battle_TabAutoBattle_Battle_ButChallenge": {
+        "desc": "点击手动战斗。挑战难度增加一个自动战斗识别。免得用户选错起始难度",
+        "recognition": "And",
+        "all_of": ["Event_FastBattle_NoHave"],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Event_FastNormalBattle",
+            "AutoBattle_Entry",
+            "Event_NoHaveAP"
+        ],
+        "focus": "点击非快速战斗按钮"
+    },
+    "Event_Battle_TabAutoBattle_ChangeDifficulty": {
+        "desc": "当前在挑战难度,一次性切换到普通",
+        "max_hit": 1,
+        "next": [
+            "Event_Battle_TabAutoBattle_ChangeDifficulty_ToMain",
+            "[JumpBack]Event_GoinEvent",
+            "[JumpBack]Global_BackPageHub_Once"
+        ],
+        "focus": "当前在挑战难度,为增加成功率，尝试一次性切换到普通。"
+    },
+    "Event_Battle_TabAutoBattle_ChangeDifficulty_ToMain": {
+        "desc": "复用判定在主页面",
+        "recognition": "And",
+        "all_of": ["Event_Event_Main"],
+        "next": ["Event_Battle_TabAutoBattle_ChangeDifficulty_TryGeneral"]
+    },
+    "Event_Battle_TabAutoBattle_ChangeDifficulty_TryGeneral": {
+        "desc": "点击普通战斗",
+        "recognition": "OCR",
+        "roi": [
+            69,
+            365,
+            1179,
+            324
+        ],
+        "expected": [
+            "普通"
+        ],
+        "action": "Click",
+        "target_offset": [
+            5,
+            -30,
+            0,
+            0
+        ],
+        "post_delay": 3000,
+        "next": ["Event_Battle_TabAutoBattle_General"],
+        "focus": "点击普通战斗"
+    },
+    "Event_Battle_TabAutoBattle_ChangeDifficulty_Back": {
+        "desc": "当前在普通难度,但已经打完15个关卡,一次性切换到挑战",
+        "max_hit": 1,
+        "next": [
+            "Event_Battle_TabAutoBattle_ChangeDifficulty_Back_ToMain",
+            "[JumpBack]Event_GoinEvent",
+            "[JumpBack]Global_BackPageHub_Once"
+        ],
+        "focus": "当前在普通难度,且已打完15个关卡，尝试一次性切换到挑战不浪费。"
+    },
+    "Event_Battle_TabAutoBattle_ChangeDifficulty_Back_ToMain": {
+        "recognition": "And",
+        "all_of": ["Event_Event_Main"],
+        "next": ["Event_Battle_TabAutoBattle_ChangeDifficulty_ExceptChallenge"]
+    },
+    "Event_Battle_TabAutoBattle_ChangeDifficulty_ExceptChallenge": {
+        "desc": "点击挑战战斗",
+        "recognition": "OCR",
+        "roi": [
+            69,
+            365,
+            1179,
+            324
+        ],
+        "expected": [
+            "挑战"
+        ],
+        "action": "Click",
+        "target_offset": [
+            5,
+            -30,
+            0,
+            0
+        ],
+        "post_delay": 3000,
+        "next": ["Event_Battle_TabAutoBattle_Challenge"],
+        "focus": "点击挑战战斗"
     }
 }
