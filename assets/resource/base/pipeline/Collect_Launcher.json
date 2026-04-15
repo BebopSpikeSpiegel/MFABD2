@@ -95,6 +95,7 @@
             5
         ],
         "next": [
+            "[JumpBack]Setup_Entry5",
             "Collect_Skill3_2_Depleted",
             "Collect_BlackList_User",
             "Collect_QuickCart_Menu",
@@ -380,7 +381,6 @@
     },
     "Collect_FirstBootPack": {
         "next": [
-            "Collect_FirstBootPack_ProbeIsPresent",
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
             "Collect_FirstBootPack_To1"
         ]
@@ -417,33 +417,6 @@
             "[JumpBack]Collect_FirstPack",
             "[JumpBack]Collect_FirstPack_Talk"
         ]
-    },
-    "Collect_FirstBootPack_ProbeIsPresent": {
-        "desc": "卡带1位置存在指针",
-        "recognition": "ColorMatch",
-        "roi": [
-            0,
-            659,
-            201,
-            19
-        ],
-        "method": 40,
-        "lower": [
-            22,
-            67,
-            177
-        ],
-        "upper": [
-            30,
-            241,
-            255
-        ],
-        "count": 2,
-        "timeout": 2000,
-        "next": [
-            "Collect_PackProbe_IsPresent"
-        ],
-        "focus": "CM.L.初次启动探针确认"
     },
     "Collect_PackProbe_IsPresent": {
         "recognition": "OCR",

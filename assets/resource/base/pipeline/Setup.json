@@ -176,12 +176,6 @@
             "card_name": "SetSkill",
             "cycle_type": "g_daily"
         },
-        "action": "Custom",
-        "custom_action": "MarkComplete",
-        "custom_action_param": {
-            "card_name": "SetSkill",
-            "cycle_type": "g_daily"
-        },
         "next": [
             "Setup_SkillScan_Now"
         ],
@@ -293,8 +287,13 @@
                 "count": 200
             }
         ],
+        "timeout": 5000,
         "next": [
             "Setup_SkillScan_Skill1"
+        ],
+        "on_error": [
+            "Setup_Scan_Error_PreVerdict",
+            "Setup_Scan_Error_FinVerdict"
         ],
         "focus": "Set.技能页3-正确"
     },
@@ -702,6 +701,12 @@
         "threshold": 0.6
     },
     "Setup_SkillScan_Success": {
+        "action": "Custom",
+        "custom_action": "MarkComplete",
+        "custom_action_param": {
+            "card_name": "SetSkill",
+            "cycle_type": "g_daily"
+        },
         "focus": "Set.全技能检查通过~"
     },
     "Setup_Scan_Error_PreVerdict": {
@@ -2714,6 +2719,12 @@
         "template": [
             "pin.png"
         ],
+        "action": "Custom",
+        "custom_action": "MarkComplete",
+        "custom_action_param": {
+            "card_name": "SetSkill",
+            "cycle_type": "g_daily"
+        },
         "focus": "Set.结束"
     },
     "Setup_SetSkill_1to2_Swip": {
