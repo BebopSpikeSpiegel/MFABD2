@@ -296,6 +296,10 @@
         "next": [
             "Setup_SkillScan_Skill1"
         ],
+        "on_error": [
+            "Setup_Scan_Error_PreVerdict",
+            "Setup_Scan_Error_FinVerdict"
+        ],
         "focus": "Set.技能页3-正确"
     },
     "Setup_SkillScan_Skill1": {

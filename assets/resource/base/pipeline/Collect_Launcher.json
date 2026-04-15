@@ -95,6 +95,7 @@
             5
         ],
         "next": [
+            "[JumpBack]Setup_Entry5",
             "Collect_Skill3_2_Depleted",
             "Collect_BlackList_User",
             "Collect_QuickCart_Menu",
