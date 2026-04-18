@@ -87,7 +87,16 @@
         ]
     },
     "Event_MiniGame_Hub": {
+        "desc": "跑酷小游戏快速刷取.放在最后,会附带回到主页",
         "max_hit": 1,
+        "next": [
+            "Event_MiniGame_SubMain",
+            "[JumpBack]Global_BackPageHub_Once"
+        ]
+    },
+    "Event_MiniGame_SubMain": {
+        "recognition": "And",
+        "all_of": ["Event_Event_Main"],
         "timeout": 4000,
         "next": [
             "Event_Goin_Exploration",

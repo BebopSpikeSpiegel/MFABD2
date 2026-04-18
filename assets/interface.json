@@ -115,9 +115,6 @@
         {
             "name": "[执行]肉鸽塔每日快速战斗",
             "entry": "Redemption_HomePage",
-            "option": [
-                "肉鸽塔快速战斗"
-            ],
             "description": "**肉鸽塔快速战斗：**肉鸽塔每期强化代币(黑晶石)刷取，方便点亮修改器打高难。会尽可能选取最高难度快速战斗，打完每日3次免费AP。<br>**每期需要先手动打一次解锁快速战斗**，量力而行~<br><span style=\"color: Crimson;\">强化代币、强化效果期内累计，跨期不继承。</span>"
         },
         {
@@ -768,25 +765,6 @@
                     "pipeline_override": {
                         "Event_Mamono_Hub": {
                             "max_hit": 0
-                        }
-                    }
-                },
-                {
-                    "name": "Yes",
-                    "pipeline_override": {}
-                }
-            ]
-        },
-        "肉鸽塔快速战斗": {
-            "type": "switch",
-            "cases": [
-                {
-                    "name": "No",
-                    "pipeline_override": {
-                        "Redemption_HomePage": {
-                            "next": [
-                                "Redemption_Evil_Redemption_End"
-                            ]
                         }
                     }
                 },
