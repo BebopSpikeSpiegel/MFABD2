@@ -795,5 +795,39 @@
             100
         ],
         "count": 25
+    },
+    "Global_Ocr_Clr_Enable_Sub": {
+        "desc": "【被引用节点】对Ocr节点再次色核,亮色",
+        "recognition": "ColorMatch",
+        "roi": "Sub_Ocr",
+        "method": 40,
+        "lower": [
+            10,
+            10,
+            200
+        ],
+        "upper": [
+            50,
+            40,
+            240
+        ],
+        "count": 25
+    },
+    "Global_Ocr_Clr_Unable_Sub": {
+        "desc": "【被引用节点】对Ocr节点再次色核,灰色",
+        "recognition": "ColorMatch",
+        "roi": "Sub_Ocr",
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            0
+        ],
+        "upper": [
+            180,
+            20,
+            100
+        ],
+        "count": 25
     }
 }

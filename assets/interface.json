@@ -107,11 +107,11 @@
             "name": "[执行]赛季活动快速战斗",
             "entry": "Event_HomePage",
             "option": [
-                "活动图快速战斗难度",
+                "赛季活动快速战斗难度",
                 "魔兽补刀",
-                "活动图小游戏扫荡"
+                "魔兽初始等级"
             ],
-            "description": "**赛季活动：**主页面的右侧的版本剧情活动。<br>**快速战斗：**版本活动通过第15关后，解锁此等级快速战斗。用每日免费AP打Max。<br>若未打完所选难度15关，不会报错停止，但没有效果。<br>支持选择难度。<br>**魔兽补刀:**在打过魔兽后每日快速战斗一次,拿取参与奖。"
+            "description": "**赛季活动：**主页面的右侧的版本剧情活动。<br>**快速战斗：**用每日免费AP打Max。若未打完所选难度15关，尝试自动刷取（不保证成功）。<br>支持选择难度。<br>**魔兽补刀:**每日快速战斗一次,拿取参与奖。"
         },
         {
             "name": "[执行]肉鸽塔每日快速战斗",
@@ -734,27 +734,32 @@
                 }
             ]
         },
-        "活动图快速战斗难度": {
+        "赛季活动快速战斗难度": {
             "description": "先手动通过最后一关（第15关），解锁快速战斗；<br>选择相应难度选项，可实现快速战斗打完免费AP。<br>误选会没有效果，浪费时间。<br>Tip:一共两个难度，分别有首通奖励~",
             "type": "select",
             "cases": [
                 {
+                    "name": "自动",
+                    "description": "常规战，由简单级进挑战级。快速战，仅挑战级。\n\n队伍自配，练度高成功率大。",
+                    "pipeline_override": {
+                        "SeasonEvent_Battle_Start": {
+                            "next": ["Event_EnterBattle_Auto"]
+                        }
+                    }
+                },
+                {
                     "name": "普通",
                     "pipeline_override": {
-                        "Event_EnterNormalBattle": {
-                            "expected": [
-                                "普通"
-                            ]
+                        "SeasonEvent_Battle_Start": {
+                            "next": ["SeasonEvent_EnterlBattle_Normal"]
                         }
                     }
                 },
                 {
                     "name": "挑战",
                     "pipeline_override": {
-                        "Event_EnterNormalBattle": {
-                            "expected": [
-                                "挑战"
-                            ]
+                        "SeasonEvent_Battle_Start": {
+                            "next": ["SeasonEvent_EnterlBattle_Challenge"]
                         }
                     }
                 }
@@ -768,24 +773,6 @@
                     "name": "No",
                     "pipeline_override": {
                         "Event_Mamono_Hub": {
-                            "max_hit": 0
-                        }
-                    }
-                },
-                {
-                    "name": "Yes",
-                    "pipeline_override": {}
-                }
-            ]
-        },
-        "活动图小游戏扫荡": {
-            "description": "小活动相关，日常关闭！",
-            "type": "switch",
-            "cases": [
-                {
-                    "name": "No",
-                    "pipeline_override": {
-                        "Event_MiniGame_Hub": {
                             "max_hit": 0
                         }
                     }
@@ -1662,6 +1649,26 @@
                     "attach": {
                         "SellName": "{监视最高价待售物品}"
                     }
+                }
+            }
+        },
+        "魔兽初始等级": {
+            "type": "input",
+            "label": "魔兽期望开刷等级",
+            "inputs": [
+                {
+                    "name": "魔兽初始等级",
+                    "pipeline_type": "string",
+                    "default": "1",
+                    "verify": "^[0-9]+$",
+                    "pattern_msg": "仅数字"
+                }
+            ],
+            "pipeline_override": {
+                "Even_MamonoFollow_lvCustom_Ck": {
+                    "expected": [
+                        "[lL][Vv][^a-zA-Z0-9]?{魔兽初始等级}$"
+                    ]
                 }
             }
         }
