@@ -162,6 +162,7 @@
             "[JumpBack]PVP_PerPetTask",
             "[JumpBack]PVP_PVPMes",
             "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]PVP_Errmsg1#_Clear",
             "[JumpBack]PVP_PerOperationsMain_Error",
             "[JumpBack]PVP_InsandboxAndlocAbnormal",
             "[JumpBack]PVP_PVPStart",
@@ -194,7 +195,11 @@
             "确认"
         ],
         "action": "Click",
-        "post_delay": 800,
+        "target": [
+            1,
+            1
+        ],
+        "post_delay": 1500,
         "focus": "PM.PVP.防守分结算"
     },
     "PVP_PVPMes2": {
@@ -210,7 +215,28 @@
             "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
         ],
         "action": "Click",
-        "post_delay": 500
+        "target": [
+            1,
+            1
+        ],
+        "post_delay": 1500
+    },
+    "PVP_Errmsg1#_Clear": {
+        "desc": "以防万一,PVP防守分误点",
+        "recognition": "OCR",
+        "roi": [
+            134,
+            143,
+            122,
+            33
+        ],
+        "expected": ["战场角色设置"],
+        "action": "Click",
+        "target": [
+            1,
+            1
+        ],
+        "post_delay": 2000
     },
     "PVP_PVPStart": {
         "desc": "进入PVP舞台",
