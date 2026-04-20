@@ -77,8 +77,8 @@
         "max_hit": 1,
         "next": [
             "SeasonEvent_Battle_Start",
-            "[JumpBack]Global_BackPageHub_Once",
-            "Event_Goin_MiniGame"
+            "[JumpBack]Event_GoinEvent",
+            "[JumpBack]Global_BackPageHub_Once"
         ],
         "focus": "赛季活动-15战模块"
     },
@@ -86,15 +86,16 @@
         "max_hit": 1,
         "next": [
             "SeasonEvent_Mamono_Start",
-            "[JumpBack]Global_BackPageHub_Once",
-            "Event_Goin_MiniGame"
+            "[JumpBack]Event_GoinEvent",
+            "[JumpBack]Global_BackPageHub_Once"
         ]
     },
     "Event_MiniGame_Hub": {
         "max_hit": 1,
         "next": [
-            "[JumpBack]Event_MiniGame_JumpBackTOHome",
-            "Event_Goin_MiniGame"
+            "SeasonEvent_MiniGame_Start",
+            "[JumpBack]Event_GoinEvent",
+            "[JumpBack]Global_BackPageHub_Once"
         ]
     },
     "SeasonEvent_Main_Return": {
@@ -1104,21 +1105,31 @@
         "connected": true,
         "count": 20
     },
-
-    "Event_MiniGame_JumpBackTOHome": {
-        "desc": "单次Call,回到主页面",
-        "max_hit": 1,
+    "SeasonEvent_MiniGame_Start": {
+        "desc": "小活动入口,先寻找赛季内的'战场探索'.",
+        "recognition": "And",
+        "all_of": ["Event_Event_Main"],
+        "anchor": {"MiniGame_Return": "Event_MiniGame_SubToMain"},
         "next": [
-            "Global_ToHomePage"
+            "Event_MiniGame",
+            "SeasonEvent_MiniGame_BackToMain",
+            "[JumpBack]Global_BackPageHub_Once"
         ]
+    },
+    "SeasonEvent_MiniGame_BackToMain": {
+        "desc": "小活动入口,其次返回主界面,查找主页的'小活动'入口",
+        "recognition": "And",
+        "all_of": ["Event_GoinEvent"],
+        "timeout": 4000,
+        "next": ["Event_Goin_MiniGame"]
     },
     "Event_Goin_MiniGame": {
         "recognition": "OCR",
         "roi": [
-            932,
-            407,
-            61,
-            32
+            901,
+            335,
+            316,
+            241
         ],
         "expected": [
             "小活动"
@@ -1130,6 +1141,7 @@
             0,
             0
         ],
+        "anchor": {"MiniGame_Return": ""},
         "post_delay": 2000,
         "next": [
             "Event_MiniGame"
@@ -1166,37 +1178,46 @@
         "expected": [
             "快速完成"
         ],
+        "anchor": "Ocr_clr",
         "timeout": 5000,
         "next": [
-            "Event_MiniGame_CLR"
+            "Event_MiniGame_CLR_Enable",
+            "Event_MiniGame_CLR_Unable"
+        ],
+        "focus": "快速完成OCR"
+    },
+    "Event_MiniGame_CLR_Enable": {
+        "recognition": "And",
+        "all_of": ["Global_Ocr_Clr_Enable"],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Event_MiniGame_Confirm",
+            "Event_MiniGame_CLR_Enable"
+        ],
+        "focus": "快速完成-CLR亮色可点击"
+    },
+    "Event_MiniGame_CLR_Unable": {
+        "recognition": "And",
+        "all_of": ["Global_Ocr_Clr_Unable"],
+        "timeout": 4000,
+        "next": [
+            "[Anchor]MiniGame_Return"
         ],
         "on_error": [
             "Global_ToHomePage",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
-        "focus": "快速完成OCR"
+        "focus": "快速完成-CLR暗色不可点击"
     },
-    "Event_MiniGame_CLR": {
-        "recognition": "ColorMatch",
-        "roi": "Event_MiniGame_OCR",
-        "lower": [
-            245,
-            245,
-            245
-        ],
-        "upper": [
-            255,
-            255,
-            255
-        ],
-        "action": "Click",
-        "post_delay": 2000,
+    "Event_MiniGame_SubToMain": {
+        "desc": "[锚点单向]极端情况,赛季和主页同时有活动,此处让先进性的赛季流程回到主页,再识别小游戏",
         "next": [
-            "Event_MiniGame_Confirm",
-            "Event_MiniGame_CLR"
-        ],
-        "focus": "快速完成-CLR亮色可点击"
+            "SeasonEvent_MiniGame_BackToMain",
+            "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]Global_BackPageHub_Once"
+        ]
     },
     "Event_MiniGame_Confirm": {
         "desc": "快速战斗-确认",
