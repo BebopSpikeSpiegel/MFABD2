@@ -85,7 +85,9 @@
     "Event_Mamono_Hub": {
         "max_hit": 1,
         "next": [
-            "Even_MamonoFollowUp_InMamono"
+            "SeasonEvent_Mamono_Start",
+            "[JumpBack]Global_BackPageHub_Once",
+            "Event_Goin_MiniGame"
         ]
     },
     "Event_MiniGame_Hub": {
@@ -616,6 +618,13 @@
         "action": "Click",
         "post_delay": 3000,
         "focus": "G=1.页面非预期，点击返回按钮"
+    },
+    "SeasonEvent_Mamono_Start": {
+        "recognition": "And",
+        "all_of": ["Event_Event_Main"],
+        "next": [
+            "Even_MamonoFollowUp_InMamono"
+        ]
     },
     "Even_MamonoFollowUp_InMamono": {
         "recognition": "OCR",
