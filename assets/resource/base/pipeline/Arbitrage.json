@@ -3310,7 +3310,8 @@
         "post_delay": 1000,
         "next": [
             "Arbitrage_Cooking_Doing_Starus",
-            "Arbitrage_Cooking_NubMenu_Doing"
+            "Arbitrage_Cooking_NubMenu_Doing",
+            "Arbitrage_Cooking_Doing_OCR"
         ]
     },
     "Arbitrage_Cooking_Doing_Starus": {
@@ -3338,6 +3339,23 @@
             "Arbitrage_Cooking_Doing_Starus"
         ],
         "focus": "Arb.料理制作动画中..."
+    },
+    "Arbitrage_Cooking_Doing_OCR": {
+        "recognition": "OCR",
+        "roi": [
+            545,
+            357,
+            183,
+            85
+        ],
+        "expected": "制作中",
+        "post_delay": 5000,
+        "next": [
+            "Arbitrage_Cooking_Doing_OCR",
+            "Arbitrage_Cooking_Doing_ReBack",
+            "Arbitrage_Cooking_Menu_ReBack",
+            "[JumpBack]Global_BackPageHub_Once"
+        ]
     },
     "Arbitrage_Cooking_Doing_ReBack": {
         "desc": "按钮之前不存在,现在存在,动画结束",
