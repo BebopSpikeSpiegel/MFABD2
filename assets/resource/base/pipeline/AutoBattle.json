@@ -1,0 +1,210 @@
+{
+    "AutoBattle_Entry": {
+        "desc": "[模块入口]检测是否存在自动战斗界面",
+        "recognition": "Or",
+        "any_of": [
+            "AutoBattle_Is_Auto",
+            "AutoBattle_TabTo_Auto"
+        ],
+        "next": [
+            "AutoBattle_Is_Auto",
+            "AutoBattle_TabTo_Auto"
+        ]
+    },
+    "AutoBattle_Is_Auto": {
+        "recognition": "Or",
+        "any_of": [
+            {
+                "recognition": "OCR",
+                "roi": [
+                    1102,
+                    639,
+                    109,
+                    31
+                ],
+                "expected": ["自动战斗中"],
+                "only_rec": true
+            },
+            {
+                "recognition": "OCR",
+                "roi": [
+                    28,
+                    576,
+                    182,
+                    96
+                ],
+                "expected": ["自动战斗中"]
+            }
+        ],
+        "post_delay": 5000,
+        "next": [
+            "AutoBattle_Settlement_Victory",
+            "AutoBattle_Settlement_Defeat",
+            "AutoBattle_Is_Auto"
+        ]
+    },
+    "AutoBattle_TabTo_Auto": {
+        "recognition": "Or",
+        "any_of": [
+            {
+                "recognition": "OCR",
+                "roi": [
+                    1126,
+                    629,
+                    73,
+                    29
+                ],
+                "expected": ["BATTLE"],
+                "only_rec": true
+            },
+            {
+                "recognition": "OCR",
+                "roi": [
+                    1034,
+                    629,
+                    60,
+                    29
+                ],
+                "expected": ["TURN"],
+                "only_rec": true
+            }
+        ],
+        "next": ["AutoBattle_ClickAutoButt"]
+    },
+    "AutoBattle_ClickAutoButt": {
+        "desc": "模板点击自动战斗图标",
+        "recognition": "TemplateMatch",
+        "roi": [
+            712,
+            2,
+            348,
+            81
+        ],
+        "template": ["UI_AutoBattle.png"],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 2000,
+        "next": ["AutoBattle_Is_Auto"]
+    },
+    "AutoBattle_Settlement_Victory": {
+        "recognition": "OCR",
+        "roi": [
+            847,
+            26,
+            134,
+            63
+        ],
+        "expected": ["VICTORY"],
+        "only_rec": true,
+        "next": [
+            "AutoBattle_Egress_Next",
+            "AutoBattle_Egress_TurnBack"
+        ]
+    },
+    "AutoBattle_Settlement_Defeat": {
+        "recognition": "OCR",
+        "roi": [
+            559,
+            8,
+            515,
+            358
+        ],
+        "expected": [
+            "DEFEAT",
+            "END"
+        ],
+        "next": [
+            "AutoBattle_Egress_TurnBack",
+            "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk"
+        ]
+    },
+    "AutoBattle_Egress_Next": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Sub_Ocr",
+                "recognition": "OCR",
+                "roi": [
+                    778,
+                    615,
+                    478,
+                    91
+                ],
+                "expected": [
+                    "前往下一个战斗",
+                    "挑战下一级"
+                ]
+            },
+            "Global_Ocr_Clr_Enable_Sub"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "[JumpBack]AutoBattle_Egress_Next_Submenu",
+            "AutoBattle_Egress_Next_NoAP",
+            "AutoBattle_Entry"
+        ]
+    },
+    "AutoBattle_Egress_Next_Submenu": {
+        "recognition": "OCR",
+        "roi": [
+            630,
+            352,
+            173,
+            132
+        ],
+        "expected": ["确认"],
+        "action": "Click",
+        "post_delay": 5000
+    },
+    "AutoBattle_Egress_Next_NoAP": {
+        "recognition": "OCR",
+        "roi": [
+            450,
+            345,
+            378,
+            111
+        ],
+        "expected": ["AP不足"],
+        "next": ["AutoBattle_Egress_Next_NoAP_Cancel"]
+    },
+    "AutoBattle_Egress_Next_NoAP_Cancel": {
+        "recognition": "OCR",
+        "roi": [
+            453,
+            425,
+            378,
+            111
+        ],
+        "expected": ["取消"],
+        "action": "Click",
+        "post_delay": 3000,
+        "next": ["AutoBattle_Egress_TurnBack"]
+    },
+    "AutoBattle_Egress_TurnBack": {
+        "recognition": "OCR",
+        "roi": [
+            438,
+            566,
+            818,
+            140
+        ],
+        "expected": ["返回"],
+        "action": "Click",
+        "post_delay": 5000,
+        "next": ["[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk"]
+    },
+    "AutoBattle_Egress_TurnBack_SkipTalk": {
+        "desc": "失败后,可能会回到旅馆出现对话",
+        "recognition": "TemplateMatch",
+        "roi": [
+            796,
+            2,
+            455,
+            93
+        ],
+        "template": ["Chaga_ProductNext.png"],
+        "action": "Click",
+        "post_delay": 2000
+    }
+}
