@@ -10,18 +10,23 @@ def configure_ocr_model():
         print(f"File Not Found: {assets_ocr_dir}")
         exit(1)
 
-    # 【修改 1】：将目标路径更改为 assets/resource/base
-    ocr_dir = assets_dir / "resource" / "base"/ "model"/ "ocr"
-    
-    print(f"正在将 OCR 模型 (ppocr_v4) 复制到: {ocr_dir} ...")
-    
-    # 【修改 2 & 3】：移除 if 判断强制覆盖，并将源路径改为 ppocr_v4/zh_cn
-    shutil.copytree(
-        assets_dir / "MaaCommonAssets" / "OCR" / "ppocr_v4" / "zh_cn",
-        ocr_dir,
-        dirs_exist_ok=True,  # 允许目标目录存在，这会直接覆盖/追加里面的文件
-    )
-    
+    ocr_dir = assets_dir / "resource" / "base" / "model" / "ocr"
+    ocr_dir.mkdir(parents=True, exist_ok=True)
+
+    ppocr_dir = assets_ocr_dir / "ppocr_v4"
+
+    # det: 移动版 (zh_cn，无后缀文件夹)
+    det_src = ppocr_dir / "zh_cn" / "det.onnx"
+    det_dst = ocr_dir / "det.onnx"
+    print(f"正在复制 det 模型 (移动版): {det_src} ...")
+    shutil.copy2(det_src, det_dst)
+
+    # rec: 服务端版 (zh_cn-server/model.onnx -> rec.onnx)
+    rec_src = ppocr_dir / "zh_cn-server" / "rec.onnx"
+    rec_dst = ocr_dir / "rec.onnx"
+    print(f"正在复制 rec 模型 (服务端版): {rec_src} ...")
+    shutil.copy2(rec_src, rec_dst)
+
     print("✅ OCR 模型复制完成！")
 
 if __name__ == "__main__":
