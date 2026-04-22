@@ -770,13 +770,14 @@
         "lower": [
             0,
             0,
-            230
+            190
         ],
         "upper": [
             180,
             40,
             255
         ],
+        "connected": true,
         "count": 25
     },
     "Global_Ocr_Clr_Unable": {
@@ -786,7 +787,7 @@
         "method": 40,
         "lower": [
             0,
-            0,
+            5,
             0
         ],
         "upper": [
@@ -794,6 +795,7 @@
             20,
             100
         ],
+        "connected": true,
         "count": 25
     },
     "Global_Ocr_Clr_Enable_Sub": {
