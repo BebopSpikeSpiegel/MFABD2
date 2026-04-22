@@ -27,6 +27,12 @@ def configure_ocr_model():
     print(f"正在复制 rec 模型 (服务端版): {rec_src} ...")
     shutil.copy2(rec_src, rec_dst)
 
+    # keys: 字典文件 (zh_cn-server/keys.txt)
+    keys_src = ppocr_dir / "zh_cn-server" / "keys.txt"
+    keys_dst = ocr_dir / "keys.txt"
+    print(f"正在复制字典文件: {keys_src} ...")
+    shutil.copy2(keys_src, keys_dst)
+
     print("✅ OCR 模型复制完成！")
 
 if __name__ == "__main__":
