@@ -88,8 +88,7 @@
             "entry": "Gacha_HomePage",
             "default_check": true,
             "option": [
-                "高级抽卡-按需|强制",
-                "付费钻-总开关"
+                "一键免费抽(将禁用高级功能)"
             ],
             "description": "<b>白嫖抽卡：</b>每日免费一次的<span style=\"background-color:Silver; color:Black; border-radius:3px; padding:0 3px;\">角色</span>、<span style=\"background-color:Silver; color:Black; border-radius:3px; padding:0 3px;\">专属装备</span>抽取。<br><br>当抽取免费抽时，可顺便用90付费钻，对指定卡池每日优惠一抽，需要指定卡池名。<br><br><span style=\"color:Crimson;font-size:14px\"><b>付费钻是危险功能</b><br>务必仔细确认，平时常闭。脚本协议不承担其使用责任！<br>打开此<span style=\"background-color:Silver; color:Black; border-radius:3px; padding:0 3px;\">总开关</span>，则是你知晓并自行承担相关风险的意思表示！</span><br><br><img src=\"resource/image/GUI/CHAGA_Doc.png\" width=\"150\" />"
         },
@@ -890,6 +889,35 @@
                             ]
                         }
                     }
+                }
+            ]
+        },
+        "一键免费抽(将禁用高级功能)": {
+            "type": "switch",
+            "description": "利用抽抽乐页面的'所有免费抽抽乐'抽卡。启用时，保底留存、90钻付费抽等功能无法使用。",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "Gacha_FindFreeGacha": {
+                            "enabled": false
+                        },
+                        "Gacha_Slip": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "Gacha_Quick_All": {
+                            "enabled": false
+                        }
+                    },
+                    "option": [
+                        "高级抽卡-按需|强制",
+                        "付费钻-总开关"
+                    ]
                 }
             ]
         },

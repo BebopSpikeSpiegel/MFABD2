@@ -50,10 +50,14 @@
             "必得.*服装",
             "每个账号限购1次"
         ],
+        "timeout": 10000,
         "next": [
+            "Gacha_Quick_All",
             "Gacha_FindFreeGacha",
-            "Gacha_Slip"
+            "Gacha_Slip",
+            "Gacha_FindEquRedDot"
         ],
+        "on_error": ["Gacha_FindEquRedDot_PBC"],
         "focus": "GA.进入抽抽乐页面"
     },
     "Gacha_GachaPage2": {
@@ -69,6 +73,7 @@
             "兑换"
         ],
         "next": [
+            "Gacha_Quick_All",
             "Gacha_FindFreeGacha",
             "Gacha_Slip"
         ],
@@ -136,6 +141,108 @@
             "Gacha_FinGacha"
         ],
         "focus": "GA.卡池列表见底"
+    },
+    "Gacha_Quick_All": {
+        "desc": "点击页面一键抽抽乐",
+        "recognition": "OCR",
+        "roi": [
+            183,
+            596,
+            183,
+            76
+        ],
+        "expected": "所有免费抽抽乐",
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Gacha_Quick_All_SubMsg",
+            "Gacha_Quick_All"
+        ],
+        "focus": "GA.F.一键抽卡启动"
+    },
+    "Gacha_Quick_All_SubMsg": {
+        "recognition": "Or",
+        "any_of": ["Gacha_TouchFreeGachaConfirmMenu"],
+        "next": ["Gacha_Quick_All_SubMsg_Ck"]
+    },
+    "Gacha_Quick_All_SubMsg_Ck": {
+        "recognition": "OCR",
+        "roi": [
+            660,
+            398,
+            105,
+            99
+        ],
+        "expected": "确认",
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "Gacha_Quick_Briefing",
+            "[JumpBack]Gacha_Quick_Skip",
+            "[JumpBack]Gacha_Quick_5X",
+            "Gacha_Quick_All_SubMsg_Ck"
+        ]
+    },
+    "Gacha_Quick_Skip": {
+        "desc": "等于连抽,去点跳过按钮",
+        "recognition": "And",
+        "all_of": ["AutoBattle_Egress_TurnBack_SkipTalk"],
+        "action": "Click",
+        "post_delay": 1500
+    },
+    "Gacha_Quick_5X": {
+        "desc": "假设抽中会跳立绘",
+        "recognition": "Or",
+        "any_of": [
+            "Gacha_5X",
+            "Gacha_5X2"
+        ],
+        "action": "Click",
+        "target": [
+            1157,
+            50
+        ],
+        "post_delay": 1500
+    },
+    "Gacha_Quick_Briefing": {
+        "recognition": "Or",
+        "any_of": [
+            {
+                "recognition": "TemplateMatch",
+                "roi": [
+                    119,
+                    587,
+                    159,
+                    68
+                ],
+                "template": ["Gacha_Briefing.png"]
+            },
+            {
+                "recognition": "OCR",
+                "roi": [
+                    163,
+                    603,
+                    80,
+                    36
+                ],
+                "expected": "^\\d+/\\d+$",
+                "only_rec": true
+            }
+        ],
+        "next": [
+            "Gacha_Quick_End",
+            "[JumpBack]Global_BackPageHub_Once"
+        ]
+    },
+    "Gacha_Quick_End": {
+        "desc": "一键抽卡结束后瞻",
+        "recognition": "And",
+        "all_of": ["Gacha_GachaPage"],
+        "next": [
+            "Gacha_FindEquRedDot",
+            "Gacha_FindEquRedDot_PBC"
+        ],
+        "focus": "GA.F.一键抽卡结束"
     },
     "Gacha_FindFreeGacha": {
         "desc": "点击,存在免费抽的卡池,每日首次进入卡池pv动画开始 | GachaADV_Start 临时插入救急",
@@ -609,8 +716,8 @@
         ],
         "post_delay": 2000,
         "next": [
-            "Gacha_FindFreeGacha",
-            "Gacha_Slip",
+            "Gacha_GachaPage",
+            "Gacha_GachaPage2",
             "Gacha_FindEquRedDot",
             "Gacha_FindEquRedDot_PBC"
         ],
