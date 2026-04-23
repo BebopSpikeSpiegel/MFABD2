@@ -109,7 +109,6 @@
     "SeasonEvent_Battle_Start": {
         "recognition": "And",
         "all_of": ["Event_Event_Main"],
-        "anchor": {"Aoto_Battle": "SeasonEvent_EnterlBattle_Challenge"},
         "next": [
             "Event_EnterBattle_Auto",
             "SeasonEvent_EnterlBattle_Normal",
@@ -117,8 +116,16 @@
         ]
     },
     "Event_EnterBattle_Auto": {
-        "next": ["[Anchor]Aoto_Battle"],
+        "next": [
+            "[JumpBack]SeasonEvent_Battle_Int_Anchor",
+            "[Anchor]Auto_Battle"
+        ],
         "focus": "EM.活动.难度:自动"
+    },
+    "SeasonEvent_Battle_Int_Anchor": {
+        "desc": "初始化锚点Auto_Battle",
+        "max_hit": 1,
+        "anchor": {"Auto_Battle": "SeasonEvent_EnterlBattle_Challenge"}
     },
     "SeasonEvent_EnterlBattle_Normal": {
         "desc": "点击普通战斗",
@@ -265,7 +272,7 @@
         "anchor": "Ocr_clr",
         "timeout": 4000,
         "next": [
-            "SeasonEvent_Tab_Challenge",
+            "SeasonEvent_TabTo_Challenge",
             "Event_Battle_BattleStatus_Enable",
             "Event_Battle_BattleStatus_Unable"
         ],
@@ -291,7 +298,7 @@
         "only_rec": true,
         "anchor": "Ocr_clr",
         "next": [
-            "SeasonEvent_Tab_Nomarl",
+            "SeasonEvent_TabTo_Nomarl",
             "SeasonEvent_NormlBattle_Enable",
             "SeasonEvent_NormlBattle_Unable"
         ],
@@ -312,7 +319,7 @@
         ],
         "focus": "E.常规战斗-不可用"
     },
-    "SeasonEvent_Tab_Nomarl": {
+    "SeasonEvent_TabTo_Nomarl": {
         "desc": "先进入挑战,若自动战斗不可用.退回去检查普通的",
         "max_hit": 1,
         "recognition": "OCR",
@@ -323,16 +330,17 @@
             75
         ],
         "expected": [
-            "挑战"
+            "挑战",
+            "血界中死战"
         ],
-        "anchor": {"Aoto_Battle": "SeasonEvent_EnterlBattle_Normal"},
+        "anchor": {"Auto_Battle": "SeasonEvent_EnterlBattle_Normal"},
         "next": [
             "SeasonEvent_Battle_Start",
             "[JumpBack]Global_BackPageHub_Once"
         ],
         "focus": "挑战模式无快速战斗,前往普通模式进一步确认"
     },
-    "SeasonEvent_Tab_Challenge": {
+    "SeasonEvent_TabTo_Challenge": {
         "desc": "退回检查普通难度,发现自动战斗可用,步进去挑战",
         "max_hit": 1,
         "recognition": "OCR",
@@ -344,9 +352,10 @@
         ],
         "expected": [
             "普通",
-            "修炼"
+            "修炼",
+            "血染的结界"
         ],
-        "anchor": {"Aoto_Battle": "SeasonEvent_EnterlBattle_Challenge"},
+        "anchor": {"Auto_Battle": "SeasonEvent_EnterlBattle_Challenge"},
         "next": [
             "SeasonEvent_Battle_Start",
             "[JumpBack]Global_BackPageHub_Once"
@@ -1309,7 +1318,7 @@
     "Event_Battle_TabAutoBattle_General": {
         "desc": "判断当前战斗:为普通难度.(已移除:已在上方适配Event_Battle_TabAutoBattle_ChangeDifficulty_Back)",
         "recognition": "And",
-        "all_of": ["SeasonEvent_Tab_Challenge"],
+        "all_of": ["SeasonEvent_TabTo_Challenge"],
         "next": [
             "Event_Battle_TabAutoBattle_Battle"
         ],
@@ -1318,7 +1327,7 @@
     "Event_Battle_TabAutoBattle_Challenge": {
         "desc": "判断当前战斗:为挑战难度.(移除:尝试切回普通一次.因为在上方已做适配)",
         "recognition": "And",
-        "all_of": ["SeasonEvent_Tab_Nomarl"],
+        "all_of": ["SeasonEvent_TabTo_Nomarl"],
         "next": [
             "Event_Battle_TabAutoBattle_Battle_ButChallenge"
         ],
