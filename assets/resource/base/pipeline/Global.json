@@ -749,6 +749,12 @@
         "desc": "【被引用节点】主界面是否无二级浮窗遮蔽",
         "recognition": "ColorMatch",
         "roi": "Main_OCR",
+        "roi_offset": [
+            -5,
+            -5,
+            10,
+            10
+        ],
         "method": 40,
         "lower": [
             0,
@@ -766,11 +772,17 @@
         "desc": "【被引用节点】对Ocr节点再次色核,亮色",
         "recognition": "ColorMatch",
         "roi": "[Anchor]Ocr_clr",
+        "roi_offset": [
+            -5,
+            -5,
+            10,
+            10
+        ],
         "method": 40,
         "lower": [
             0,
             0,
-            190
+            230
         ],
         "upper": [
             180,
@@ -778,7 +790,7 @@
             255
         ],
         "connected": true,
-        "count": 25
+        "count": 40
     },
     "Global_Ocr_Clr_Unable": {
         "desc": "【被引用节点】对Ocr节点再次色核,灰色",
@@ -787,13 +799,13 @@
         "method": 40,
         "lower": [
             0,
-            5,
-            0
+            0,
+            10
         ],
         "upper": [
             180,
             20,
-            100
+            150
         ],
         "connected": true,
         "count": 25
