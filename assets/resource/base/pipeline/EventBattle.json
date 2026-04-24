@@ -915,6 +915,7 @@
         "timeout": 10000,
         "next": [
             "SeasonEvent_BackedToSubMain",
+            "[JumpBack]Global_WaitingForLoading",
             "[JumpBack]Global_BackPageHub_Once"
         ],
         "on_error": [
