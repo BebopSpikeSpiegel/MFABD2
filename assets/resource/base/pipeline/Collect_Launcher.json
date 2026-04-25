@@ -167,6 +167,7 @@
         "enabled": true,
         "max_hit": 1,
         "anchor": {
+            "SetSimpleSkip": "Collect_StoryPack_SetSimpleSkip",
             "SmartSwipOut": ""
         },
         "timeout": 1,
@@ -182,6 +183,7 @@
         },
         "timeout": 1,
         "next": [
+            "[JumpBack]Global_QuickCart_MenuReset",
             "Collect_CharacterPack_SetSimpleSkip"
         ]
     },
@@ -193,6 +195,7 @@
         },
         "timeout": 1,
         "next": [
+            "[JumpBack]Global_QuickCart_MenuReset",
             "Collect_EventPack_SetSimpleSkip"
         ]
     },
@@ -210,9 +213,7 @@
         },
         "next": [
             "[JumpBack]Global_QuickCart_MenuReset",
-            "Collect_LocatePackFrame_Loc1",
-            "[JumpBack]Collect_FirstPack",
-            "[JumpBack]Collect_FirstPack_Talk"
+            "Collect_LocatePackFrame_Loc1"
         ]
     },
     "Collect_CharacterPack_SetSimpleSkip": {
@@ -223,7 +224,8 @@
             "cycle_type": "g_weekly"
         },
         "anchor": {
-            "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Character"
+            "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Character",
+            "SetSimpleSkip": "Collect_FirstBootPack_To1_Sandbox_Dit"
         },
         "next": ["Collect_QuickCart_SelectType_CharacterPack"]
     },
@@ -235,7 +237,8 @@
             "cycle_type": "g_weekly"
         },
         "anchor": {
-            "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Event"
+            "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Event",
+            "SetSimpleSkip": "Collect_FirstBootPack_To1_Sandbox_Dit"
         },
         "next": ["Collect_QuickCart_SelectType_EventPack"]
     },
@@ -251,7 +254,7 @@
             "剧情游戏卡"
         ],
         "action": "Click",
-        "anchor": {"SetSimpleSkip": "Collect_StoryPack_SetSimpleSkip"},
+        "anchor": "SetFirstTOBack",
         "post_delay": 500,
         "next": [
             "Collect_QuickCart_StoryPack_OcrCheck",
@@ -396,6 +399,8 @@
         "post_delay": 5000,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]Collect_FirstPack",
+            "[JumpBack]Collect_FirstPack_Talk",
             "Collect_FirstBootPack_To1_Sandbox"
         ],
         "focus": "CM.L.卡带类型初次启动,进入1#位置"
@@ -404,19 +409,26 @@
         "desc": "确认已在箱庭中,执行技能检测.之后:对于剧情卡执行简单类判定,对于其他卡,直接下一步.",
         "recognition": "And",
         "all_of": ["Global_ToSandBox_Enter"],
+        "timeout": 5000,
         "next": [
             "[JumpBack]Setup_Entry5",
-            "[Anchor]SetSimpleSkip"
+            "Collect_FirstBootPack_To1_QuickCart_Menu",
+            "[JumpBack]Global_QuickCart_MenuReset"
         ]
     },
     "Collect_FirstBootPack_To1_Sandbox_Dit": {
         "desc": "其他类别卡带已检测过存档,直接进入选择器",
         "next": [
             "[JumpBack]Global_QuickCart_MenuReset",
-            "Collect_LocatePackFrame_Loc1",
-            "[JumpBack]Collect_FirstPack",
-            "[JumpBack]Collect_FirstPack_Talk"
+            "Collect_LocatePackFrame_Loc1"
         ]
+    },
+    "Collect_FirstBootPack_To1_QuickCart_Menu": {
+        "desc": "确认调出卡带菜单后,1ms逻辑判定",
+        "recognition": "Or",
+        "any_of": ["Collect_QuickCart_Menu"],
+        "timeout": 1,
+        "next": ["[Anchor]SetSimpleSkip"]
     },
     "Collect_PackProbe_IsPresent": {
         "recognition": "OCR",
