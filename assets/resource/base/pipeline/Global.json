@@ -54,7 +54,8 @@
         "desc": "调出快速卡带1/2,操作",
         "recognition": "TemplateMatch",
         "template": [
-            "QuickCartGeadai.png"
+            "QuickCartGeadai.png",
+            "UI_QuickPack_GE.png"
         ],
         "green_mask": true,
         "action": "Click",

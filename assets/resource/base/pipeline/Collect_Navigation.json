@@ -505,7 +505,9 @@
         "green_mask": true,
         "inverse": true,
         "next": [
-            "Collect_QuickCart_HomePageHub2"
+            "Collect_QuickCart_FastUI",
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_ToSandBox"
         ],
         "focus": "QBC.[INF]特殊地图.类EP6区域地图到底"
     },
@@ -588,7 +590,9 @@
             35
         ],
         "next": [
-            "Collect_QuickCart_HomePageHub2"
+            "Collect_QuickCart_FastUI",
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_ToSandBox"
         ],
         "focus": "CM-P.[WRN]状态机底层逻辑防护被触发\n直接结束卡带"
     },
@@ -958,7 +962,9 @@
         "threshold": 0.85,
         "post_delay": 1000,
         "next": [
-            "Collect_QuickCart_HomePageHub2"
+            "Collect_QuickCart_FastUI",
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_ToSandBox"
         ],
         "focus": "CBB.[WRN]中继特殊结束-不存在右换页"
     },
@@ -1076,7 +1082,9 @@
             "安全"
         ],
         "next": [
-            "Collect_QuickCart_HomePageHub2"
+            "Collect_QuickCart_FastUI",
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_ToSandBox"
         ],
         "focus": "CCB.快速卡带-卡带内流程进入END环节"
     },
@@ -1098,29 +1106,6 @@
             "安全"
         ],
         "focus": "CCB.[退出中断]快速卡带-卡带内流程进入END环节"
-    },
-    "Collect_QuickCart_HomePageHub2": {
-        "desc": "其他页面，返回按钮",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1,
-            1,
-            231,
-            124
-        ],
-        "template": [
-            "BackButGe.png",
-            "BackButGe2.png"
-        ],
-        "green_mask": true,
-        "action": "Click",
-        "post_delay": 2000,
-        "next": [
-            "Collect_QuickCart_FastUI",
-            "Collect_QuickCart_HomePageHub2",
-            "[JumpBack]Global_QuickCart_MenuReset"
-        ],
-        "focus": "CM.N.开始卡带退出"
     },
     "Collect_OnlyOnce_SkillUsed": {
         "max_hit": 1,
