@@ -106,7 +106,6 @@
             "entry": "Event_HomePage",
             "option": [
                 "赛季活动快速战斗难度",
-                "魔兽补刀",
                 "魔兽初始等级"
             ],
             "description": "**赛季活动：**主页面的右侧的版本剧情活动。<br>**快速战斗：**用每日免费AP打Max。若未打完所选难度15关，尝试自动刷取（不保证成功）。<br>支持选择难度。<br>**魔兽补刀:**每日快速战斗一次,拿取参与奖。"
@@ -757,24 +756,6 @@
                             "next": ["SeasonEvent_EnterlBattle_Challenge"]
                         }
                     }
-                }
-            ]
-        },
-        "魔兽补刀": {
-            "description": "1.‘补刀’：若魔兽讨伐未被击败，次日可继承残血状态快速战斗一次。<br>2.补刀失败只拿参与奖，不影响讨伐进度；次日循环拿奖励。<br>3.补刀成功，则需要手动打一次下一级魔兽，失利了再来补刀。",
-            "type": "switch",
-            "cases": [
-                {
-                    "name": "No",
-                    "pipeline_override": {
-                        "Event_Mamono_Hub": {
-                            "max_hit": 0
-                        }
-                    }
-                },
-                {
-                    "name": "Yes",
-                    "pipeline_override": {}
                 }
             ]
         },
@@ -1659,7 +1640,7 @@
         },
         "魔兽初始等级": {
             "type": "input",
-            "label": "魔兽期望开刷等级",
+            "label": "魔兽补刀起步等级",
             "inputs": [
                 {
                     "name": "魔兽初始等级",

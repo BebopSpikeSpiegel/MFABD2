@@ -98,7 +98,8 @@
         "only_rec": true,
         "next": [
             "AutoBattle_Egress_Next",
-            "AutoBattle_Egress_TurnBack"
+            "AutoBattle_Egress_TurnBack",
+            "[JumpBack]Global_WaitingForLoading"
         ]
     },
     "AutoBattle_Settlement_Defeat": {
@@ -115,7 +116,8 @@
         ],
         "next": [
             "AutoBattle_Egress_TurnBack",
-            "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk"
+            "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk",
+            "[JumpBack]Global_WaitingForLoading"
         ]
     },
     "AutoBattle_Egress_Next": {
@@ -141,6 +143,8 @@
         "post_delay": 2000,
         "next": [
             "[JumpBack]AutoBattle_Egress_Next_Submenu",
+            "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk",
             "AutoBattle_Egress_Next_NoAP",
             "AutoBattle_Entry"
         ]
@@ -179,7 +183,11 @@
         "expected": ["取消"],
         "action": "Click",
         "post_delay": 3000,
-        "next": ["AutoBattle_Egress_TurnBack"]
+        "timeout": 10000,
+        "next": [
+            "AutoBattle_Egress_TurnBack",
+            "[JumpBack]Global_WaitingForLoading"
+        ]
     },
     "AutoBattle_Egress_TurnBack": {
         "recognition": "OCR",
@@ -192,7 +200,11 @@
         "expected": ["返回"],
         "action": "Click",
         "post_delay": 5000,
-        "next": ["[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk"]
+        "timeout": 10000,
+        "next": [
+            "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk",
+            "[JumpBack]Global_WaitingForLoading"
+        ]
     },
     "AutoBattle_Egress_TurnBack_SkipTalk": {
         "desc": "失败后,可能会回到旅馆出现对话",

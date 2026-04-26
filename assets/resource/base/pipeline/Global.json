@@ -54,7 +54,8 @@
         "desc": "调出快速卡带1/2,操作",
         "recognition": "TemplateMatch",
         "template": [
-            "QuickCartGeadai.png"
+            "QuickCartGeadai.png",
+            "UI_QuickPack_GE.png"
         ],
         "green_mask": true,
         "action": "Click",
@@ -592,6 +593,50 @@
                 ],
                 "expected": "0%",
                 "only_rec": true
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": [
+                    203,
+                    476,
+                    930,
+                    110
+                ],
+                "method": 40,
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    180,
+                    5,
+                    5
+                ],
+                "connected": true,
+                "count": 102200
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": [
+                    203,
+                    476,
+                    930,
+                    110
+                ],
+                "method": 40,
+                "lower": [
+                    0,
+                    0,
+                    230
+                ],
+                "upper": [
+                    180,
+                    5,
+                    255
+                ],
+                "connected": true,
+                "count": 102200
             }
         ],
         "post_delay": 5000,
@@ -749,6 +794,12 @@
         "desc": "【被引用节点】主界面是否无二级浮窗遮蔽",
         "recognition": "ColorMatch",
         "roi": "Main_OCR",
+        "roi_offset": [
+            -5,
+            -5,
+            10,
+            10
+        ],
         "method": 40,
         "lower": [
             0,
@@ -766,18 +817,25 @@
         "desc": "【被引用节点】对Ocr节点再次色核,亮色",
         "recognition": "ColorMatch",
         "roi": "[Anchor]Ocr_clr",
+        "roi_offset": [
+            -5,
+            -5,
+            10,
+            10
+        ],
         "method": 40,
         "lower": [
             0,
             0,
-            230
+            215
         ],
         "upper": [
             180,
             40,
             255
         ],
-        "count": 25
+        "connected": true,
+        "count": 40
     },
     "Global_Ocr_Clr_Unable": {
         "desc": "【被引用节点】对Ocr节点再次色核,灰色",
@@ -787,13 +845,14 @@
         "lower": [
             0,
             0,
-            0
+            10
         ],
         "upper": [
             180,
             20,
-            100
+            150
         ],
+        "connected": true,
         "count": 25
     },
     "Global_Ocr_Clr_Enable_Sub": {
@@ -802,32 +861,40 @@
         "roi": "Sub_Ocr",
         "method": 40,
         "lower": [
-            10,
-            10,
-            200
+            0,
+            0,
+            215
         ],
         "upper": [
-            50,
+            180,
             40,
-            240
+            255
         ],
-        "count": 25
+        "connected": true,
+        "count": 40
     },
     "Global_Ocr_Clr_Unable_Sub": {
         "desc": "【被引用节点】对Ocr节点再次色核,灰色",
         "recognition": "ColorMatch",
         "roi": "Sub_Ocr",
+        "roi_offset": [
+            -5,
+            -5,
+            10,
+            10
+        ],
         "method": 40,
         "lower": [
             0,
             0,
-            0
+            10
         ],
         "upper": [
             180,
             20,
-            100
+            150
         ],
+        "connected": true,
         "count": 25
     }
 }
