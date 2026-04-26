@@ -353,6 +353,10 @@
         "expected": [
             "OUCH"
         ],
+        "replace": [[
+                " ",
+                ""
+            ]],
         "only_rec": true,
         "color_filter": "Dummy_StartGame_TouchStart_Clr",
         "pre_delay": 5000,
