@@ -1,8 +1,8 @@
 name: Gemini PR Reviewer
 
 on:
-  pull_request:
-    types: [opened, synchronize]
+  # pull_request:
+  #   types: [opened, synchronize]
   workflow_dispatch:
     inputs:
       pr_number:
