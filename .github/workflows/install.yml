@@ -636,12 +636,14 @@ jobs:
           echo "::group::👀 验证注入结果"
           TARGET="install/resource/Announcement/1.公告.md"
           if [ -f "$TARGET" ]; then
-            if grep -q "^### ${{ needs.meta.outputs.tag }} 通知" "$TARGET"; then
-              echo "✅ 已注入 ${{ needs.meta.outputs.tag }} 通知"
+            AFTER_ANCHOR=$(grep -A 3 "Msg-Anch" "$TARGET" | tail -n +2 | tr -d '[:space:]')
+            if [ -n "$AFTER_ANCHOR" ]; then
+              echo "✅ 已注入通知"
+              echo "--- 注入内容预览 ---"
+              grep -A 20 "Msg-Anch" "$TARGET" | head -25
             else
               echo "ℹ️ 本次未注入（草稿为空 / 不在目标版本范围 / 等）"
             fi
-            tail -n 30 "$TARGET"
           else
             echo "::error::目标文件不存在: $TARGET"
             exit 1

@@ -105,7 +105,7 @@ def inject_announcement(tag_name):
         print(f"⚠️ 草稿过长（{len(content)} 字符），截断到 5000")
         content = content[:5000] + "\n\n*(注：草稿过长已自动截断)*"
 
-    insert_block = f"{ANCHOR}\n\n### {tag_name} 通知\n{content}\n\n---\n"
+    insert_block = f"{ANCHOR}\n\n{content}\n\n---\n"
     new_text = original_text.replace(ANCHOR, insert_block)
 
     target_file.write_text(new_text, encoding='utf-8')
