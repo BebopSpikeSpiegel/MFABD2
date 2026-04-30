@@ -253,6 +253,33 @@ def get_beta_preview_content(compare_base: str, current_tag: str) -> str:
     lines.append("") # 结尾空行
     return "\n".join(lines)
 
+def _get_tag_type(tag_name: str) -> str:
+    """将 tag 名映射为内容目标类型（stable/beta/alpha/ci），无法识别时返回 stable。
+    ⚠️ 若版本类型标识发生变更，需与 release/release_header.md 头部注释同步修改。
+    """
+    if '-beta' in tag_name:
+        return 'beta'
+    if '-alpha' in tag_name:
+        return 'alpha'
+    if '-ci' in tag_name:
+        return 'ci'
+    return 'stable'
+
+
+def _parse_targeted_blocks(file_content: str, tag_type: str) -> str:
+    """按 <!-- target: ... --> 标记解析内容块，按顺序拼接所有匹配当前版本类型的块。"""
+    block_re = re.compile(r'<!--\s*target:\s*([^-]+?)-->', re.IGNORECASE)
+    parts = block_re.split(file_content)
+    # parts 结构: [前导内容, targets_str, block, targets_str, block, ...]
+    matched = []
+    for i in range(1, len(parts) - 1, 2):
+        targets = [t.strip().lower() for t in parts[i].split(',')]
+        block = parts[i + 1].strip()
+        if block and ('all' in targets or tag_type in targets):
+            matched.append(block)
+    return '\n\n'.join(matched)
+
+
 def generate_changelog_content(commits: List[Dict], current_tag: str, compare_base: str) -> str:
     """生成变更日志内容"""
     
@@ -284,15 +311,15 @@ def generate_changelog_content(commits: List[Dict], current_tag: str, compare_ba
     changelog = f"# 更新日志\n\n"
     changelog += f"## {current_tag}\n\n"
 
-    # 读取 Release 头部草稿 (draft_release_header.md)
-    draft_header_path = os.path.join(os.path.dirname(__file__), 'draft_release_header.md')
-    if os.path.exists(draft_header_path):
+    # 读取 Release 头部草稿 (release/release_header.md)
+    draft_header_path = pathlib.Path(__file__).parent.parent / "release" / "release_header.md"
+    if draft_header_path.exists():
         try:
-            with open(draft_header_path, 'r', encoding='utf-8') as f:
-                header_content = f.read().strip()
-                if header_content:
-                    print(f"📖 发现发布草稿，已插入 Release 头部: {draft_header_path}")
-                    changelog += header_content + "\n\n---\n\n" # 加上分隔符和换行
+            file_content = draft_header_path.read_text(encoding='utf-8')
+            header_content = _parse_targeted_blocks(file_content, _get_tag_type(current_tag))
+            if header_content:
+                print(f"📖 发现发布草稿，已插入 Release 头部: {draft_header_path}")
+                changelog += header_content + "\n\n---\n\n"
         except Exception as e:
             print(f"⚠️ 读取发布草稿失败: {e}")
 
