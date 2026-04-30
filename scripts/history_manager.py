@@ -128,6 +128,9 @@ class HistoryManager:
             cdk_match = re.search(pattern, body)
             if cdk_match:
                 truncated = body[:cdk_match.start()].strip()
+                if not truncated:
+                    print(f"⚠️ CDK链接截断后内容为空（CDK位于body开头？），跳过此锚点，继续尝试其他截断方式")
+                    break
                 print(f"使用CDK链接截断，长度: {len(truncated)}")
                 return truncated
         
