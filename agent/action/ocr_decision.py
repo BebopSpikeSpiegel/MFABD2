@@ -227,6 +227,10 @@ class OCR_RankAndPatch(CustomAction):
                 utils.mfaalog.warning(f"[Py] ⚠️ 无有效数字")
                 return False
 
+            # 重新编号：clean_data 已按物理位置有序，重置 original_idx 消除因噪声项造成的空洞
+            for new_pos, item in enumerate(clean_data):
+                item['original_idx'] = new_pos
+
             # --- 5. 数值排序 ---
             reverse = True if sort_mode == "desc" else False
             sorted_data = sorted(clean_data, key=lambda x: x["val"], reverse=reverse)
