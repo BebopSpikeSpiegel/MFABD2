@@ -3,6 +3,7 @@
 主入口 - 协调整个变更日志生成流程
 """
 
+import hashlib
 import os
 import pathlib
 import sys
@@ -23,7 +24,7 @@ from git_operations import get_commit_list, get_merge_commits, get_released_bran
 # True  : 开启。会尝试获取 GitHub 历史 Release 并生成折叠列表 (可能导致 UI 卡顿)
 # False : 关闭。仅生成当前版本的变更日志，完全忽略历史版本
 # ==============================================================================
-ENABLE_HISTORY_GENERATION = False
+ENABLE_HISTORY_GENERATION = True
 
 def group_commits_by_type(commits: List[Dict]) -> Dict[str, List[Dict]]:
     """按提交类型分组（简化版本，后续可以改进）"""
@@ -252,6 +253,33 @@ def get_beta_preview_content(compare_base: str, current_tag: str) -> str:
     lines.append("") # 结尾空行
     return "\n".join(lines)
 
+def _get_tag_type(tag_name: str) -> str:
+    """将 tag 名映射为内容目标类型（stable/beta/alpha/ci），无法识别时返回 stable。
+    ⚠️ 若版本类型标识发生变更，需与 release/release_header.md 头部注释同步修改。
+    """
+    if '-beta' in tag_name:
+        return 'beta'
+    if '-alpha' in tag_name:
+        return 'alpha'
+    if '-ci' in tag_name:
+        return 'ci'
+    return 'stable'
+
+
+def _parse_targeted_blocks(file_content: str, tag_type: str) -> str:
+    """按 <!-- target: ... --> 标记解析内容块，按顺序拼接所有匹配当前版本类型的块。"""
+    block_re = re.compile(r'<!--\s*target:\s*([^-]+?)-->', re.IGNORECASE)
+    parts = block_re.split(file_content)
+    # parts 结构: [前导内容, targets_str, block, targets_str, block, ...]
+    matched = []
+    for i in range(1, len(parts) - 1, 2):
+        targets = [t.strip().lower() for t in parts[i].split(',')]
+        block = parts[i + 1].strip()
+        if block and ('all' in targets or tag_type in targets):
+            matched.append(block)
+    return '\n\n'.join(matched)
+
+
 def generate_changelog_content(commits: List[Dict], current_tag: str, compare_base: str) -> str:
     """生成变更日志内容"""
     
@@ -283,15 +311,15 @@ def generate_changelog_content(commits: List[Dict], current_tag: str, compare_ba
     changelog = f"# 更新日志\n\n"
     changelog += f"## {current_tag}\n\n"
 
-    # 读取 Release 头部草稿 (draft_release_header.md)
-    draft_header_path = os.path.join(os.path.dirname(__file__), 'draft_release_header.md')
-    if os.path.exists(draft_header_path):
+    # 读取 Release 头部草稿 (release/release_header.md)
+    draft_header_path = pathlib.Path(__file__).parent.parent / "release" / "release_header.md"
+    if draft_header_path.exists():
         try:
-            with open(draft_header_path, 'r', encoding='utf-8') as f:
-                header_content = f.read().strip()
-                if header_content:
-                    print(f"📖 发现发布草稿，已插入 Release 头部: {draft_header_path}")
-                    changelog += header_content + "\n\n---\n\n" # 加上分隔符和换行
+            file_content = draft_header_path.read_text(encoding='utf-8')
+            header_content = _parse_targeted_blocks(file_content, _get_tag_type(current_tag))
+            if header_content:
+                print(f"📖 发现发布草稿，已插入 Release 头部: {draft_header_path}")
+                changelog += header_content + "\n\n---\n\n"
         except Exception as e:
             print(f"⚠️ 读取发布草稿失败: {e}")
 
@@ -387,24 +415,33 @@ def add_historical_versions(current_changelog: str, current_tag: str) -> str:
         repo_owner, repo_name = github_repository.split('/')
         manager = HistoryManager(github_token, repo_owner, repo_name)
         
-        # 获取同次版本的历史Release
+        # 获取同次版本的历史Release，并按配置上限截断
         historical_releases = manager.get_minor_version_series(current_tag)
-        
+        max_versions = HISTORY_CONFIG['max_historical_versions']
+        if len(historical_releases) > max_versions:
+            print(f"历史版本数 {len(historical_releases)} 超过上限 {max_versions}，截断为最新 {max_versions} 个")
+            historical_releases = historical_releases[:max_versions]
+
         if not historical_releases:
             print("没有找到相关历史版本")
             return current_changelog
         
         # 构建历史版本折叠内容
         historical_section = "\n## 历史版本更新内容\n\n"
-        
+
+        # 正文内容去重：同一次版本下的 hotfix 有时会发布相同的 Release Notes
+        # （例如连续补丁 v3.x.4/5/6 均描述同一修复），此时折叠区只展示最新那份。
+        # 这属于异常情况（正常发版应有差异化描述），触发时会在 CI 日志中打印。
+        seen_body_hashes = set()
+
         for release in historical_releases:
             tag = release['tag_name']
             published_at = release.get('published_at', '')[:10] if release.get('published_at') else "未知日期"
             body = release.get('body', '') or ""
-            
+
             print(f"处理历史版本: {tag} (发布时间: {published_at})")
             print(f"内容长度: {len(body)} 字符")
-            
+
             # 智能标记分析（根据配置决定是否启用）
             markers = ""
             if HISTORY_CONFIG['enable_version_highlights']:
@@ -414,18 +451,21 @@ def add_historical_versions(current_changelog: str, current_tag: str) -> str:
             else:
                 marker_display = ""
                 print("版本标记: 已禁用")
-            
+
             # 截断处理
             truncated_body = manager.truncate_release_body(body)
             print(f"截断后长度: {len(truncated_body)} 字符")
-            
+
             if not truncated_body.strip():
                 print(f"跳过版本 {tag}: 内容为空")
                 continue
-            
-            # 检查内容是否与其他版本重复
-            body_hash = hash(truncated_body.strip())
-            print(f"内容哈希: {body_hash}")
+
+            # 内容去重：对截断后的正文做 MD5，命中已有哈希说明本次属于重复发布
+            body_hash = hashlib.md5(truncated_body.strip().encode()).hexdigest()
+            if body_hash in seen_body_hashes:
+                print(f"⚠️ 跳过版本 {tag}: Release Notes 与已收录版本内容完全相同（hash={body_hash[:8]}），属异常重复发布")
+                continue
+            seen_body_hashes.add(body_hash)
             
             historical_section += f"""<details>
 <summary>{tag} ({published_at}){marker_display}</summary>

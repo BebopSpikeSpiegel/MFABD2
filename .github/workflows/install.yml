@@ -86,19 +86,19 @@ jobs:
                # 内测版：在基础版本上增加 2 个补丁版本号 (Base + 2)
                # 修改点：将 $3+1 改为 $3+2
               incremented_tag=$(echo "$base_tag" | awk -F. '{printf "%s.%s.%s", $1, $2, $3+2}')
-              tag="${incremented_tag}-alpha.${date_suffix}-${commit_short}"
+              tag="${incremented_tag}-alpha.${date_suffix}.${commit_short}"
               version_type="alpha"
-            
+
             # 原有的 Beta 判断
             elif ([ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] && [ "${{ github.event.inputs.deploy_beta }}" = "true" ]) || echo "$commit_message" | tail -n1 | grep -q "\[deploy-beta\]"; then
               # 公测版：在基础版本上增加 1 个补丁版本号 (Base + 1)
               incremented_tag=$(echo "$base_tag" | awk -F. '{printf "%s.%s.%s", $1, $2, $3+1}')
-              tag="${incremented_tag}-beta.${date_suffix}-${commit_short}"
+              tag="${incremented_tag}-beta.${date_suffix}.${commit_short}"
               version_type="beta"
-            
+
             # 原有的 CI 判断 (else 分支)
             else
-              tag="${base_tag}-ci.${date_suffix}-${commit_short}"
+              tag="${base_tag}-ci.${date_suffix}.${commit_short}"
               version_type="ci"
             fi
           fi
@@ -636,10 +636,17 @@ jobs:
           echo "::group::👀 验证注入结果"
           TARGET="install/resource/Announcement/1.公告.md"
           if [ -f "$TARGET" ]; then
-            echo "✅ 成功定位文件: $TARGET"
-            grep -A 15 "" "$TARGET" || head -n 20 "$TARGET"
+            AFTER_ANCHOR=$(grep -A 3 "Msg-Anch" "$TARGET" | tail -n +2 | tr -d '[:space:]')
+            if [ -n "$AFTER_ANCHOR" ]; then
+              echo "✅ 已注入通知"
+              echo "--- 注入内容预览 ---"
+              grep -A 20 "Msg-Anch" "$TARGET" | head -25
+            else
+              echo "ℹ️ 本次未注入（草稿为空 / 不在目标版本范围 / 等）"
+            fi
           else
-            echo "⚠️ 验证失败：文件不存在 ($TARGET) - 可能是安卓版或路径变更"
+            echo "::error::目标文件不存在: $TARGET"
+            exit 1
           fi
           echo "::endgroup::"
 

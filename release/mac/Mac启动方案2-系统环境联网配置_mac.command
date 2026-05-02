@@ -29,7 +29,7 @@ if [ -f "./$DOTNET_SCRIPT" ]; then
     echo -e "正在调用外部脚本: $DOTNET_SCRIPT"
     # 使用 bash 执行，确保权限正确
     bash "./$DOTNET_SCRIPT"
-    
+
     # 检查上一步的执行结果（可选）
     if [ $? -ne 0 ]; then
         echo -e "${YELLOW}⚠️  警告: .NET 安装脚本返回了错误，可能是用户取消或已安装。继续执行下一步...${NC}"
@@ -70,11 +70,11 @@ INSTALL_SUCCESS=false
 for source_entry in "${SOURCES[@]}"; do
     name="${source_entry%%|*}"
     url="${source_entry##*|}"
-    
+
     echo -e "\n🌐 正在尝试源: $name ..."
     # -U 代表 upgrade，确保版本对齐
     python3 -m pip install -U $PACKAGES -i "$url"
-    
+
     if [ $? -eq 0 ]; then
         echo -e "\n✅ 依赖安装成功！"
         INSTALL_SUCCESS=true
@@ -91,11 +91,11 @@ done
 if [ "$INSTALL_SUCCESS" = true ]; then
     # 🟢 Step 3 - 自动将 Python 绝对路径写入配置文件
     echo -e "\n${GREEN}>>> [3/3] 正在配置启动路径...${NC}"
-    
+
     # 1. 获取当前 python3 的绝对路径
     CURRENT_PYTHON_PATH=$(command -v python3)
     echo "检测到 Python 路径: $CURRENT_PYTHON_PATH"
-    
+
     # 2. 使用 Python 自身来修改 interface.json
     # 注意：这里的 $CURRENT_PYTHON_PATH 会被 bash 替换后再传给 python
     python3 -c "
@@ -108,14 +108,14 @@ try:
     if os.path.exists(config_file):
         with open(config_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        
+
         # 修改路径
         old_path = data.get('agent', {}).get('child_exec', '未知')
         data['agent']['child_exec'] = '$CURRENT_PYTHON_PATH'
-        
+
         with open(config_file, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
-            
+
         print(f'✅ 已成功更新 interface.json')
         print(f'   - 旧路径: {old_path}')
         print(f'   - 新路径: $CURRENT_PYTHON_PATH')
