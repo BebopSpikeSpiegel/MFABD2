@@ -5,7 +5,6 @@
 
 import os
 import re
-import sys
 import requests
 from typing import List, Dict, Optional
 from version_rules import filter_valid_versions, sort_versions, is_valid_formal_version
@@ -23,22 +22,18 @@ class HistoryManager:
         }
 
     def parse_version(self, tag: str) -> tuple:
-        """解析版本号，带错误处理（支持公测版/开发版）"""
-        try:
-            # 提取基础版本号部分
-            # v2.3.7-beta.251112.cf64235 → v2.3.7 → (2, 3, 7)
-            base_tag = re.sub(r'(-beta\.\d+\.[a-f0-9]+|-ci\.\d+\.[a-f0-9]+)$', '', tag)
-            clean_tag = base_tag.lstrip('v')
-            parts = clean_tag.split('.')
-            if len(parts) != 3:
-                raise ValueError(f"版本格式异常: {tag}")
-            return tuple(int(part) for part in parts)
-        except Exception as e:
-            print(f"❌ 版本解析失败: {tag} - {e}")
-            sys.exit(1)
+        """解析版本号，返回 (major, minor, patch)。
+        直接捕获 vMAJOR.MINOR.PATCH 前缀，后缀类型（-beta/-alpha/-ci 等）无需枚举。
+        ⚠️ 若版本号格式（如前缀 'v'、分隔符）发生变更，需同步修改此处正则。
+        """
+        # 匹配示例：v2.3.7 / v2.3.7-beta.251112.cf64235 / v2.3.7-alpha.260124.cf64235
+        match = re.match(r'^v(\d+)\.(\d+)\.(\d+)', tag)
+        if not match:
+            raise ValueError(f"版本格式异常: {tag}")
+        return (int(match.group(1)), int(match.group(2)), int(match.group(3)))
     
     def fetch_all_releases(self) -> List[Dict]:
-        """获取所有releases，失败则终止作业"""
+        """获取所有releases，失败则抛出 RuntimeError（由上层捕获）"""
         print("获取GitHub Releases...")
         url = f"{self.base_url}/releases"
         releases = []
@@ -65,19 +60,14 @@ class HistoryManager:
             return releases
             
         except Exception as e:
-            print(f"❌ 获取Releases失败: {e}")
-            sys.exit(1)
+            raise RuntimeError(f"获取Releases失败: {e}") from e
     
-    def remove_duplicate_releases(self, releases: List[Dict]) -> List[Dict]:
-        print(f"保留所有 {len(releases)} 个版本（去重逻辑已禁用）")
-        return releases
-
     def get_minor_version_series(self, current_tag: str) -> List[Dict]:
         """获取同次版本的所有正式版Release"""
         try:
             current_major, current_minor, _ = self.parse_version(current_tag)
             print(f"当前版本: v{current_major}.{current_minor}.x 系列")
-        except SystemExit:
+        except ValueError:
             # 如果版本解析失败（比如当前是公测版），使用最新正式版作为基准
             print(f"当前标签 {current_tag} 不是正式版，使用最新正式版作为历史基准")
             all_releases = self.fetch_all_releases()
@@ -110,16 +100,13 @@ class HistoryManager:
                         print(f"排除当前版本: {tag}")
                 else:
                     print(f"跳过不同次版本: {tag} (当前: v{current_major}.{current_minor}.x)")
-            except SystemExit:
+            except ValueError:
                 # 跳过解析失败的版本
                 print(f"跳过解析失败版本: {tag}")
                 continue
         
         # 按版本号排序（从新到旧）
         relevant_releases.sort(key=lambda r: self.parse_version(r['tag_name']), reverse=True)
-        
-        # 移除重复内容
-        relevant_releases = self.remove_duplicate_releases(relevant_releases)
         
         print(f"找到 {len(relevant_releases)} 个相关历史版本")
         return relevant_releases
@@ -141,6 +128,9 @@ class HistoryManager:
             cdk_match = re.search(pattern, body)
             if cdk_match:
                 truncated = body[:cdk_match.start()].strip()
+                if not truncated:
+                    print(f"⚠️ CDK链接截断后内容为空（CDK位于body开头？），跳过此锚点，继续尝试其他截断方式")
+                    break
                 print(f"使用CDK链接截断，长度: {len(truncated)}")
                 return truncated
         

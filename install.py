@@ -96,8 +96,7 @@ def install_chores():
     
     # 2. Mac 专属脚本处理
     if "mac" in target_os or "osx" in target_os:
-        # [修改] 修正路径：从 scripts/release 获取，且更名了
-        script_src_dir = working_dir / "scripts" / "release"
+        script_src_dir = working_dir / "release" / "mac"
         
         # 1. 处理 AKeySetup (需注入版本号)
         src_script = script_src_dir / "Mac启动方案2-系统环境联网配置_mac.command"
