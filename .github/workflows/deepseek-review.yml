@@ -1,0 +1,498 @@
+# =============================================================================
+#  MFABD2 — DeepSeek PR 自动评审
+#  路径建议：.github/workflows/deepseek-review.yml
+#  依赖密钥：repository secret  DEEPSEEK_API_KEY
+#  可选变量：repository variable
+#            - DEEPSEEK_MODEL      默认 deepseek-v4-pro（也可填 deepseek-v4-flash）
+#            - DEEPSEEK_BASE_URL   默认 https://api.deepseek.com
+#            - DEEPSEEK_THINKING   默认 "true"（仅对 v4-pro 生效；flash 不开思考更便宜）
+# =============================================================================
+
+name: DeepSeek PR Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: '需要审查的 PR 编号'
+        required: true
+        type: string
+
+permissions:
+  pull-requests: write
+  contents: read
+
+# 同一 PR 新推 commit 时取消上一次还在跑的评审，避免重复消耗额度
+concurrency:
+  group: deepseek-review-${{ github.event.pull_request.number || inputs.pr_number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # 草稿 PR 跳过（手动 dispatch 仍允许）
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: 设置 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: 安装依赖
+        run: pip install --quiet "openai>=1.40" "requests>=2.31"
+
+      - name: 缓存官方文档（24h 复用）
+        uses: actions/cache@v4
+        with:
+          path: .deepseek_docs_cache
+          key: maafw-docs-${{ github.run_id }}
+          restore-keys: |
+            maafw-docs-
+
+      - name: 执行 AI 评审并发布评论
+        env:
+          DEEPSEEK_API_KEY:  ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL:    ${{ vars.DEEPSEEK_MODEL    || 'deepseek-v4-pro' }}
+          DEEPSEEK_BASE_URL: ${{ vars.DEEPSEEK_BASE_URL || 'https://api.deepseek.com' }}
+          DEEPSEEK_THINKING: ${{ vars.DEEPSEEK_THINKING || 'true' }}
+          GITHUB_TOKEN:      ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER:         ${{ github.event.pull_request.number || inputs.pr_number }}
+          REPO:              ${{ github.repository }}
+          EVENT_NAME:        ${{ github.event_name }}
+          MAX_DIFF_CHARS:    '60000'    # 给模型的 diff 最大字符数
+          PER_DOC_CHARS:     '12000'    # 每篇官方文档最大注入字符数
+        run: |
+          python << 'PYEOF'
+          # -*- coding: utf-8 -*-
+          """
+          MFABD2 PR 自动评审脚本（GitHub Actions 内联）
+          逻辑分四段：拉文档 → 拉 PR diff → 调 DeepSeek → 发/更新评论
+          """
+          import hashlib
+          import json
+          import os
+          import pathlib
+          import sys
+          import time
+          from typing import Optional
+
+          import requests
+          from openai import OpenAI
+
+          # --------------------- 0. 环境变量 --------------------- #
+          api_key   = os.environ["DEEPSEEK_API_KEY"]
+          model     = os.environ.get("DEEPSEEK_MODEL", "deepseek-v4-pro").strip()
+          base_url  = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com").strip()
+          thinking  = os.environ.get("DEEPSEEK_THINKING", "true").lower() == "true"
+          gh_token  = os.environ["GITHUB_TOKEN"]
+          pr_number = os.environ.get("PR_NUMBER", "").strip()
+          repo      = os.environ["REPO"]
+          event     = os.environ.get("EVENT_NAME", "manual")
+          max_diff_chars = int(os.environ.get("MAX_DIFF_CHARS", "60000"))
+          per_doc_chars  = int(os.environ.get("PER_DOC_CHARS", "12000"))
+
+          if not pr_number:
+              print("❌ 未检测到 PR 编号，工作流结束。")
+              sys.exit(0)
+
+          # 隐藏标记，用来在 PR 评论列表里找回上一次的 bot 评论并就地更新
+          BOT_MARKER = "<!-- mfabd2-deepseek-reviewer-bot:v1 -->"
+
+          GH_HEADERS = {
+              "Authorization": f"token {gh_token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+              "User-Agent": "mfabd2-deepseek-reviewer",
+          }
+
+          # --------------------- 1. 通用：带退避的 HTTP --------------------- #
+          def http(method: str, url: str, *, max_retries: int = 4, **kwargs) -> requests.Response:
+              kwargs.setdefault("timeout", 30)
+              last = None
+              for attempt in range(max_retries):
+                  try:
+                      r = requests.request(method, url, **kwargs)
+                      if r.status_code in (429, 500, 502, 503, 504):
+                          raise RuntimeError(f"HTTP {r.status_code}: {r.text[:200]}")
+                      return r
+                  except Exception as e:
+                      last = e
+                      wait = 2.0 * (2 ** attempt)
+                      print(f"⚠️  请求失败 {url} ({attempt+1}/{max_retries}): {e}，{wait:.1f}s 后重试")
+                      time.sleep(wait)
+              raise RuntimeError(f"请求最终失败 {url}: {last}")
+
+          # --------------------- 2. 拉取并缓存官方文档 --------------------- #
+          # 注：MaaFW 上游 3.x 文档名时有变更；此处仅保留确认存在的文件，
+          #     缺失文档不影响审查（脚本会优雅降级）。
+          DOC_URLS = {
+              "任务流水线协议": "https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md",
+              "Python 绑定 README": "https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/source/binding/Python/README.md",
+          }
+          cache_dir = pathlib.Path(".deepseek_docs_cache")
+          cache_dir.mkdir(parents=True, exist_ok=True)
+          ONE_DAY = 86400
+
+          doc_blocks = []
+          for name, url in DOC_URLS.items():
+              cache_file = cache_dir / (hashlib.sha256(url.encode()).hexdigest() + ".md")
+              text = None
+              if cache_file.exists() and (time.time() - cache_file.stat().st_mtime) < ONE_DAY:
+                  text = cache_file.read_text(encoding="utf-8", errors="replace")
+                  print(f"📦 命中缓存: {name}")
+              else:
+                  try:
+                      r = http("GET", url, headers={"User-Agent": "mfabd2-reviewer"})
+                      if r.status_code == 200:
+                          text = r.text
+                          cache_file.write_text(text, encoding="utf-8")
+                          print(f"✅ 下载文档: {name}")
+                      else:
+                          print(f"⚠️  文档 {name} HTTP {r.status_code}")
+                  except Exception as e:
+                      print(f"⚠️  文档 {name} 失败: {e}")
+              if text:
+                  doc_blocks.append(f"【{name}】\n{text[:per_doc_chars]}")
+
+          doc_knowledge = ("\n\n---\n\n".join(doc_blocks)
+                           if doc_blocks
+                           else "（未获取到任何官方文档，模型将依赖训练知识，请人工复核结论）")
+          print(f"📚 已加载 {len(doc_blocks)}/{len(DOC_URLS)} 篇官方文档")
+
+          # --------------------- 3. 拉取 PR 元信息 + 改动文件（分页） --------------------- #
+          pr_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
+          pr_resp = http("GET", pr_url, headers=GH_HEADERS)
+          if pr_resp.status_code != 200:
+              print(f"❌ 拉取 PR 信息失败: HTTP {pr_resp.status_code} -- {pr_resp.text[:300]}")
+              sys.exit(1)
+          pr_meta  = pr_resp.json()
+          pr_title = pr_meta.get("title", "")
+          pr_body  = (pr_meta.get("body") or "")[:1500]
+
+          files_changed = []
+          page = 1
+          while True:
+              r = http("GET", f"{pr_url}/files", headers=GH_HEADERS,
+                       params={"per_page": 100, "page": page})
+              if r.status_code != 200:
+                  print(f"⚠️  /files 分页 {page} 失败 HTTP {r.status_code}")
+                  break
+              chunk = r.json()
+              if not chunk:
+                  break
+              files_changed.extend(chunk)
+              if len(chunk) < 100:
+                  break
+              page += 1
+
+          if not files_changed:
+              print("ℹ️  PR 无文件变更，结束。")
+              sys.exit(0)
+
+          # 跳过二进制 / 资产文件（不送给模型读 base64）
+          SKIP_EXT = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".ico",
+                      ".zip", ".rar", ".7z", ".gz", ".tar", ".whl", ".exe", ".dll",
+                      ".pdf", ".mp3", ".mp4", ".wav", ".onnx", ".bin", ".so", ".dylib"}
+
+          def is_binary(name: str) -> bool:
+              n = name.lower()
+              return any(n.endswith(ext) for ext in SKIP_EXT)
+
+          # 按文件级拼接 diff，按字符预算控制总量
+          diff_chunks, total = [], 0
+          truncated, skipped_bin = False, []
+          for f in files_changed:
+              fn     = f.get("filename", "")
+              status = f.get("status", "")
+              patch  = f.get("patch")
+              if is_binary(fn):
+                  skipped_bin.append(fn)
+                  continue
+              if not patch:
+                  diff_chunks.append(f"diff --git a/{fn} b/{fn}\n[status={status}, patch unavailable]")
+                  continue
+              block = f"diff --git a/{fn} b/{fn}\n{patch}"
+              if total + len(block) > max_diff_chars:
+                  truncated = True
+                  break
+              diff_chunks.append(block)
+              total += len(block)
+
+          if not diff_chunks:
+              print("ℹ️  全部变更均为二进制资源，无文本可审。")
+              sys.exit(0)
+
+          diff_content = "\n\n".join(diff_chunks)
+          if truncated:
+              diff_content += "\n\n[... 因长度限制，剩余 diff 已截断 ...]"
+
+          # --------------------- 4. 项目侧重点识别 --------------------- #
+          changed_set = {f["filename"] for f in files_changed}
+          pipeline_jsons = [x for x in changed_set
+                            if x.startswith("assets/resource/") and x.endswith(".json") and "pipeline" in x]
+          other_resource_jsons = [x for x in changed_set
+                                  if x.startswith("assets/resource/") and x.endswith(".json")
+                                  and x not in pipeline_jsons]
+          python_files = [x for x in changed_set if x.startswith("agent/") and x.endswith(".py")]
+          interface_changed = "assets/interface.json" in changed_set
+
+          focus = []
+          if pipeline_jsons:
+              focus.append(
+                  "- **流水线 JSON**：核对 next / on_error / interrupt 跳转是否成环或失联；"
+                  "recognition 类型与所需参数（如 OCR 的 expected/replace、TemplateMatch 的 template/threshold）是否齐备；"
+                  "regex 字段是 JSON 字符串需双重转义；"
+                  "`doc` 字段（开发者注释）必须与实际 action / next 行为一致，否则视为陈旧注释。"
+              )
+          if other_resource_jsons:
+              focus.append(
+                  "- **资源 JSON（非流水线）**：核对结构、字段类型、命名规范，避免无效字段或拼写错误。"
+              )
+          if python_files:
+              focus.append(
+                  "- **Agent Python**：检查 `@AgentServer.custom_action` 注册名/类名是否与 Pipeline 的 "
+                  "`action: Custom` + `custom_action` 字段匹配；"
+                  "`custom_action_param` 抵达时是 **JSON 字符串**，必须 `json.loads()` 解包；"
+                  "Custom Action 内不应硬编码 ROI、过滤词、阈值等业务参数（数据-逻辑分离原则）—— "
+                  "这些应该来自 Pipeline 节点；"
+                  "MaaResource / MaaController / MaaTasker 的生命周期与异常兜底；"
+                  "`RecognitionDetail` 应使用 `filtered_results` 而非 `all_results`，以应用置信度阈值。"
+              )
+          if interface_changed:
+              focus.append(
+                  "- **interface.json**：对照《工程接口 V2》核对 task / option / resource / controller 等字段、"
+                  "类型、必填项；新增任务是否同时在 pipeline 中提供入口节点。"
+              )
+          if not focus:
+              focus.append("- 通用审查：代码风格、潜在 Bug、逻辑错误、异常兜底、命名一致性。")
+
+          # --------------------- 5. 组装 Prompt --------------------- #
+          system_prompt = (
+              "你是 MaaFramework（MAA）项目的资深代码审查专家，正在审查 MFABD2 项目（基于 MaaFW 的 "
+              "Brown Dust 2 自动化）。请严格以用户提供的官方文档内容为准；与你内置知识冲突时以文档为准。"
+              "用中文回复，语气专业、具体；引用文件名和代码片段时必须基于 diff 中真实存在的内容，"
+              "**禁止臆造行号或代码**；无法从 diff/文档中得到支持的结论必须显式标注「不确定」。"
+          )
+
+          # 注：以下"项目通用规范"部分把你团队的工程约定固化进 prompt，
+          # 这是把 AI 评审从"通用代码审查"提升为"项目内代码审查"的关键。
+          user_prompt = f"""\
+          # 一、官方文档（节选，请优先依据）
+
+          {doc_knowledge}
+
+          ---
+
+          # 二、本次 PR 元信息
+
+          - 仓库: `{repo}`
+          - PR #{pr_number}: **{pr_title}**
+          - 描述（截断 1500 字符）：
+
+          {pr_body or "（PR 描述为空）"}
+
+          # 三、本次审查重点（基于改动文件路径自动识别）
+
+          {chr(10).join(focus)}
+
+          # 四、MFABD2 项目通用规范（必须检查）
+
+          1. **doc 字段一致性**：流水线 JSON 中的 `doc` 是开发者业务注释，必须与 `action` / `next` / `recognition` 等实际字段语义一致，不一致时按"陈旧注释"标记。
+          2. **Custom Action 双向对齐**：Pipeline 中 `action: Custom` + `custom_action: "X"` 必须能在 `agent/` 下找到对应 `@AgentServer.custom_action("X")` 注册的实现；反之 Python 中注册的 action 名也应被某个 Pipeline 节点引用，否则视为孤儿。
+          3. **正则限制**：MaaFW 使用 C++ `std::regex`，**对 lookbehind / lookahead 支持不稳定**（已踩坑：`(\\d+)\\s*[/:|\\-~]\\s*\\1(?!\\d)` 出现误匹配）。审查中遇到 `(?=...)` `(?!...)` `(?<=...)` `(?<!...)` 应建议改为锚点写法（`^...$`）。
+          4. **数据-逻辑分离**：CustomAction 的 Python 代码不应出现硬编码 ROI 坐标、OCR 过滤词、阈值等业务参数；这些应通过 Pipeline 节点的 `custom_action_param` 传入。
+          5. **OCR 噪声过滤**：优先使用 Pipeline OCR 节点的 `replace` 字段在引擎层过滤，而不是在 Python 后处理中处理。
+          6. **JSON 中的正则**：所有 `regex` 字段必须按 JSON 字符串规则转义（反斜杠双写）。
+          7. **filtered vs all**：`RecognitionDetail` 取识别结果时使用 `filtered_results`（已应用阈值），不要用 `all_results`。
+
+          # 五、输出格式（请严格遵守 Markdown 结构）
+
+          ## 概览
+          （1–3 句话总结这次 PR 在做什么、整体质量如何）
+
+          ## 阻塞性问题（必须修改）
+          若无写"无"。每条必须包含：
+          - **文件**：`path/to/file:相关 hunk`
+          - **问题**：客观描述
+          - **原因**：引用上面文档第 X 节 / 项目规范第 X 条
+          - **建议**：具体怎么改
+
+          ## 建议改进（非阻塞）
+          同上格式。
+
+          ## 疑问 / 需要作者确认
+          列出无法仅凭 diff 判断、需要作者补充上下文的点。
+
+          ---
+
+          # 六、本次 PR 的 unified diff
+
+          ```diff
+          {diff_content}
+          ```
+          """
+
+          if skipped_bin:
+              user_prompt += "\n\n> ⓘ 以下二进制/资源文件未参与本次代码审查：" + ", ".join(skipped_bin[:30])
+              if len(skipped_bin) > 30:
+                  user_prompt += f" 等 {len(skipped_bin)} 个文件"
+
+          # --------------------- 6. 调用 DeepSeek --------------------- #
+          # 6.1 预飞：先用 requests 直接探测 api.deepseek.com 是否可达；
+          #         若网络层有问题，可避免后续 OpenAI SDK 抛出含糊的 "Connection error."
+          import socket
+          import urllib.parse as _urlparse
+          host = _urlparse.urlparse(base_url).hostname or "api.deepseek.com"
+          print(f"🔍 预飞检查：解析 {host} ...")
+          try:
+              ip = socket.gethostbyname(host)
+              print(f"   DNS OK → {ip}")
+          except Exception as e:
+              print(f"❌ DNS 失败：{e}（runner 出网受限或 DeepSeek 域名解析异常）")
+              sys.exit(1)
+          try:
+              probe = requests.get(f"{base_url.rstrip('/')}/v1/models",
+                                   headers={"Authorization": f"Bearer {api_key}"},
+                                   timeout=15)
+              print(f"   HTTPS 探测 → HTTP {probe.status_code} "
+                    f"(200=可达且鉴权OK; 401=可达但 Key 无效; 402=余额不足)")
+              if probe.status_code == 401:
+                  print("⚠️  API Key 鉴权失败；请检查 secret DEEPSEEK_API_KEY 是否正确填写。")
+              elif probe.status_code == 402:
+                  print("⚠️  账户余额不足（DeepSeek 预付费）；请前往 platform.deepseek.com 充值。")
+          except Exception as e:
+              print(f"❌ HTTPS 探测失败：{type(e).__name__}: {e}")
+              print("   可能原因：runner 出网被防火墙拦截 / TLS 握手失败 / DeepSeek 临时不可用。")
+              sys.exit(1)
+
+          client = OpenAI(api_key=api_key, base_url=base_url, timeout=180.0, max_retries=0)
+          print(f"🤖 调用模型 `{model}` (thinking={thinking}) ...")
+
+          # v4-pro 默认开思考；flash 也支持但开了会变慢，按 env 决定
+          create_kwargs = dict(
+              model=model,
+              messages=[
+                  {"role": "system", "content": system_prompt},
+                  {"role": "user",   "content": user_prompt},
+              ],
+              max_tokens=4096,
+          )
+          if thinking and "v4" in model:
+              # 注：v4 系列开 thinking 模式后 temperature/top_p 会被忽略
+              create_kwargs["reasoning_effort"] = "high"
+              create_kwargs["extra_body"] = {"thinking": {"type": "enabled"}}
+          else:
+              create_kwargs["temperature"] = 0.2
+
+          try:
+              import openai as _openai_mod  # 用于精确 except
+              last_err = None
+              completion = None
+              for attempt in range(3):
+                  try:
+                      completion = client.chat.completions.create(**create_kwargs)
+                      break
+                  except _openai_mod.APIConnectionError as e:
+                      last_err = e
+                      cause = getattr(e, "__cause__", None)
+                      print(f"⚠️  连接错误 (尝试 {attempt+1}/3): {e!r}")
+                      if cause:
+                          print(f"     根因: {type(cause).__name__}: {cause}")
+                      if attempt < 2:
+                          time.sleep(2.0 * (2 ** attempt))
+                  except _openai_mod.AuthenticationError as e:
+                      print(f"❌ 鉴权失败：{e}")
+                      print("   请检查 secret DEEPSEEK_API_KEY 是否设置且正确。")
+                      sys.exit(1)
+                  except _openai_mod.PermissionDeniedError as e:
+                      print(f"❌ 权限不足：{e}")
+                      print(f"   `{model}` 可能未对你的账户开放，或余额不足。"
+                            "建议把 vars.DEEPSEEK_MODEL 改为 `deepseek-chat` 试试。")
+                      sys.exit(1)
+                  except _openai_mod.NotFoundError as e:
+                      print(f"❌ 模型不存在：{e}")
+                      print(f"   当前模型名 `{model}` 在 DeepSeek API 中不可用；"
+                            "请改用 `deepseek-v4-pro` / `deepseek-v4-flash` / `deepseek-chat`。")
+                      sys.exit(1)
+                  except _openai_mod.BadRequestError as e:
+                      print(f"❌ 请求格式错误：{e}")
+                      sys.exit(1)
+              if completion is None:
+                  raise last_err or RuntimeError("DeepSeek 调用失败：未知原因")
+              reply = (completion.choices[0].message.content or "").strip()
+              usage = getattr(completion, "usage", None)
+              if usage:
+                  print(f"📊 token: prompt={usage.prompt_tokens}, "
+                        f"completion={usage.completion_tokens}, total={usage.total_tokens}")
+          except Exception as e:
+              import traceback
+              print(f"❌ DeepSeek 调用最终失败：{type(e).__name__}: {e}")
+              cause = getattr(e, "__cause__", None)
+              if cause:
+                  print(f"   根因: {type(cause).__name__}: {cause}")
+              print("   完整堆栈：")
+              traceback.print_exc()
+              sys.exit(1)
+
+          if not reply:
+              print("⚠️  模型返回为空，跳过评论。")
+              sys.exit(0)
+
+          # --------------------- 7. 发布或更新评论（去重） --------------------- #
+          comment_body = (
+              f"{BOT_MARKER}\n"
+              f"### 🤖 DeepSeek 自动评审报告\n"
+              f"**模型**：`{model}`　"
+              f"**触发**：`{event}`　"
+              f"**Diff 截断**：{'是' if truncated else '否'}　"
+              f"**改动文件**：{len(files_changed)} 个（其中 {len(skipped_bin)} 个二进制已跳过）\n\n"
+              f"{reply}\n\n"
+              f"---\n"
+              f"_本评论由 GitHub Actions + DeepSeek 自动生成；最终判断以人工审查为准。_"
+          )
+
+          comments_url = f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments"
+          existing_id: Optional[int] = None
+          page = 1
+          while True:
+              r = http("GET", comments_url, headers=GH_HEADERS,
+                       params={"per_page": 100, "page": page})
+              if r.status_code != 200:
+                  break
+              items = r.json()
+              for c in items:
+                  if BOT_MARKER in (c.get("body") or ""):
+                      existing_id = c["id"]
+                      break
+              if existing_id or len(items) < 100:
+                  break
+              page += 1
+
+          if existing_id:
+              patch_url = f"https://api.github.com/repos/{repo}/issues/comments/{existing_id}"
+              r = http("PATCH", patch_url, headers=GH_HEADERS, json={"body": comment_body})
+              if r.status_code == 200:
+                  print(f"✅ 已更新现有评论 (id={existing_id})")
+              else:
+                  print(f"❌ 更新评论失败 [{r.status_code}]: {r.text[:300]}")
+                  sys.exit(1)
+          else:
+              r = http("POST", comments_url, headers=GH_HEADERS, json={"body": comment_body})
+              if r.status_code == 201:
+                  print("✅ 已发布新评论")
+              else:
+                  print(f"❌ 发布评论失败 [{r.status_code}]: {r.text[:300]}")
+                  sys.exit(1)
+          PYEOF
