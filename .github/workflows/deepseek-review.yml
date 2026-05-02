@@ -79,7 +79,7 @@ jobs:
           # -*- coding: utf-8 -*-
           """
           MFABD2 PR 自动评审脚本（GitHub Actions 内联）
-          逻辑分四段：拉文档 → 拉 PR diff → 调 DeepSeek → 发/更新评论
+          逻辑分四段：拉 PR diff → 按需拉文档 → 调 DeepSeek → 发/更新评论
           """
           import hashlib
           import json
@@ -136,44 +136,8 @@ jobs:
                       time.sleep(wait)
               raise RuntimeError(f"请求最终失败 {url}: {last}")
 
-          # --------------------- 2. 拉取并缓存官方文档 --------------------- #
-          # 注：MaaFW 上游 3.x 文档名时有变更；此处仅保留确认存在的文件，
-          #     缺失文档不影响审查（脚本会优雅降级）。
-          DOC_URLS = {
-              "任务流水线协议": "https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md",
-              "Python 绑定 README": "https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/source/binding/Python/README.md",
-          }
-          cache_dir = pathlib.Path(".deepseek_docs_cache")
-          cache_dir.mkdir(parents=True, exist_ok=True)
-          ONE_DAY = 86400
-
-          doc_blocks = []
-          for name, url in DOC_URLS.items():
-              cache_file = cache_dir / (hashlib.sha256(url.encode()).hexdigest() + ".md")
-              text = None
-              if cache_file.exists() and (time.time() - cache_file.stat().st_mtime) < ONE_DAY:
-                  text = cache_file.read_text(encoding="utf-8", errors="replace")
-                  print(f"📦 命中缓存: {name}")
-              else:
-                  try:
-                      r = http("GET", url, headers={"User-Agent": "mfabd2-reviewer"})
-                      if r.status_code == 200:
-                          text = r.text
-                          cache_file.write_text(text, encoding="utf-8")
-                          print(f"✅ 下载文档: {name}")
-                      else:
-                          print(f"⚠️  文档 {name} HTTP {r.status_code}")
-                  except Exception as e:
-                      print(f"⚠️  文档 {name} 失败: {e}")
-              if text:
-                  doc_blocks.append(f"【{name}】\n{text[:per_doc_chars]}")
-
-          doc_knowledge = ("\n\n---\n\n".join(doc_blocks)
-                           if doc_blocks
-                           else "（未获取到任何官方文档，模型将依赖训练知识，请人工复核结论）")
-          print(f"📚 已加载 {len(doc_blocks)}/{len(DOC_URLS)} 篇官方文档")
-
-          # --------------------- 3. 拉取 PR 元信息 + 改动文件（分页） --------------------- #
+          # --------------------- 2. 拉取 PR 元信息 + 改动文件（分页） --------------------- #
+          # 先拉 PR 改动，再据此决定该加载哪些文档（按需加载，省 token）
           pr_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
           pr_resp = http("GET", pr_url, headers=GH_HEADERS)
           if pr_resp.status_code != 200:
@@ -202,6 +166,76 @@ jobs:
           if not files_changed:
               print("ℹ️  PR 无文件变更，结束。")
               sys.exit(0)
+
+          # 改动分类（提前到这里，供文档触发器和后续 focus 共用）
+          changed_set = {f["filename"] for f in files_changed}
+          pipeline_jsons = [x for x in changed_set
+                            if x.startswith("assets/resource/") and x.endswith(".json") and "pipeline" in x]
+          other_resource_jsons = [x for x in changed_set
+                                  if x.startswith("assets/resource/") and x.endswith(".json")
+                                  and x not in pipeline_jsons]
+          python_files = [x for x in changed_set if x.startswith("agent/") and x.endswith(".py")]
+          interface_changed = "assets/interface.json" in changed_set
+          print(f"🗂️  改动分类：pipeline={len(pipeline_jsons)} 其他JSON={len(other_resource_jsons)} "
+                f"py={len(python_files)} interface={'是' if interface_changed else '否'}")
+
+          # --------------------- 3. 按需加载官方文档 --------------------- #
+          # 每篇文档配 (URL, 触发条件)；触发条件返回 False 时跳过下载，节省 ~3k-5k token。
+          # always=True 表示无条件加载（流水线协议是基础协议，多数 PR 都涉及）。
+          DOC_SPECS = {
+              "任务流水线协议": {
+                  "url": "https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md",
+                  "trigger": lambda: bool(pipeline_jsons or other_resource_jsons or python_files),
+                  "trigger_desc": "存在 pipeline JSON / 资源 JSON / Python 改动",
+              },
+              "ProjectInterfaceV2 协议": {
+                  "url": "https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/docs/zh_cn/3.3-ProjectInterfaceV2%E5%8D%8F%E8%AE%AE.md",
+                  "trigger": lambda: interface_changed,
+                  "trigger_desc": "interface.json 被修改",
+              },
+              "Python 绑定 README": {
+                  "url": "https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/source/binding/Python/README.md",
+                  "trigger": lambda: bool(python_files),
+                  "trigger_desc": "存在 agent/*.py 改动",
+              },
+          }
+          cache_dir = pathlib.Path(".deepseek_docs_cache")
+          cache_dir.mkdir(parents=True, exist_ok=True)
+          ONE_DAY = 86400
+
+          doc_blocks = []
+          loaded_names, skipped_names = [], []
+          for name, spec in DOC_SPECS.items():
+              if not spec["trigger"]():
+                  print(f"⏭️  跳过文档 [{name}]：未触发（条件：{spec['trigger_desc']}）")
+                  skipped_names.append(name)
+                  continue
+              url = spec["url"]
+              cache_file = cache_dir / (hashlib.sha256(url.encode()).hexdigest() + ".md")
+              text = None
+              if cache_file.exists() and (time.time() - cache_file.stat().st_mtime) < ONE_DAY:
+                  text = cache_file.read_text(encoding="utf-8", errors="replace")
+                  print(f"📦 命中缓存: {name}")
+              else:
+                  try:
+                      r = http("GET", url, headers={"User-Agent": "mfabd2-reviewer"})
+                      if r.status_code == 200:
+                          text = r.text
+                          cache_file.write_text(text, encoding="utf-8")
+                          print(f"✅ 下载文档: {name}")
+                      else:
+                          print(f"⚠️  文档 {name} HTTP {r.status_code}")
+                  except Exception as e:
+                      print(f"⚠️  文档 {name} 失败: {e}")
+              if text:
+                  doc_blocks.append(f"【{name}】\n{text[:per_doc_chars]}")
+                  loaded_names.append(name)
+
+          doc_knowledge = ("\n\n---\n\n".join(doc_blocks)
+                           if doc_blocks
+                           else "（本次 PR 改动不涉及需引用的协议文档，模型将依赖训练知识 + 项目通用规范进行评审）")
+          print(f"📚 文档汇总：加载 {len(loaded_names)}/{len(DOC_SPECS)} 篇，"
+                f"跳过 {len(skipped_names)} 篇")
 
           # 跳过二进制 / 资产文件（不送给模型读 base64）
           SKIP_EXT = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".ico",
@@ -241,14 +275,7 @@ jobs:
               diff_content += "\n\n[... 因长度限制，剩余 diff 已截断 ...]"
 
           # --------------------- 4. 项目侧重点识别 --------------------- #
-          changed_set = {f["filename"] for f in files_changed}
-          pipeline_jsons = [x for x in changed_set
-                            if x.startswith("assets/resource/") and x.endswith(".json") and "pipeline" in x]
-          other_resource_jsons = [x for x in changed_set
-                                  if x.startswith("assets/resource/") and x.endswith(".json")
-                                  and x not in pipeline_jsons]
-          python_files = [x for x in changed_set if x.startswith("agent/") and x.endswith(".py")]
-          interface_changed = "assets/interface.json" in changed_set
+          # 改动分类已在 section 2 末尾完成；此处仅根据分类组装 focus 文本
 
           focus = []
           if pipeline_jsons:
