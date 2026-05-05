@@ -121,7 +121,7 @@
             "ActiveGe.png"
         ],
         "green_mask": true,
-        "threshold": [0.75],
+        "threshold": [0.7],
         "action": "Click",
         "target_offset": [
             -50,

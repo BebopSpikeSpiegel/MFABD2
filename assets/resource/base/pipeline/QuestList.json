@@ -50,8 +50,10 @@
             0,
             0
         ],
+        "post_delay": 1000,
         "next": [
             "RewardsDaily_GetDailyReward",
+            "[JumpBack]Global_WaitingForLoading",
             "RewardsDaily_InIndex"
         ],
         "on_error": [
