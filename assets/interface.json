@@ -525,8 +525,8 @@
                     "pipeline_override": {
                         "QuickHunt_FastBattleMAXTouchAdventureRoute": {
                             "target": [
-                                800,
-                                390
+                                810,
+                                330
                             ]
                         }
                     }
@@ -536,8 +536,8 @@
                     "pipeline_override": {
                         "QuickHunt_FastBattleMAXTouchHuntingGrounds": {
                             "target": [
-                                800,
-                                390
+                                810,
+                                330
                             ]
                         },
                         "QuickHunt_Hub": {

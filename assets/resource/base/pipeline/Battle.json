@@ -220,18 +220,18 @@
         "desc": "B-1.狩猎场次数选择，点击MAX",
         "recognition": "OCR",
         "roi": [
-            723,
-            350,
-            159,
-            90
+            754,
+            301,
+            116,
+            64
         ],
         "expected": [
             "MAX"
         ],
         "action": "Click",
         "target": [
-            470,
-            390
+            465,
+            330
         ],
         "next": [
             "QuickHunt_FastBattleStart"
@@ -576,8 +576,8 @@
         ],
         "action": "Click",
         "target": [
-            470,
-            390
+            465,
+            330
         ],
         "next": [
             "QuickHunt_FastBattleStart"
@@ -784,18 +784,18 @@
         "desc": "3.圣石洞穴次数选择，点击MAX",
         "recognition": "OCR",
         "roi": [
-            679,
-            316,
-            235,
-            135
+            754,
+            301,
+            116,
+            64
         ],
         "expected": [
             "MAX"
         ],
         "action": "Click",
         "target": [
-            800,
-            390
+            810,
+            330
         ],
         "next": [
             "QuickHunt_CrystalCave_End",
@@ -863,10 +863,10 @@
     "QuickHunt_NoFreeAP": {
         "recognition": "ColorMatch",
         "roi": [
-            649,
-            532,
-            133,
-            31
+            646,
+            539,
+            134,
+            32
         ],
         "lower": [
             241,
@@ -1110,10 +1110,10 @@
     "QuickHunt_TurnCharact_NoAP": {
         "recognition": "ColorMatch",
         "roi": [
-            649,
-            532,
-            133,
-            31
+            647,
+            539,
+            134,
+            32
         ],
         "lower": [
             241,
