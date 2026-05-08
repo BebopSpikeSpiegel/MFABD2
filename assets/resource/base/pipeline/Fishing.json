@@ -169,15 +169,22 @@
         "desc": "识别点击捕网",
         "recognition": "OCR",
         "roi": [
-            85,
-            228,
-            98,
-            34
+            88,
+            230,
+            88,
+            25
         ],
         "expected": [
             "经营管理"
         ],
+        "only_rec": true,
         "action": "Click",
+        "target": [
+            128,
+            202,
+            9,
+            8
+        ],
         "post_delay": 1000,
         "next": [
             "Fishing_InFishingNet"
