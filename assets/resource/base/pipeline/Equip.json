@@ -770,25 +770,17 @@
         "focus": "EM.色核通过.稀有度UR"
     },
     "Equip_filter+9": {
-        "recognition": "FeatureMatch",
+        "recognition": "TemplateMatch",
         "roi": [
-            236,
-            161,
-            817,
-            284
+            944,
+            211,
+            50,
+            25
         ],
         "template": [
-            "+9.png",
-            "filterSR.png"
+            "+9.png"
         ],
-        "count": 12,
         "action": "Click",
-        "target": [
-            958,
-            186,
-            18,
-            9
-        ],
         "post_delay": 1500,
         "next": [
             "Equip_+9ColorCk",
@@ -799,10 +791,10 @@
     "Equip_+9ColorCk": {
         "recognition": "ColorMatch",
         "roi": [
-            935,
-            173,
-            67,
-            38
+            944,
+            211,
+            50,
+            25
         ],
         "lower": [
             102,
@@ -826,21 +818,15 @@
         "enabled": false,
         "recognition": "TemplateMatch",
         "roi": [
-            804,
-            248,
-            83,
-            76
+            807,
+            273,
+            84,
+            77
         ],
         "template": [
             "filterC17.png"
         ],
         "action": "Click",
-        "target": [
-            834,
-            277,
-            16,
-            9
-        ],
         "post_delay": 1500,
         "next": [
             "Equip_filter<C17Ck",
@@ -852,9 +838,9 @@
         "recognition": "ColorMatch",
         "roi": [
             821,
-            271,
+            301,
             53,
-            27
+            28
         ],
         "lower": [
             [
@@ -882,10 +868,10 @@
         "recognition": "DirectHit",
         "action": "Click",
         "target": [
-            710,
-            275,
-            20,
-            12
+            708,
+            309,
+            21,
+            13
         ],
         "post_delay": 1500,
         "next": [
@@ -897,10 +883,10 @@
     "Equip_filter<C10Ck": {
         "recognition": "ColorMatch",
         "roi": [
-            700,
-            267,
-            49,
-            31
+            694,
+            301,
+            50,
+            32
         ],
         "method": 40,
         "lower": [

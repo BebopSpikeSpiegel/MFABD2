@@ -21,6 +21,7 @@
                 "LocPage_SmartSwip"
             ]
         },
+        "anchor": {"Pack_Click": ""},
         "post_delay": 1000,
         "timeout": 5000,
         "next": [

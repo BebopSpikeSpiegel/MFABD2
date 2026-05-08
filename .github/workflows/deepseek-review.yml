@@ -11,8 +11,8 @@
 name: DeepSeek PR Reviewer
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+#   pull_request:
+#     types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
     inputs:
       pr_number:

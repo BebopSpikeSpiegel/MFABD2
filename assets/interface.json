@@ -525,8 +525,8 @@
                     "pipeline_override": {
                         "QuickHunt_FastBattleMAXTouchAdventureRoute": {
                             "target": [
-                                800,
-                                390
+                                810,
+                                330
                             ]
                         }
                     }
@@ -536,8 +536,8 @@
                     "pipeline_override": {
                         "QuickHunt_FastBattleMAXTouchHuntingGrounds": {
                             "target": [
-                                800,
-                                390
+                                810,
+                                330
                             ]
                         },
                         "QuickHunt_Hub": {
@@ -569,7 +569,7 @@
                                 88
                             ],
                             "expected": [
-                                "蜥蜴人祭坛"
+                                "(?=.*[蜥])(?=.*[蜴])(?=.*[祭坛]).{5,}$"
                             ]
                         }
                     }
@@ -1696,7 +1696,7 @@
     },
     "interface_version": 2,
     "name": "MFABD2",
-    "title": "MFABD2 | 棕色尘埃2自动化助手(sunyink/MFABD2)v0.0.20 | 游戏版本：20260423 ( AKATSUKI )",
+    "title": "MFABD2 | 棕色尘埃2自动化助手(sunyink/MFABD2)v0.0.20 | 游戏版本：20260507 ( Strange Request )",
     "github": "https://github.com/sunyink/MFABD2",
     "mirrorchyan_rid": "MFABD2",
     "mirrorchyan_multiplatform": true,

@@ -227,7 +227,9 @@
             "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Character",
             "SetSimpleSkip": "Collect_FirstBootPack_To1_Sandbox_Dit"
         },
-        "next": ["Collect_QuickCart_SelectType_CharacterPack"]
+        "next": [
+            "Collect_QuickCart_SelectType_CharacterPack"
+        ]
     },
     "Collect_EventPack_SetSimpleSkip": {
         "recognition": "Custom",
@@ -240,7 +242,9 @@
             "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Event",
             "SetSimpleSkip": "Collect_FirstBootPack_To1_Sandbox_Dit"
         },
-        "next": ["Collect_QuickCart_SelectType_EventPack"]
+        "next": [
+            "Collect_QuickCart_SelectType_EventPack"
+        ]
     },
     "Collect_QuickCart_SelectType_StoryPack": {
         "recognition": "OCR",
@@ -314,13 +318,8 @@
             255
         ],
         "count": 200,
-        "action": "Custom",
-        "custom_action": "RestoreBatch",
-        "custom_action_param": {
-            "nodes": [
-                "Collect_LocatePackFrame_Smart_Swip",
-                "Collect_Loc_OutToSwip_Hub_Egress"
-            ]
+        "anchor": {
+            "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
         },
         "next": [
             "Collect_FirstBootPack"
@@ -341,13 +340,8 @@
             255
         ],
         "count": 300,
-        "action": "Custom",
-        "custom_action": "RestoreBatch",
-        "custom_action_param": {
-            "nodes": [
-                "Collect_LocatePackFrame_Smart_Swip",
-                "Collect_Loc_OutToSwip_Hub_Egress"
-            ]
+        "anchor": {
+            "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
         },
         "next": [
             "Collect_FirstBootPack"
@@ -368,13 +362,8 @@
             255
         ],
         "count": 500,
-        "action": "Custom",
-        "custom_action": "RestoreBatch",
-        "custom_action_param": {
-            "nodes": [
-                "Collect_LocatePackFrame_Smart_Swip",
-                "Collect_Loc_OutToSwip_Hub_Egress"
-            ]
+        "anchor": {
+            "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
         },
         "next": [
             "Collect_FirstBootPack"
@@ -407,7 +396,9 @@
     "Collect_FirstBootPack_To1_Sandbox": {
         "desc": "确认已在箱庭中,执行技能检测.之后:对于剧情卡执行简单类判定,对于其他卡,直接下一步.",
         "recognition": "And",
-        "all_of": ["Global_ToSandBox_Enter"],
+        "all_of": [
+            "Global_ToSandBox_Enter"
+        ],
         "timeout": 5000,
         "next": [
             "[JumpBack]Setup_Entry5",
@@ -425,9 +416,13 @@
     "Collect_FirstBootPack_To1_QuickCart_Menu": {
         "desc": "确认调出卡带菜单后,1ms逻辑判定",
         "recognition": "Or",
-        "any_of": ["Collect_QuickCart_Menu"],
+        "any_of": [
+            "Collect_QuickCart_Menu"
+        ],
         "timeout": 1,
-        "next": ["[Anchor]SetSimpleSkip"]
+        "next": [
+            "[Anchor]SetSimpleSkip"
+        ]
     },
     "Collect_PackProbe_IsPresent": {
         "recognition": "OCR",
@@ -724,43 +719,13 @@
         ],
         "green_mask": true,
         "action": "Custom",
-        "custom_action": "PatchByRegex",
+        "custom_action": "ResetTag",
         "custom_action_param": {
-            "rules": [
-                {
-                    "pattern": [
-                        "^Collect_Pack_(Story|Character|Event)_\\d+$"
-                    ],
-                    "target_path": [
-                        "all_of",
-                        0,
-                        "roi"
-                    ],
-                    "value": "$box"
-                },
-                {
-                    "pattern": [
-                        "Collect_LocatePackFrame_Smart_Swip_UpdateTag"
-                    ],
-                    "patch": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_LocatePackFrame_Loc1",
-                            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc"
-                        ]
-                    },
-                    "origin": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_Loc_SwipToIn_Hub"
-                        ]
-                    }
-                }
-            ],
-            "reset_tags": [
+            "tags": [
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "anchor": "PackFrame_Loc",
         "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
@@ -796,43 +761,13 @@
         ],
         "green_mask": true,
         "action": "Custom",
-        "custom_action": "PatchByRegex",
+        "custom_action": "ResetTag",
         "custom_action_param": {
-            "rules": [
-                {
-                    "pattern": [
-                        "^Collect_Pack_(Story|Character|Event)_\\d+$"
-                    ],
-                    "target_path": [
-                        "all_of",
-                        0,
-                        "roi"
-                    ],
-                    "value": "$box"
-                },
-                {
-                    "pattern": [
-                        "Collect_LocatePackFrame_Smart_Swip_UpdateTag"
-                    ],
-                    "patch": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_LocatePackFrame_Loc2",
-                            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc"
-                        ]
-                    },
-                    "origin": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_Loc_SwipToIn_Hub"
-                        ]
-                    }
-                }
-            ],
-            "reset_tags": [
+            "tags": [
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "anchor": "PackFrame_Loc",
         "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
@@ -867,43 +802,13 @@
         ],
         "green_mask": true,
         "action": "Custom",
-        "custom_action": "PatchByRegex",
+        "custom_action": "ResetTag",
         "custom_action_param": {
-            "rules": [
-                {
-                    "pattern": [
-                        "^Collect_Pack_(Story|Character|Event)_\\d+$"
-                    ],
-                    "target_path": [
-                        "all_of",
-                        0,
-                        "roi"
-                    ],
-                    "value": "$box"
-                },
-                {
-                    "pattern": [
-                        "Collect_LocatePackFrame_Smart_Swip_UpdateTag"
-                    ],
-                    "patch": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_LocatePackFrame_Loc3",
-                            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc"
-                        ]
-                    },
-                    "origin": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_Loc_SwipToIn_Hub"
-                        ]
-                    }
-                }
-            ],
-            "reset_tags": [
+            "tags": [
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "anchor": "PackFrame_Loc",
         "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
@@ -937,43 +842,13 @@
         ],
         "green_mask": true,
         "action": "Custom",
-        "custom_action": "PatchByRegex",
+        "custom_action": "ResetTag",
         "custom_action_param": {
-            "rules": [
-                {
-                    "pattern": [
-                        "^Collect_Pack_(Story|Character|Event)_\\d+$"
-                    ],
-                    "target_path": [
-                        "all_of",
-                        0,
-                        "roi"
-                    ],
-                    "value": "$box"
-                },
-                {
-                    "pattern": [
-                        "Collect_LocatePackFrame_Smart_Swip_UpdateTag"
-                    ],
-                    "patch": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_LocatePackFrame_Loc4",
-                            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc"
-                        ]
-                    },
-                    "origin": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_Loc_SwipToIn_Hub"
-                        ]
-                    }
-                }
-            ],
-            "reset_tags": [
+            "tags": [
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "anchor": "PackFrame_Loc",
         "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
@@ -1006,43 +881,13 @@
         ],
         "green_mask": true,
         "action": "Custom",
-        "custom_action": "PatchByRegex",
+        "custom_action": "ResetTag",
         "custom_action_param": {
-            "rules": [
-                {
-                    "pattern": [
-                        "^Collect_Pack_(Story|Character|Event)_\\d+$"
-                    ],
-                    "target_path": [
-                        "all_of",
-                        0,
-                        "roi"
-                    ],
-                    "value": "$box"
-                },
-                {
-                    "pattern": [
-                        "Collect_LocatePackFrame_Smart_Swip_UpdateTag"
-                    ],
-                    "patch": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_LocatePackFrame_Loc5",
-                            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc"
-                        ]
-                    },
-                    "origin": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_Loc_SwipToIn_Hub"
-                        ]
-                    }
-                }
-            ],
-            "reset_tags": [
+            "tags": [
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "anchor": "PackFrame_Loc",
         "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
@@ -1074,43 +919,13 @@
         ],
         "green_mask": true,
         "action": "Custom",
-        "custom_action": "PatchByRegex",
+        "custom_action": "ResetTag",
         "custom_action_param": {
-            "rules": [
-                {
-                    "pattern": [
-                        "^Collect_Pack_(Story|Character|Event)_\\d+$"
-                    ],
-                    "target_path": [
-                        "all_of",
-                        0,
-                        "roi"
-                    ],
-                    "value": "$box"
-                },
-                {
-                    "pattern": [
-                        "Collect_LocatePackFrame_Smart_Swip_UpdateTag"
-                    ],
-                    "patch": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_LocatePackFrame_Loc6",
-                            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc"
-                        ]
-                    },
-                    "origin": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_Loc_SwipToIn_Hub"
-                        ]
-                    }
-                }
-            ],
-            "reset_tags": [
+            "tags": [
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "anchor": "PackFrame_Loc",
         "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
@@ -1141,43 +956,13 @@
         ],
         "green_mask": true,
         "action": "Custom",
-        "custom_action": "PatchByRegex",
+        "custom_action": "ResetTag",
         "custom_action_param": {
-            "rules": [
-                {
-                    "pattern": [
-                        "^Collect_Pack_(Story|Character|Event)_\\d+$"
-                    ],
-                    "target_path": [
-                        "all_of",
-                        0,
-                        "roi"
-                    ],
-                    "value": "$box"
-                },
-                {
-                    "pattern": [
-                        "Collect_LocatePackFrame_Smart_Swip_UpdateTag"
-                    ],
-                    "patch": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_LocatePackFrame_Loc7",
-                            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc"
-                        ]
-                    },
-                    "origin": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_Loc_SwipToIn_Hub"
-                        ]
-                    }
-                }
-            ],
-            "reset_tags": [
+            "tags": [
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "anchor": "PackFrame_Loc",
         "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
@@ -1207,43 +992,13 @@
         ],
         "green_mask": true,
         "action": "Custom",
-        "custom_action": "PatchByRegex",
+        "custom_action": "ResetTag",
         "custom_action_param": {
-            "rules": [
-                {
-                    "pattern": [
-                        "^Collect_Pack_(Story|Character|Event)_\\d+$"
-                    ],
-                    "target_path": [
-                        "all_of",
-                        0,
-                        "roi"
-                    ],
-                    "value": "$box"
-                },
-                {
-                    "pattern": [
-                        "Collect_LocatePackFrame_Smart_Swip_UpdateTag"
-                    ],
-                    "patch": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_LocatePackFrame_Loc8",
-                            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc"
-                        ]
-                    },
-                    "origin": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_Loc_SwipToIn_Hub"
-                        ]
-                    }
-                }
-            ],
-            "reset_tags": [
+            "tags": [
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "anchor": "PackFrame_Loc",
         "timeout": 2000,
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
@@ -1269,43 +1024,13 @@
         ],
         "green_mask": true,
         "action": "Custom",
-        "custom_action": "PatchByRegex",
+        "custom_action": "ResetTag",
         "custom_action_param": {
-            "rules": [
-                {
-                    "pattern": [
-                        "^Collect_Pack_(Story|Character|Event)_\\d+$"
-                    ],
-                    "target_path": [
-                        "all_of",
-                        0,
-                        "roi"
-                    ],
-                    "value": "$box"
-                },
-                {
-                    "pattern": [
-                        "Collect_LocatePackFrame_Smart_Swip_UpdateTag"
-                    ],
-                    "patch": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_LocatePackFrame_Loc9",
-                            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc"
-                        ]
-                    },
-                    "origin": {
-                        "next": [
-                            "Collect_LocatePackFrame_Smart_Swip",
-                            "Collect_Loc_SwipToIn_Hub"
-                        ]
-                    }
-                }
-            ],
-            "reset_tags": [
+            "tags": [
                 "PackLocation_ToggleSwitch"
             ]
         },
+        "anchor": "PackFrame_Loc",
         "next": [
             "Collect_LocatePackFrame_Smart_Swip",
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
@@ -1343,11 +1068,6 @@
         "post_wait_freezes": 1000
     },
     "Collect_Loc_OutToSwip_Hub_Ingress": {
-        "action": "Custom",
-        "custom_action": "RestoreNode",
-        "custom_action_param": {
-            "node": "Collect_LocatePackFrame_Smart_Swip_UpdateTag"
-        },
         "next": [
             "Collect_Loc_OutToSwip_Hub_Enter_Pin",
             "[JumpBack]Global_BackPageHub_Once"
@@ -1388,7 +1108,7 @@
         "focus": "CM.L.调度器"
     },
     "Collect_Loc_OutToSwip_Hub_Egress": {
-        "desc": "【next修改无效】卡带位识别到页翻页模块接口",
+        "desc": "滑动次数由万能锚点控制",
         "action": "Custom",
         "custom_action": "ResetTag",
         "custom_action_param": {
@@ -1397,7 +1117,7 @@
             ]
         },
         "next": [
-            "Collect_Loc_Swip_1Page"
+            "[Anchor]LocSmartSwip_Limit Ctr"
         ]
     },
     "Collect_Loc_Swip_1Page": {
@@ -1411,11 +1131,6 @@
                         "max": 1
                     },
                     "focus": "CL.M.智能翻页,到第2页."
-                },
-                "Collect_Loc_OutToSwip_Hub_Egress": {
-                    "next": [
-                        "Collect_Loc_Swip_2Page"
-                    ]
                 }
             },
             "origins": {
@@ -1424,13 +1139,11 @@
                         "tag": "LocPage_SmartSwip",
                         "max": 0
                     }
-                },
-                "Collect_Loc_OutToSwip_Hub_Egress": {
-                    "next": [
-                        "Collect_Loc_Swip_1Page"
-                    ]
                 }
             }
+        },
+        "anchor": {
+            "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_2Page"
         },
         "next": [
             "Collect_LocatePackFrame_Smart_Swip"
@@ -1447,11 +1160,6 @@
                         "max": 2
                     },
                     "focus": "CL.M.智能翻页,到第3页."
-                },
-                "Collect_Loc_OutToSwip_Hub_Egress": {
-                    "next": [
-                        "Collect_Loc_Swip_3Page"
-                    ]
                 }
             },
             "origins": {
@@ -1460,13 +1168,11 @@
                         "tag": "LocPage_SmartSwip",
                         "max": 0
                     }
-                },
-                "Collect_Loc_OutToSwip_Hub_Egress": {
-                    "next": [
-                        "Collect_Loc_Swip_1Page"
-                    ]
                 }
             }
+        },
+        "anchor": {
+            "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_3Page"
         },
         "next": [
             "Collect_LocatePackFrame_Smart_Swip"
@@ -1483,11 +1189,6 @@
                         "max": 3
                     },
                     "focus": "CL.M.智能翻页,到第4页."
-                },
-                "Collect_Loc_OutToSwip_Hub_Egress": {
-                    "next": [
-                        "Collect_Loc_Swip_4Page"
-                    ]
                 }
             },
             "origins": {
@@ -1496,13 +1197,11 @@
                         "tag": "LocPage_SmartSwip",
                         "max": 0
                     }
-                },
-                "Collect_Loc_OutToSwip_Hub_Egress": {
-                    "next": [
-                        "Collect_Loc_Swip_1Page"
-                    ]
                 }
             }
+        },
+        "anchor": {
+            "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_4Page"
         },
         "next": [
             "Collect_LocatePackFrame_Smart_Swip"
@@ -1519,11 +1218,6 @@
                         "max": 4
                     },
                     "focus": "CL.M.智能翻页,到第5页."
-                },
-                "Collect_Loc_OutToSwip_Hub_Egress": {
-                    "next": [
-                        "Collect_Loc_Swip_5Page"
-                    ]
                 }
             },
             "origins": {
@@ -1532,13 +1226,11 @@
                         "tag": "LocPage_SmartSwip",
                         "max": 0
                     }
-                },
-                "Collect_Loc_OutToSwip_Hub_Egress": {
-                    "next": [
-                        "Collect_Loc_Swip_1Page"
-                    ]
                 }
             }
+        },
+        "anchor": {
+            "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_5Page"
         },
         "next": [
             "Collect_LocatePackFrame_Smart_Swip"
@@ -1563,11 +1255,6 @@
                     "custom_recognition_param": {
                         "max": 0
                     }
-                },
-                "Collect_Loc_OutToSwip_Hub_Egress": {
-                    "next": [
-                        "Collect_Loc_Swip_1Page"
-                    ]
                 }
             }
         },
@@ -1721,7 +1408,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp1.png"
                 ]
@@ -1737,7 +1424,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -1747,20 +1434,12 @@
                     "card_name": "Story_01_血骑士",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_1"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_2": {
@@ -1768,7 +1447,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp2.png"
                 ]
@@ -1784,7 +1463,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -1794,20 +1473,12 @@
                     "card_name": "Story_02_苍蓝魔女",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_2"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_3": {
@@ -1815,7 +1486,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp3.png"
                 ]
@@ -1831,7 +1502,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -1841,20 +1512,12 @@
                     "card_name": "Story_03_迷雾神射手",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_3"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_4": {
@@ -1862,7 +1525,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp4.png"
                 ]
@@ -1878,7 +1541,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -1888,20 +1551,12 @@
                     "card_name": "Story_04_眼镜与猫",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_4"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_5": {
@@ -1909,7 +1564,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp5.png"
                 ]
@@ -1925,7 +1580,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -1935,20 +1590,12 @@
                     "card_name": "Story_05_沙漠之花",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_5"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_6": {
@@ -1956,7 +1603,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp6.png"
                 ]
@@ -1972,7 +1619,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -1982,20 +1629,12 @@
                     "card_name": "Story_06_异教塔",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_6"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_7": {
@@ -2003,7 +1642,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp7.png"
                 ]
@@ -2019,7 +1658,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2029,20 +1668,12 @@
                     "card_name": "Story_07_愤怒天使",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_7"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_8": {
@@ -2050,7 +1681,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp8.png"
                 ]
@@ -2066,7 +1697,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2076,20 +1707,12 @@
                     "card_name": "Story_08_血之狂想曲",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_8"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_9": {
@@ -2097,7 +1720,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp9.png"
                 ]
@@ -2113,7 +1736,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2123,20 +1746,12 @@
                     "card_name": "Story_09_铁假面",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_9"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_10": {
@@ -2144,7 +1759,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp10.png"
                 ]
@@ -2160,7 +1775,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2170,20 +1785,12 @@
                     "card_name": "Story_10_霍尔蒙克斯",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_10"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_11": {
@@ -2191,7 +1798,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp11.png"
                 ]
@@ -2207,7 +1814,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2217,20 +1824,12 @@
                     "card_name": "Story_11_虚假游戏",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_11"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_12": {
@@ -2238,7 +1837,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp12.png"
                 ]
@@ -2254,7 +1853,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2264,20 +1863,12 @@
                     "card_name": "Story_12_黑羽毛",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_12"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_13": {
@@ -2285,7 +1876,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp13.png"
                 ]
@@ -2301,7 +1892,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2311,20 +1902,12 @@
                     "card_name": "Story_13_雪之歌",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_13"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_14": {
@@ -2332,7 +1915,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp14.png"
                 ]
@@ -2348,7 +1931,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2358,20 +1941,12 @@
                     "card_name": "Story_14_神圣审判",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_14"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_15": {
@@ -2379,7 +1954,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp15.png"
                 ]
@@ -2395,7 +1970,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2405,20 +1980,12 @@
                     "card_name": "Story_15_复仇的誓言",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_15"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_16": {
@@ -2426,7 +1993,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp16.png"
                 ]
@@ -2442,7 +2009,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2452,20 +2019,12 @@
                     "card_name": "Story_16_三国同盟",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_16"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_17": {
@@ -2473,7 +2032,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp17.png"
                 ]
@@ -2489,7 +2048,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2499,20 +2058,12 @@
                     "card_name": "Story_17_试炼之路",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_17"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_18": {
@@ -2520,7 +2071,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp18.png"
                 ],
@@ -2537,7 +2088,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2547,20 +2098,12 @@
                     "card_name": "Story_18_救赎",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_18"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_19": {
@@ -2568,7 +2111,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp19.png"
                 ]
@@ -2584,7 +2127,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2594,20 +2137,12 @@
                     "card_name": "Story_19_被遗忘的战争",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_19"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Story_20": {
@@ -2616,7 +2151,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_sp20.png"
                 ]
@@ -2632,7 +2167,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2642,20 +2177,12 @@
                     "card_name": "Story_20_堕入深渊",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Story_20"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Character_1": {
@@ -2663,7 +2190,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_cp1.png"
                 ]
@@ -2679,7 +2206,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2689,20 +2216,12 @@
                     "card_name": "Character_1_杰登之门",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Character_1"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Character_2": {
@@ -2710,7 +2229,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_cp2.png"
                 ]
@@ -2726,7 +2245,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2736,20 +2255,12 @@
                     "card_name": "Character_2_火晶片",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Character_2"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Character_3": {
@@ -2757,7 +2268,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_cp3.png"
                 ]
@@ -2773,7 +2284,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2783,20 +2294,12 @@
                     "card_name": "Character_3_美丽无望",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Character_3"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Character_4": {
@@ -2804,7 +2307,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_cp4.png"
                 ]
@@ -2820,7 +2323,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2830,20 +2333,12 @@
                     "card_name": "Character_4_大逃脱",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Character_4"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Character_5": {
@@ -2851,7 +2346,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_cp5.png"
                 ],
@@ -2868,7 +2363,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2878,20 +2373,12 @@
                     "card_name": "Character_5_鲁的迷宫",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Character_5"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Character_6": {
@@ -2899,7 +2386,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_cp6.png"
                 ]
@@ -2915,7 +2402,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2925,20 +2412,12 @@
                     "card_name": "Character_6_御剑传",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Character_6"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Character_7": {
@@ -2946,7 +2425,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_cp7.png"
                 ]
@@ -2962,7 +2441,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -2972,20 +2451,12 @@
                     "card_name": "Character_7_合约之战",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Character_7"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Character_8": {
@@ -2994,7 +2465,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_cp8.png"
                 ]
@@ -3010,7 +2481,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -3020,20 +2491,12 @@
                     "card_name": "Character_8_妖魔讨伐团",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Character_8"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Event_1": {
@@ -3042,7 +2505,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_vp1.png"
                 ]
@@ -3058,7 +2521,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -3068,20 +2531,12 @@
                     "card_name": "Event_1_夏日骑士",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_Pack_Event_1",
-            "Collect_TeleporCircle_OnFoot_GoinNviMap"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Event_2": {
@@ -3089,7 +2544,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_vp2.png"
                 ]
@@ -3105,7 +2560,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -3115,20 +2570,12 @@
                     "card_name": "Event_2_恶梦之冬",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Event_2"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Event_3": {
@@ -3136,7 +2583,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_vp3.png"
                 ]
@@ -3152,7 +2599,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -3162,20 +2609,12 @@
                     "card_name": "Event_3_海滨天使",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
         "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Event_3"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_Pack_Event_4": {
@@ -3183,7 +2622,7 @@
         "all_of": [
             {
                 "recognition": "TemplateMatch",
-                "roi": "Collect_PackLocation_PassFieldsAndHub",
+                "roi": "[Anchor]PackFrame_Loc",
                 "template": [
                     "Cartridges/Q_vp4.png"
                 ]
@@ -3199,7 +2638,7 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchAndClick",
+        "custom_action": "PatchNode",
         "custom_action_param": {
             "node": "Collect_PackEnd_Ck",
             "patch": {
@@ -3209,20 +2648,33 @@
                     "card_name": "Event_4_记忆边缘",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "target_offset": [
-                -5,
-                -3,
-                0,
-                0
-            ]
+            }
         },
+        "anchor": "Pack_Click",
         "post_delay": 5000,
-        "timeout": 1,
+        "next": [
+            "Collect_Pack_Click"
+        ]
+    },
+    "Collect_Pack_Click": {
+        "desc": "可复用地点击已决定卡带",
+        "recognition": "Or",
+        "any_of": [
+            "Collect_QuickCart_Menu"
+        ],
+        "action": "Click",
+        "target": "[Anchor]Pack_Click",
+        "target_offset": [
+            -5,
+            -3,
+            0,
+            0
+        ],
+        "post_delay": 5000,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Collect_OperationsMain_Sandplay",
-            "Collect_Pack_Event_4"
+            "Collect_Pack_Click"
         ]
     },
     "Collect_FirstPack": {
@@ -3234,7 +2686,9 @@
             440,
             132
         ],
-        "expected": ["未插好游戏卡"],
+        "expected": [
+            "未插好游戏卡"
+        ],
         "action": "Click",
         "repeat": 10,
         "repeat_delay": 200,
@@ -3250,7 +2704,9 @@
             265,
             68
         ],
-        "template": ["UI_Skip.png"],
+        "template": [
+            "UI_Skip.png"
+        ],
         "action": "Click",
         "post_delay": 2000,
         "next": [
@@ -3268,7 +2724,9 @@
             186,
             293
         ],
-        "expected": ["确认"],
+        "expected": [
+            "确认"
+        ],
         "action": "Click",
         "post_delay": 2000,
         "focus": "发现新卡带,快速点击'插入'"
