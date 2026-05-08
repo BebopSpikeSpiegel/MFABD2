@@ -373,6 +373,14 @@
             "GachaADV_Special_ReservedRights",
             "GachaADV_Location1",
             "[JumpBack]GachaADV_SkipPV"
+        ],
+        "on_error": [
+            "GachaADV_Location2_Pre",
+            "GachaADV_Location3_Pre",
+            "GachaADV_Location4_Pre",
+            "GachaADV_Location5_Pre",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ]
     },
     "GachaADV_Location1_Ck": {
@@ -503,6 +511,13 @@
             "GachaADV_Special_ReservedRights",
             "GachaADV_Location2",
             "[JumpBack]GachaADV_SkipPV"
+        ],
+        "on_error": [
+            "GachaADV_Location3_Pre",
+            "GachaADV_Location4_Pre",
+            "GachaADV_Location5_Pre",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ]
     },
     "GachaADV_Location2_Ck": {
@@ -629,6 +644,12 @@
             "GachaADV_Special_ReservedRights",
             "GachaADV_Location3",
             "[JumpBack]GachaADV_SkipPV"
+        ],
+        "on_error": [
+            "GachaADV_Location4_Pre",
+            "GachaADV_Location5_Pre",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ]
     },
     "GachaADV_Location3_Ck": {
@@ -752,6 +773,11 @@
             "GachaADV_Special_ReservedRights",
             "GachaADV_Location4",
             "[JumpBack]GachaADV_SkipPV"
+        ],
+        "on_error": [
+            "GachaADV_Location5_Pre",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ]
     },
     "GachaADV_Location4_Ck": {
@@ -1283,6 +1309,7 @@
         "focus": "GA.卡池列表见底"
     },
     "GachaADV_SkipPV": {
+        "max_hit": 20,
         "recognition": "OCR",
         "roi": [
             953,
