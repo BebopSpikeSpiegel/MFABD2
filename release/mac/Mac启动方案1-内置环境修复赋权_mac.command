@@ -100,12 +100,13 @@ for so in site.rglob('*.so'):
             continue
         ref = m.group(1)
         if not (so.parent / ref.replace('@loader_path/', '')).resolve().exists():
-            pkg = so.relative_to(site).parts[0]
-            dist_name = resolve_dist(pkg)
-            try:
-                print(f'{dist_name}=={importlib.metadata.version(dist_name)}')
-            except Exception:
-                print(dist_name)
+            broken.add(so.relative_to(site).parts[0])
+for pkg in sorted(broken):
+    dist_name = resolve_dist(pkg)
+    try:
+        print(f'{dist_name}=={importlib.metadata.version(dist_name)}')
+    except Exception:
+        print(dist_name)
 " 2>/dev/null)
 
     if [ -n "$MISSING_PACKAGES" ]; then
