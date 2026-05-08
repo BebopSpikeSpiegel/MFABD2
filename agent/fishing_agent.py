@@ -488,8 +488,7 @@ class FishingBot:
         self.tap(*self.coords.screen_center)
         self.delay(1.0)
 
-        if success:
-            self.check_and_sell_fish()
+        self.check_and_sell_fish()
 
         return success
 
@@ -509,6 +508,10 @@ class FishingBot:
                 self.main_loop()
         finally:
             self.running = False
+            # 兜底：结束后卖出剩余鱼获
+            if self.fish_since_last_sell > 0:
+                print(f"\n📦 钓鱼结束，卖出剩余 {self.fish_since_last_sell} 条鱼")
+                self.sell_all_fish()
         return self.success_count > 0
 
 
