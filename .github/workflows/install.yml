@@ -777,10 +777,11 @@ jobs:
                   shutil.rmtree(p)
           "
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: MFABD2-${{ needs.meta.outputs.tag }}-${{ matrix.os }}-${{ matrix.is_android && 'arm64' || matrix.arch }}
           path: "install"
+          include-hidden-files: true
   changelog:
     name: Generate changelog
     runs-on: ubuntu-latest
@@ -818,7 +819,7 @@ jobs:
       # 上传 CHANGES.md 到构建物
       # =======================================================
       - name: Upload Changelog Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: CHANGES
           path: CHANGES.md
@@ -841,7 +842,7 @@ jobs:
         id: get_time
         run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           path: artifacts
 
