@@ -57,9 +57,87 @@ sudo chmod +x "$CURRENT_DIR"/*.sh "$CURRENT_DIR"/*.command 2>/dev/null
 echo "✅ 附属脚本执行权限已修复"
 
 # =======================================================
-# 4. 保留上游逻辑：安装 .NET 依赖
+# 4. 修复内嵌 Python 缺失的原生库 (numpy/Pillow 的 .dylibs)
 # =======================================================
-echo -e "\n${GREEN}>>> [3/3] 检查并配置 .NET 环境...${NC}"
+echo -e "\n${GREEN}>>> [3/4] 检查 Python 原生库依赖...${NC}"
+
+PY_BIN="$CURRENT_DIR/python/bin/python3"
+if [ -f "$PY_BIN" ]; then
+    # 检测是否存在缺失的 @loader_path dylib
+    MISSING_PACKAGES=$("$PY_BIN" -c "
+import os, subprocess, re, sysconfig, importlib.metadata
+from pathlib import Path
+site = Path(sysconfig.get_path('purelib'))
+if not site.exists():
+    exit()
+
+DIS_NAME = {
+    'PIL': 'Pillow',
+    'cv2': 'opencv-python-headless',
+}
+try:
+    for dist, names in importlib.metadata.packages_distributions().items():
+        for n in names:
+            DIS_NAME.setdefault(n, dist)
+except Exception:
+    pass
+
+def resolve_dist(pkg):
+    for k, v in DIS_NAME.items():
+        if k.lower() == pkg.lower():
+            return v
+    return pkg
+
+broken = set()
+for so in site.rglob('*.so'):
+    try:
+        out = subprocess.check_output(['otool', '-L', str(so)], text=True)
+    except Exception:
+        continue
+    for line in out.split('\n'):
+        m = re.match(r'\s+(@loader_path/\S+)', line)
+        if not m:
+            continue
+        ref = m.group(1)
+        if not (so.parent / ref.replace('@loader_path/', '')).resolve().exists():
+            broken.add(so.relative_to(site).parts[0])
+for pkg in sorted(broken):
+    dist_name = resolve_dist(pkg)
+    try:
+        print(f'{dist_name}=={importlib.metadata.version(dist_name)}')
+    except Exception:
+        print(dist_name)
+" 2>/dev/null)
+
+    if [ -n "$MISSING_PACKAGES" ]; then
+        echo -e "${YELLOW}⚠️  检测到 Python 包原生库缺失，尝试联网修复...${NC}"
+        echo "缺失的包:"
+        echo "$MISSING_PACKAGES" | while read pkg_ver; do
+            echo "  - $pkg_ver"
+        done
+        echo "正在修复中..."
+        FAILED=0
+        echo "$MISSING_PACKAGES" | while read pkg_ver; do
+            if [ -n "$pkg_ver" ]; then
+                if "$PY_BIN" -m pip install --force-reinstall --no-cache-dir "$pkg_ver" 2>/dev/null; then
+                    echo "  ✅ $pkg_ver"
+                else
+                    echo "  ❌ $pkg_ver 修复失败"
+                fi
+            fi
+        done
+        echo -e "${GREEN}✅ Python 库修复完成${NC}"
+    else
+        echo "✅ Python 原生库依赖完整"
+    fi
+else
+    echo -e "${YELLOW}⚠️  未找到内嵌 Python，跳过库检查${NC}"
+fi
+
+# =======================================================
+# 5. 保留上游逻辑：安装 .NET 依赖
+# =======================================================
+echo -e "\n${GREEN}>>> [4/4] 检查并配置 .NET 环境...${NC}"
 DOTNET_SCRIPT="DependencySetup_依赖库安装_mac.sh"
 
 if [ -f "$CURRENT_DIR/$DOTNET_SCRIPT" ]; then
