@@ -1,65 +1,82 @@
 {
-  "StartGame_Check_App_Alive": {
-    "doc": "[PC覆盖] 先调整窗口大小到1280x720，再截图验证窗口可用",
-    "action": "Custom",
-    "custom_action": "PC_ResizeWindow",
-    "next": [
-      "StartGame_Logo",
-      "StartGame_LoadingPage",
-      "StartGame_TouchStart",
-      "StartGame_SandPlayPage"
-    ],
-    "on_error": [
-      "StartGame_PC_NoWindow"
-    ],
-    "focus": {
-      "Node.Action.Succeeded": "[color:green]PC窗口已就绪（1280x720）[/color]",
-      "Node.Action.Failed": "[color:red]PC窗口未找到或调整失败[/color]"
+    "StartGame_Start": {
+        "next": [
+            "[JumpBack]Env_AccountSave_Switch",
+            "StartGame_Check_App_Alive",
+            "StartGame_Check_Win32_SetSize"
+        ]
+    },
+    "StartGame_Check_App_Alive": {
+        "enabled": false,
+        "desc": "步骤(shell探针)：查进程。如果活着> next ,>查不到经常on_error尝试抢救"
+    },
+    "StartGame_RunApp": {
+        "enabled": false,
+        "desc": "启动游戏"
+    },
+    "StartGame_Update_PGM": {
+        "enabled": false,
+        "desc": "游戏程序更新.'商店'特征词是防错预判加入的"
+    },
+    "StartGame_Update_Data": {
+        "expected": [
+            "所需资料",
+            "所需資料"
+        ],
+        "desc": "下载数据"
+    },
+    "StartGame_Update_Data_Click": {
+        "expected": [
+            "下载",
+            "下載"
+        ],
+        "desc": "下载数据"
+    },
+    "StartGame_Update_Data_DownLoading": {
+        "next": [
+            "StartGame_Update_Data_DownLoading",
+            "[JumpBack]StartGame_PayFailed",
+            "StartGame_TouchStart"
+        ],
+        "expected": [
+            "正在下载",
+            "下载中"
+        ],
+        "replace": [
+            [
+                "載",
+                "载"
+            ]
+        ],
+        "desc": "下载数据中"
+    },
+    "StartGame_Setup_SoundTurnOff_Start": {
+        "roi": [
+            168,
+            126,
+            56,
+            53
+        ],
+        "desc": "在下载前关闭游戏声音,节省资源和流量"
+    },
+    "StartGame_Check_Win32_SetSize": {
+        "focus": {
+            "Node.Action.Failed": "[color:red]PC窗口未找到或调整失败[/color]",
+            "Node.Action.Succeeded": "[color:green]PC窗口已就绪（1280x720）[/color]"
+        },
+        "next": [
+            "StartGame_Logo",
+            "StartGame_LoadingPage",
+            "StartGame_Update_Data",
+            "StartGame_TouchStart",
+            "StartGame_SandPlayPage",
+            "StartGame_MainMsgBox_Remove"
+        ],
+        "on_error": [
+            "StartGame_RunApp"
+        ],
+        "action": "Custom",
+        "custom_action": "PC_ResizeWindow",
+        "desc": "[PC覆盖] 先调整窗口大小到1280x720，再截图验证窗口可用"
     }
-  },
-  "StartGame_PC_NoWindow": {
-    "doc": "[PC专属] 找不到游戏窗口时提示用户，PC端不支持自动启动游戏",
-    "recognition": "DirectHit",
-    "action": "DoNothing",
-    "focus": "[color:red][WRN] 未找到棕色尘埃2 PC窗口（UnityWndClass）。\n请先手动启动游戏，再运行脚本。[/color]"
-  },
-  "StartGame_RunApp": {
-    "doc": "[PC覆盖] PC端不支持StartApp，直接等待游戏画面出现",
-    "recognition": "DirectHit",
-    "action": "DoNothing",
-    "next": [
-      "StartGame_Logo",
-      "StartGame_LoadingPage",
-      "StartGame_TouchStart",
-      "StartGame_SandPlayPage"
-    ],
-    "post_delay": 2000,
-    "focus": "SM.[PC]跳过自动启动，等待游戏画面"
-  },
-  "StartGame_UpdateCloseGame": {
-    "doc": "[PC覆盖] PC端不支持StopApp，跳过关闭游戏步骤",
-    "recognition": "DirectHit",
-    "action": "DoNothing",
-    "next": [
-      "StartGame_UpdateStartEngShop"
-    ],
-    "focus": "SM.[PC]跳过关闭游戏"
-  },
-  "StartGame_UpdateStartEngShop": {
-    "doc": "[PC覆盖] PC端无Google Play，更新请手动操作。直接跳回初始节点重试",
-    "recognition": "DirectHit",
-    "action": "DoNothing",
-    "next": [
-      "StartGame_Start"
-    ],
-    "focus": "[color:red][WRN][PC]检测到程序更新提示，PC端请手动前往官网或平台更新游戏后重新运行。[/color]"
-  },
-  "StartGame_UpdateShopEnd": {
-    "doc": "[PC覆盖] PC端无Google Play，此节点不会到达，保留为空覆盖防止报错",
-    "recognition": "DirectHit",
-    "action": "DoNothing",
-    "next": [
-      "StartGame_Start"
-    ]
-  }
 }
