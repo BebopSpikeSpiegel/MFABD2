@@ -132,6 +132,7 @@
             "[JumpBack]StartGame_PVPSet",
             "[JumpBack]PVP_PerOperationsMain_Error",
             "[JumpBack]Global_ERR_AtFish",
+            "[JumpBack]Dummy_Err_GetProductsFail",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ]

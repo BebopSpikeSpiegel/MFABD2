@@ -352,14 +352,14 @@
             "node": "QuickHunt_FastBattleMAXTouchHuntingGrounds",
             "patch": {
                 "target": [
-                    800,
-                    390
+                    810,
+                    330
                 ]
             },
             "origin": {
                 "target": [
-                    470,
-                    390
+                    465,
+                    330
                 ]
             }
         },
