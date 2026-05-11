@@ -63,5 +63,29 @@
             100,
             255
         ]
+    },
+    "Dummy_Err_GetProductsFail": {
+        "desc": "adb,任何时候都可能跳出来的支付错误",
+        "max_hit": 3,
+        "recognition": "OCR",
+        "roi": [
+            421,
+            168,
+            446,
+            385
+        ],
+        "expected": ["支付失败"],
+        "next": ["Dummy_Err_GetProductsFail_Ck"]
+    },
+    "Dummy_Err_GetProductsFail_Ck": {
+        "recognition": "OCR",
+        "roi": [
+            421,
+            168,
+            446,
+            385
+        ],
+        "expected": ["确认"],
+        "action": "Click"
     }
 }
