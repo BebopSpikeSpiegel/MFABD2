@@ -9,20 +9,8 @@
         "desc": "识别左下抽抽乐-点击通行证",
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
         ],
         "action": "Click",
         "target": [
@@ -84,40 +72,16 @@
         "action": "Click",
         "post_delay": 1000,
         "next": [
-            "[JumpBack]Pass_SelectPassTask1",
+            "[JumpBack]Pass_SelectPassTask",
             "Pass_GetAll"
         ]
     },
-    "Pass_SelectPassTask1": {
-        "desc": "选择通行证任务",
+    "Pass_SelectPassTask": {
+        "desc": "确认通行证页面,选择通行证任务",
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "OCR",
-                "roi": [
-                    620,
-                    167,
-                    53,
-                    32
-                ],
-                "expected": [
-                    "LEVEL"
-                ],
-                "only_rec": true
-            },
-            {
-                "recognition": "OCR",
-                "roi": [
-                    760,
-                    169,
-                    45,
-                    26
-                ],
-                "expected": [
-                    "基础"
-                ],
-                "only_rec": true
-            }
+            "Rec_「Pass_SelectPassTask」_Ocr01",
+            "Rec_「Pass_SelectPassTask」_Ocr02"
         ],
         "action": "Click",
         "target": [
@@ -126,6 +90,34 @@
         ],
         "post_delay": 1500,
         "focus": "任务子项页色核检查"
+    },
+    "Rec_「Pass_SelectPassTask」_Ocr01": {
+        "desc": "[识别]通行证页面,位置01",
+        "recognition": "OCR",
+        "roi": [
+            620,
+            167,
+            53,
+            32
+        ],
+        "expected": [
+            "LEVEL"
+        ],
+        "only_rec": true
+    },
+    "Rec_「Pass_SelectPassTask」_Ocr02": {
+        "desc": "[识别]通行证页面,位置02",
+        "recognition": "OCR",
+        "roi": [
+            760,
+            169,
+            45,
+            26
+        ],
+        "expected": [
+            "基础"
+        ],
+        "only_rec": true
     },
     "Pass_GetAll": {
         "desc": "全部获得",

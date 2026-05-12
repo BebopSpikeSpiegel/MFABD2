@@ -34,34 +34,8 @@
         "desc": "技能页3，色核识别.next遍历是防止放置其他技能;次节点每轮next判定",
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Tap3_Temp",
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1179,
-                    639,
-                    50,
-                    52
-                ],
-                "template": [
-                    "pin.png"
-                ]
-            },
-            {
-                "recognition": "ColorMatch",
-                "roi": "Tap3_Temp",
-                "lower": [
-                    192,
-                    141,
-                    23
-                ],
-                "upper": [
-                    223,
-                    194,
-                    129
-                ],
-                "count": 200
-            }
+            "Rec_SandBox_Pin3_Tpl",
+            "Sub_SandBox_Pin3_Bright_Clr"
         ],
         "next": [
             "[JumpBack]Setup_Entry5",
@@ -407,7 +381,7 @@
         ],
         "anchor": "SliderSwitchColor",
         "next": [
-            "Global_SliderSwitch_To_On",
+            "Anc_SliderSwitch_Gry_TurnOn_Clr",
             "Equip_EquipUp_Action",
             "Equip_EquipUpSelect_Err"
         ]
@@ -1128,53 +1102,57 @@
         "desc": "看看专武是不是已经点过了? ，强制<17| 说明在正确筛选情况下仍有无法精炼装备,系+24的制作&专武",
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    287,
-                    306,
-                    53,
-                    31
-                ],
-                "method": 40,
-                "lower": [
-                    0,
-                    0,
-                    90
-                ],
-                "upper": [
-                    120,
-                    120,
-                    165
-                ],
-                "count": 10
-            },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    497,
-                    296,
-                    127,
-                    57
-                ],
-                "method": 40,
-                "lower": [
-                    0,
-                    0,
-                    90
-                ],
-                "upper": [
-                    120,
-                    120,
-                    165
-                ],
-                "count": 10
-            }
+            "Rec_「Equip_Overdrive_RefLvMax_Second_Clr」_Clr_01",
+            "Rec_「Equip_Overdrive_RefLvMax_Second_Clr」_Clr_02"
         ],
         "next": [
             "Equip_Overdrive_RefLvMax_Forwarding"
         ],
         "focus": "EBO.神人发现，佬你好( • ̀ω•́ )✧"
+    },
+    "Rec_「Equip_Overdrive_RefLvMax_Second_Clr」_Clr_01": {
+        "desc": "装备筛选sub,分类:'专用'",
+        "recognition": "ColorMatch",
+        "roi": [
+            287,
+            306,
+            53,
+            31
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            90
+        ],
+        "upper": [
+            120,
+            120,
+            165
+        ],
+        "count": 10
+    },
+    "Rec_「Equip_Overdrive_RefLvMax_Second_Clr」_Clr_02": {
+        "desc": "装备筛选sub,分类:'制作'",
+        "recognition": "ColorMatch",
+        "roi": [
+            497,
+            296,
+            127,
+            57
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            90
+        ],
+        "upper": [
+            120,
+            120,
+            165
+        ],
+        "count": 10
     },
     "Equip_Overdrive_RefLvMax_Forwarding": {
         "action": "Custom",
@@ -1312,32 +1290,8 @@
         "desc": "发现背包满了,点击进入背包",
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "OCR",
-                "roi": [
-                    1082,
-                    20,
-                    32,
-                    13
-                ],
-                "expected": [
-                    "100%"
-                ],
-                "only_rec": true
-            },
-            {
-                "recognition": "OCR",
-                "roi": [
-                    279,
-                    611,
-                    36,
-                    16
-                ],
-                "expected": [
-                    "100%"
-                ],
-                "only_rec": true
-            }
+            "Rec_「Equip_Backpack_Full」_Ocr_01",
+            "Rec_「Equip_Backpack_Full」_Ocr_02"
         ],
         "action": "Click",
         "target_offset": [
@@ -1352,6 +1306,34 @@
             "Equip_Backpack_Full_Enter",
             "Equip_Backpack_Full"
         ]
+    },
+    "Rec_「Equip_Backpack_Full」_Ocr_01": {
+        "desc": "箱庭右上显示背包满",
+        "recognition": "OCR",
+        "roi": [
+            1082,
+            20,
+            32,
+            13
+        ],
+        "expected": [
+            "100%"
+        ],
+        "only_rec": true
+    },
+    "Rec_「Equip_Backpack_Full」_Ocr_02": {
+        "desc": "主页左下显示背包满",
+        "recognition": "OCR",
+        "roi": [
+            279,
+            611,
+            36,
+            16
+        ],
+        "expected": [
+            "100%"
+        ],
+        "only_rec": true
     },
     "Equip_Backpack_Full_Enter": {
         "recognition": "TemplateMatch",

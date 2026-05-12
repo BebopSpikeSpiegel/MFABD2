@@ -9,20 +9,8 @@
         "desc": "[通用复位]复位到主界面模块,结束,中继调用",
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
         ],
         "next": [
             "GachaADV_PageEnter_1#",
@@ -193,20 +181,8 @@
     "GachaADV_AREA1#_Post": {
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
         ],
         "next": [
             "GachaADV_PageEnter_2#",
@@ -309,20 +285,8 @@
     "GachaADV_AREA2#_Post": {
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
         ],
         "next": [
             "Global_ToSandBox"
@@ -1144,38 +1108,42 @@
         "desc": "中断发现点数超过200但用户决定保留的情况",
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "OCR",
-                "roi": [
-                    857,
-                    461,
-                    53,
-                    26
-                ],
-                "expected": [
-                    "^([2-9]\\d{2}|[1-9]\\d{3,})$"
-                ],
-                "only_rec": true
-            },
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    721,
-                    210,
-                    462,
-                    297
-                ],
-                "template": [
-                    "GACHA_Special.ReservedRights_Red_GE.png"
-                ],
-                "green_mask": true,
-                "threshold": 0.7
-            }
+            "Rec_「GachaADV_Special_ReservedRights」_Ocr",
+            "Rec_「GachaADV_Special_ReservedRights」_Tpl"
         ],
         "next": [
             "[Anchor]GachaADV_NextPool"
         ],
         "focus": "GAB.[INT]卡池内存在可兑换Up角色机会"
+    },
+    "Rec_「GachaADV_Special_ReservedRights」_Ocr": {
+        "desc": "将要触发抽抽乐200保底识别器01,",
+        "recognition": "OCR",
+        "roi": [
+            857,
+            461,
+            53,
+            26
+        ],
+        "expected": [
+            "^([2-9]\\d{2}|[1-9]\\d{3,})$"
+        ],
+        "only_rec": true
+    },
+    "Rec_「GachaADV_Special_ReservedRights」_Tpl": {
+        "desc": "将要触发抽抽乐200保底识别器02,",
+        "recognition": "TemplateMatch",
+        "roi": [
+            721,
+            210,
+            462,
+            297
+        ],
+        "template": [
+            "GACHA_Special.ReservedRights_Red_GE.png"
+        ],
+        "green_mask": true,
+        "threshold": 0.7
     },
     "GachaADV_Special_SaveGuaranteed": {
         "enabled": false,
