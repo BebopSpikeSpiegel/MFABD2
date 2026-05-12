@@ -2,7 +2,6 @@
 """
 公告注入工具 (CI专用 - 基于 install.py)
 """
-import re
 import sys
 from pathlib import Path
 
@@ -11,6 +10,7 @@ from version_rules import (
     is_valid_formal_version, is_valid_beta_version,
     is_valid_alpha_version, is_valid_ci_version,
 )
+from block_parser import parse_targeted_blocks
 
 
 MAX_CONTENT_LENGTH = 5000
@@ -30,19 +30,6 @@ def _get_tag_type(tag_name: str):
         return 'ci'
     return None
 
-
-def _parse_targeted_blocks(file_content: str, tag_type: str) -> str:
-    """按 ---target: ...--- / ---end--- 标记解析内容块，按顺序拼接所有匹配当前版本类型的块。"""
-    # 先剥离 HTML 注释，防止说明文档中的示例块被误匹配
-    content = re.sub(r'<!--.*?-->', '', file_content, flags=re.DOTALL)
-    block_re = re.compile(r'---target:\s*(.+?)---[ \t]*\n(.*?)---end---', re.DOTALL | re.IGNORECASE)
-    matched = []
-    for m in block_re.finditer(content):
-        targets = [t.strip().lower() for t in m.group(1).split(',')]
-        block = m.group(2).strip()
-        if block and ('all' in targets or tag_type in targets):
-            matched.append(block)
-    return '\n\n'.join(matched)
 
 
 def inject_announcement(tag_name):
@@ -69,7 +56,7 @@ def inject_announcement(tag_name):
 
     # --- 3. 解析匹配当前版本类型的内容块 ---
     file_content = draft_file.read_text(encoding='utf-8')
-    content = _parse_targeted_blocks(file_content, tag_type)
+    content = parse_targeted_blocks(file_content, tag_type)
 
     if not content:
         print(f"ℹ️ [跳过] release/app_msg.md 中无匹配版本类型 ({tag_type}) 的内容块")
