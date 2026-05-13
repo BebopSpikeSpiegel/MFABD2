@@ -1,0 +1,47 @@
+{
+    "Global_QuickCart_MenuReset": {
+        "template": [
+            "QuickCartGeadai.png"
+        ],
+        "desc": "调出快速卡带1/2,操作"
+    },
+    "Rec_HomePage_GA_Ocr": {
+        "expected": [
+            "抽抽"
+        ],
+        "roi": [
+            75,
+            662,
+            67,
+            33
+        ],
+        "desc": "[识别]主页,抽卡文字"
+    },
+    "Rec_HomePage_GA_Clr": {
+        "roi": [
+            75,
+            662,
+            67,
+            33
+        ],
+        "desc": "[识别]主页,抽卡文字背后颜色.roi硬编码"
+    },
+    "Rec_SandBox_Run_Tpl": {
+        "roi": [
+            1067,
+            539,
+            108,
+            111
+        ],
+        "desc": "[识别]箱庭,'冲刺'按钮的UI"
+    },
+    "Rec_SandBox_Pin3_Tpl": {
+        "roi": [
+            1187,
+            648,
+            51,
+            53
+        ],
+        "desc": "[识别]箱庭,'pin 第3组'按钮的UI"
+    }
+}
