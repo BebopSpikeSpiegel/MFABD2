@@ -42,38 +42,8 @@
         "desc": "色核识别完成.开始施放技能组",
         "recognition": "And",
         "all_of": [
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1174,
-                    633,
-                    58,
-                    59
-                ],
-                "template": [
-                    "pin.png"
-                ]
-            },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    1187,
-                    651,
-                    32,
-                    29
-                ],
-                "lower": [
-                    192,
-                    141,
-                    23
-                ],
-                "upper": [
-                    223,
-                    194,
-                    129
-                ],
-                "count": 200
-            }
+            "Rec_SandBox_Pin3_Tpl",
+            "Sub_SandBox_Pin3_Bright_Clr"
         ],
         "next": [
             "[JumpBack]Setup_Entry5",

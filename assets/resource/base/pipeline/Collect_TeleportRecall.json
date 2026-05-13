@@ -112,20 +112,7 @@
                     ]
                 }
             },
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1051,
-                    400,
-                    81,
-                    86
-                ],
-                "template": [
-                    "Skill3-4GE.png"
-                ],
-                "green_mask": true,
-                "threshold": 0.6
-            }
+            "Rec_「Collect_TeleportRecall_Skill」_Tpl"
         ],
         "timeout": 8000,
         "rate_limit": 2000,
@@ -134,6 +121,21 @@
             "Collect_ForceTeleporCircle_No"
         ],
         "focus": "CRT.传送阵技能已放置"
+    },
+    "Rec_「Collect_TeleportRecall_Skill」_Tpl": {
+        "desc": "[识别]'传送'技能存在",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1051,
+            400,
+            81,
+            86
+        ],
+        "template": [
+            "Skill3-4GE.png"
+        ],
+        "green_mask": true,
+        "threshold": 0.6
     },
     "Collect_TeleportRecall_Skill_Bin": {
         "desc": "【不要删不要改后挪用】custom需要调用此节点的识别",
@@ -338,31 +340,8 @@
         "desc": "点击左上地图",
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1122,
-                    646,
-                    40,
-                    38
-                ],
-                "template": [
-                    "pin.png"
-                ]
-            },
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1047,
-                    516,
-                    107,
-                    110
-                ],
-                "template": [
-                    "Run.png"
-                ],
-                "green_mask": true
-            }
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "Click",
         "target": [
@@ -607,31 +586,8 @@
         "desc": "[情况2]离得太近,识别失败.返回到箱庭,直接点击箱庭地图图标.",
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1122,
-                    646,
-                    40,
-                    38
-                ],
-                "template": [
-                    "pin.png"
-                ]
-            },
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1047,
-                    516,
-                    107,
-                    110
-                ],
-                "template": [
-                    "Run.png"
-                ],
-                "green_mask": true
-            }
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "next": [
             "Collect_NviMap_SpeciaEveMap1#_Field1#"
@@ -717,31 +673,8 @@
     "Collect_NviMap_SpeciaEveMap2#_Sandplay": {
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1122,
-                    646,
-                    40,
-                    38
-                ],
-                "template": [
-                    "pin.png"
-                ]
-            },
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1047,
-                    516,
-                    107,
-                    110
-                ],
-                "template": [
-                    "Run.png"
-                ],
-                "green_mask": true
-            }
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "next": [
             "Collect_NviMap_SpeciaEveMap1#_Field1#2#"

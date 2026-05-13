@@ -20,20 +20,8 @@
         "desc": "识别左下抽抽乐",
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
         ],
         "timeout": 5000,
         "next": [
@@ -178,20 +166,8 @@
         "desc": "左下抽抽乐高亮存在",
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
         ],
         "next": [
             "Daily_Busin_Claim"
@@ -203,31 +179,8 @@
         "max_hit": 10,
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "OCR",
-                "roi": [
-                    85,
-                    228,
-                    91,
-                    29
-                ],
-                "expected": [
-                    "经营管理"
-                ]
-            },
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    87,
-                    174,
-                    98,
-                    81
-                ],
-                "template": [
-                    "MainBotmBusinGE.png",
-                    "MainBotmBusin_F_GE.png"
-                ]
-            }
+            "Rec_「Daily_Busin_Claim」_Ocr",
+            "Rec_「Daily_Busin_Claim」_Tpl"
         ],
         "action": "Click",
         "target_offset": [
@@ -243,6 +196,33 @@
             "Daily_Busin_Claim"
         ],
         "focus": "GOM.餐馆结算(COR)-主界面"
+    },
+    "Rec_「Daily_Busin_Claim」_Ocr": {
+        "desc": "主页,左侧按钮群-经管1",
+        "recognition": "OCR",
+        "roi": [
+            85,
+            228,
+            91,
+            29
+        ],
+        "expected": [
+            "经营管理"
+        ]
+    },
+    "Rec_「Daily_Busin_Claim」_Tpl": {
+        "desc": "主页,左侧按钮群-经管2",
+        "recognition": "TemplateMatch",
+        "roi": [
+            87,
+            174,
+            98,
+            81
+        ],
+        "template": [
+            "MainBotmBusinGE.png",
+            "MainBotmBusin_F_GE.png"
+        ]
     },
     "Daily_Busin_SubMenu": {
         "desc": "确认餐馆子菜单已弹出",
@@ -275,7 +255,6 @@
         "recognition": "And",
         "all_of": [
             {
-                "sub_name": "ButtonOCR",
                 "recognition": "OCR",
                 "roi": [
                     640,
@@ -289,22 +268,7 @@
                     "回收"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "ButtonOCR",
-                "method": 40,
-                "lower": [
-                    17,
-                    10,
-                    210
-                ],
-                "upper": [
-                    23,
-                    18,
-                    232
-                ],
-                "count": 10
-            }
+            "Sub_Ocr_Enable_Clr"
         ],
         "action": "Click",
         "post_delay": 2000
@@ -487,39 +451,9 @@
     "Daily_Busin_DecorCoin_PickUp": {
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    353,
-                    98,
-                    911,
-                    449
-                ],
-                "template": "UI_BusinCoin.png",
-                "green_mask": true
-            },
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    273,
-                    509,
-                    683,
-                    200
-                ],
-                "template": "UI_BusinCoin.png",
-                "green_mask": true
-            },
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    88,
-                    360,
-                    266,
-                    230
-                ],
-                "template": "UI_BusinCoin.png",
-                "green_mask": true
-            }
+            "Rec_「Daily_Busin_DecorCoin_PickUp」_Tpl_01",
+            "Rec_「Daily_Busin_DecorCoin_PickUp」_Tpl_02",
+            "Rec_「Daily_Busin_DecorCoin_PickUp」_Tpl_03"
         ],
         "action": "Click",
         "post_delay": 1500,
@@ -533,6 +467,42 @@
             "Daily_Busin_DecorCoin_Move_2"
         ],
         "focus": "拾取装饰币"
+    },
+    "Rec_「Daily_Busin_DecorCoin_PickUp」_Tpl_01": {
+        "desc": "装饰币探查区域01-中央",
+        "recognition": "TemplateMatch",
+        "roi": [
+            353,
+            84,
+            925,
+            479
+        ],
+        "template": "UI_BusinCoin.png",
+        "green_mask": true
+    },
+    "Rec_「Daily_Busin_DecorCoin_PickUp」_Tpl_02": {
+        "desc": "装饰币探查区域02-下方",
+        "recognition": "TemplateMatch",
+        "roi": [
+            273,
+            347,
+            683,
+            362
+        ],
+        "template": "UI_BusinCoin.png",
+        "green_mask": true
+    },
+    "Rec_「Daily_Busin_DecorCoin_PickUp」_Tpl_03": {
+        "desc": "装饰币探查区域03-左侧",
+        "recognition": "TemplateMatch",
+        "roi": [
+            27,
+            360,
+            347,
+            230
+        ],
+        "template": "UI_BusinCoin.png",
+        "green_mask": true
     },
     "Daily_Busin_DecorCoin_Move_1": {
         "max_hit": 2,
@@ -594,6 +564,7 @@
         "focus": "GBM.无圣石情况"
     },
     "Daily_Busin_StageUp": {
+        "desc": "存在亮色按钮,餐厅星星阶段升级",
         "recognition": "And",
         "all_of": [
             {
@@ -606,32 +577,13 @@
                 ],
                 "expected": "^(?=.*[下])(?=.*[一])(?=.*[阶段]).{2,5}$"
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    1155,
-                    937,
-                    158,
-                    81
-                ],
-                "method": 40,
-                "lower": [
-                    21,
-                    14,
-                    127
-                ],
-                "upper": [
-                    24,
-                    11,
-                    241
-                ],
-                "count": 50
-            }
+            "Sub_Ocr_Enable_Clr"
         ],
         "action": "Click",
         "post_delay": 5000
     },
     "Daily_Busin_LevelUp": {
+        "desc": "存在亮色按钮,餐厅等级阶段升级",
         "recognition": "And",
         "all_of": [
             {
@@ -644,27 +596,7 @@
                 ],
                 "expected": "升级"
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    1155,
-                    937,
-                    158,
-                    81
-                ],
-                "method": 40,
-                "lower": [
-                    21,
-                    14,
-                    127
-                ],
-                "upper": [
-                    24,
-                    11,
-                    241
-                ],
-                "count": 50
-            }
+            "Sub_Ocr_Enable_Clr"
         ],
         "action": "Click",
         "post_delay": 5000,
@@ -733,32 +665,7 @@
     "Daily_Square_Str": {
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    294,
-                    562,
-                    343,
-                    158
-                ],
-                "template": [
-                    "BusinQuickIcoGE.png"
-                ],
-                "green_mask": true
-            },
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    74,
-                    81,
-                    285,
-                    197
-                ],
-                "template": [
-                    "BusinQuickIcoGE.png"
-                ],
-                "green_mask": true
-            }
+            "Global_BackToQC1"
         ],
         "action": "Click",
         "post_delay": 2000,

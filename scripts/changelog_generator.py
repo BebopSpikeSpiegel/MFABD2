@@ -16,6 +16,7 @@ from history_manager import HistoryManager
 from version_analyzer import analyze_version_highlights
 from History_config import HISTORY_CONFIG, OUTPUT_CONFIG
 from git_operations import get_commit_list, get_merge_commits, get_released_branches_from_main, safe_get_commit_list, ensure_reference_exists, get_commit_timestamp
+from block_parser import parse_targeted_blocks
 
 # ==============================================================================
 # [配置开关]
@@ -266,19 +267,6 @@ def _get_tag_type(tag_name: str) -> str:
     return 'stable'
 
 
-def _parse_targeted_blocks(file_content: str, tag_type: str) -> str:
-    """按 <!-- target: ... --> 标记解析内容块，按顺序拼接所有匹配当前版本类型的块。"""
-    block_re = re.compile(r'<!--\s*target:\s*([^-]+?)-->', re.IGNORECASE)
-    parts = block_re.split(file_content)
-    # parts 结构: [前导内容, targets_str, block, targets_str, block, ...]
-    matched = []
-    for i in range(1, len(parts) - 1, 2):
-        targets = [t.strip().lower() for t in parts[i].split(',')]
-        block = parts[i + 1].strip()
-        if block and ('all' in targets or tag_type in targets):
-            matched.append(block)
-    return '\n\n'.join(matched)
-
 
 def generate_changelog_content(commits: List[Dict], current_tag: str, compare_base: str) -> str:
     """生成变更日志内容"""
@@ -316,7 +304,7 @@ def generate_changelog_content(commits: List[Dict], current_tag: str, compare_ba
     if draft_header_path.exists():
         try:
             file_content = draft_header_path.read_text(encoding='utf-8')
-            header_content = _parse_targeted_blocks(file_content, _get_tag_type(current_tag))
+            header_content = parse_targeted_blocks(file_content, _get_tag_type(current_tag))
             if header_content:
                 print(f"📖 发现发布草稿，已插入 Release 头部: {draft_header_path}")
                 changelog += header_content + "\n\n---\n\n"

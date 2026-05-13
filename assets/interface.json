@@ -1698,6 +1698,190 @@
             ]
         }
     },
+    "preset": [
+        {
+            "name": "日常-尽快完成",
+            "description": "快!",
+            "task": [
+                {
+                    "name": "[全局]启动脚本(置顶)",
+                    "enabled": true,
+                    "option": {
+                        "前置助手": "按需"
+                    }
+                },
+                {
+                    "name": "[执行]快速狩猎扫荡",
+                    "enabled": true
+                },
+                {
+                    "name": "[执行]装备制作&炼制日常",
+                    "enabled": true,
+                    "option": {
+                        "精炼按自定义标志排序": "Yes",
+                        "仅精炼<17 或 <10": "低于17阶"
+                    }
+                },
+                {
+                    "name": "[执行]白嫖抽卡",
+                    "enabled": true
+                },
+                {
+                    "name": "[执行]地图采集[单章]",
+                    "enabled": true,
+                    "option": {"简单类跳过": "Yes"}
+                },
+                {
+                    "name": "[执行]竞技场",
+                    "enabled": true
+                },
+                {
+                    "name": "[执行]赛季活动快速战斗",
+                    "enabled": true
+                },
+                {
+                    "name": "[执行]周常任务",
+                    "enabled": true
+                },
+                {
+                    "name": "[领取]日常任务",
+                    "enabled": true
+                },
+                {
+                    "name": "[领取]任务页(每日/每周)",
+                    "enabled": true
+                },
+                {
+                    "name": "[领取]通行证奖励",
+                    "enabled": true
+                },
+                {
+                    "name": "[领取]领取邮件",
+                    "enabled": true
+                },
+                {
+                    "name": "[执行]肉鸽塔每日快速战斗",
+                    "enabled": false
+                },
+                {
+                    "name": "[执行]商店套利",
+                    "enabled": true
+                },
+                {
+                    "name": "[执行]地图采集[完整]",
+                    "enabled": true,
+                    "option": {"简单类跳过": "Yes"}
+                },
+                {
+                    "name": "[全局]结束游戏",
+                    "enabled": true
+                }
+            ]
+        },
+        {
+            "name": "日常-费时细致",
+            "description": "",
+            "task": [
+                {
+                    "name": "[全局]启动脚本(置顶)",
+                    "enabled": true,
+                    "option": {
+                        "前置助手": "按需"
+                    }
+                },
+                {
+                    "name": "[执行]快速狩猎扫荡",
+                    "enabled": true
+                },
+                {
+                    "name": "[执行]装备制作&炼制日常",
+                    "enabled": true,
+                    "option": {
+                        "精炼按自定义标志排序": "Yes",
+                        "仅精炼<17 或 <10": "低于17阶"
+                    }
+                },
+                {
+                    "name": "[执行]白嫖抽卡",
+                    "enabled": true,
+                    "option": {
+                        "一键速抽": "No",
+                        "高级抽卡-按需|强制": "Yes",
+                        "5星必出保留": "Yes"
+                    }
+                },
+                {
+                    "name": "[执行]地图采集[单章]",
+                    "enabled": true
+                },
+                {
+                    "name": "[执行]竞技场",
+                    "enabled": true,
+                    "option": {"竞技场战斗倍数": "1倍"}
+                },
+                {
+                    "name": "[执行]赛季活动快速战斗",
+                    "enabled": true
+                },
+                {
+                    "name": "[执行]周常任务",
+                    "enabled": true
+                },
+                {
+                    "name": "[领取]日常任务",
+                    "enabled": true,
+                    "option": {"餐馆自动升级": "Yes"}
+                },
+                {
+                    "name": "[领取]任务页(每日/每周)",
+                    "enabled": true
+                },
+                {
+                    "name": "[领取]通行证奖励",
+                    "enabled": true
+                },
+                {
+                    "name": "[领取]领取邮件",
+                    "enabled": true
+                },
+                {
+                    "name": "[执行]肉鸽塔每日快速战斗",
+                    "enabled": true
+                },
+                {
+                    "name": "[执行]商店套利",
+                    "enabled": true
+                },
+                {
+                    "name": "[执行]地图采集[完整]",
+                    "enabled": true,
+                    "option": {"简单类跳过": "Yes"}
+                },
+                {
+                    "name": "[全局]结束游戏",
+                    "enabled": true
+                }
+            ]
+        },
+        {
+            "name": "小工具",
+            "description": "非日常",
+            "task": [
+                {
+                    "name": "[半自动]自动钓鱼",
+                    "enabled": false
+                },
+                {
+                    "name": "[特殊]半自动操作",
+                    "enabled": false
+                },
+                {
+                    "name": "[手动]生活技能刷级",
+                    "enabled": false
+                }
+            ]
+        }
+    ],
     "agent": {
         "child_exec": "python",
         "child_args": [

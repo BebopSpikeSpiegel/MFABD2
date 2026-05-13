@@ -531,8 +531,102 @@ jobs:
           
           # 清理缓存
           "$PY_EXEC" -m pip cache purge
-          find install/python -name "__pycache__" -type d -exec rm -rf {} +     
+          find install/python -name "__pycache__" -type d -exec rm -rf {} +
 
+          # 🔧 macOS 便携 Python 的 pip 安装时可能丢失 wheel 内的 .dylibs 目录
+          # (如 numpy/.dylibs/libopenblas64_.0.dylib, PIL/.dylibs/libtiff.6.dylib 等)
+          # 此处扫描所有 .so 文件的 @loader_path 依赖,缺失则从对应 wheel 中提取补回
+          echo "🔍 Verifying native dylibs..."
+          "$PY_EXEC" -c "
+          import os, sys, subprocess, tempfile, zipfile, shutil, re, importlib.metadata, sysconfig
+          from pathlib import Path
+
+          site = Path(sysconfig.get_path('purelib'))
+          if not site.exists():
+              sys.exit(0)
+
+          # 导入名 -> PyPI 分发名的映射 (部分包的目录名与分发名不一致)
+          DIS_NAME = {
+              'PIL': 'Pillow',
+              'cv2': 'opencv-python-headless',
+          }
+          try:
+              for dist, names in importlib.metadata.packages_distributions().items():
+                  for n in names:
+                      DIS_NAME.setdefault(n, dist)
+          except Exception:
+              pass
+
+          def resolve_dist(pkg):
+              '''目录名 -> PyPI 分发名, 多级回退'''
+              for k, v in DIS_NAME.items():
+                  if k.lower() == pkg.lower():
+                      return v
+              return pkg
+
+          broken = {}  # pkg_dir -> {'dist': dist_name, 'dylibs': set()}
+          for so in site.rglob('*.so'):
+              try:
+                  out = subprocess.check_output(['otool', '-L', str(so)], text=True)
+              except Exception:
+                  continue
+              for line in out.split('\n'):
+                  m = re.match(r'\s+(@loader_path/\S+)', line)
+                  if not m:
+                      continue
+                  ref = m.group(1)
+                  resolved = (so.parent / ref.replace('@loader_path/', '')).resolve()
+                  if not resolved.exists():
+                      pkg = so.relative_to(site).parts[0]
+                      broken.setdefault(pkg, {'dist': resolve_dist(pkg), 'dylibs': set()})
+                      broken[pkg]['dylibs'].add(os.path.basename(ref))
+
+          if not broken:
+              print('✅ All native dylibs present')
+              sys.exit(0)
+
+          print(f'⚠️ {len(broken)} package(s) with missing dylibs, repairing...')
+          plat = sysconfig.get_platform().replace('-', '_').replace('.', '_')
+          py_ver = f'{sys.version_info.major}.{sys.version_info.minor}'
+
+          for pkg, info in sorted(broken.items()):
+              dist_name = info['dist']
+              try:
+                  ver = importlib.metadata.version(dist_name)
+              except Exception:
+                  print(f'  ⚠️ Skip {pkg} (dist: {dist_name}): cannot determine version')
+                  continue
+              print(f'  📦 {pkg} -> {dist_name}=={ver}')
+              with tempfile.TemporaryDirectory() as tmp:
+                  result = subprocess.run([
+                      sys.executable, '-m', 'pip', 'download',
+                      f'{dist_name}=={ver}', '--no-deps', '--dest', tmp,
+                      '--platform', plat, '--python-version', py_ver,
+                      '--only-binary=:all:', '--no-cache-dir',
+                  ], capture_output=True, text=True)
+                  if result.returncode != 0:
+                      print(f'    ⚠️ pip download failed: {result.stderr.strip()}')
+                      continue
+                  whls = [f for f in os.listdir(tmp) if f.endswith('.whl')]
+                  if not whls:
+                      print(f'    ⚠️ No wheel found')
+                      continue
+                  with zipfile.ZipFile(os.path.join(tmp, whls[0])) as zf:
+                      # 提取 wheel 内所有 .dylib (而非仅缺失的),
+                      # 确保同包的多个 dylib 版本一致, 避免部分替换导致 ABI 不匹配
+                      names = [n for n in zf.namelist() if n.endswith('.dylib')]
+                      if not names:
+                          print(f'    ℹ️ No dylibs in wheel')
+                          continue
+                      dst = site / pkg / '.dylibs'
+                      os.makedirs(dst, exist_ok=True)
+                      for n in names:
+                          zf.extract(n, tmp)
+                          shutil.copy2(os.path.join(tmp, n), dst / os.path.basename(n))
+                          os.chmod(dst / os.path.basename(n), 0o755)
+                          print(f'    ✅ {os.path.basename(n)}')
+          print('✅ Dylib repair complete')
+          " 
       # ----------------------------------------------------------------
       # 🏗️ 构建与组装
       # ----------------------------------------------------------------
@@ -683,10 +777,11 @@ jobs:
                   shutil.rmtree(p)
           "
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: MFABD2-${{ needs.meta.outputs.tag }}-${{ matrix.os }}-${{ matrix.is_android && 'arm64' || matrix.arch }}
           path: "install"
+          include-hidden-files: true
   changelog:
     name: Generate changelog
     runs-on: ubuntu-latest
@@ -724,7 +819,7 @@ jobs:
       # 上传 CHANGES.md 到构建物
       # =======================================================
       - name: Upload Changelog Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: CHANGES
           path: CHANGES.md
@@ -747,7 +842,7 @@ jobs:
         id: get_time
         run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           path: artifacts
 

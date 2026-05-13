@@ -156,20 +156,8 @@
         "desc": "识别左下抽抽乐-主页-点击选择章节",
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
         ],
         "action": "Click",
         "target": [
@@ -440,20 +428,8 @@
     "Weekly_VisitCabin_HomePage": {
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
         ],
         "next": [
             "Weekly_VisitCabin_GoIn",
@@ -464,31 +440,8 @@
     "Weekly_VisitCabin_GoIn": {
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    16,
-                    84,
-                    455,
-                    275
-                ],
-                "template": [
-                    "MainHomeRIceGE.png"
-                ],
-                "green_mask": true
-            },
-            {
-                "recognition": "OCR",
-                "roi": [
-                    16,
-                    84,
-                    455,
-                    275
-                ],
-                "expected": [
-                    "我的小屋"
-                ]
-            }
+            "Rec_「Weekly_VisitCabin_GoIn」_Tpl",
+            "Rec_「Weekly_VisitCabin_GoIn」_Ocr"
         ],
         "action": "Click",
         "target_offset": [
@@ -504,6 +457,33 @@
             "[JumpBack]Global_WaitingForLoading"
         ],
         "focus": "WVM.点击我的小屋"
+    },
+    "Rec_「Weekly_VisitCabin_GoIn」_Tpl": {
+        "desc": "[识别]主页,我的小屋",
+        "recognition": "TemplateMatch",
+        "roi": [
+            16,
+            84,
+            455,
+            275
+        ],
+        "template": [
+            "MainHomeRIceGE.png"
+        ],
+        "green_mask": true
+    },
+    "Rec_「Weekly_VisitCabin_GoIn」_Ocr": {
+        "desc": "[识别]主页,我的小屋",
+        "recognition": "OCR",
+        "roi": [
+            16,
+            84,
+            455,
+            275
+        ],
+        "expected": [
+            "我的小屋"
+        ]
     },
     "Weekly_VisitCabin_TabChg": {
         "recognition": "OCR",
@@ -730,20 +710,8 @@
     "Weekly_Arcade_HomePage": {
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
         ],
         "post_delay": 3000,
         "next": [

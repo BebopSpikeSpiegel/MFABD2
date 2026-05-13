@@ -14,27 +14,8 @@
     "AutoBattle_Is_Auto": {
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "OCR",
-                "roi": [
-                    1102,
-                    639,
-                    109,
-                    31
-                ],
-                "expected": ["自动战斗中"],
-                "only_rec": true
-            },
-            {
-                "recognition": "OCR",
-                "roi": [
-                    28,
-                    576,
-                    182,
-                    96
-                ],
-                "expected": ["自动战斗中"]
-            }
+            "Rec_「AutoBattle_Is_Auto」_Ocr_01",
+            "Rec_「AutoBattle_Is_Auto」_Ocr_02"
         ],
         "post_delay": 5000,
         "next": [
@@ -43,33 +24,61 @@
             "AutoBattle_Is_Auto"
         ]
     },
+    "Rec_「AutoBattle_Is_Auto」_Ocr_01": {
+        "desc": "[识别]自动战斗判定,位置1-右下",
+        "recognition": "OCR",
+        "roi": [
+            1102,
+            639,
+            109,
+            31
+        ],
+        "expected": ["自动战斗中"],
+        "only_rec": true
+    },
+    "Rec_「AutoBattle_Is_Auto」_Ocr_02": {
+        "desc": "[识别]自动战斗判定,位置2-左下",
+        "recognition": "OCR",
+        "roi": [
+            28,
+            576,
+            182,
+            96
+        ],
+        "expected": ["自动战斗中"]
+    },
     "AutoBattle_TabTo_Auto": {
+        "desc": "当前在非自动战斗界面",
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "OCR",
-                "roi": [
-                    1126,
-                    629,
-                    73,
-                    29
-                ],
-                "expected": ["BATTLE"],
-                "only_rec": true
-            },
-            {
-                "recognition": "OCR",
-                "roi": [
-                    1034,
-                    629,
-                    60,
-                    29
-                ],
-                "expected": ["TURN"],
-                "only_rec": true
-            }
+            "Rec_「AutoBattle_TabTo_Auto」_Ocr_01",
+            "Rec_「AutoBattle_TabTo_Auto」_Ocr_02"
         ],
         "next": ["AutoBattle_ClickAutoButt"]
+    },
+    "Rec_「AutoBattle_TabTo_Auto」_Ocr_01": {
+        "desc": "[识别]手动战斗界面,位置01",
+        "recognition": "OCR",
+        "roi": [
+            1126,
+            629,
+            73,
+            29
+        ],
+        "expected": ["BATTLE"],
+        "only_rec": true
+    },
+    "Rec_「AutoBattle_TabTo_Auto」_Ocr_02": {
+        "desc": "[识别]手动战斗界面,位置02",
+        "recognition": "OCR",
+        "roi": [
+            1034,
+            629,
+            60,
+            29
+        ],
+        "expected": ["TURN"],
+        "only_rec": true
     },
     "AutoBattle_ClickAutoButt": {
         "desc": "模板点击自动战斗图标",
@@ -124,7 +133,6 @@
         "recognition": "And",
         "all_of": [
             {
-                "sub_name": "Sub_Ocr",
                 "recognition": "OCR",
                 "roi": [
                     778,
@@ -137,7 +145,7 @@
                     "挑战下一级"
                 ]
             },
-            "Global_Ocr_Clr_Enable_Sub"
+            "Sub_Ocr_Enable_Clr"
         ],
         "action": "Click",
         "post_delay": 2000,

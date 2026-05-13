@@ -318,6 +318,11 @@
             255
         ],
         "count": 200,
+        "action": "Custom",
+        "custom_action": "RestoreNode",
+        "custom_action_param": {
+            "node": "Collect_LocatePackFrame_Smart_Swip"
+        },
         "anchor": {
             "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
         },
@@ -340,6 +345,11 @@
             255
         ],
         "count": 300,
+        "action": "Custom",
+        "custom_action": "RestoreNode",
+        "custom_action_param": {
+            "node": "Collect_LocatePackFrame_Smart_Swip"
+        },
         "anchor": {
             "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
         },
@@ -362,6 +372,11 @@
             255
         ],
         "count": 500,
+        "action": "Custom",
+        "custom_action": "RestoreNode",
+        "custom_action_param": {
+            "node": "Collect_LocatePackFrame_Smart_Swip"
+        },
         "anchor": {
             "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
         },
