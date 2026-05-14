@@ -302,7 +302,7 @@
             "StartGame_Update_PGM",
             "StartGame_Update_Data",
             "[JumpBack]StartGame_PayFailed",
-            "StartGame_LinkDown",
+            "[JumpBack]StartGame_LinkDown",
             "StartGame_TouchStart",
             "StartGame_LoadingPage",
             "StartGame_Loading"
@@ -740,8 +740,7 @@
             443
         ],
         "next": [
-            "StartGame_LinkDown_TouchCk",
-            "StartGame_Logo"
+            "StartGame_LinkDown_TouchCk"
         ]
     },
     "StartGame_LinkDown_TouchCk": {

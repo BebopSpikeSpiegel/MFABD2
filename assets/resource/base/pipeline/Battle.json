@@ -1147,11 +1147,15 @@
         "focus": "BTM.次数=2次"
     },
     "QuickHunt_TurnCharact_TurnDuo_Int": {
-        "action": "Click",
-        "target": [
-            848,
-            451
+        "recognition": "TemplateMatch",
+        "roi": [
+            802,
+            322,
+            84,
+            150
         ],
+        "template": ["SubBattle_+1.png"],
+        "action": "Click",
         "post_delay": 500,
         "focus": "BTM.刷取次数调整"
     },
