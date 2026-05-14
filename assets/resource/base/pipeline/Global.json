@@ -43,7 +43,8 @@
         ],
         "template": [
             "BackButGe.png",
-            "BackButGe2.png"
+            "BackButGe2.png",
+            "UI_qsback.png"
         ],
         "green_mask": true,
         "action": "Click",
@@ -127,18 +128,8 @@
     },
     "Global_ToHomePage_Reset": {
         "desc": "其他页面，返回按钮",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1,
-            1,
-            231,
-            124
-        ],
-        "template": [
-            "BackButGe.png",
-            "BackButGe2.png"
-        ],
-        "green_mask": true,
+        "recognition": "And",
+        "all_of": ["Global_BackPageHub_Once"],
         "action": "Click",
         "post_delay": 3000,
         "next": [
@@ -179,19 +170,8 @@
     },
     "Global_ToSandBox_Reset": {
         "desc": "其他页面，返回按钮",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1,
-            1,
-            231,
-            124
-        ],
-        "template": [
-            "BackButGe.png",
-            "BackButGe2.png",
-            "UI_qsback.png"
-        ],
-        "green_mask": true,
+        "recognition": "And",
+        "all_of": ["Global_BackPageHub_Once"],
         "action": "Click",
         "post_delay": 4000,
         "next": [
@@ -327,15 +307,10 @@
     },
     "Global_BackToPve2#_FinBackMapPage": {
         "desc": "识别右下图钉-章节主页",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "focus": "G.Global复位完成，结束~"
     },
@@ -425,19 +400,10 @@
     },
     "Global_BackToQC1_Fin": {
         "desc": "找到图钉-点击返回主页",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
-        ],
-        "target": [
-            1186,
-            46
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "post_delay": 1000,
         "focus": "GO.卡带复位成功"
