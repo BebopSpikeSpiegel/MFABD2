@@ -118,31 +118,8 @@
     "Redemption_Mapck": {
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1122,
-                    646,
-                    40,
-                    38
-                ],
-                "template": [
-                    "pin.png"
-                ]
-            },
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1047,
-                    516,
-                    107,
-                    110
-                ],
-                "template": [
-                    "Run.png"
-                ],
-                "green_mask": true
-            }
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "next": [
             "Redemption_Evil_Move"

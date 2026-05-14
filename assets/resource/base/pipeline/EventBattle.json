@@ -11,20 +11,8 @@
         "desc": "识别左下抽抽乐-点击活动",
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Rec_HomePage_GA_Clr"
         ],
         "action": "Click",
         "target": [
@@ -39,31 +27,8 @@
         "desc": "在赛季活动页面.兼做任务选择器",
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "OCR",
-                "roi": [
-                    802,
-                    16,
-                    109,
-                    47
-                ],
-                "expected": [
-                    "活动服装"
-                ]
-            },
-            {
-                "recognition": "OCR",
-                "roi": [
-                    175,
-                    574,
-                    729,
-                    134
-                ],
-                "expected": [
-                    "普通战斗",
-                    "魔兽追踪者"
-                ]
-            }
+            "Rec_「Event_Event_Main」_Ocr_01",
+            "Rec_「Event_Event_Main」_Ocr_02"
         ],
         "timeout": 1000,
         "next": [
@@ -74,6 +39,33 @@
             "Global_ToHomePage"
         ],
         "focus": "EM.赛季活动进入确认."
+    },
+    "Rec_「Event_Event_Main」_Ocr_01": {
+        "desc": "赛季主页判定,右上代币加成服装",
+        "recognition": "OCR",
+        "roi": [
+            802,
+            16,
+            109,
+            47
+        ],
+        "expected": [
+            "活动服装"
+        ]
+    },
+    "Rec_「Event_Event_Main」_Ocr_02": {
+        "desc": "赛季主页判定,特殊按钮",
+        "recognition": "OCR",
+        "roi": [
+            175,
+            574,
+            729,
+            134
+        ],
+        "expected": [
+            "普通战斗",
+            "魔兽追踪者"
+        ]
     },
     "Event_Battle_Hub": {
         "max_hit": 1,
@@ -250,7 +242,7 @@
     },
     "Event_Battle_BattleStatus_Enable": {
         "recognition": "And",
-        "all_of": ["Global_Ocr_Clr_Enable"],
+        "all_of": ["Anc_Ocr_Enable_Clr"],
         "action": "Click",
         "post_delay": 1000,
         "next": [
@@ -318,13 +310,13 @@
     },
     "SeasonEvent_NormlBattle_Enable": {
         "recognition": "And",
-        "all_of": ["Global_Ocr_Clr_Enable"],
+        "all_of": ["Anc_Ocr_Enable_Clr"],
         "next": ["Event_Battle_TabAutoBattle"],
         "focus": "E.常规战斗-可用"
     },
     "SeasonEvent_NormlBattle_Unable": {
         "recognition": "And",
-        "all_of": ["Global_Ocr_Clr_Unable"],
+        "all_of": ["Anc_Ocr_Unable_Clr"],
         "next": [
             "SeasonEvent_BackedToSubMain",
             "[JumpBack]Global_BackPageHub_Once"
@@ -399,7 +391,7 @@
         ],
         "anchor": "SliderSwitchColor",
         "next": [
-            "[JumpBack]Global_SliderSwitch_To_On",
+            "[JumpBack]Anc_SliderSwitch_Gry_TurnOn_Clr",
             "SeasonEvent_FreeAP_Verdict_Ispass",
             "SeasonEvent_FreeAP_Verdict_NOpass"
         ],
@@ -414,7 +406,7 @@
     "SeasonEvent_FreeAP_Verdict_Ispass": {
         "desc": "确保免费AP选中。现场为，如果无AP会无法点开二级确认菜单。似乎不用进一步适配滑块无法变黄情况？",
         "recognition": "And",
-        "all_of": ["Global_SliderSwitch_StateOn"],
+        "all_of": ["Anc_SliderSwitch_YewOn_Clr"],
         "next": [
             "Event_NormalBattleMAX"
         ],
@@ -422,7 +414,7 @@
     },
     "SeasonEvent_FreeAP_Verdict_NOpass": {
         "recognition": "And",
-        "all_of": ["Global_SliderSwitch_StateOff"],
+        "all_of": ["Anc_SliderSwitch_GryOff_Clr"],
         "next": [
             "SeasonEvent_Main_Return",
             "[JumpBack]SeasonEvent_FreeAP_Err",
@@ -719,33 +711,37 @@
         "desc": "演习魔兽,结束",
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "OCR",
-                "roi": [
-                    933,
-                    27,
-                    141,
-                    30
-                ],
-                "expected": ["距离开始还"],
-                "only_rec": true
-            },
-            {
-                "recognition": "OCR",
-                "roi": [
-                    826,
-                    215,
-                    211,
-                    72
-                ],
-                "expected": ["狩猎期间开始解除"]
-            }
+            "Rec_「SeasonEvent_MamonoFollow_Practice」_Ocr_01",
+            "Rec_「SeasonEvent_MamonoFollow_Practice」_Ocr_02"
         ],
         "next": [
             "SeasonEvent_Main_Return",
             "[JumpBack]Global_BackPageHub_Once"
         ],
         "focus": "E.当前魔兽为演习,退出"
+    },
+    "Rec_「SeasonEvent_MamonoFollow_Practice」_Ocr_01": {
+        "desc": "魔兽尚未开放判定,位置1",
+        "recognition": "OCR",
+        "roi": [
+            933,
+            27,
+            141,
+            30
+        ],
+        "expected": ["距离开始还"],
+        "only_rec": true
+    },
+    "Rec_「SeasonEvent_MamonoFollow_Practice」_Ocr_02": {
+        "desc": "魔兽尚未开放判定,位置2",
+        "recognition": "OCR",
+        "roi": [
+            826,
+            215,
+            211,
+            72
+        ],
+        "expected": ["狩猎期间开始解除"]
     },
     "Even_MamonoFollow_lv1_Ck": {
         "desc": "Lv1的复杂正则匹配",
@@ -882,7 +878,7 @@
                 ],
                 "expected": ["快速战斗"]
             },
-            "Global_Ocr_Clr_Enable_Sub"
+            "Sub_Ocr_Enable_Clr"
         ],
         "action": "Click",
         "post_delay": 2000,
@@ -911,7 +907,7 @@
                 ],
                 "expected": ["快速战斗"]
             },
-            "Global_Ocr_Clr_Unable_Sub"
+            "Sub_Ocr_Unable_Clr"
         ],
         "timeout": 10000,
         "next": [
@@ -950,7 +946,7 @@
     "SeasonEvent_MamonoFollow_NormalBattle_Enable": {
         "desc": "战斗亮色.(待增强:转场等待失效!用的是赛季标题的黑色页面)",
         "recognition": "And",
-        "all_of": ["Global_Ocr_Clr_Enable"],
+        "all_of": ["Anc_Ocr_Enable_Clr"],
         "action": "Click",
         "post_delay": 2000,
         "timeout": 40000,
@@ -964,7 +960,7 @@
     "SeasonEvent_MamonoFollow_NormalBattle_Unable": {
         "desc": "战斗灰色",
         "recognition": "And",
-        "all_of": ["Global_Ocr_Clr_Unable"],
+        "all_of": ["Anc_Ocr_Unable_Clr"],
         "next": ["SeasonEvent_MamonoFollow_Team_Troubleshoot"],
         "focus": "EM.MF.常规战斗-不可用"
     },
@@ -1289,7 +1285,7 @@
     },
     "Event_MiniGame_CLR_Enable": {
         "recognition": "And",
-        "all_of": ["Global_Ocr_Clr_Enable"],
+        "all_of": ["Anc_Ocr_Enable_Clr"],
         "action": "Click",
         "post_delay": 2000,
         "next": [
@@ -1300,7 +1296,7 @@
     },
     "Event_MiniGame_CLR_Unable": {
         "recognition": "And",
-        "all_of": ["Global_Ocr_Clr_Unable"],
+        "all_of": ["Anc_Ocr_Unable_Clr"],
         "timeout": 4000,
         "next": [
             "[Anchor]MiniGame_Return"
@@ -1367,7 +1363,7 @@
     "Event_Battle_BattleStatus_Unable": {
         "recognition": "Or",
         "any_of": [
-            "Global_Ocr_Clr_Unable"
+            "Anc_Ocr_Unable_Clr"
         ],
         "next": ["Event_Battle_TabAutoBattle"],
         "focus": "快速战斗不可用"

@@ -15,20 +15,8 @@
         "desc": "进入卡带界面",
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
         ],
         "action": "Click",
         "target": [
@@ -2080,7 +2068,6 @@
         "recognition": "And",
         "all_of": [
             {
-                "sub_name": "template",
                 "recognition": "OCR",
                 "roi": [
                     745,
@@ -2092,23 +2079,7 @@
                     "从高到低"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "template",
-                "method": 40,
-                "lower": [
-                    18,
-                    98,
-                    110
-                ],
-                "upper": [
-                    23,
-                    230,
-                    255
-                ],
-                "connected": true,
-                "count": 10
-            }
+            "Sub_SieveExpand_Yew_Clr"
         ],
         "next": ["Arbitrage_Sell_PackShopListSwich_Close"]
     },
@@ -2502,7 +2473,6 @@
         "recognition": "And",
         "all_of": [
             {
-                "sub_name": "template",
                 "recognition": "OCR",
                 "roi": [
                     895,
@@ -2514,23 +2484,7 @@
                     "从高到低"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "template",
-                "method": 40,
-                "lower": [
-                    18,
-                    98,
-                    110
-                ],
-                "upper": [
-                    23,
-                    230,
-                    255
-                ],
-                "connected": true,
-                "count": 10
-            }
+            "Sub_SieveExpand_Yew_Clr"
         ],
         "next": [
             "[JumpBack]Arbitrage_ItemList_Sorting_Remove",
@@ -2634,34 +2588,36 @@
         "desc": "确认出售子菜单已弹出",
         "recognition": "Or",
         "any_of": [
-            {
-                "recognition": "OCR",
-                "roi": [
-                    810,
-                    450,
-                    222,
-                    102
-                ],
-                "expected": [
-                    "出售"
-                ]
-            },
-            {
-                "recognition": "OCR",
-                "roi": [
-                    264,
-                    445,
-                    398,
-                    111
-                ],
-                "expected": [
-                    "MIX",
-                    "MAX"
-                ]
-            }
+            "Rec_「Arbitrage_Sell_Item_SellMenu」_Ocr_01",
+            "Rec_「Arbitrage_Sell_Item_SellMenu」_Ocr_02"
         ],
         "next": [
             "Arbitrage_Sell_Item_Number"
+        ]
+    },
+    "Rec_「Arbitrage_Sell_Item_SellMenu」_Ocr_01": {
+        "recognition": "OCR",
+        "roi": [
+            810,
+            450,
+            222,
+            102
+        ],
+        "expected": [
+            "出售"
+        ]
+    },
+    "Rec_「Arbitrage_Sell_Item_SellMenu」_Ocr_02": {
+        "recognition": "OCR",
+        "roi": [
+            264,
+            445,
+            398,
+            111
+        ],
+        "expected": [
+            "MIX",
+            "MAX"
         ]
     },
     "Arbitrage_Sell_Item_Number": {
@@ -2867,21 +2823,7 @@
                     "Shop/cook_Sparkling Griddle Shrimp.png"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "Templateroi",
-                "method": 40,
-                "lower": [
-                    16,
-                    46,
-                    142
-                ],
-                "upper": [
-                    20,
-                    68,
-                    168
-                ]
-            }
+            "Sub_「Arbitrage_Cooking」_Clr"
         ],
         "action": "Click",
         "post_delay": 1000,
@@ -2909,21 +2851,7 @@
                     "Shop/cook_Transparent Salad.png"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "Templateroi",
-                "method": 40,
-                "lower": [
-                    16,
-                    46,
-                    142
-                ],
-                "upper": [
-                    20,
-                    68,
-                    168
-                ]
-            }
+            "Sub_「Arbitrage_Cooking」_Clr"
         ],
         "action": "Click",
         "post_delay": 1000,
@@ -2951,21 +2879,7 @@
                     "Shop/cook_Hellfire Gimbap.png"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "Templateroi",
-                "method": 40,
-                "lower": [
-                    16,
-                    46,
-                    142
-                ],
-                "upper": [
-                    20,
-                    68,
-                    168
-                ]
-            }
+            "Sub_「Arbitrage_Cooking」_Clr"
         ],
         "action": "Click",
         "post_delay": 1000,
@@ -3024,21 +2938,7 @@
                     "Shop/cook_Lugas Ginseng Skewer.png"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "Templateroi",
-                "method": 40,
-                "lower": [
-                    16,
-                    46,
-                    142
-                ],
-                "upper": [
-                    20,
-                    68,
-                    168
-                ]
-            }
+            "Sub_「Arbitrage_Cooking」_Clr"
         ],
         "action": "Click",
         "post_delay": 1000,
@@ -3066,21 +2966,7 @@
                     "Shop/cook_Coal Cookies.png"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "Templateroi",
-                "method": 40,
-                "lower": [
-                    16,
-                    46,
-                    142
-                ],
-                "upper": [
-                    20,
-                    68,
-                    168
-                ]
-            }
+            "Sub_「Arbitrage_Cooking」_Clr"
         ],
         "action": "Click",
         "post_delay": 1000,
@@ -3107,21 +2993,7 @@
                     "Shop/cook_Honey Butter Almonds.png"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "Templateroi",
-                "method": 40,
-                "lower": [
-                    16,
-                    46,
-                    142
-                ],
-                "upper": [
-                    20,
-                    68,
-                    168
-                ]
-            }
+            "Sub_「Arbitrage_Cooking」_Clr"
         ],
         "action": "Click",
         "post_delay": 1000,
@@ -3148,21 +3020,7 @@
                     "Shop/cook_Mayo Triangle Rice Ball.png"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "Templateroi",
-                "method": 40,
-                "lower": [
-                    16,
-                    46,
-                    142
-                ],
-                "upper": [
-                    20,
-                    68,
-                    168
-                ]
-            }
+            "Sub_「Arbitrage_Cooking」_Clr"
         ],
         "action": "Click",
         "post_delay": 1000,
@@ -3189,21 +3047,7 @@
                     "Shop/cook_Caviar Omurice.png"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "Templateroi",
-                "method": 40,
-                "lower": [
-                    16,
-                    46,
-                    142
-                ],
-                "upper": [
-                    20,
-                    68,
-                    168
-                ]
-            }
+            "Sub_「Arbitrage_Cooking」_Clr"
         ],
         "action": "Click",
         "post_delay": 1000,
@@ -3230,21 +3074,7 @@
                     "Shop/cook_Fried Salmon Bento.png"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "Templateroi",
-                "method": 40,
-                "lower": [
-                    16,
-                    46,
-                    142
-                ],
-                "upper": [
-                    20,
-                    68,
-                    168
-                ]
-            }
+            "Sub_「Arbitrage_Cooking」_Clr"
         ],
         "action": "Click",
         "post_delay": 1000,
@@ -3271,21 +3101,7 @@
                     "Shop/cook_Sangria.png"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "Templateroi",
-                "method": 40,
-                "lower": [
-                    16,
-                    46,
-                    142
-                ],
-                "upper": [
-                    20,
-                    68,
-                    168
-                ]
-            }
+            "Sub_「Arbitrage_Cooking」_Clr"
         ],
         "action": "Click",
         "post_delay": 1000,
@@ -3312,21 +3128,7 @@
                     "Shop/cook_Honey Baked Apple.png"
                 ]
             },
-            {
-                "recognition": "ColorMatch",
-                "roi": "Templateroi",
-                "method": 40,
-                "lower": [
-                    16,
-                    46,
-                    142
-                ],
-                "upper": [
-                    20,
-                    68,
-                    168
-                ]
-            }
+            "Sub_「Arbitrage_Cooking」_Clr"
         ],
         "action": "Click",
         "post_delay": 1000,
@@ -3334,6 +3136,21 @@
             "Arbitrage_Cooking_SubMenu"
         ],
         "focus": "Arb.料理制作:[1级]烤蜂蜜苹果"
+    },
+    "Sub_「Arbitrage_Cooking」_Clr": {
+        "recognition": "ColorMatch",
+        "roi": "Templateroi",
+        "method": 40,
+        "lower": [
+            16,
+            46,
+            142
+        ],
+        "upper": [
+            20,
+            68,
+            168
+        ]
     },
     "Arbitrage_Cooking_Menu_Reset": {
         "desc": "使用Anchor复用.将菜单复位。通过随机点一个菜品后返回，利用系统机制复位最顶。",

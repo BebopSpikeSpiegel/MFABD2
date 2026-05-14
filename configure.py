@@ -13,7 +13,7 @@ def configure_ocr_model():
     ocr_dir = assets_dir / "resource" / "base" / "model" / "ocr"
     ocr_dir.mkdir(parents=True, exist_ok=True)
 
-    ppocr_dir = assets_ocr_dir / "ppocr_v4"
+    ppocr_dir = assets_ocr_dir / "ppocr_v5"
 
     # det: 移动版 (zh_cn，无后缀文件夹)
     det_src = ppocr_dir / "zh_cn" / "det.onnx"

@@ -10,20 +10,8 @@
         "desc": "[通用复位]复位到主界面模块,开始,中继调用",
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
         ],
         "next": [
             "Activities_InIndex",
@@ -372,7 +360,6 @@
         "recognition": "And",
         "all_of": [
             {
-                "sub_name": "Sub_Ocr",
                 "recognition": "OCR",
                 "roi": [
                     966,
@@ -384,7 +371,7 @@
                     "旋转"
                 ]
             },
-            "Global_Ocr_Clr_Enable_Sub"
+            "Sub_Ocr_Enable_Clr"
         ],
         "action": "Click",
         "post_delay": 4000,
@@ -561,20 +548,8 @@
         "desc": "返回主页",
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "Main_OCR",
-                "recognition": "OCR",
-                "roi": [
-                    98,
-                    656,
-                    66,
-                    32
-                ],
-                "expected": [
-                    "抽抽乐"
-                ]
-            },
-            "Global_Main_Clr"
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
         ],
         "next": [
             "Activities_InIndex",
