@@ -641,7 +641,7 @@
         "next": ["[JumpBack]Global_WaitingForLoading"]
     },
     "Anc_Ocr_Enable_Clr": {
-        "desc": "[识别]]对Ocr节点按钮再次色核,亮色",
+        "desc": "[识别]对Ocr节点按钮再次色核,亮色",
         "recognition": "ColorMatch",
         "roi": "[Anchor]Ocr_clr",
         "roi_offset": [
