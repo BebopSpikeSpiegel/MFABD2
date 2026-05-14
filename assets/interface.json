@@ -1752,6 +1752,10 @@
                     "enabled": true
                 },
                 {
+                    "name": "[领取]活动页奖励",
+                    "enabled": true
+                },
+                {
                     "name": "[领取]通行证奖励",
                     "enabled": true
                 },
@@ -1834,6 +1838,10 @@
                 },
                 {
                     "name": "[领取]任务页(每日/每周)",
+                    "enabled": true
+                },
+                {
+                    "name": "[领取]活动页奖励",
                     "enabled": true
                 },
                 {
