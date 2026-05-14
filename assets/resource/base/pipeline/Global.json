@@ -317,11 +317,8 @@
     "Global_BackToQC1": {
         "desc": "50次多半是卡死了,死死透别截图了",
         "max_hit": 50,
-        "recognition": "TemplateMatch",
-        "template": [
-            "BusinQuickIcoGE.png"
-        ],
-        "green_mask": true,
+        "recognition": "And",
+        "all_of": ["Global_QuickCart_MenuReset"],
         "action": "Click",
         "post_delay": 2000,
         "next": [
