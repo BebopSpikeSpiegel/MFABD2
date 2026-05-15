@@ -145,7 +145,16 @@ def main():
 
     # 1. 初始化 Toolkit (借鉴 B 项目)
     # AgentServer 模式下仅 set_log_dir 生效，其余被忽略（上游已知行为）
-    Toolkit.init_option(str(project_root))
+    # 注：路径含非 ASCII 字符时，底层 C++ DLL 会在抛出 OSError 前先创建乱码目录
+    # 因此提前检测，非 ASCII 路径直接跳过，避免副作用
+    project_root_str = str(project_root)
+    if project_root_str.isascii():
+        try:
+            Toolkit.init_option(project_root_str)
+        except OSError as e:
+            mfaalog.warning(f"Toolkit.init_option 调用失败，已跳过日志目录设置: {e}")
+    else:
+        mfaalog.warning("路径含非ASCII字符，已跳过 Toolkit.init_option（避免生成乱码目录）")
 
     # 2. 获取 socket_id (由 MaaFramework 传入)
     if not socket_id:
