@@ -480,16 +480,8 @@
     },
     "StartGame_MainMsgBox_Remove": {
         "desc": "开始暴力解决广告，左侧点击10次",
-        "recognition": "OCR",
-        "roi": [
-            98,
-            656,
-            66,
-            32
-        ],
-        "expected": [
-            "抽抽乐"
-        ],
+        "recognition": "And",
+        "all_of": ["Rec_HomePage_GA_Ocr"],
         "action": "Click",
         "target": [
             60,
@@ -518,15 +510,10 @@
     },
     "StartGame_BackMapPageOG": {
         "desc": "识别左下抽抽乐-返回地图页(原版)",
-        "recognition": "OCR",
-        "roi": [
-            98,
-            656,
-            66,
-            32
-        ],
-        "expected": [
-            "抽抽乐"
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Rec_HomePage_GA_Clr"
         ],
         "action": "Click",
         "target": [
@@ -554,17 +541,11 @@
     },
     "StartGame_FinBackMapPage": {
         "desc": "识别右下奔跑图标-章节主页",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1047,
-            516,
-            107,
-            110
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
-        "template": [
-            "Run.png"
-        ],
-        "green_mask": true,
         "anchor": "StartGame_Setup_Change",
         "next": [
             "[JumpBack]Setup_Entry1",
@@ -595,17 +576,11 @@
     },
     "StartGame_End": {
         "desc": "启动环节结束",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1047,
-            516,
-            107,
-            110
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
-        "template": [
-            "Run.png"
-        ],
-        "green_mask": true,
         "focus": "SM.启动流程结束"
     },
     "StartGame_LinkError": {
@@ -691,32 +666,16 @@
     },
     "StartGame_AtPack_FantasiaSquare": {
         "desc": "在广场启动游戏",
-        "recognition": "TemplateMatch",
-        "roi": [
-            656,
-            622,
-            77,
-            66
-        ],
-        "template": [
-            "Mirror_FantasiaSquare_Ico.png"
-        ],
+        "recognition": "And",
+        "all_of": ["Rec_Pack_FantasiaSquare"],
         "next": [
             "Global_BackToQC1"
         ]
     },
     "StartGame_AtPack_GoldenColosseum": {
         "desc": "在黄金角斗场启动游戏",
-        "recognition": "OCR",
-        "roi": [
-            94,
-            601,
-            95,
-            55
-        ],
-        "expected": [
-            "阵形"
-        ],
+        "recognition": "And",
+        "all_of": ["Rec_Pack_GoldenColosseum"],
         "next": [
             "Global_BackToQC1"
         ],
@@ -761,16 +720,8 @@
     },
     "StartGame_AtPack_GlupyDiner": {
         "desc": "意料外卡带-格鲁菲餐厅",
-        "recognition": "OCR",
-        "roi": [
-            91,
-            25,
-            144,
-            66
-        ],
-        "expected": [
-            "格鲁菲餐厅"
-        ],
+        "recognition": "And",
+        "all_of": ["Rec_Pack_GlupyDiner"],
         "next": [
             "Global_BackToPve2#"
         ],

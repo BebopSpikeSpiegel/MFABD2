@@ -855,5 +855,44 @@
         ],
         "connected": true,
         "count": 10
+    },
+    "Rec_Pack_FantasiaSquare": {
+        "desc": "在广场,识别静止UI",
+        "recognition": "TemplateMatch",
+        "roi": [
+            656,
+            622,
+            77,
+            66
+        ],
+        "template": [
+            "Mirror_FantasiaSquare_Ico.png"
+        ]
+    },
+    "Rec_Pack_GoldenColosseum": {
+        "desc": "在黄金角斗场",
+        "recognition": "OCR",
+        "roi": [
+            94,
+            601,
+            95,
+            55
+        ],
+        "expected": [
+            "阵形"
+        ]
+    },
+    "Rec_Pack_GlupyDiner": {
+        "desc": "在格鲁菲餐厅",
+        "recognition": "OCR",
+        "roi": [
+            91,
+            25,
+            144,
+            66
+        ],
+        "expected": [
+            "格鲁菲餐厅"
+        ]
     }
 }
