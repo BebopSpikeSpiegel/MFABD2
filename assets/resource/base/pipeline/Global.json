@@ -786,10 +786,10 @@
         "desc": "[识别]箱庭,pin按钮的UI",
         "recognition": "TemplateMatch",
         "roi": [
-            1122,
-            646,
-            40,
-            38
+            1117,
+            639,
+            53,
+            51
         ],
         "template": [
             "pin.png"
