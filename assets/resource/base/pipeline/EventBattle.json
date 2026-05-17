@@ -868,7 +868,6 @@
         "recognition": "And",
         "all_of": [
             {
-                "sub_name": "Sub_Ocr",
                 "recognition": "OCR",
                 "roi": [
                     842,
@@ -897,7 +896,6 @@
         "recognition": "And",
         "all_of": [
             {
-                "sub_name": "Sub_Ocr",
                 "recognition": "OCR",
                 "roi": [
                     842,
