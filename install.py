@@ -172,22 +172,20 @@ def install_agent(target_os):
             interface["agent"]["child_exec"] = r"{PROJECT_DIR}/python/python.exe"
             interface["agent"]["child_args"] = ["-u", "-X", "utf8=1", r"{PROJECT_DIR}/agent/main.py"]
         
-        # 2. macOS: 智能判断 (有嵌入用嵌入，没嵌入用系统)
+        # 2. macOS: 智能判断 (有嵌入用启动器自愈，没嵌入用系统)
         elif any(target_os.startswith(p) for p in ["macos", "darwin", "osx"]):
-            # 检查是否有 python/bin/python3
             embedded_python = install_path / "python" / "bin" / "python3"
-            
+
             if embedded_python.exists():
-                print("[macOS] 检测到便携版 Python，已启用独立环境模式。")
-                # 注意：MaaFramework 在 Mac 下解析 {PROJECT_DIR} 后路径拼接要准确
-                # 这里的路径不需要 .exe
-                interface["agent"]["child_exec"] = r"{PROJECT_DIR}/python/bin/python3"
+                print("[macOS] 检测到便携版 Python，已启用自愈启动器模式。")
+                # 由 /bin/bash 读取 mac_launcher.sh，无需脚本自身有 +x；
+                # launcher 内部自动清除 quarantine 并修复 python3 权限后再 exec。
+                interface["agent"]["child_exec"] = "/bin/bash"
+                interface["agent"]["child_args"] = [r"{PROJECT_DIR}/agent/mac_launcher.sh"]
             else:
                 print("[macOS] 未检测到便携版 Python，回退到系统 python3。")
                 interface["agent"]["child_exec"] = "python3"
-            
-            # Mac 通常不需要 -X utf8=1
-            interface["agent"]["child_args"] = ["-u", r"{PROJECT_DIR}/agent/main.py"]
+                interface["agent"]["child_args"] = ["-u", r"{PROJECT_DIR}/agent/main.py"]
         
         # 3. Linux/Android
         else:
