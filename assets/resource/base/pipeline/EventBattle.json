@@ -1051,8 +1051,17 @@
         "action": "Click",
         "post_delay": 2000,
         "next": [
-            "Even_MamonoFollowUp_onSubMain",
+            "Even_MamonoFollowUp_QuickBattle_PostVerify",
             "Even_MamonoFollowUp_QuickBattle_ck"
+        ]
+    },
+    "Even_MamonoFollowUp_QuickBattle_PostVerify": {
+        "recognition": "And",
+        "all_of": ["Even_MamonoFollowUp_onSubMain"],
+        "next": [
+            "SeasonEvent_MamonoFollow_HP_Hunting",
+            "[JumpBack]SeasonEvent_MamonoFollow_HP_Hunted",
+            "[JumpBack]SeasonEvent_MamonoFollow_HP_NoMeetHunt"
         ]
     },
     "Even_MamonoFollowUp_onSubMain": {
