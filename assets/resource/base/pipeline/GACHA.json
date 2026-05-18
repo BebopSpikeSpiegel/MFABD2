@@ -196,15 +196,15 @@
         "desc": "抽卡结果页,大概",
         "recognition": "Or",
         "any_of": [
-            "Rec_<Gacha_Quick_Briefing>_Tmp",
-            "Rec_<Gacha_Quick_Briefing>_Ocr"
+            "Rec_「Gacha_Quick_Briefing」_Tmp",
+            "Rec_「Gacha_Quick_Briefing」_Ocr"
         ],
         "next": [
             "Gacha_Quick_End",
             "[JumpBack]Global_BackPageHub_Once"
         ]
     },
-    "Rec_<Gacha_Quick_Briefing>_Tmp": {
+    "Rec_「Gacha_Quick_Briefing」_Tmp": {
         "desc": "[识别]抽卡结果页,位置01-图案",
         "recognition": "TemplateMatch",
         "roi": [
@@ -215,7 +215,7 @@
         ],
         "template": ["Gacha_Briefing.png"]
     },
-    "Rec_<Gacha_Quick_Briefing>_Ocr": {
+    "Rec_「Gacha_Quick_Briefing」_Ocr": {
         "desc": "[识别]抽卡结果页,位置02-正则",
         "recognition": "OCR",
         "roi": [
@@ -268,8 +268,8 @@
     "Gacha_FindFreeGacha_GotoADV": {
         "recognition": "Or",
         "any_of": [
-            "Rec_<GachaADV_Special_ReservedRights>_Ocr",
-            "Rec_<GachaADV_Special_ReservedRights>_Tpl"
+            "Rec_「GachaADV_Special_ReservedRights」_Ocr",
+            "Rec_「GachaADV_Special_ReservedRights」_Tpl"
         ],
         "next": [
             "GachaADV_Start"

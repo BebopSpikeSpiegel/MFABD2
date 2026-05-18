@@ -179,8 +179,8 @@
         "max_hit": 10,
         "recognition": "Or",
         "any_of": [
-            "Rec_<Daily_Busin_Claim>_Ocr",
-            "Rec_<Daily_Busin_Claim>_Tpl"
+            "Rec_「Daily_Busin_Claim」_Ocr",
+            "Rec_「Daily_Busin_Claim」_Tpl"
         ],
         "action": "Click",
         "target_offset": [
@@ -197,7 +197,7 @@
         ],
         "focus": "GOM.餐馆结算(COR)-主界面"
     },
-    "Rec_<Daily_Busin_Claim>_Ocr": {
+    "Rec_「Daily_Busin_Claim」_Ocr": {
         "desc": "主页,左侧按钮群-经管1",
         "recognition": "OCR",
         "roi": [
@@ -210,7 +210,7 @@
             "经营管理"
         ]
     },
-    "Rec_<Daily_Busin_Claim>_Tpl": {
+    "Rec_「Daily_Busin_Claim」_Tpl": {
         "desc": "主页,左侧按钮群-经管2",
         "recognition": "TemplateMatch",
         "roi": [
@@ -451,9 +451,9 @@
     "Daily_Busin_DecorCoin_PickUp": {
         "recognition": "Or",
         "any_of": [
-            "Rec_<Daily_Busin_DecorCoin_PickUp>_Tpl_01",
-            "Rec_<Daily_Busin_DecorCoin_PickUp>_Tpl_02",
-            "Rec_<Daily_Busin_DecorCoin_PickUp>_Tpl_03"
+            "Rec_「Daily_Busin_DecorCoin_PickUp」_Tpl_01",
+            "Rec_「Daily_Busin_DecorCoin_PickUp」_Tpl_02",
+            "Rec_「Daily_Busin_DecorCoin_PickUp」_Tpl_03"
         ],
         "action": "Click",
         "post_delay": 1500,
@@ -468,7 +468,7 @@
         ],
         "focus": "拾取装饰币"
     },
-    "Rec_<Daily_Busin_DecorCoin_PickUp>_Tpl_01": {
+    "Rec_「Daily_Busin_DecorCoin_PickUp」_Tpl_01": {
         "desc": "装饰币探查区域01-中央",
         "recognition": "TemplateMatch",
         "roi": [
@@ -480,7 +480,7 @@
         "template": "UI_BusinCoin.png",
         "green_mask": true
     },
-    "Rec_<Daily_Busin_DecorCoin_PickUp>_Tpl_02": {
+    "Rec_「Daily_Busin_DecorCoin_PickUp」_Tpl_02": {
         "desc": "装饰币探查区域02-下方",
         "recognition": "TemplateMatch",
         "roi": [
@@ -492,7 +492,7 @@
         "template": "UI_BusinCoin.png",
         "green_mask": true
     },
-    "Rec_<Daily_Busin_DecorCoin_PickUp>_Tpl_03": {
+    "Rec_「Daily_Busin_DecorCoin_PickUp」_Tpl_03": {
         "desc": "装饰币探查区域03-左侧",
         "recognition": "TemplateMatch",
         "roi": [

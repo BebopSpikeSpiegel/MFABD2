@@ -51,7 +51,7 @@
                     ]
                 }
             },
-            "Rec_<Setup_Entry1_Swich>_Tpl"
+            "Rec_「Setup_Entry1_Swich」_Tpl"
         ],
         "timeout": 3000,
         "next": [
@@ -59,7 +59,7 @@
         ],
         "focus": "SMSP.触发设置按需调整,原因:移动方式不应为方向键"
     },
-    "Rec_<Setup_Entry1_Swich>_Tpl": {
+    "Rec_「Setup_Entry1_Swich」_Tpl": {
         "desc": "[识别]方向键存在",
         "recognition": "TemplateMatch",
         "roi": [
@@ -306,7 +306,7 @@
                     ]
                 }
             },
-            "Rec_<Setup_SkillScan_Skill1>_Tpl"
+            "Rec_「Setup_SkillScan_Skill1」_Tpl"
         ],
         "timeout": 8000,
         "rate_limit": 2000,
@@ -319,7 +319,7 @@
         ],
         "focus": "Set.检测技能1,通过"
     },
-    "Rec_<Setup_SkillScan_Skill1>_Tpl": {
+    "Rec_「Setup_SkillScan_Skill1」_Tpl": {
         "desc": "[识别]探查技能存在",
         "recognition": "TemplateMatch",
         "roi": [
@@ -387,7 +387,7 @@
                     ]
                 }
             },
-            "Rec_<Setup_SkillScan_Skill2>_Tpl"
+            "Rec_「Setup_SkillScan_Skill2」_Tpl"
         ],
         "timeout": 8000,
         "rate_limit": 2000,
@@ -402,7 +402,7 @@
         ],
         "focus": "Set.检测技能2,通过"
     },
-    "Rec_<Setup_SkillScan_Skill2>_Tpl": {
+    "Rec_「Setup_SkillScan_Skill2」_Tpl": {
         "desc": "[识别]'吸取'技能存在",
         "recognition": "TemplateMatch",
         "roi": [
@@ -470,7 +470,7 @@
                     ]
                 }
             },
-            "Rec_<Setup_SkillScan_Skill3>_Tpl"
+            "Rec_「Setup_SkillScan_Skill3」_Tpl"
         ],
         "timeout": 8000,
         "rate_limit": 2000,
@@ -485,7 +485,7 @@
         ],
         "focus": "Set.检测技能3,通过"
     },
-    "Rec_<Setup_SkillScan_Skill3>_Tpl": {
+    "Rec_「Setup_SkillScan_Skill3」_Tpl": {
         "desc": "[识别]'召集'技能存在",
         "recognition": "TemplateMatch",
         "roi": [
@@ -553,7 +553,7 @@
                     ]
                 }
             },
-            "Rec_<Setup_SkillScan_Skill5>_Tpl"
+            "Rec_「Setup_SkillScan_Skill5」_Tpl"
         ],
         "timeout": 8000,
         "rate_limit": 2000,
@@ -568,7 +568,7 @@
         ],
         "focus": "Set.检测技能5,通过"
     },
-    "Rec_<Setup_SkillScan_Skill5>_Tpl": {
+    "Rec_「Setup_SkillScan_Skill5」_Tpl": {
         "desc": "[识别]'锻造'技能存在",
         "recognition": "TemplateMatch",
         "roi": [
@@ -636,7 +636,7 @@
                     ]
                 }
             },
-            "Rec_<Collect_TeleportRecall_Skill>_Tpl"
+            "Rec_「Collect_TeleportRecall_Skill」_Tpl"
         ],
         "timeout": 8000,
         "rate_limit": 2000,

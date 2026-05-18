@@ -1102,15 +1102,15 @@
         "desc": "看看专武是不是已经点过了? ，强制<17| 说明在正确筛选情况下仍有无法精炼装备,系+24的制作&专武",
         "recognition": "Or",
         "any_of": [
-            "Rec_<Equip_Overdrive_RefLvMax_Second_Clr>_Clr_01",
-            "Rec_<Equip_Overdrive_RefLvMax_Second_Clr>_Clr_02"
+            "Rec_「Equip_Overdrive_RefLvMax_Second_Clr」_Clr_01",
+            "Rec_「Equip_Overdrive_RefLvMax_Second_Clr」_Clr_02"
         ],
         "next": [
             "Equip_Overdrive_RefLvMax_Forwarding"
         ],
         "focus": "EBO.神人发现，佬你好( • ̀ω•́ )✧"
     },
-    "Rec_<Equip_Overdrive_RefLvMax_Second_Clr>_Clr_01": {
+    "Rec_「Equip_Overdrive_RefLvMax_Second_Clr」_Clr_01": {
         "desc": "装备筛选sub,分类:'专用'",
         "recognition": "ColorMatch",
         "roi": [
@@ -1132,7 +1132,7 @@
         ],
         "count": 10
     },
-    "Rec_<Equip_Overdrive_RefLvMax_Second_Clr>_Clr_02": {
+    "Rec_「Equip_Overdrive_RefLvMax_Second_Clr」_Clr_02": {
         "desc": "装备筛选sub,分类:'制作'",
         "recognition": "ColorMatch",
         "roi": [
@@ -1290,8 +1290,8 @@
         "desc": "发现背包满了,点击进入背包",
         "recognition": "Or",
         "any_of": [
-            "Rec_<Equip_Backpack_Full>_Ocr_01",
-            "Rec_<Equip_Backpack_Full>_Ocr_02"
+            "Rec_「Equip_Backpack_Full」_Ocr_01",
+            "Rec_「Equip_Backpack_Full」_Ocr_02"
         ],
         "action": "Click",
         "target_offset": [
@@ -1307,7 +1307,7 @@
             "Equip_Backpack_Full"
         ]
     },
-    "Rec_<Equip_Backpack_Full>_Ocr_01": {
+    "Rec_「Equip_Backpack_Full」_Ocr_01": {
         "desc": "箱庭右上显示背包满",
         "recognition": "OCR",
         "roi": [
@@ -1321,7 +1321,7 @@
         ],
         "only_rec": true
     },
-    "Rec_<Equip_Backpack_Full>_Ocr_02": {
+    "Rec_「Equip_Backpack_Full」_Ocr_02": {
         "desc": "主页左下显示背包满",
         "recognition": "OCR",
         "roi": [

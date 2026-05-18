@@ -112,7 +112,7 @@
                     ]
                 }
             },
-            "Rec_<Collect_TeleportRecall_Skill>_Tpl"
+            "Rec_「Collect_TeleportRecall_Skill」_Tpl"
         ],
         "timeout": 8000,
         "rate_limit": 2000,
@@ -122,7 +122,7 @@
         ],
         "focus": "CRT.传送阵技能已放置"
     },
-    "Rec_<Collect_TeleportRecall_Skill>_Tpl": {
+    "Rec_「Collect_TeleportRecall_Skill」_Tpl": {
         "desc": "[识别]'传送'技能存在",
         "recognition": "TemplateMatch",
         "roi": [

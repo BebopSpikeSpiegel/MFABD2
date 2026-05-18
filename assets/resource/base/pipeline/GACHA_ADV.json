@@ -1108,15 +1108,15 @@
         "desc": "中断发现点数超过200但用户决定保留的情况",
         "recognition": "Or",
         "any_of": [
-            "Rec_<GachaADV_Special_ReservedRights>_Ocr",
-            "Rec_<GachaADV_Special_ReservedRights>_Tpl"
+            "Rec_「GachaADV_Special_ReservedRights」_Ocr",
+            "Rec_「GachaADV_Special_ReservedRights」_Tpl"
         ],
         "next": [
             "[Anchor]GachaADV_NextPool"
         ],
         "focus": "GAB.[INT]卡池内存在可兑换Up角色机会"
     },
-    "Rec_<GachaADV_Special_ReservedRights>_Ocr": {
+    "Rec_「GachaADV_Special_ReservedRights」_Ocr": {
         "desc": "将要触发抽抽乐200保底识别器01,",
         "recognition": "OCR",
         "roi": [
@@ -1130,7 +1130,7 @@
         ],
         "only_rec": true
     },
-    "Rec_<GachaADV_Special_ReservedRights>_Tpl": {
+    "Rec_「GachaADV_Special_ReservedRights」_Tpl": {
         "desc": "将要触发抽抽乐200保底识别器02,",
         "recognition": "TemplateMatch",
         "roi": [
