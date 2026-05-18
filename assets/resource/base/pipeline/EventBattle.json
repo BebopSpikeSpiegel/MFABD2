@@ -1217,7 +1217,7 @@
         "desc": "小活动入口,其次返回主界面,查找主页的'小活动'入口",
         "recognition": "And",
         "all_of": ["Event_GoinEvent"],
-        "timeout": 4000,
+        "timeout": 2000,
         "next": [
             "Event_Goin_MiniGame",
             "[JumpBack]Global_WaitingForLoading"
@@ -1226,7 +1226,8 @@
             "Global_ToHomePage",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ]
+        ],
+        "focus": "尝试查找小活动"
     },
     "Event_Goin_MiniGame": {
         "recognition": "OCR",
@@ -1250,7 +1251,8 @@
         "post_delay": 2000,
         "next": [
             "Event_MiniGame"
-        ]
+        ],
+        "focus": "发现小活动,进入"
     },
     "Event_MiniGame": {
         "desc": "战场探索",
