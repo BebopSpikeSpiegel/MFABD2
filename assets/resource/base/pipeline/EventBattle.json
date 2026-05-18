@@ -27,8 +27,8 @@
         "desc": "在赛季活动页面.兼做任务选择器",
         "recognition": "Or",
         "any_of": [
-            "Rec_「Event_Event_Main」_Ocr_01",
-            "Rec_「Event_Event_Main」_Ocr_02"
+            "Rec_<Event_Event_Main>_Ocr_01",
+            "Rec_<Event_Event_Main>_Ocr_02"
         ],
         "timeout": 1000,
         "next": [
@@ -40,7 +40,7 @@
         ],
         "focus": "EM.赛季活动进入确认."
     },
-    "Rec_「Event_Event_Main」_Ocr_01": {
+    "Rec_<Event_Event_Main>_Ocr_01": {
         "desc": "赛季主页判定,右上代币加成服装",
         "recognition": "OCR",
         "roi": [
@@ -53,7 +53,7 @@
             "活动服装"
         ]
     },
-    "Rec_「Event_Event_Main」_Ocr_02": {
+    "Rec_<Event_Event_Main>_Ocr_02": {
         "desc": "赛季主页判定,特殊按钮",
         "recognition": "OCR",
         "roi": [
@@ -711,8 +711,8 @@
         "desc": "演习魔兽,结束",
         "recognition": "Or",
         "any_of": [
-            "Rec_「SeasonEvent_MamonoFollow_Practice」_Ocr_01",
-            "Rec_「SeasonEvent_MamonoFollow_Practice」_Ocr_02"
+            "Rec_<SeasonEvent_MamonoFollow_Practice>_Ocr_01",
+            "Rec_<SeasonEvent_MamonoFollow_Practice>_Ocr_02"
         ],
         "next": [
             "SeasonEvent_Main_Return",
@@ -720,7 +720,7 @@
         ],
         "focus": "E.当前魔兽为演习,退出"
     },
-    "Rec_「SeasonEvent_MamonoFollow_Practice」_Ocr_01": {
+    "Rec_<SeasonEvent_MamonoFollow_Practice>_Ocr_01": {
         "desc": "魔兽尚未开放判定,位置1",
         "recognition": "OCR",
         "roi": [
@@ -732,7 +732,7 @@
         "expected": ["距离开始还"],
         "only_rec": true
     },
-    "Rec_「SeasonEvent_MamonoFollow_Practice」_Ocr_02": {
+    "Rec_<SeasonEvent_MamonoFollow_Practice>_Ocr_02": {
         "desc": "魔兽尚未开放判定,位置2",
         "recognition": "OCR",
         "roi": [
@@ -868,7 +868,6 @@
         "recognition": "And",
         "all_of": [
             {
-                "sub_name": "Sub_Ocr",
                 "recognition": "OCR",
                 "roi": [
                     842,
@@ -897,7 +896,6 @@
         "recognition": "And",
         "all_of": [
             {
-                "sub_name": "Sub_Ocr",
                 "recognition": "OCR",
                 "roi": [
                     842,
@@ -1053,8 +1051,17 @@
         "action": "Click",
         "post_delay": 2000,
         "next": [
-            "Even_MamonoFollowUp_onSubMain",
+            "Even_MamonoFollowUp_QuickBattle_PostVerify",
             "Even_MamonoFollowUp_QuickBattle_ck"
+        ]
+    },
+    "Even_MamonoFollowUp_QuickBattle_PostVerify": {
+        "recognition": "And",
+        "all_of": ["Even_MamonoFollowUp_onSubMain"],
+        "next": [
+            "SeasonEvent_MamonoFollow_HP_Hunting",
+            "[JumpBack]SeasonEvent_MamonoFollow_HP_Hunted",
+            "[JumpBack]SeasonEvent_MamonoFollow_HP_NoMeetHunt"
         ]
     },
     "Even_MamonoFollowUp_onSubMain": {
@@ -1195,21 +1202,22 @@
         "count": 20
     },
     "SeasonEvent_MiniGame_Start": {
-        "desc": "小活动入口,先寻找赛季内的'战场探索'.",
+        "desc": "小活动入口,先寻找赛季内的'战场探索'.| JB会返回,需要插入中断维持环境,否则可能超时",
         "recognition": "And",
         "all_of": ["Event_Event_Main"],
         "anchor": {"MiniGame_Return": "Event_MiniGame_SubToMain"},
         "next": [
             "Event_MiniGame",
             "SeasonEvent_MiniGame_BackToMain",
-            "[JumpBack]Global_BackPageHub_Once"
+            "[JumpBack]Global_BackPageHub_Once",
+            "[JumpBack]Global_WaitingForLoading"
         ]
     },
     "SeasonEvent_MiniGame_BackToMain": {
         "desc": "小活动入口,其次返回主界面,查找主页的'小活动'入口",
         "recognition": "And",
         "all_of": ["Event_GoinEvent"],
-        "timeout": 4000,
+        "timeout": 2000,
         "next": [
             "Event_Goin_MiniGame",
             "[JumpBack]Global_WaitingForLoading"
@@ -1218,7 +1226,8 @@
             "Global_ToHomePage",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ]
+        ],
+        "focus": "尝试查找小活动"
     },
     "Event_Goin_MiniGame": {
         "recognition": "OCR",
@@ -1242,7 +1251,8 @@
         "post_delay": 2000,
         "next": [
             "Event_MiniGame"
-        ]
+        ],
+        "focus": "发现小活动,进入"
     },
     "Event_MiniGame": {
         "desc": "战场探索",

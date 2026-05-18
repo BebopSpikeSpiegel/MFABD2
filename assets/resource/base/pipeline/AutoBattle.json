@@ -14,8 +14,8 @@
     "AutoBattle_Is_Auto": {
         "recognition": "Or",
         "any_of": [
-            "Rec_「AutoBattle_Is_Auto」_Ocr_01",
-            "Rec_「AutoBattle_Is_Auto」_Ocr_02"
+            "Rec_<AutoBattle_Is_Auto>_Ocr_01",
+            "Rec_<AutoBattle_Is_Auto>_Ocr_02"
         ],
         "post_delay": 5000,
         "next": [
@@ -24,7 +24,7 @@
             "AutoBattle_Is_Auto"
         ]
     },
-    "Rec_「AutoBattle_Is_Auto」_Ocr_01": {
+    "Rec_<AutoBattle_Is_Auto>_Ocr_01": {
         "desc": "[识别]自动战斗判定,位置1-右下",
         "recognition": "OCR",
         "roi": [
@@ -36,7 +36,7 @@
         "expected": ["自动战斗中"],
         "only_rec": true
     },
-    "Rec_「AutoBattle_Is_Auto」_Ocr_02": {
+    "Rec_<AutoBattle_Is_Auto>_Ocr_02": {
         "desc": "[识别]自动战斗判定,位置2-左下",
         "recognition": "OCR",
         "roi": [
@@ -51,12 +51,12 @@
         "desc": "当前在非自动战斗界面",
         "recognition": "Or",
         "any_of": [
-            "Rec_「AutoBattle_TabTo_Auto」_Ocr_01",
-            "Rec_「AutoBattle_TabTo_Auto」_Ocr_02"
+            "Rec_<AutoBattle_TabTo_Auto>_Ocr_01",
+            "Rec_<AutoBattle_TabTo_Auto>_Ocr_02"
         ],
         "next": ["AutoBattle_ClickAutoButt"]
     },
-    "Rec_「AutoBattle_TabTo_Auto」_Ocr_01": {
+    "Rec_<AutoBattle_TabTo_Auto>_Ocr_01": {
         "desc": "[识别]手动战斗界面,位置01",
         "recognition": "OCR",
         "roi": [
@@ -68,7 +68,7 @@
         "expected": ["BATTLE"],
         "only_rec": true
     },
-    "Rec_「AutoBattle_TabTo_Auto」_Ocr_02": {
+    "Rec_<AutoBattle_TabTo_Auto>_Ocr_02": {
         "desc": "[识别]手动战斗界面,位置02",
         "recognition": "OCR",
         "roi": [

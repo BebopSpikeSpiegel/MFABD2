@@ -80,8 +80,8 @@
         "desc": "确认通行证页面,选择通行证任务",
         "recognition": "Or",
         "any_of": [
-            "Rec_「Pass_SelectPassTask」_Ocr01",
-            "Rec_「Pass_SelectPassTask」_Ocr02"
+            "Rec_<Pass_SelectPassTask>_Ocr01",
+            "Rec_<Pass_SelectPassTask>_Ocr02"
         ],
         "action": "Click",
         "target": [
@@ -91,7 +91,7 @@
         "post_delay": 1500,
         "focus": "任务子项页色核检查"
     },
-    "Rec_「Pass_SelectPassTask」_Ocr01": {
+    "Rec_<Pass_SelectPassTask>_Ocr01": {
         "desc": "[识别]通行证页面,位置01",
         "recognition": "OCR",
         "roi": [
@@ -105,7 +105,7 @@
         ],
         "only_rec": true
     },
-    "Rec_「Pass_SelectPassTask」_Ocr02": {
+    "Rec_<Pass_SelectPassTask>_Ocr02": {
         "desc": "[识别]通行证页面,位置02",
         "recognition": "OCR",
         "roi": [
