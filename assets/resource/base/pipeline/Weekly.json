@@ -440,8 +440,8 @@
     "Weekly_VisitCabin_GoIn": {
         "recognition": "Or",
         "any_of": [
-            "Rec_「Weekly_VisitCabin_GoIn」_Tpl",
-            "Rec_「Weekly_VisitCabin_GoIn」_Ocr"
+            "Rec_<Weekly_VisitCabin_GoIn>_Tpl",
+            "Rec_<Weekly_VisitCabin_GoIn>_Ocr"
         ],
         "action": "Click",
         "target_offset": [
@@ -458,7 +458,7 @@
         ],
         "focus": "WVM.点击我的小屋"
     },
-    "Rec_「Weekly_VisitCabin_GoIn」_Tpl": {
+    "Rec_<Weekly_VisitCabin_GoIn>_Tpl": {
         "desc": "[识别]主页,我的小屋",
         "recognition": "TemplateMatch",
         "roi": [
@@ -472,7 +472,7 @@
         ],
         "green_mask": true
     },
-    "Rec_「Weekly_VisitCabin_GoIn」_Ocr": {
+    "Rec_<Weekly_VisitCabin_GoIn>_Ocr": {
         "desc": "[识别]主页,我的小屋",
         "recognition": "OCR",
         "roi": [
