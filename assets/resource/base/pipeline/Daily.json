@@ -463,8 +463,7 @@
             "Daily_Busin_DecorCoin_PickUp"
         ],
         "on_error": [
-            "Daily_Busin_DecorCoin_Move_1",
-            "Daily_Busin_DecorCoin_Move_2"
+            "Daily_Busin_DecorCoin_LocReset"
         ],
         "focus": "拾取装饰币"
     },
@@ -504,15 +503,102 @@
         "template": "UI_BusinCoin.png",
         "green_mask": true
     },
-    "Daily_Busin_DecorCoin_Move_1": {
-        "max_hit": 2,
+    "Daily_Busin_DecorCoin_LocReset": {
+        "desc": "餐厅视图复位系列流程",
+        "recognition": "OCR",
+        "roi": [
+            91,
+            139,
+            94,
+            35
+        ],
+        "expected": "常客笔记",
+        "only_rec": true,
+        "action": "Click",
+        "target_offset": [
+            0,
+            -5,
+            0,
+            0
+        ],
+        "post_delay": 2000,
+        "next": [
+            "Daily_Busin_DecorCoin_LocReset_SubUI",
+            "Daily_Busin_DecorCoin_LocReset"
+        ],
+        "focus": "餐厅视角复位"
+    },
+    "Daily_Busin_DecorCoin_LocReset_SubUI": {
+        "desc": "子界面确认已经入",
+        "recognition": "OCR",
+        "roi": [
+            215,
+            16,
+            122,
+            51
+        ],
+        "expected": "常客笔记",
+        "only_rec": true,
+        "next": [
+            "[JumpBack]Daily_Busin_DiaDetour",
+            "Daily_Busin_DecorCoin_LocReset_Enter",
+            "[JumpBack]Global_BackPageHub_Once"
+        ]
+    },
+    "Daily_Busin_DiaDetour": {
+        "desc": "(常客钻石)钻石领取旁路",
+        "max_hit": 5,
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "roi": [
+                    1012,
+                    636,
+                    163,
+                    49
+                ],
+                "expected": ["全部获得"]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ],
+        "action": "Click",
+        "next": [
+            "Daily_Busin_DiaDetour_Reward",
+            "Daily_Busin_DiaDetour"
+        ]
+    },
+    "Daily_Busin_DiaDetour_Reward": {
+        "recognition": "And",
+        "all_of": ["Daily_GetBusinRewardBack"],
         "action": "Click",
         "target": [
-            220,
-            637,
-            15,
-            13
+            1,
+            1
+        ]
+    },
+    "Daily_Busin_DecorCoin_LocReset_Enter": {
+        "recognition": "And",
+        "all_of": ["Daily_Busin_Entered"],
+        "next": [
+            "Daily_Busin_DecorCoin_Move_1",
+            "Daily_Busin_DecorCoin_Move_2",
+            "Daily_Busin_DecorCoin_Move_3"
+        ]
+    },
+    "Daily_Busin_DecorCoin_Move_1": {
+        "max_hit": 1,
+        "action": "Swipe",
+        "begin": [
+            958,
+            213
         ],
+        "end": [
+            421,
+            497
+        ],
+        "end_hold": 500,
+        "duration": 1000,
         "timeout": 30000,
         "next": [
             "Daily_Busin_DecorCoin_IsFull_Binary",
@@ -526,14 +612,43 @@
         "focus": "点击'客人',移动画面"
     },
     "Daily_Busin_DecorCoin_Move_2": {
-        "max_hit": 3,
-        "action": "Click",
-        "target": [
-            130,
-            639,
-            15,
-            14
+        "max_hit": 2,
+        "action": "Swipe",
+        "begin": [
+            587,
+            242
         ],
+        "end": [
+            1017,
+            527
+        ],
+        "end_hold": 500,
+        "duration": 1000,
+        "timeout": 30000,
+        "next": [
+            "Daily_Busin_DecorCoin_IsFull_Binary",
+            "Daily_Busin_DecorCoin_PickUp"
+        ],
+        "on_error": [
+            "Daily_Busin_Quick_BackPVEPage_Str",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "点击'员工',移动画面"
+    },
+    "Daily_Busin_DecorCoin_Move_3": {
+        "max_hit": 2,
+        "action": "Swipe",
+        "begin": [
+            1134,
+            265
+        ],
+        "end": [
+            390,
+            190
+        ],
+        "end_hold": 500,
+        "duration": 1000,
         "timeout": 30000,
         "next": [
             "Daily_Busin_DecorCoin_IsFull_Binary",
