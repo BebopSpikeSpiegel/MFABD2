@@ -38,6 +38,11 @@
             "Pass_SelectPass",
             "[JumpBack]Pass_TrySwip"
         ],
+        "on_error": [
+            "Pass_Back",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
         "focus": "PM.通行证页面确认"
     },
     "Pass_TrySwip": {
@@ -135,6 +140,11 @@
         "post_delay": 1000,
         "next": [
             "Pass_GetAllBack"
+        ],
+        "on_error": [
+            "Pass_EnterPass",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ],
         "focus": "PM.点击领取"
     },

@@ -24,17 +24,19 @@
         }
     },
     "StartGame_RunApp": {
-        "desc": "启动游戏",
+        "desc": "启动游戏。长白屏超时防御",
         "pre_wait_freezes": 500,
         "action": "StartApp",
         "package": "com.neowizgames.game.browndust2",
         "post_delay": 8000,
+        "timeout": 60000,
         "next": [
             "[JumpBack]StartGame_LinkError",
             "[JumpBack]StartGame_Error_API",
             "StartGame_Error_AM",
             "StartGame_Logo",
-            "StartGame_LoadingPage"
+            "StartGame_LoadingPage",
+            "[JumpBack]Global_WaitingForLoading"
         ]
     },
     "StartGame_Logo": {
