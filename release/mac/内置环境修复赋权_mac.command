@@ -12,6 +12,25 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+# =======================================================
+# 自检：本脚本自身有无隔离标记或缺少执行权限
+# =======================================================
+SELF="${BASH_SOURCE[0]}"
+_SELF_WARN=false
+xattr -p com.apple.quarantine "$SELF" &>/dev/null && _SELF_WARN=true
+[ ! -x "$SELF" ] && _SELF_WARN=true
+
+if $_SELF_WARN; then
+    echo -e "${YELLOW}⚠️  本脚本自身存在限制，直接双击将被系统拦截${NC}"
+    echo -e "   您当前可能是通过终端 bash 命令运行本脚本的。"
+    echo -e "   若要使双击正常打开，请在终端执行：\n"
+    xattr -p com.apple.quarantine "$SELF" &>/dev/null && \
+        echo -e "   ${GREEN}xattr -d com.apple.quarantine \"$SELF\"${NC}"
+    [ ! -x "$SELF" ] && \
+        echo -e "   ${GREEN}chmod +x \"$SELF\"${NC}"
+    echo ""
+fi
+
 echo -e "${BLUE}==========================================${NC}"
 echo -e "${BLUE}   MFABD2 macOS 环境解锁与修复工具${NC}"
 echo -e "${BLUE}==========================================${NC}"

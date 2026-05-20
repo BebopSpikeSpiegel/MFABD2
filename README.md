@@ -144,8 +144,31 @@ UI 内可直接获取更新推送、下载，由[![Mirror酱](https://img.shield
 <details>
 <summary>Mac 使用指引</summary>
 
-Mac 可用，配置流程略复杂，可参考 [M9A 文档站](https://1999.fan/zh_cn/manual/newbie.html)（同框架，软件部署部分通用）。
-Mac 版 Agent 功能在根目录提供一键修复环境脚本，遇到环境问题时可使用。
+> Agent 已内嵌 Python 独立环境，无需配置系统 Python。
+
+**安装**
+
+1. 在 Release 页下载后缀含 `-macos-` 的 **`.tar.gz`** 文件（不是 `.zip`）
+
+2. 打开终端（Spotlight 搜索 `Terminal`），运行以下命令解压：
+
+   ```bash
+   mkdir -p ~/MFABD2
+   tar -xzf ~/Downloads/MFABD2-xxx-macos-arm64.tar.gz -C ~/MFABD2
+   ```
+
+   > 将 `.tar.gz` 文件从 Finder 拖入终端窗口，路径会自动填入，无需手动输入。
+
+3. 在 Finder 中找到解压出的 `MFAAvalonia`，**右键 → 打开**，完成首次系统授权；后续正常双击运行。
+
+---
+
+若不慎用 Archive Utility（双击）解压，运行以下命令修复：
+
+```bash
+cd ~/MFABD2    # 将解压目录从 Finder 拖入终端可自动填入路径
+xattr -rd com.apple.quarantine .
+```
 
 </details>
 

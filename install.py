@@ -98,41 +98,9 @@ def install_chores():
     if "mac" in target_os or "osx" in target_os:
         script_src_dir = working_dir / "release" / "mac"
         
-        # 1. 处理 AKeySetup (需注入版本号)
-        src_script = script_src_dir / "Mac启动方案2-系统环境联网配置_mac.command"
-        dst_script = install_path / "2_备案-系统环境联网配置_mac.command"
-
-        if src_script.exists():
-            print(f"📦 发现脚本文件: {src_script}")
-            try:
-                # 读取内容
-                with open(src_script, 'r', encoding='utf-8') as f:
-                    content = f.read()
-
-                # 替换占位符 {{MAA_VERSION}}
-                # [修改] 强制替换，不依赖 if 检查失败
-                new_content = content.replace("{{MAA_VERSION}}", maa_ver)
-                
-                with open(dst_script, 'w', encoding='utf-8') as f:
-                    f.write(new_content)
-                
-                # 尝试赋予执行权限
-                try: os.chmod(dst_script, 0o755)
-                except OSError as e:
-                    print(f"⚠️ 无法为脚本设置执行权限 {dst_script}: {e}")
-                
-                print(f"✅ 版本号注入完成: {maa_ver}")
-
-            except Exception as e:
-                print(f"❌ 处理 Mac 脚本失败: {e}")
-                # 失败兜底：至少拷贝过去
-                shutil.copy2(src_script, dst_script)
-        else:
-            print(f"⚠️ 未找到 Mac 脚本源文件: {src_script}")
-
-        # 2. [修改] 处理修复工具 (Fix Permission) - 路径也改到了 scripts/release
-        fix_tool_src = script_src_dir / "Mac启动方案1-内置环境修复赋权_mac.command"
-        fix_tool_dst = install_path / "1_Mac用户请先双击运行此环境修复.command"
+        # 处理修复工具 (Fix Permission)
+        fix_tool_src = script_src_dir / "内置环境修复赋权_mac.command"
+        fix_tool_dst = install_path / "1_Mac环境问题修复.command"
         
         if fix_tool_src.exists():
             print(f"🚑 注入 Mac 修复工具...")
@@ -142,6 +110,14 @@ def install_chores():
                 print(f"⚠️ 无法为修复工具设置执行权限 {fix_tool_dst}: {e}")
         else:
             print(f"⚠️ 未找到修复工具: {fix_tool_src}")
+
+        # 使用说明文档（排在最前引导用户）
+        readme_src = script_src_dir / "Mac使用说明.txt"
+        readme_dst = install_path / "0_Mac使用说明.txt"
+        if readme_src.exists():
+            shutil.copy2(readme_src, readme_dst)
+        else:
+            print(f"⚠️ 未找到 Mac 使用说明: {readme_src}")
 
 def install_agent(target_os):
     print("正在安装 Agent...")
