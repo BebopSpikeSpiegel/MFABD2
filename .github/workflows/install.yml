@@ -850,12 +850,17 @@ jobs:
         run: |
           cd artifacts
           mkdir -p release_assets
-          for dir in *; do
-            # 直接使用目录名作为 zip 文件名
-            zip_name="${dir}.zip"
-            
-            # 创建压缩包
-            (cd "$dir" && zip -r "../release_assets/$zip_name" .)
+          for dir in */; do
+            dir="${dir%/}"
+            [ -d "$dir" ] || continue
+            if [[ "$dir" == *"-macos-"* ]]; then
+              # Mac: tar.gz 保留权限；用户用终端 tar -xzf 解压时 quarantine 不会传播
+              chmod +x "$dir/MFAAvalonia" 2>/dev/null || true
+              find "$dir" \( -name "*.sh" -o -name "*.command" \) -exec chmod +x {} \;
+              tar -cpzf "release_assets/${dir}.tar.gz" -C "$dir" .
+            else
+              (cd "$dir" && zip -r "../release_assets/${dir}.zip" .)
+            fi
           done
 
       - name: Create GitHub Release
