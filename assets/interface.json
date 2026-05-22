@@ -527,6 +527,11 @@
                     "pipeline_override": {
                         "QuickHunt_FastBattleMAXTouchAdventureRoute": {
                             "expected": [
+                                "MAX"
+                            ]
+                        },
+                        "QuickHunt_FastBattleMAXTouchHuntingGrounds": {
+                            "expected": [
                                 "MIN"
                             ]
                         }
@@ -535,6 +540,11 @@
                 {
                     "name": "狩猎场MAX / 双倍图x1",
                     "pipeline_override": {
+                        "QuickHunt_FastBattleMAXTouchAdventureRoute": {
+                            "expected": [
+                                "MIN"
+                            ]
+                        },
                         "QuickHunt_FastBattleMAXTouchHuntingGrounds": {
                             "expected": [
                                 "MAX"
