@@ -75,7 +75,7 @@ def group_commits_by_type(commits: List[Dict]) -> Dict:
 
         # 反转检测：type 是地方词、scope 是行为词 → 自动提升到 Tier 1
         if type_str in TIER2_TYPES and scope in TIER1_TYPES:
-            print(f"⚠️ 疑似 type/scope 反转: '{subject[:60]}' → 自动提升到 Tier 1，建议改为 {scope}({type_str}):")
+            print(f"⚠️ 疑似 type/scope 反转: '{subject[:60]}' → 自动提升到 Tier 1，建议改为 {scope}({type_str}):", file=sys.stderr)
             groups['tier1'][scope].append(commit)
         elif type_str in TIER1_TYPES:
             groups['tier1'][type_str].append(commit)
@@ -328,14 +328,14 @@ def generate_changelog_content(commits: List[Dict], current_tag: str, compare_ba
     grouped = group_commits_by_type(commits)
     tag_type = _get_tag_type(current_tag)
 
+    def _is_merge_commit(commit):
+        return commit['subject'].startswith("Merge:'")
+
     def _render_tier(tier_dict, tier_titles):
         """渲染单个 Tier 内各分组，返回 markdown 字符串"""
         out = ''
         for type_key, title in tier_titles.items():
-            type_commits = [
-                c for c in tier_dict.get(type_key, [])
-                if not c['subject'].startswith("Merge:'")
-            ]
+            type_commits = [c for c in tier_dict.get(type_key, []) if not _is_merge_commit(c)]
             if type_commits:
                 out += f"#### {title}\n\n"
                 for commit in type_commits:
@@ -347,7 +347,7 @@ def generate_changelog_content(commits: List[Dict], current_tag: str, compare_ba
     tier2_md = _render_tier(grouped['tier2'], TIER2_TITLES)
 
     # other 归入 Tier 2 尾部
-    other_commits = [c for c in grouped['other'] if not c['subject'].startswith("Merge:'")]
+    other_commits = [c for c in grouped['other'] if not _is_merge_commit(c)]
     if other_commits:
         tier2_md += "#### 其他变更\n\n"
         for commit in other_commits:
