@@ -87,7 +87,8 @@
             "StartGame_TouchStart",
             "StartGame_Loading",
             "StartGame_LoadingPage",
-            "[JumpBack]StartGame_ModMsg"
+            "[JumpBack]StartGame_ModMsg",
+            "StartGame_GameIsMaint"
         ],
         "focus": "SM.main"
     },
@@ -279,12 +280,34 @@
         "next": [
             "[JumpBack]StartGame_Update_Data_DownLoading",
             "[JumpBack]StartGame_PayFailed",
-            "StartGame_TouchStart"
+            "StartGame_TouchStart",
+            "StartGame_GameIsMaint"
         ],
         "on_error": [
             "StartGame_UpdateCloseGame"
         ],
         "focus": "SM.数据下载循环"
+    },
+    "StartGame_GameIsMaint": {
+        "desc": "游戏服务器维护",
+        "recognition": "OCR",
+        "roi": [
+            439,
+            142,
+            397,
+            387
+        ],
+        "expected": [
+            "维护和更新",
+            "无法连接和使用游戏"
+        ],
+        "action": "StopTask",
+        "focus": {
+            "toast": [
+                "游戏服务器维护中"
+            ],
+            "aborted": true
+        }
     },
     "StartGame_Loading": {
         "desc": "游戏启动中",
@@ -307,7 +330,8 @@
             "[JumpBack]StartGame_LinkDown",
             "StartGame_TouchStart",
             "StartGame_LoadingPage",
-            "StartGame_Loading"
+            "StartGame_Loading",
+            "StartGame_GameIsMaint"
         ],
         "focus": "SM.ORC游戏启动中"
     },
