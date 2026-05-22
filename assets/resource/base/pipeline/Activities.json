@@ -409,7 +409,7 @@
         "roi": [
             320,
             145,
-            602,
+            843,
             422
         ],
         "expected": [
@@ -432,10 +432,36 @@
         "template": [
             "Ac_Getbutton.png"
         ],
+        "next": [
+            "Activities_FreeClothing_Ty2_Ck",
+            "Activities_Index"
+        ]
+    },
+    "Activities_FreeClothing_Ty2_Ck": {
+        "recognition": "ColorMatch",
+        "roi": "Activities_FreeClothing_Ty2",
+        "roi_offset": [
+            -30,
+            -30,
+            60,
+            60
+        ],
+        "lower": [
+            0,
+            139,
+            230
+        ],
+        "upper": [
+            180,
+            174,
+            250
+        ],
+        "connected": true,
+        "count": 100,
         "action": "Click",
         "post_delay": 2000,
         "next": [
-            "Activities_FreeClothing_Ty2",
+            "Activities_FreeClothing_Ty2_Ck",
             "Activities_Index"
         ]
     },
