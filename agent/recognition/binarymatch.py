@@ -1,4 +1,5 @@
 import json
+import re
 import time
 import os
 import traceback
@@ -260,14 +261,17 @@ class HSVShapeMatching(CustomRecognition):
     def _save_debug(self, bgr_img: np.ndarray, node_name: str, ts: str,
                     stage: str, mask: np.ndarray) -> None:
         """保存调试图，并在日志打印像素覆盖率。"""
-        debug_dir = "debug_images"
-        os.makedirs(debug_dir, exist_ok=True)
-        safe_node = node_name.replace('/', '_').replace('\\', '_')
-        filename  = f"{debug_dir}/debug_{safe_node}_{ts}_{stage}.png"
-        Image.fromarray(bgr_img[..., ::-1]).save(filename)
         hit = int(np.sum(mask))
         pct = hit / mask.size * 100
-        mfaalog.info(f"[HSVShapeMatching] [{stage}] {node_name} 覆盖 {hit}px ({pct:.1f}%) → {filename}")
+        try:
+            debug_dir = "debug_images"
+            os.makedirs(debug_dir, exist_ok=True)
+            safe_node = re.sub(r'[<>:"/\\|?*]', '_', node_name)
+            filename  = f"{debug_dir}/debug_{safe_node}_{ts}_{stage}.png"
+            Image.fromarray(bgr_img[..., ::-1]).save(filename)
+            mfaalog.info(f"[HSVShapeMatching] [{stage}] {node_name} 覆盖 {hit}px ({pct:.1f}%) → {filename}")
+        except Exception as e:
+            mfaalog.warning(f"[HSVShapeMatching] [{stage}] {node_name} 覆盖 {hit}px ({pct:.1f}%) | 调试图保存失败: {e}")
 
     def _try_recognition(self, context: Context, node_name: str,
                          processed_bgr: np.ndarray, stage: str) -> Optional[CustomRecognition.AnalyzeResult]:
