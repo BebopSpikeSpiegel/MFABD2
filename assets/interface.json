@@ -403,22 +403,19 @@
                 {
                     "name": "火",
                     "pipeline_override": {
-                        "QuickHunt_FastBattleTouch_StoneSelect": {
-                            "target": [
-                                230,
-                                120
-                            ]
+                        "QuickHunt_StoneSelect_Fire": {
+                            "enabled": true
                         }
                     }
                 },
                 {
                     "name": "水",
                     "pipeline_override": {
-                        "QuickHunt_FastBattleTouch_StoneSelect": {
-                            "target": [
-                                230,
-                                175
-                            ]
+                        "QuickHunt_StoneSelect_Fire": {
+                            "enabled": false
+                        },
+                        "QuickHunt_StoneSelect_Water": {
+                            "enabled": true
                         }
                     }
                 },
@@ -426,10 +423,12 @@
                     "name": "风",
                     "pipeline_override": {
                         "QuickHunt_FastBattleTouch_StoneSelect": {
-                            "target": [
-                                230,
-                                230
-                            ]
+                            "QuickHunt_StoneSelect_Fire": {
+                            "enabled": false
+                        },
+                        "QuickHunt_StoneSelect_Wind": {
+                            "enabled": true
+                        }
                         }
                     }
                 },
@@ -437,21 +436,24 @@
                     "name": "光",
                     "pipeline_override": {
                         "QuickHunt_FastBattleTouch_StoneSelect": {
-                            "target": [
-                                230,
-                                290
-                            ]
+                            "QuickHunt_StoneSelect_Fire": {
+                            "enabled": false
+                        },
+                        "QuickHunt_StoneSelect_Light": {
+                            "enabled": true
+                        }
                         }
                     }
                 },
                 {
                     "name": "暗",
                     "pipeline_override": {
-                        "QuickHunt_FastBattleTouch_StoneSelect": {
-                            "target": [
-                                230,
-                                350
-                            ]
+                        "QuickHunt_StoneSelect_Fire": {
+                            "enabled": false
+                        },
+                        "QuickHunt_StoneSelect_Duck": {
+                            "enabled": true
+                        }
                         }
                     }
                 }
@@ -534,9 +536,13 @@
                     "name": "狩猎场x1 / 双倍图MAX",
                     "pipeline_override": {
                         "QuickHunt_FastBattleMAXTouchAdventureRoute": {
-                            "target": [
-                                810,
-                                330
+                            "expected": [
+                                "MAX"
+                            ]
+                        },
+                        "QuickHunt_FastBattleMAXTouchHuntingGrounds": {
+                            "expected": [
+                                "MIN"
                             ]
                         }
                     }
@@ -544,10 +550,14 @@
                 {
                     "name": "狩猎场MAX / 双倍图x1",
                     "pipeline_override": {
+                        "QuickHunt_FastBattleMAXTouchAdventureRoute": {
+                            "expected": [
+                                "MIN"
+                            ]
+                        },
                         "QuickHunt_FastBattleMAXTouchHuntingGrounds": {
-                            "target": [
-                                810,
-                                330
+                            "expected": [
+                                "MAX"
                             ]
                         },
                         "QuickHunt_Hub": {
