@@ -27,51 +27,63 @@ from block_parser import parse_targeted_blocks
 # ==============================================================================
 ENABLE_HISTORY_GENERATION = True
 
-def group_commits_by_type(commits: List[Dict]) -> Dict[str, List[Dict]]:
-    """按提交类型分组（简化版本，后续可以改进）"""
-    groups = {
-        'feat': [],
-        'fix': [], 
-        'docs': [],
-        'style': [],
-        'refactor': [],
-        'test': [],
-        'chore': [],
-        'impr': [],
-        'perf': [],
-        'build': [],
-        'ci': [],
-        'other': []
+# ── 类型分层常量 ──────────────────────────────────────────────────────────────
+TIER1_TYPES = {'feat', 'fix', 'impr', 'perf', 'refactor', 'revert'}
+TIER2_TYPES = {'docs', 'style', 'test', 'chore', 'ci', 'build'}
+
+TIER1_TITLES = {
+    'feat':     '✨ 新功能',
+    'fix':      '🐛 Bug修复',
+    'impr':     '💪 功能增强',
+    'perf':     '🚀 性能优化',
+    'refactor': '🚜 代码重构',
+    'revert':   '◀️ 撤销变更',
+}
+TIER2_TITLES = {
+    'docs':  '📚 文档',
+    'ci':    '⚙️ CI配置',
+    'test':  '🧪 测试',
+    'build': '🔨 构建维护',
+    'style': '🎨 代码样式',
+    'chore': '🔧 杂项维护',
+}
+
+
+def parse_commit_type_and_scope(subject: str):
+    """解析提交标题，返回 (type, scope)，均小写；无法解析返回 (None, '')"""
+    m = re.match(r'^([a-zA-Z]+)(?:\(([^)]+)\))?\s*!?\s*[：:]', subject)
+    if m:
+        return m.group(1).lower(), (m.group(2) or '').lower()
+    return None, ''
+
+
+def group_commits_by_type(commits: List[Dict]) -> Dict:
+    """按两级 Tier 分组提交，含 type/scope 反转自动修正"""
+    groups: Dict = {
+        'tier1': {t: [] for t in TIER1_TYPES},
+        'tier2': {t: [] for t in TIER2_TYPES},
+        'other': [],
     }
-    
+
     for commit in commits:
-        subject = commit['subject'].lower()
-        
-        if subject.startswith('feat'):
-            groups['feat'].append(commit)
-        elif subject.startswith('fix'):
-            groups['fix'].append(commit)
-        elif subject.startswith('docs'):
-            groups['docs'].append(commit)
-        elif subject.startswith('style'):
-            groups['style'].append(commit)
-        elif subject.startswith('refactor'):
-            groups['refactor'].append(commit)
-        elif subject.startswith('test'):
-            groups['test'].append(commit)
-        elif subject.startswith('chore'):
-            groups['chore'].append(commit)
-        elif subject.startswith('impr'):
-            groups['impr'].append(commit)
-        elif subject.startswith('perf'):
-            groups['perf'].append(commit)
-        elif subject.startswith('build'):
-            groups['build'].append(commit)
-        elif subject.startswith('ci'):
-            groups['ci'].append(commit)
+        subject = commit['subject']
+        type_str, scope = parse_commit_type_and_scope(subject)
+
+        if not type_str:
+            groups['other'].append(commit)
+            continue
+
+        # 反转检测：type 是地方词、scope 是行为词 → 自动提升到 Tier 1
+        if type_str in TIER2_TYPES and scope in TIER1_TYPES:
+            print(f"⚠️ 疑似 type/scope 反转: '{subject[:60]}' → 自动提升到 Tier 1，建议改为 {scope}({type_str}):", file=sys.stderr)
+            groups['tier1'][scope].append(commit)
+        elif type_str in TIER1_TYPES:
+            groups['tier1'][type_str].append(commit)
+        elif type_str in TIER2_TYPES:
+            groups['tier2'][type_str].append(commit)
         else:
             groups['other'].append(commit)
-    
+
     return groups
 
 def clean_commit_message(subject: str) -> str:
@@ -293,8 +305,6 @@ def generate_changelog_content(commits: List[Dict], current_tag: str, compare_ba
     # 将去重后的列表赋值回 commits
     commits = unique_commits
     
-    grouped_commits = group_commits_by_type(commits)
-    
     # 构建变更日志
     changelog = f"# 更新日志\n\n"
     changelog += f"## {current_tag}\n\n"
@@ -315,37 +325,49 @@ def generate_changelog_content(commits: List[Dict], current_tag: str, compare_ba
         changelog += get_beta_preview_content(compare_base, current_tag)
     except Exception as e:
         print(f"Beta预览生成忽略错误: {e}")
-    grouped_commits = group_commits_by_type(commits)
-    # 定义分组标题
-    group_titles = {
-        'feat': '✨ 新功能',
-        'fix': '🐛 Bug修复', 
-        'docs': '📚 文档',
-        'style': '🎨 样式',
-        'refactor': '🚜 代码重构',
-        'test': '🧪 测试',
-        'chore': '🔧 日常维护',
-        'impr': '💪 功能增强',
-        'perf': '🚀 性能优化',
-        'build': '🔨 构建维护',
-        'ci': '⚙️ CI配置',
-        'other': '其他变更'
-    }
-    
-    # 输出有内容的分组
-    for group_type, title in group_titles.items():
-        group_commits = grouped_commits[group_type]
-        if group_commits:
-            filtered_commits = [
-                c for c in group_commits 
-                if not c['subject'].startswith("Merge:'")
-            ]
-            
-            if filtered_commits:
-                changelog += f"### {title}\n\n"
-                for commit in filtered_commits:
-                    changelog += format_commit_message(commit) + "\n"
-            changelog += "\n"
+    grouped = group_commits_by_type(commits)
+    tag_type = _get_tag_type(current_tag)
+
+    def _is_merge_commit(commit):
+        return commit['subject'].startswith("Merge:'")
+
+    def _render_tier(tier_dict, tier_titles):
+        """渲染单个 Tier 内各分组，返回 markdown 字符串"""
+        out = ''
+        for type_key, title in tier_titles.items():
+            type_commits = [c for c in tier_dict.get(type_key, []) if not _is_merge_commit(c)]
+            if type_commits:
+                out += f"#### {title}\n\n"
+                for commit in type_commits:
+                    out += format_commit_message(commit) + "\n"
+                out += "\n"
+        return out
+
+    tier1_md = _render_tier(grouped['tier1'], TIER1_TITLES)
+    tier2_md = _render_tier(grouped['tier2'], TIER2_TITLES)
+
+    # other 归入 Tier 2 尾部
+    other_commits = [c for c in grouped['other'] if not _is_merge_commit(c)]
+    if other_commits:
+        tier2_md += "#### 其他变更\n\n"
+        for commit in other_commits:
+            tier2_md += format_commit_message(commit) + "\n"
+        tier2_md += "\n"
+
+    if tier1_md:
+        changelog += "### ✨ 功能与质量更新\n\n"
+        changelog += tier1_md
+
+    if tier2_md:
+        if tag_type == 'stable':
+            # 正式版：Tier 2 折叠
+            changelog += "<details>\n<summary>🔧 工程与生态基建</summary>\n\n"
+            changelog += tier2_md
+            changelog += "</details>\n\n"
+        else:
+            # Beta / Alpha / CI：Tier 2 展开
+            changelog += "---\n\n### 🔧 工程与生态基建\n\n"
+            changelog += tier2_md
     
     changelog += "\n[已有 Mirror酱 CDK？前往 Mirror酱 高速下载](https://mirrorchyan.com/zh/projects?rid=MFABD2)\n\n"
 
