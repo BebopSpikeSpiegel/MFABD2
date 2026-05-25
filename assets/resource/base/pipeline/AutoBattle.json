@@ -22,7 +22,8 @@
             "AutoBattle_Settlement_Victory",
             "AutoBattle_Settlement_Defeat",
             "AutoBattle_Is_Auto"
-        ]
+        ],
+        "focus": "自动战斗中..."
     },
     "Rec_<AutoBattle_Is_Auto>_Ocr_01": {
         "desc": "[识别]自动战斗判定,位置1-右下",
@@ -109,7 +110,8 @@
             "AutoBattle_Egress_Next",
             "AutoBattle_Egress_TurnBack",
             "[JumpBack]Global_WaitingForLoading"
-        ]
+        ],
+        "focus": "战斗结果-胜利"
     },
     "AutoBattle_Settlement_Defeat": {
         "recognition": "OCR",
@@ -127,7 +129,8 @@
             "AutoBattle_Egress_TurnBack",
             "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk",
             "[JumpBack]Global_WaitingForLoading"
-        ]
+        ],
+        "focus": "战斗结果-失利"
     },
     "AutoBattle_Egress_Next": {
         "recognition": "And",
@@ -149,11 +152,13 @@
         ],
         "action": "Click",
         "post_delay": 2000,
+        "timeout": 5000,
         "next": [
             "[JumpBack]AutoBattle_Egress_Next_Submenu",
             "[JumpBack]Global_WaitingForLoading",
             "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk",
             "AutoBattle_Egress_Next_NoAP",
+            "AutoBattle_Egress_Next",
             "AutoBattle_Entry"
         ]
     },
@@ -208,10 +213,11 @@
         "expected": ["返回"],
         "action": "Click",
         "post_delay": 5000,
-        "timeout": 10000,
+        "timeout": 5000,
         "next": [
             "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "AutoBattle_Egress_TurnBack"
         ]
     },
     "AutoBattle_Egress_TurnBack_SkipTalk": {
