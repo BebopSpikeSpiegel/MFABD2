@@ -2732,7 +2732,8 @@
         },
         "next": [
             "Setup_SetSkill_Per",
-            "Arbitrage_Cooking_SetupToSkill"
+            "Arbitrage_Cooking_SetupToSkill",
+            "[JumpBack]Global_BackPageHub_Once"
         ]
     },
     "Arbitrage_Cooking_SetupToSkill": {
