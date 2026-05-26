@@ -29,15 +29,15 @@
         "focus": "GM.主页面已确认"
     },
     "Mail_NewRed": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             1003,
             14,
             64,
             58
         ],
-        "template": "MailAtMainRedGe.png",
-        "green_mask": true,
         "action": "Click",
         "target_offset": [
             -15,
@@ -77,23 +77,23 @@
         "focus": "GM.邮箱页面已确认"
     },
     "Mail_GetAll": {
-        "desc": "全部领取",
-        "recognition": "ColorMatch",
-        "roi": [
-            1048,
-            641,
-            87,
-            35
-        ],
-        "lower": [
-            212,
-            210,
-            201
-        ],
-        "upper": [
-            213,
-            212,
-            203
+        "desc": "普通(首页)全部领取",
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "roi": [
+                    1052,
+                    645,
+                    82,
+                    30
+                ],
+                "expected": [
+                    "全部领取"
+                ],
+                "only_rec": true
+            },
+            "Sub_Ocr_Enable_Clr"
         ],
         "action": "Click",
         "post_delay": 2000,
@@ -127,15 +127,14 @@
     },
     "Mail_TabBus": {
         "desc": "切换to月卡信箱",
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             184,
             146,
             185,
             62
-        ],
-        "template": [
-            "FreeGacha.png"
         ],
         "action": "Click",
         "post_delay": 2000,
@@ -151,24 +150,9 @@
         ]
     },
     "Mail_GetBusAll": {
-        "desc": "全部领取",
-        "recognition": "ColorMatch",
-        "roi": [
-            1048,
-            641,
-            87,
-            35
-        ],
-        "lower": [
-            212,
-            210,
-            201
-        ],
-        "upper": [
-            213,
-            212,
-            203
-        ],
+        "desc": "商品右键全部领取",
+        "recognition": "And",
+        "all_of": ["Mail_GetAll"],
         "action": "Click",
         "post_delay": 2000,
         "next": [
@@ -179,13 +163,13 @@
     },
     "Mail_NormalEnd": {
         "next": [
-            "Global_ToSandBox"
+            "Global_ToHomePage"
         ],
         "focus": "GM.通常结束"
     },
     "Mail_ERRlEnd": {
         "next": [
-            "Global_ToSandBox"
+            "Global_ToHomePage"
         ],
         "focus": "GM.异常结束"
     }
