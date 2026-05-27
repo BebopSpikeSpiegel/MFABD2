@@ -301,13 +301,6 @@
             100
         ]
     },
-    "ocrtemptest": {
-        "recognition": "TemplateMatch",
-        "template": [
-            "Gacha-homepage.png"
-        ],
-        "green_mask": false
-    },
     "test_smart_scroller": {
         "action": "Custom",
         "custom_action": "SmartSwipe",
