@@ -147,7 +147,6 @@
             "entry": "Daily_HomePage",
             "controller": ["Adb"],
             "option": [
-                "公会奖励",
                 "餐馆领装饰币",
                 "餐馆自动升级",
                 "广场每日祈求"
@@ -578,16 +577,11 @@
                         "QuickHunt_CollectMap_SwipLeft": {
                             "enabled": true
                         },
-                        "QuickHunt_CollectMapHuntingGrounds": {
-                            "roi": [
-                                298,
-                                369,
-                                134,
-                                88
-                            ],
-                            "expected": [
-                                "(?=.*[蜥])(?=.*[蜴])(?=.*[祭坛]).{5,}$"
-                            ]
+                        "QuickHunt_CollectMapHuntingGrounds_7": {
+                            "enabled": true
+                        },
+                        "QuickHunt_CollectMapHuntingGrounds_1": {
+                            "enabled": false
                         }
                     }
                 },
@@ -597,16 +591,11 @@
                         "QuickHunt_CollectMap_SwipNoth": {
                             "enabled": true
                         },
-                        "QuickHunt_CollectMapHuntingGrounds": {
-                            "roi": [
-                                448,
-                                409,
-                                167,
-                                74
-                            ],
-                            "expected": [
-                                "守山人休息处"
-                            ]
+                        "QuickHunt_CollectMapHuntingGrounds_7": {
+                            "enabled": true
+                        },
+                        "QuickHunt_CollectMapHuntingGrounds_1": {
+                            "enabled": false
                         }
                     }
                 },
@@ -952,11 +941,8 @@
                         "90付费抽目标卡池"
                     ],
                     "pipeline_override": {
-                        "Gacha_PvAnimeIsOver": {
-                            "next": [
-                                "Gacha_PaidDiamond_CustomField",
-                                "Gacha_TouchFreeGacha"
-                            ]
+                        "Gacha_PaidDiamond_CustomField": {
+                            "enabled": true
                         }
                     }
                 }
@@ -1264,24 +1250,6 @@
                     "name": "No",
                     "pipeline_override": {
                         "Weekly_Flishing_Hub": {
-                            "enabled": false
-                        }
-                    }
-                }
-            ]
-        },
-        "公会奖励": {
-            "type": "switch",
-            "description": "领取公会每日签到奖励。",
-            "cases": [
-                {
-                    "name": "Yes",
-                    "pipeline_override": {}
-                },
-                {
-                    "name": "No",
-                    "pipeline_override": {
-                        "Daily_Union_Hub": {
                             "enabled": false
                         }
                     }

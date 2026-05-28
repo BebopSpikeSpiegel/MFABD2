@@ -19,30 +19,28 @@
         ]
     },
     "GachaADV_GachaRed_HaveNot": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             89,
             609,
             83,
             84
-        ],
-        "template": [
-            "Gacha-homepage.png"
         ],
         "inverse": true,
         "focus": "GA.[ERR]无可关注抽抽乐"
     },
     "GachaADV_GachaRed_Have": {
         "desc": "识别左下抽抽乐-点击抽卡",
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             89,
             609,
             83,
             84
-        ],
-        "template": [
-            "Gacha-homepage.png"
         ],
         "action": "Click",
         "target": [
@@ -108,15 +106,14 @@
         "focus": "GA.抽抽乐页面"
     },
     "GachaADV_AREA1#": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             110,
             151,
             60,
             70
-        ],
-        "template": [
-            "GACHA_PoolSort.png"
         ],
         "action": "Click",
         "target": [
@@ -131,15 +128,14 @@
         "focus": "GA.服装类卡池"
     },
     "GachaADV_AREA1#_NoRed": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             110,
             151,
             60,
             70
-        ],
-        "template": [
-            "GACHA_PoolSort.png"
         ],
         "inverse": true,
         "post_delay": 1000,
@@ -212,15 +208,14 @@
         "focus": "GA.抽抽乐页面"
     },
     "GachaADV_AREA2#": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             114,
             241,
             56,
             66
-        ],
-        "template": [
-            "GACHA_PoolSort.png"
         ],
         "action": "Click",
         "target": [
@@ -235,15 +230,14 @@
         "focus": "GA.装备类卡池"
     },
     "GachaADV_AREA2#_NoRed": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             114,
             241,
             56,
             66
-        ],
-        "template": [
-            "GACHA_PoolSort.png"
         ],
         "inverse": true,
         "post_delay": 1000,
@@ -293,19 +287,15 @@
         ]
     },
     "GachaADV_Location1": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             315,
             130,
             47,
             42
         ],
-        "template": [
-            "GACHA_ListFull_GE.png",
-            "GACHA_ListFull2_GE.png",
-            "GACHA_ListFull3.png"
-        ],
-        "green_mask": true,
         "action": "Click",
         "target_offset": [
             -80,
@@ -348,18 +338,15 @@
         ]
     },
     "GachaADV_Location1_Ck": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             835,
             521,
             349,
             133
         ],
-        "template": [
-            "GACHA_Free.ReservedRights_Red_GE.png",
-            "GACHA_Special.ReservedRights_Red_GE.png"
-        ],
-        "green_mask": true,
         "next": [
             "GachaADV_Location1_90LotPost",
             "GachaADV_Location1_Post"
@@ -431,18 +418,15 @@
         ]
     },
     "GachaADV_Location2": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             315,
             175,
             47,
             80
         ],
-        "template": [
-            "GACHA_ListFull_GE.png",
-            "GACHA_ListFull3.png"
-        ],
-        "green_mask": true,
         "action": "Click",
         "target_offset": [
             -80,
@@ -485,18 +469,15 @@
         ]
     },
     "GachaADV_Location2_Ck": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             835,
             521,
             349,
             133
         ],
-        "template": [
-            "GACHA_Free.ReservedRights_Red_GE.png",
-            "GACHA_Special.ReservedRights_Red_GE.png"
-        ],
-        "green_mask": true,
         "next": [
             "GachaADV_Location2_90LotPost",
             "GachaADV_Location2_Post"
@@ -565,18 +546,15 @@
         ]
     },
     "GachaADV_Location3": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             315,
             256,
             47,
             82
         ],
-        "template": [
-            "GACHA_ListFull_GE.png",
-            "GACHA_ListFull3.png"
-        ],
-        "green_mask": true,
         "action": "Click",
         "target_offset": [
             -80,
@@ -617,18 +595,15 @@
         ]
     },
     "GachaADV_Location3_Ck": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             835,
             521,
             349,
             133
         ],
-        "template": [
-            "GACHA_Free.ReservedRights_Red_GE.png",
-            "GACHA_Special.ReservedRights_Red_GE.png"
-        ],
-        "green_mask": true,
         "next": [
             "GachaADV_Location3_90LotPost",
             "GachaADV_Location3_Post"
@@ -694,18 +669,15 @@
         ]
     },
     "GachaADV_Location4": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             315,
             337,
             47,
             82
         ],
-        "template": [
-            "GACHA_ListFull_GE.png",
-            "GACHA_ListFull3.png"
-        ],
-        "green_mask": true,
         "action": "Click",
         "target_offset": [
             -80,
@@ -745,18 +717,15 @@
         ]
     },
     "GachaADV_Location4_Ck": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             835,
             521,
             349,
             133
         ],
-        "template": [
-            "GACHA_Free.ReservedRights_Red_GE.png",
-            "GACHA_Special.ReservedRights_Red_GE.png"
-        ],
-        "green_mask": true,
         "next": [
             "GachaADV_Location4_90LotPost",
             "GachaADV_Location4_Post"
@@ -819,18 +788,15 @@
         ]
     },
     "GachaADV_Location5": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             315,
             419,
             47,
             82
         ],
-        "template": [
-            "GACHA_ListFull_GE.png",
-            "GACHA_ListFull3.png"
-        ],
-        "green_mask": true,
         "action": "Click",
         "target_offset": [
             -80,
@@ -865,18 +831,15 @@
         ]
     },
     "GachaADV_Location5_Ck": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             835,
             521,
             349,
             133
         ],
-        "template": [
-            "GACHA_Free.ReservedRights_Red_GE.png",
-            "GACHA_Special.ReservedRights_Red_GE.png"
-        ],
-        "green_mask": true,
         "next": [
             "GachaADV_Location5_90LotPost",
             "GachaADV_Location5_Post"
@@ -1132,18 +1095,15 @@
     },
     "Rec_<GachaADV_Special_ReservedRights>_Tpl": {
         "desc": "将要触发抽抽乐200保底识别器02,",
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             721,
             210,
             462,
             297
-        ],
-        "template": [
-            "GACHA_Special.ReservedRights_Red_GE.png"
-        ],
-        "green_mask": true,
-        "threshold": 0.7
+        ]
     },
     "GachaADV_Special_SaveGuaranteed": {
         "enabled": false,

@@ -20,15 +20,15 @@
     },
     "Activities_Call_Mail_Start": {
         "desc": "目的：必须在next中插入中断。进入后call中断；预测返回场景制作next的判定来离开小循环",
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             1003,
             14,
             64,
             58
         ],
-        "template": "MailAtMainRedGe.png",
-        "green_mask": true,
         "next": [
             "Activities_Call_Mail_Out",
             "[JumpBack]Mail_NewRed"
@@ -51,18 +51,15 @@
     },
     "Activities_InIndex": {
         "max_hit": 3,
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             694,
             611,
             54,
             56
         ],
-        "template": [
-            "ActiveGe.png",
-            "UI_Dot_GE.png"
-        ],
-        "green_mask": true,
         "action": "Click",
         "target_offset": [
             -5,
@@ -97,19 +94,15 @@
     },
     "Activities_FindActive": {
         "desc": "寻找可关注活动|太容易卡后误识别了，加延迟",
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             269,
             125,
             30,
             478
         ],
-        "template": [
-            "ActivePeerGe.png",
-            "ActiveGe.png"
-        ],
-        "green_mask": true,
-        "threshold": [0.7],
         "action": "Click",
         "target_offset": [
             -50,
@@ -360,6 +353,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     966,

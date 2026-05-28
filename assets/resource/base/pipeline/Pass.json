@@ -62,18 +62,15 @@
     },
     "Pass_SelectPass": {
         "desc": "选择通行证",
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             262,
             130,
             40,
             478
         ],
-        "template": [
-            "pass1.png"
-        ],
-        "threshold": 0.81,
-        "order_by": "Score",
         "action": "Click",
         "post_delay": 1000,
         "next": [
@@ -166,44 +163,6 @@
             "Pass_SelectPass",
             "Pass_Back"
         ]
-    },
-    "Pass_SelectPassLev": {
-        "desc": "选择通行证等级",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1145,
-            230,
-            34,
-            37
-        ],
-        "template": [
-            "Pass.png"
-        ],
-        "action": "Click",
-        "post_delay": 1000,
-        "next": [
-            "Pass_LevGetAll"
-        ]
-    },
-    "Pass_LevGetAll": {
-        "desc": "全部获得",
-        "recognition": "OCR",
-        "roi": [
-            981,
-            559,
-            82,
-            36
-        ],
-        "expected": [
-            "全部获得"
-        ],
-        "action": "Click",
-        "post_delay": 5000,
-        "next": [
-            "Pass_SelectPass",
-            "Pass_Back"
-        ],
-        "focus": "PM.点击领取"
     },
     "Pass_Back": {
         "desc": "刷完了",

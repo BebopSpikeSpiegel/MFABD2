@@ -301,13 +301,6 @@
             100
         ]
     },
-    "ocrtemptest": {
-        "recognition": "TemplateMatch",
-        "template": [
-            "Gacha-homepage.png"
-        ],
-        "green_mask": false
-    },
     "test_smart_scroller": {
         "action": "Custom",
         "custom_action": "SmartSwipe",
@@ -671,5 +664,53 @@
             "test_anchor2"
         ]
     },
-    "test_anchor3": {}
+    "test_anchor3": {},
+    "RedDot_Preset": {
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {
+            "hsv_ranges": [
+                {"lower": [
+                        0,
+                        140,
+                        120
+                    ], "upper": [
+                        12,
+                        255,
+                        255
+                    ]},
+                {
+                    "lower": [
+                        165,
+                        140,
+                        120
+                    ],
+                    "upper": [
+                        180,
+                        255,
+                        255
+                    ]
+                }
+            ],
+            "red_area": [
+                50,
+                1200
+            ],
+            "inner_v_min": 228,
+            "inner_s_max": 125,
+            "gap_ratio": 0.35,
+            "debug": true
+        }
+    },
+    "CheckPanel_A": {
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "RedDot_Preset"},
+        "roi": [
+            640,
+            616,
+            17,
+            16
+        ]
+    }
 }

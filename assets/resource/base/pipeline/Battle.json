@@ -20,28 +20,50 @@
         "max_hit": 1,
         "next": [
             "[JumpBack]QuickHunt_MIniMap_locErr",
-            "QuickHunt_TouchCollect",
+            "QuickHunt_At_Sandbox",
             "[JumpBack]Global_ToSandBox"
         ]
     },
-    "QuickHunt_TouchCollect": {
-        "desc": "找到run-点击左上扫荡",
+    "QuickHunt_At_Sandbox": {
+        "desc": "找到run,在箱庭",
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Pin3_Tpl",
             "Rec_SandBox_Run_Tpl"
         ],
-        "action": "Click",
-        "target": [
-            120,
-            185
+        "timeout": 3000,
+        "next": [
+            "QuickHunt_TouchCollect"
         ],
-        "post_delay": 2000,
+        "on_error": ["QuickHunt_CollectNoDot"]
+    },
+    "QuickHunt_TouchCollect": {
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
+        "roi": [
+            100,
+            163,
+            45,
+            44
+        ],
+        "action": "Click",
+        "target_offset": [
+            0,
+            -5,
+            0,
+            0
+        ],
+        "post_delay": 3000,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
-            "QuickHunt_UIEnter",
-            "QuickHunt_TouchCollect"
-        ]
+            "QuickHunt_UIEnter"
+        ],
+        "focus": "CM.狩猎场-红点存在"
+    },
+    "QuickHunt_CollectNoDot": {
+        "action": "StopTask",
+        "focus": "[WRN]狩猎场红点不存在,终止任务"
     },
     "QuickHunt_MIniMap_locErr": {
         "desc": "小地图位置调整",
@@ -117,7 +139,9 @@
         "desc": "狩猎起点HUB",
         "next": [
             "QuickHunt_NoRiceAP_Skip",
-            "QuickHunt_CollectMapHuntingGrounds",
+            "QuickHunt_CollectMapHuntingGrounds_7",
+            "QuickHunt_CollectMapHuntingGrounds_9",
+            "QuickHunt_CollectMapHuntingGrounds_1",
             "[JumpBack]QuickHunt_CollectMap_SwipLeft",
             "[JumpBack]QuickHunt_CollectMap_SwipNoth"
         ],
@@ -164,7 +188,7 @@
         ],
         "count": 10
     },
-    "QuickHunt_CollectMapHuntingGrounds": {
+    "QuickHunt_CollectMapHuntingGrounds_1": {
         "desc": "A-1.选择狩猎场。",
         "recognition": "OCR",
         "roi": [
@@ -175,6 +199,58 @@
         ],
         "expected": [
             "野猪洞穴"
+        ],
+        "pre_wait_freezes": 500,
+        "action": "Click",
+        "target_offset": [
+            0,
+            -5,
+            0,
+            0
+        ],
+        "timeout": 5000,
+        "next": [
+            "QuickHunt_FastBattleMAXTouchHuntingGrounds",
+            "[JumpBack]QuickHunt_QuickBattleButton"
+        ]
+    },
+    "QuickHunt_CollectMapHuntingGrounds_7": {
+        "desc": "A-7.选择狩猎场。",
+        "recognition": "OCR",
+        "roi": [
+            298,
+            369,
+            134,
+            88
+        ],
+        "expected": [
+            "(?=.*[蜥])(?=.*[蜴])(?=.*[祭坛]).{5,}$"
+        ],
+        "pre_wait_freezes": 500,
+        "action": "Click",
+        "target_offset": [
+            0,
+            -5,
+            0,
+            0
+        ],
+        "timeout": 5000,
+        "next": [
+            "QuickHunt_FastBattleMAXTouchHuntingGrounds",
+            "[JumpBack]QuickHunt_QuickBattleButton"
+        ]
+    },
+    "QuickHunt_CollectMapHuntingGrounds_9": {
+        "desc": "A-9.选择狩猎场。",
+        "recognition": "OCR",
+        "roi": [
+            448,
+            409,
+            167,
+            74
+        ],
+        "expected": [
+            "守山人休息处"
         ],
         "pre_wait_freezes": 500,
         "action": "Click",
@@ -870,12 +946,13 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
-                    1033,
-                    635,
-                    80,
-                    26
+                    1029,
+                    632,
+                    89,
+                    33
                 ],
                 "expected": [
                     "快速狩猎"

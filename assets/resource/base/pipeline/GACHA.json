@@ -46,7 +46,7 @@
             "Gacha_FindEquRedDot"
         ],
         "on_error": ["Gacha_FindEquRedDot_PBC"],
-        "focus": "GA.进入抽抽乐页面"
+        "focus": "GA.进入抽抽乐页面-TypeA"
     },
     "Gacha_GachaPage2": {
         "desc": "识别抽卡页",
@@ -65,7 +65,7 @@
             "Gacha_FindFreeGacha",
             "Gacha_Slip"
         ],
-        "focus": "GA.进入抽抽乐页面"
+        "focus": "GA.进入抽抽乐页面-TypeB"
     },
     "Gacha_Slip": {
         "desc": "下滑寻找免费抽卡",
@@ -79,7 +79,7 @@
         "expected": [
             "抽抽乐"
         ],
-        "threshold": 0.8,
+        "only_rec": true,
         "action": "Swipe",
         "begin": [
             210,
@@ -239,18 +239,15 @@
     },
     "Gacha_FindFreeGacha": {
         "desc": "点击,存在免费抽的卡池,每日首次进入卡池pv动画开始 | GachaADV_Start 临时插入救急",
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             317,
             120,
             47,
             426
         ],
-        "template": [
-            "FreeGacha.png"
-        ],
-        "threshold": 0.85,
-        "order_by": "Vertical",
         "action": "Click",
         "target_offset": [
             -50,
@@ -311,6 +308,7 @@
             "兑换"
         ],
         "next": [
+            "Gacha_PaidDiamond_CustomField",
             "Gacha_TouchFreeGacha"
         ],
         "on_error": [
@@ -328,6 +326,7 @@
     },
     "Gacha_PaidDiamond_CustomField": {
         "desc": "输入卡池名称.原expected只做占位符，无用",
+        "enabled": false,
         "recognition": "OCR",
         "roi": [
             358,
@@ -420,34 +419,6 @@
             "Global_Null_Panic"
         ],
         "focus": "GB.90.**[高危-付费抽]**tp3/3-付费抽类型可确认"
-    },
-    "Gacha_PaidDiamond_90LotFind_Pay": {
-        "desc": "废弃",
-        "recognition": "OCR",
-        "roi": [
-            668,
-            491,
-            124,
-            51
-        ],
-        "expected": [
-            "购买"
-        ],
-        "action": "Click",
-        "post_delay": 1000,
-        "next": [
-            "Gacha_5X",
-            "Gacha_5X2",
-            "Gacha_GachaResultBack",
-            "Gacha_PaidDiamond_90LotFind_Pay"
-        ],
-        "on_error": [
-            "Gacha_Slip",
-            "Gacha_TouchFreeGacha",
-            "Global_Null_Exception",
-            "Global_Null_Panic"
-        ],
-        "focus": "GB.90.**[高危-付费抽]**点击购买"
     },
     "Gacha_TouchFreeGacha": {
         "desc": "免费抽流程开始:点击右下免费1抽",
@@ -663,18 +634,15 @@
         "focus": "GA.退出抽卡"
     },
     "Gacha_FindEquRedDot": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             112,
             148,
             66,
             170
         ],
-        "template": [
-            "GaChaEquRDGE.png"
-        ],
-        "green_mask": true,
-        "order_by": "Vertical",
         "action": "Click",
         "target_offset": [
             -5,
@@ -692,17 +660,15 @@
         "focus": "GM.卡池类发现可关注项"
     },
     "Gacha_FindEquRedDot_PBC": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             112,
             148,
             66,
             170
         ],
-        "template": [
-            "GaChaEquRDGE.png"
-        ],
-        "green_mask": true,
         "inverse": true,
         "next": [
             "Global_ToHomePage"
