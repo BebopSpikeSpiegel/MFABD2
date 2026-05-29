@@ -677,8 +677,22 @@ class RedDotDetector(CustomRecognition):
             # 包围框内的非红亮色像素（感叹号区域）
             box_red = red_mask[by0:by1 + 1, bx0:bx1 + 1]
             box_hsv = hsv_np  [by0:by1 + 1, bx0:bx1 + 1]
+
+            # 拓扑封闭过滤：只保留被红色像素真正包围的非红区域，排除矩形四角的背景漏洞
+            # 对包围框内非红像素做连通域标注，凡是能从矩形边框触达的连通域 = 外侧背景
+            non_red_crop = ~box_red
+            labeled_crop, _ = _label_blobs(non_red_crop)
+            border_labels = (
+                set(labeled_crop[0, :].tolist())
+                | set(labeled_crop[-1, :].tolist())
+                | set(labeled_crop[:, 0].tolist())
+                | set(labeled_crop[:, -1].tolist())
+            )
+            border_labels.discard(0)  # 0 是红色像素占位，不是连通域
+            enclosed = non_red_crop & ~np.isin(labeled_crop, list(border_labels))
+
             inner_bright = (
-                ~box_red
+                enclosed
                 & (box_hsv[:, :, 2] >= inner_v_min)
                 & (box_hsv[:, :, 1] <= inner_s_max)
             )
@@ -754,7 +768,7 @@ class RedDotDetector(CustomRecognition):
         actual_ratio = proj[gap_abs] / peak
         if debug:
             mfaalog.info(
-                f"[RedDotDetector] gap_ratio 检查: 断层行[{gap_abs}]={int(proj[gap_abs])}px"
+                f"[RedDotDetector] gap_ratio 检查: 断层行[row {gap_abs + 1}]={int(proj[gap_abs])}px"
                 f" / 峰值={int(peak)}px = {actual_ratio:.3f}"
                 f" (阈值 gap_ratio={gap_ratio})"
                 f" → {'通过' if actual_ratio <= gap_ratio else '截断'}"
