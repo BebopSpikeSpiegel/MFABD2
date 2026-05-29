@@ -590,8 +590,7 @@
             412
         ],
         "template": [
-            "PetMidGe.png",
-            "tanhaoGE.png"
+            "PetMidGe.png"
         ],
         "green_mask": true,
         "action": "Click",
