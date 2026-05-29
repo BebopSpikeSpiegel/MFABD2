@@ -677,8 +677,22 @@ class RedDotDetector(CustomRecognition):
             # 包围框内的非红亮色像素（感叹号区域）
             box_red = red_mask[by0:by1 + 1, bx0:bx1 + 1]
             box_hsv = hsv_np  [by0:by1 + 1, bx0:bx1 + 1]
+
+            # 拓扑封闭过滤：只保留被红色像素真正包围的非红区域，排除矩形四角的背景漏洞
+            # 对包围框内非红像素做连通域标注，凡是能从矩形边框触达的连通域 = 外侧背景
+            non_red_crop = ~box_red
+            labeled_crop, _ = _label_blobs(non_red_crop)
+            border_labels = (
+                set(labeled_crop[0, :].tolist())
+                | set(labeled_crop[-1, :].tolist())
+                | set(labeled_crop[:, 0].tolist())
+                | set(labeled_crop[:, -1].tolist())
+            )
+            border_labels.discard(0)  # 0 是红色像素占位，不是连通域
+            enclosed = non_red_crop & ~np.isin(labeled_crop, list(border_labels))
+
             inner_bright = (
-                ~box_red
+                enclosed
                 & (box_hsv[:, :, 2] >= inner_v_min)
                 & (box_hsv[:, :, 1] <= inner_s_max)
             )
@@ -692,7 +706,7 @@ class RedDotDetector(CustomRecognition):
                 mfaalog.info(f"[RedDotDetector] blob{i} inner_bright 垂直投影: {proj_str}")
 
             # 感叹号垂直双段检测
-            if not self._has_exclamation(inner_bright, gap_ratio):
+            if not self._has_exclamation(inner_bright, gap_ratio, debug):
                 mfaalog.debug(f"[RedDotDetector] blob{i} gap 检测未通过")
                 continue
 
@@ -709,7 +723,7 @@ class RedDotDetector(CustomRecognition):
     # 感叹号结构检测
     # ------------------------------------------------------------------
 
-    def _has_exclamation(self, inner_bright: np.ndarray, gap_ratio: float) -> bool:
+    def _has_exclamation(self, inner_bright: np.ndarray, gap_ratio: float, debug: bool = False) -> bool:
         """
         检测内部亮色区域是否呈"竖线-断层-圆点"的垂直双段结构（感叹号）。
 
@@ -751,14 +765,29 @@ class RedDotDetector(CustomRecognition):
             return False
 
         # 断层深度检查：断层行必须显著低于峰值行
-        if proj[gap_abs] / peak > gap_ratio:
+        actual_ratio = proj[gap_abs] / peak
+        if debug:
+            mfaalog.info(
+                f"[RedDotDetector] gap_ratio 检查: 断层行[row {gap_abs + 1}]={int(proj[gap_abs])}px"
+                f" / 峰值={int(peak)}px = {actual_ratio:.3f}"
+                f" (阈值 gap_ratio={gap_ratio})"
+                f" → {'通过' if actual_ratio <= gap_ratio else '截断'}"
+            )
+        if actual_ratio > gap_ratio:
             return False
 
-        # 双段存在性：断层上方和下方各至少有 1 行非零像素
-        # 不要求最小像素数，兼容底部圆点像素极少的小尺寸红点
-        has_above = bool(np.any(proj[first_nz:gap_abs] > 0))
+        # 双段存在性：竖线段（断层上方）至少 2 行非零，圆点段（断层下方）至少 1 行
+        # 竖线要求 ≥2 行，防止单个游离像素把"噪点+大块"误判为感叹号双段结构
+        # 圆点允许 1 行，兼容底部圆点像素极少的小尺寸红点
+        above_nz = int(np.sum(proj[first_nz:gap_abs] > 0))
         has_below = bool(np.any(proj[gap_abs + 1:last_nz + 1] > 0))
-        return has_above and has_below
+        if debug:
+            mfaalog.info(
+                f"[RedDotDetector] 双段检查: 竖线段 {above_nz} 行非零 (需≥2)"
+                f", 圆点段 {'有' if has_below else '无'}像素"
+                f" → {'通过' if above_nz >= 2 and has_below else '截断'}"
+            )
+        return above_nz >= 2 and has_below
 
     # ------------------------------------------------------------------
     # 调试辅助
