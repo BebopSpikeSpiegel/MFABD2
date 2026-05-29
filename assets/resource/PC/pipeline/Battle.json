@@ -161,7 +161,6 @@
         "focus": "BB.付费火把无AP弹窗",
         "next": [],
         "recognition": "OCR",
-        "color_filter": "",
         "expected": [
             "取消"
         ],
@@ -515,15 +514,5 @@
             96,
             89
         ]
-    },
-    "QuickHunt_CollectMapHuntingGrounds": {
-        "recognition": "DirectHit",
-        "roi": [
-            705,
-            192,
-            68,
-            20
-        ],
-        "desc": "A-1.选择狩猎场。"
     }
 }
