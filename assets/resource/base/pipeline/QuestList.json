@@ -10,6 +10,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     520,
@@ -82,6 +83,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     1045,

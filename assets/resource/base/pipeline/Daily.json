@@ -115,6 +115,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     180,
@@ -239,6 +240,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     640,
@@ -540,6 +542,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     1012,
@@ -672,6 +675,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     1155,
@@ -691,6 +695,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     1155,

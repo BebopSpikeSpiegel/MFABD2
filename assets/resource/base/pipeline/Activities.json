@@ -353,6 +353,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     966,

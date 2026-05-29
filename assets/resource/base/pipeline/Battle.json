@@ -139,7 +139,9 @@
         "desc": "狩猎起点HUB",
         "next": [
             "QuickHunt_NoRiceAP_Skip",
-            "QuickHunt_CollectMapHuntingGrounds",
+            "QuickHunt_CollectMapHuntingGrounds_7",
+            "QuickHunt_CollectMapHuntingGrounds_9",
+            "QuickHunt_CollectMapHuntingGrounds_1",
             "[JumpBack]QuickHunt_CollectMap_SwipLeft",
             "[JumpBack]QuickHunt_CollectMap_SwipNoth"
         ],
@@ -186,7 +188,7 @@
         ],
         "count": 10
     },
-    "QuickHunt_CollectMapHuntingGrounds": {
+    "QuickHunt_CollectMapHuntingGrounds_1": {
         "desc": "A-1.选择狩猎场。",
         "recognition": "OCR",
         "roi": [
@@ -197,6 +199,58 @@
         ],
         "expected": [
             "野猪洞穴"
+        ],
+        "pre_wait_freezes": 500,
+        "action": "Click",
+        "target_offset": [
+            0,
+            -5,
+            0,
+            0
+        ],
+        "timeout": 5000,
+        "next": [
+            "QuickHunt_FastBattleMAXTouchHuntingGrounds",
+            "[JumpBack]QuickHunt_QuickBattleButton"
+        ]
+    },
+    "QuickHunt_CollectMapHuntingGrounds_7": {
+        "desc": "A-7.选择狩猎场。",
+        "recognition": "OCR",
+        "roi": [
+            298,
+            369,
+            134,
+            88
+        ],
+        "expected": [
+            "(?=.*[蜥])(?=.*[蜴])(?=.*[祭坛]).{5,}$"
+        ],
+        "pre_wait_freezes": 500,
+        "action": "Click",
+        "target_offset": [
+            0,
+            -5,
+            0,
+            0
+        ],
+        "timeout": 5000,
+        "next": [
+            "QuickHunt_FastBattleMAXTouchHuntingGrounds",
+            "[JumpBack]QuickHunt_QuickBattleButton"
+        ]
+    },
+    "QuickHunt_CollectMapHuntingGrounds_9": {
+        "desc": "A-9.选择狩猎场。",
+        "recognition": "OCR",
+        "roi": [
+            448,
+            409,
+            167,
+            74
+        ],
+        "expected": [
+            "守山人休息处"
         ],
         "pre_wait_freezes": 500,
         "action": "Click",
@@ -891,12 +945,13 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
-                    1033,
-                    635,
-                    80,
-                    26
+                    1029,
+                    632,
+                    89,
+                    33
                 ],
                 "expected": [
                     "快速狩猎"

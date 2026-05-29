@@ -567,16 +567,11 @@
                         "QuickHunt_CollectMap_SwipLeft": {
                             "enabled": true
                         },
-                        "QuickHunt_CollectMapHuntingGrounds": {
-                            "roi": [
-                                298,
-                                369,
-                                134,
-                                88
-                            ],
-                            "expected": [
-                                "(?=.*[蜥])(?=.*[蜴])(?=.*[祭坛]).{5,}$"
-                            ]
+                        "QuickHunt_CollectMapHuntingGrounds_7": {
+                            "enabled": true
+                        },
+                        "QuickHunt_CollectMapHuntingGrounds_1": {
+                            "enabled": false
                         }
                     }
                 },
@@ -586,16 +581,11 @@
                         "QuickHunt_CollectMap_SwipNoth": {
                             "enabled": true
                         },
-                        "QuickHunt_CollectMapHuntingGrounds": {
-                            "roi": [
-                                448,
-                                409,
-                                167,
-                                74
-                            ],
-                            "expected": [
-                                "守山人休息处"
-                            ]
+                        "QuickHunt_CollectMapHuntingGrounds_7": {
+                            "enabled": true
+                        },
+                        "QuickHunt_CollectMapHuntingGrounds_1": {
+                            "enabled": false
                         }
                     }
                 },
