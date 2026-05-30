@@ -372,15 +372,13 @@
         "action": "DoNothing",
         "next": [
             "Collect_TeleporCircle_OnFoot_TPIco",
-            "Collect_TeleporCircle_OnFoot_NviMap_SpecialOut1#",
-            "Collect_TeleporCircle_OnFoot_NviMap_SpecialOut3#",
+            "Collect_InitiatingManual_Onfoot_Start",
             "Collect_TeleporCircle_OnFoot_StateResolGroup_Step1_Lift",
             "Collect_TeleporCircle_OnFoot_StateResolGroup_Step1_Right"
         ],
         "focus": "CTOB.确认导航地图界面打开"
     },
-    "Collect_TeleporCircle_OnFoot_NviMap_SpecialOut1#": {
-        "desc": "夏日骑士,没有传送门,但有两张可以吸的地图。考虑做一个特殊Nav？| 如果检测已经打过,崩掉这层节点链",
+    "Collect_InitiatingManual_Onfoot_Start": {
         "recognition": "OCR",
         "roi": [
             175,
@@ -390,11 +388,33 @@
         ],
         "expected": [
             "泳池派对场",
-            "派对会场角落"
+            "派对会场角落",
+            "海岸沙滩",
+            "海岸椰林"
+        ],
+        "next": [
+            "Collect_IM_OnFoot_NviMap_E01_A1",
+            "Collect_IM_OnFoot_NviMap_E01_B1"
+        ],
+        "focus": "[特殊地图]-步行吸取模块启动"
+    },
+    "Collect_IM_OnFoot_NviMap_E01_A1": {
+        "desc": "夏日骑士,泳池派对场",
+        "recognition": "OCR",
+        "roi": [
+            175,
+            10,
+            286,
+            64
+        ],
+        "expected": [
+            "泳池派对场"
         ],
         "timeout": 5000,
         "next": [
-            "Collect_NviMap_Event_1"
+            "[JumpBack]Collect_IM_OnFoot_NviMap_Skill01",
+            "Collect_IM_OnFoot_NviMap_E01_A2",
+            "[JumpBack]Collect_IM_DouMap_Tab"
         ],
         "on_error": [
             "Global_QuickCart_MenuReset",
@@ -402,7 +422,266 @@
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
-        "focus": "CTB.特殊地图-夏日骑士"
+        "focus": "CTB.特殊地图-夏日骑士-01"
+    },
+    "Collect_IM_OnFoot_NviMap_E01_B1": {
+        "desc": "夏日骑士,派对会场角落",
+        "recognition": "OCR",
+        "roi": [
+            175,
+            10,
+            286,
+            64
+        ],
+        "expected": [
+            "派对会场角落"
+        ],
+        "timeout": 5000,
+        "next": [
+            "[JumpBack]Collect_IM_OnFoot_NviMap_Skill01",
+            "Collect_IM_OnFoot_NviMap_E01_B2",
+            "[JumpBack]Collect_IM_DouMap_Tab"
+        ],
+        "on_error": [
+            "Global_QuickCart_MenuReset",
+            "[JumpBack]Global_ToSandBox",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "CTB.特殊地图-夏日骑士-01"
+    },
+    "Collect_IM_OnFoot_NviMap_E01_A2": {
+        "recognition": "And",
+        "all_of": ["Collect_IM_OnFoot_NviMap_E01_A1"],
+        "next": ["Collect_IM_OnFoot_NviMap_E01_A2_Move"],
+        "focus": "CTB.特殊地图-夏日骑士-02"
+    },
+    "Collect_IM_OnFoot_NviMap_E01_B2": {
+        "recognition": "And",
+        "all_of": ["Collect_IM_OnFoot_NviMap_E01_B1"],
+        "next": [
+            "Collect_IM_OnFoot_NviMap_E01_B2_Move"
+        ],
+        "focus": "CTB.特殊地图-夏日骑士-02"
+    },
+    "Collect_IM_OnFoot_NviMap_E01_A2_Move": {
+        "max_hit": 5,
+        "recognition": "And",
+        "all_of": ["Collect_TeleporCircle_OnFoot_NviMap"],
+        "action": "Click",
+        "target": [
+            558,
+            225,
+            4,
+            3
+        ],
+        "next": [
+            "Collect_IM_OnFoot_NviMap_E01_A2_Move_Sub",
+            "Collect_IM_OnFoot_NviMap_E01_A2_Move"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E01_A2_Move_Sub": {
+        "max_hit": 5,
+        "recognition": "OCR",
+        "roi": [
+            121,
+            94,
+            510,
+            496
+        ],
+        "expected": [
+            "战斗区"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "[JumpBack]Collect_IM_OnFoot_Moveing",
+            "Collect_IM_OnFoot_NviMap_E01_2_Move_End",
+            "[JumpBack]Collect_IM_Move_MGS",
+            "[JumpBack]Global_WaitingForLoading",
+            "Collect_IM_OnFoot_NviMap_E01_A2_Move_Sub"
+        ],
+        "focus": "小地图图标子菜单"
+    },
+    "Collect_IM_OnFoot_NviMap_E01_B2_Move": {
+        "max_hit": 5,
+        "recognition": "And",
+        "all_of": ["Collect_TeleporCircle_OnFoot_NviMap"],
+        "action": "Click",
+        "target": [
+            380,
+            538,
+            5,
+            7
+        ],
+        "next": [
+            "[JumpBack]Collect_IM_OnFoot_Moveing",
+            "Collect_IM_OnFoot_NviMap_E01_2_Move_End",
+            "[JumpBack]Collect_IM_Move_MGS",
+            "[JumpBack]Global_WaitingForLoading"
+        ]
+    },
+    "Collect_IM_OnFoot_Moveing": {
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Moveing_Tpl",
+            "Rec_SandBox_Moveing_Ocr"
+        ],
+        "post_delay": 5000
+    },
+    "Collect_IM_OnFoot_NviMap_E01_2_Move_End": {
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "next": ["Collect_IM_OnFoot_NviMap_SkillEnd"]
+    },
+    "Collect_IM_Move_MGS": {
+        "recognition": "OCR",
+        "roi": [
+            672,
+            384,
+            125,
+            123
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_wait_freezes": 5000,
+        "post_delay": 1000,
+        "focus": "确认弹框"
+    },
+    "Collect_IM_OnFoot_NviMap_Skill01": {
+        "desc": "计数器模块,单独一次进入,呼叫skill",
+        "recognition": "Custom",
+        "custom_recognition": "CheckTag",
+        "custom_recognition_param": {
+            "tag": "IM_Skill_1",
+            "max": 1
+        },
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "IM_Skill_1",
+            "value": 1
+        },
+        "next": [
+            "Collect_IM_Skill_1_Patch"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_SkillEnd": {
+        "desc": "计数器模块,单独一次进入,呼叫skill",
+        "recognition": "Custom",
+        "custom_recognition": "CheckTag",
+        "custom_recognition_param": {
+            "tag": "IM_Skill_End",
+            "max": 1
+        },
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "IM_Skill_End",
+            "value": 1
+        },
+        "next": [
+            "Collect_IM_Skill_End_Patch"
+        ]
+    },
+    "Collect_IM_Skill_1_Patch": {
+        "action": "Custom",
+        "custom_action": "PatchNode",
+        "custom_action_param": {
+            "node": "Collect_Skill_TapReset",
+            "patch": {
+                "next": ["Collect_IM_GoinNviMap"]
+            },
+            "origin": {
+                "next": [
+                    "Collect_Skill_End",
+                    "Collect_Skill_TapReset"
+                ],
+                "timeout": 10000
+            }
+        },
+        "next": [
+            "Collect_Skill_Start",
+            "[JumpBack]Global_ToSandBox"
+        ],
+        "focus": "第一次技能Patch,结束后next复位到小地图"
+    },
+    "Collect_IM_Skill_End_Patch": {
+        "action": "Custom",
+        "custom_action": "PatchNode",
+        "custom_action_param": {
+            "node": "Collect_Skill_TapReset",
+            "patch": {
+                "next": [
+                    "Collect_IM_Closure",
+                    "[JumpBack]Global_QuickCart_MenuReset"
+                ]
+            },
+            "origin": {
+                "next": [
+                    "Collect_IM_Skill_End_Patch",
+                    "Collect_Skill_TapReset"
+                ],
+                "timeout": 10000
+            }
+        },
+        "next": [
+            "Collect_Skill_Start",
+            "[JumpBack]Global_ToSandBox"
+        ],
+        "focus": "最后一次(根据地图使用)技能Patch,结束后保持箱庭.并调出卡带界面结束模块"
+    },
+    "Collect_IM_Closure": {
+        "desc": "复位到卡带菜单,结束",
+        "recognition": "And",
+        "all_of": ["Global_QuickCart_MenuReset_Ocr"],
+        "next": ["Collect_IM_Reset"],
+        "focus": "[特殊地图]-步行吸取模块完成"
+    },
+    "Collect_IM_Reset": {
+        "desc": "复位环境",
+        "action": "Custom",
+        "custom_action": "RestoreNode",
+        "custom_action_param": {
+            "node": "Collect_Skill_TapReset",
+            "reset_tags": [
+                "IM_Skill_1",
+                "IM_Skill_End"
+            ]
+        },
+        "focus": "步行吸取环境复位"
+    },
+    "Collect_IM_GoinNviMap": {
+        "desc": "点击左上地图",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "action": "Click",
+        "target": [
+            148,
+            119,
+            34,
+            38
+        ],
+        "focus": "C.SK.打开导航地图"
+    },
+    "Collect_IM_DouMap_Tab": {
+        "desc": "对于双地图步行,切换地图为另一个关系or箭头标",
+        "enabled": false,
+        "recognition": "Or",
+        "any_of": [
+            "Rec_NavMap_Lift",
+            "Rec_NavMap_Right"
+        ],
+        "action": "Click",
+        "post_delay": 1000
     },
     "Collect_TeleporCircle_OnFoot_NviMap_SpecialOut3#": {
         "desc": "海滨天使,没有传送门,但有两张可以吸的地图。考虑做一个特殊Nav？| 如果检测已经打过,崩掉这层节点链",
@@ -1260,5 +1539,55 @@
         "green_mask": true,
         "threshold": 0.9,
         "focus": "CTOB.到达传送阵-按钮标,End"
+    },
+    "Rec_NavMap_Lift": {
+        "desc": "[识别]小地图-左侧图标",
+        "recognition": "TemplateMatch",
+        "roi": [
+            123,
+            299,
+            108,
+            94
+        ],
+        "template": [
+            "Nvimap_Butt_left.png"
+        ]
+    },
+    "Rec_NavMap_Right": {
+        "desc": "[识别]小地图-右侧图标",
+        "recognition": "TemplateMatch",
+        "roi": [
+            615,
+            300,
+            136,
+            98
+        ],
+        "template": [
+            "Nvimap_Butt_right.png"
+        ]
+    },
+    "Rec_SandBox_Moveing_Tpl": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            619,
+            623,
+            41,
+            41
+        ],
+        "template": [
+            "AutoNvi_ico.png"
+        ]
+    },
+    "Rec_SandBox_Moveing_Ocr": {
+        "recognition": "OCR",
+        "roi": [
+            539,
+            551,
+            194,
+            72
+        ],
+        "expected": [
+            "自动移动中"
+        ]
     }
 }
