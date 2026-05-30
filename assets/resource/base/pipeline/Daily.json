@@ -25,54 +25,35 @@
         ],
         "timeout": 5000,
         "next": [
-            "Daily_EnterUnion_img",
             "Daily_EnterUnion"
         ],
         "focus": "GOM.公会签到组件"
     },
     "Daily_EnterUnion": {
-        "desc": "主菜单，点击工会",
-        "recognition": "OCR",
+        "desc": "主菜单,公会存在红点标记",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
-            256,
+            255,
             84,
-            100,
-            111
-        ],
-        "expected": [
-            "公会"
+            81,
+            90
         ],
         "action": "Click",
-        "post_delay": 1000,
+        "target_offset": [
+            -3,
+            -5,
+            0,
+            0
+        ],
+        "post_delay": 2000,
         "next": [
             "[JumpBack]Daily_Union_Intnet_Err",
             "Daily_UnionGUI",
             "Daily_EnterUnion"
         ],
-        "focus": "GOM.公会签到(OCR)"
-    },
-    "Daily_EnterUnion_img": {
-        "desc": "主菜单，点击工会|图按照剪影模式做",
-        "recognition": "TemplateMatch",
-        "roi": [
-            256,
-            84,
-            100,
-            111
-        ],
-        "template": [
-            "MainBotmUnionGE.png",
-            "MainBotmUnionAcGE.png"
-        ],
-        "green_mask": true,
-        "action": "Click",
-        "post_delay": 1000,
-        "next": [
-            "[JumpBack]Daily_Union_Intnet_Err",
-            "Daily_UnionGUI",
-            "Daily_EnterUnion_img"
-        ],
-        "focus": "GOM.公会签到(IMG)"
+        "focus": "GOM.公会签到-红点标存在"
     },
     "Daily_UnionGUI": {
         "desc": "工会签到",
@@ -86,12 +67,9 @@
         "expected": [
             "公会"
         ],
-        "target": [
-            305,
-            120
-        ],
-        "post_delay": 3000,
+        "post_delay": 5000,
         "next": [
+            "[JumpBack]Daily_UnionReward",
             "[JumpBack]Daily_Union_Intnet_Err",
             "Daily_UnionBack"
         ]
@@ -111,38 +89,45 @@
         "action": "Click",
         "post_delay": 1000
     },
-    "Daily_UnionBack": {
-        "desc": "工会返回主页",
+    "Daily_UnionReward": {
+        "desc": "公会奖励领取重构",
+        "max_hit": 5,
+        "recognition": "OCR",
         "roi": [
-            219,
-            21,
-            65,
-            41
+            523,
+            490,
+            233,
+            69
         ],
         "expected": [
-            "公会"
+            "奖励已发放至邮箱"
         ],
         "action": "Click",
         "target": [
-            60,
-            360
+            1,
+            1
         ],
         "post_delay": 3000,
-        "next": [
-            "Daily_UnionBack2"
-        ]
+        "focus": "公会奖励领取成功"
     },
-    "Daily_UnionBack2": {
+    "Daily_UnionBack": {
         "desc": "工会返回主页",
-        "recognition": "OCR",
-        "roi": [
-            180,
-            6,
-            151,
-            65
-        ],
-        "expected": [
-            "公会"
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    180,
+                    6,
+                    151,
+                    65
+                ],
+                "expected": [
+                    "公会"
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
         ],
         "target": [
             120,
@@ -255,6 +240,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     640,
@@ -556,6 +542,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     1012,
@@ -688,6 +675,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     1155,
@@ -707,6 +695,7 @@
         "recognition": "And",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     1155,

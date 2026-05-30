@@ -137,7 +137,6 @@
             "entry": "Daily_HomePage",
             "controller": ["Adb"],
             "option": [
-                "公会奖励",
                 "餐馆领装饰币",
                 "餐馆自动升级",
                 "广场每日祈求"
@@ -393,55 +392,52 @@
                 {
                     "name": "火",
                     "pipeline_override": {
-                        "QuickHunt_FastBattleTouch_StoneSelect": {
-                            "target": [
-                                230,
-                                120
-                            ]
+                        "QuickHunt_StoneSelect_Fire": {
+                            "enabled": true
                         }
                     }
                 },
                 {
                     "name": "水",
                     "pipeline_override": {
-                        "QuickHunt_FastBattleTouch_StoneSelect": {
-                            "target": [
-                                230,
-                                175
-                            ]
+                        "QuickHunt_StoneSelect_Fire": {
+                            "enabled": false
+                        },
+                        "QuickHunt_StoneSelect_Water": {
+                            "enabled": true
                         }
                     }
                 },
                 {
                     "name": "风",
                     "pipeline_override": {
-                        "QuickHunt_FastBattleTouch_StoneSelect": {
-                            "target": [
-                                230,
-                                230
-                            ]
+                        "QuickHunt_StoneSelect_Fire": {
+                            "enabled": false
+                        },
+                        "QuickHunt_StoneSelect_Wind": {
+                            "enabled": true
                         }
                     }
                 },
                 {
                     "name": "光",
                     "pipeline_override": {
-                        "QuickHunt_FastBattleTouch_StoneSelect": {
-                            "target": [
-                                230,
-                                290
-                            ]
+                        "QuickHunt_StoneSelect_Fire": {
+                            "enabled": false
+                        },
+                        "QuickHunt_StoneSelect_Light": {
+                            "enabled": true
                         }
                     }
                 },
                 {
                     "name": "暗",
                     "pipeline_override": {
-                        "QuickHunt_FastBattleTouch_StoneSelect": {
-                            "target": [
-                                230,
-                                350
-                            ]
+                        "QuickHunt_StoneSelect_Fire": {
+                            "enabled": false
+                        },
+                        "QuickHunt_StoneSelect_Duck": {
+                            "enabled": true
                         }
                     }
                 }
@@ -492,24 +488,22 @@
                 {
                     "name": "优先金币",
                     "pipeline_override": {
-                        "QuickHunt_CollectMapAdventureRoute1": {
-                            "target": [
-                                138,
-                                200
-                            ],
-                            "focus": "BM.航线-首选-金币"
+                        "QuickHunt_CollectMapAdventureRoute_Select_Glod": {
+                            "enabled": true
+                        },
+                        "QuickHunt_CollectMapAdventureRoute_Select_Exp": {
+                            "enabled": false
                         }
                     }
                 },
                 {
                     "name": "优先经验",
                     "pipeline_override": {
-                        "QuickHunt_CollectMapAdventureRoute1": {
-                            "target": [
-                                138,
-                                280
-                            ],
-                            "focus": "BM.航线-首选-经验"
+                        "QuickHunt_CollectMapAdventureRoute_Select_Glod": {
+                            "enabled": false
+                        },
+                        "QuickHunt_CollectMapAdventureRoute_Select_Exp": {
+                            "enabled": true
                         }
                     }
                 }
@@ -524,9 +518,13 @@
                     "name": "狩猎场x1 / 双倍图MAX",
                     "pipeline_override": {
                         "QuickHunt_FastBattleMAXTouchAdventureRoute": {
-                            "target": [
-                                810,
-                                330
+                            "expected": [
+                                "MAX"
+                            ]
+                        },
+                        "QuickHunt_FastBattleMAXTouchHuntingGrounds": {
+                            "expected": [
+                                "MIN"
                             ]
                         }
                     }
@@ -534,10 +532,14 @@
                 {
                     "name": "狩猎场MAX / 双倍图x1",
                     "pipeline_override": {
+                        "QuickHunt_FastBattleMAXTouchAdventureRoute": {
+                            "expected": [
+                                "MIN"
+                            ]
+                        },
                         "QuickHunt_FastBattleMAXTouchHuntingGrounds": {
-                            "target": [
-                                810,
-                                330
+                            "expected": [
+                                "MAX"
                             ]
                         },
                         "QuickHunt_Hub": {
@@ -561,16 +563,11 @@
                         "QuickHunt_CollectMap_SwipLeft": {
                             "enabled": true
                         },
-                        "QuickHunt_CollectMapHuntingGrounds": {
-                            "roi": [
-                                298,
-                                369,
-                                134,
-                                88
-                            ],
-                            "expected": [
-                                "(?=.*[蜥])(?=.*[蜴])(?=.*[祭坛]).{5,}$"
-                            ]
+                        "QuickHunt_CollectMapHuntingGrounds_7": {
+                            "enabled": true
+                        },
+                        "QuickHunt_CollectMapHuntingGrounds_1": {
+                            "enabled": false
                         }
                     }
                 },
@@ -580,16 +577,11 @@
                         "QuickHunt_CollectMap_SwipNoth": {
                             "enabled": true
                         },
-                        "QuickHunt_CollectMapHuntingGrounds": {
-                            "roi": [
-                                448,
-                                409,
-                                167,
-                                74
-                            ],
-                            "expected": [
-                                "守山人休息处"
-                            ]
+                        "QuickHunt_CollectMapHuntingGrounds_7": {
+                            "enabled": true
+                        },
+                        "QuickHunt_CollectMapHuntingGrounds_1": {
+                            "enabled": false
                         }
                     }
                 },
@@ -935,11 +927,8 @@
                         "90付费抽目标卡池"
                     ],
                     "pipeline_override": {
-                        "Gacha_PvAnimeIsOver": {
-                            "next": [
-                                "Gacha_PaidDiamond_CustomField",
-                                "Gacha_TouchFreeGacha"
-                            ]
+                        "Gacha_PaidDiamond_CustomField": {
+                            "enabled": true
                         }
                     }
                 }
@@ -1247,24 +1236,6 @@
                     "name": "No",
                     "pipeline_override": {
                         "Weekly_Flishing_Hub": {
-                            "enabled": false
-                        }
-                    }
-                }
-            ]
-        },
-        "公会奖励": {
-            "type": "switch",
-            "description": "领取公会每日签到奖励。",
-            "cases": [
-                {
-                    "name": "Yes",
-                    "pipeline_override": {}
-                },
-                {
-                    "name": "No",
-                    "pipeline_override": {
-                        "Daily_Union_Hub": {
                             "enabled": false
                         }
                     }

@@ -20,34 +20,50 @@
         "max_hit": 1,
         "next": [
             "[JumpBack]QuickHunt_MIniMap_locErr",
-            "QuickHunt_TouchCollect",
+            "QuickHunt_At_Sandbox",
             "[JumpBack]Global_ToSandBox"
         ]
     },
+    "QuickHunt_At_Sandbox": {
+        "desc": "找到run,在箱庭",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin3_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "timeout": 3000,
+        "next": [
+            "QuickHunt_TouchCollect"
+        ],
+        "on_error": ["QuickHunt_CollectNoDot"]
+    },
     "QuickHunt_TouchCollect": {
-        "desc": "找到run-点击左上扫荡",
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
-            1047,
-            516,
-            107,
-            110
+            100,
+            163,
+            45,
+            44
         ],
-        "template": [
-            "Run.png"
-        ],
-        "green_mask": true,
         "action": "Click",
-        "target": [
-            120,
-            185
+        "target_offset": [
+            0,
+            -5,
+            0,
+            0
         ],
-        "post_delay": 2000,
+        "post_delay": 3000,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
-            "QuickHunt_UIEnter",
-            "QuickHunt_TouchCollect"
-        ]
+            "QuickHunt_UIEnter"
+        ],
+        "focus": "CM.狩猎场-红点存在"
+    },
+    "QuickHunt_CollectNoDot": {
+        "action": "StopTask",
+        "focus": "[WRN]狩猎场红点不存在,终止任务"
     },
     "QuickHunt_MIniMap_locErr": {
         "desc": "小地图位置调整",
@@ -67,7 +83,7 @@
         "focus": "CB.[WRN]小地图盘位置非Mini-调整"
     },
     "QuickHunt_UIEnter": {
-        "desc": "确认菜单在狩猎场,并初始化位置",
+        "desc": "确认菜单存在狩猎场,并初始化位置",
         "recognition": "OCR",
         "roi": [
             108,
@@ -123,7 +139,9 @@
         "desc": "狩猎起点HUB",
         "next": [
             "QuickHunt_NoRiceAP_Skip",
-            "QuickHunt_CollectMapHuntingGrounds",
+            "QuickHunt_CollectMapHuntingGrounds_7",
+            "QuickHunt_CollectMapHuntingGrounds_9",
+            "QuickHunt_CollectMapHuntingGrounds_1",
             "[JumpBack]QuickHunt_CollectMap_SwipLeft",
             "[JumpBack]QuickHunt_CollectMap_SwipNoth"
         ],
@@ -137,16 +155,8 @@
     "QuickHunt_CollectMap_ErrReset": {
         "desc": "ERR触发,复位到默认狩猎场,再重新位移,有最大限制",
         "max_hit": 5,
-        "recognition": "OCR",
-        "roi": [
-            93,
-            126,
-            96,
-            54
-        ],
-        "expected": [
-            "狩猎场"
-        ],
+        "recognition": "And",
+        "all_of": ["QuickHunt_UIEnter"],
         "action": "Click",
         "target_offset": [
             0,
@@ -178,7 +188,7 @@
         ],
         "count": 10
     },
-    "QuickHunt_CollectMapHuntingGrounds": {
+    "QuickHunt_CollectMapHuntingGrounds_1": {
         "desc": "A-1.选择狩猎场。",
         "recognition": "OCR",
         "roi": [
@@ -204,35 +214,84 @@
             "[JumpBack]QuickHunt_QuickBattleButton"
         ]
     },
+    "QuickHunt_CollectMapHuntingGrounds_7": {
+        "desc": "A-7.选择狩猎场。",
+        "recognition": "OCR",
+        "roi": [
+            298,
+            369,
+            134,
+            88
+        ],
+        "expected": [
+            "(?=.*[蜥])(?=.*[蜴])(?=.*[祭坛]).{5,}$"
+        ],
+        "pre_wait_freezes": 500,
+        "action": "Click",
+        "target_offset": [
+            0,
+            -5,
+            0,
+            0
+        ],
+        "timeout": 5000,
+        "next": [
+            "QuickHunt_FastBattleMAXTouchHuntingGrounds",
+            "[JumpBack]QuickHunt_QuickBattleButton"
+        ]
+    },
+    "QuickHunt_CollectMapHuntingGrounds_9": {
+        "desc": "A-9.选择狩猎场。",
+        "recognition": "OCR",
+        "roi": [
+            448,
+            409,
+            167,
+            74
+        ],
+        "expected": [
+            "守山人休息处"
+        ],
+        "pre_wait_freezes": 500,
+        "action": "Click",
+        "target_offset": [
+            0,
+            -5,
+            0,
+            0
+        ],
+        "timeout": 5000,
+        "next": [
+            "QuickHunt_FastBattleMAXTouchHuntingGrounds",
+            "[JumpBack]QuickHunt_QuickBattleButton"
+        ]
+    },
     "QuickHunt_NoRiceAP_Skip": {
         "desc": "正则无米饭跳过",
         "recognition": "OCR",
         "roi": [
-            1036,
+            1040,
             32,
-            67,
-            25
+            69,
+            27
         ],
         "expected": "^0/\\d+",
+        "only_rec": true,
         "focus": "BM.免费米饭耗尽，跳过打米饭"
     },
     "QuickHunt_FastBattleMAXTouchHuntingGrounds": {
         "desc": "B-1.狩猎场次数选择，点击MAX",
         "recognition": "OCR",
         "roi": [
-            754,
+            408,
             301,
-            116,
+            462,
             64
         ],
         "expected": [
             "MAX"
         ],
         "action": "Click",
-        "target": [
-            465,
-            330
-        ],
         "next": [
             "QuickHunt_FastBattleStart"
         ],
@@ -242,30 +301,45 @@
         "desc": "冒险航线入口",
         "max_hit": 1,
         "next": [
+            "QuickHunt_NoRiceAP_Skip",
             "QuickHunt_CollectMapAdventureRoute1"
         ]
     },
     "QuickHunt_CollectMapAdventureRoute1": {
         "desc": "A-2.interface，默认为金币优先，已留空|色核识别逻辑，确认再1级菜单中,无浮窗",
-        "recognition": "ColorMatch",
-        "roi": [
-            180,
-            14,
-            149,
-            66
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "ColorMatch",
+                "roi": [
+                    180,
+                    14,
+                    149,
+                    66
+                ],
+                "method": 4,
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
         ],
-        "method": 4,
-        "lower": [
-            130,
-            130,
-            122
+        "next": [
+            "QuickHunt_CollectMapAdventureRoute_Select_Glod",
+            "QuickHunt_CollectMapAdventureRoute_Select_Exp"
         ],
-        "upper": [
-            221,
-            218,
-            209
-        ],
-        "count": 100,
+        "focus": "BM.航线预备"
+    },
+    "QuickHunt_CollectMapAdventureRoute_Select_Glod": {
+        "desc": "硬编码选择航线-金币",
         "action": "Click",
         "target": [
             138,
@@ -276,12 +350,33 @@
         "next": [
             "QuickHunt_CollectMapAdventureRouteDoubleCk1",
             "QuickHunt_CollectMapAdventureRouteDoubleCk1No",
-            "QuickHunt_CollectMapAdventureRoute1"
+            "QuickHunt_CollectMapAdventureRoute_Select_Glod"
         ],
         "on_error": [
             "QuickHunt_AdventureRouteReBackHuntingGrounds_Pipeline"
         ],
-        "focus": "BM.航线-首选"
+        "focus": "BM.航线-首选-金币"
+    },
+
+    "QuickHunt_CollectMapAdventureRoute_Select_Exp": {
+        "desc": "硬编码选择航线-经验",
+        "enabled": false,
+        "action": "Click",
+        "target": [
+            138,
+            280
+        ],
+        "post_delay": 2000,
+        "timeout": 5000,
+        "next": [
+            "QuickHunt_CollectMapAdventureRouteDoubleCk1",
+            "QuickHunt_CollectMapAdventureRouteDoubleCk1No",
+            "QuickHunt_CollectMapAdventureRoute_Select_Exp"
+        ],
+        "on_error": [
+            "QuickHunt_AdventureRouteReBackHuntingGrounds_Pipeline"
+        ],
+        "focus": "BM.航线-首选-经验"
     },
     "QuickHunt_CollectMapAdventureRouteDoubleCk1": {
         "recognition": "TemplateMatch",
@@ -351,15 +446,13 @@
         "custom_action_param": {
             "node": "QuickHunt_FastBattleMAXTouchHuntingGrounds",
             "patch": {
-                "target": [
-                    810,
-                    330
+                "expected": [
+                    "MAX"
                 ]
             },
             "origin": {
-                "target": [
-                    465,
-                    330
+                "expected": [
+                    "MIN"
                 ]
             }
         },
@@ -374,7 +467,55 @@
         ]
     },
     "QuickHunt_CollectMapAdventureRoute2_Switch_A": {
-        "desc": "金币关卡转经验",
+        "desc": "金币A关卡转经验B",
+        "recognition": "And",
+        "all_of": ["Rec_GoldGoblin_Clr"],
+        "action": "Click",
+        "target": [
+            137,
+            276,
+            5,
+            5
+        ],
+        "post_delay": 1500,
+        "next": [
+            "QuickHunt_CollectMapAdventureRoute2_Switch_Enter_B",
+            "QuickHunt_CollectMapAdventureRoute2_Switch_A"
+        ]
+    },
+    "QuickHunt_CollectMapAdventureRoute2_Switch_B": {
+        "desc": "经验B关卡转金币A",
+        "recognition": "And",
+        "all_of": ["Rec_ExpSlime_Clr"],
+        "action": "Click",
+        "target": [
+            137,
+            197,
+            5,
+            5
+        ],
+        "post_delay": 1500,
+        "next": [
+            "QuickHunt_CollectMapAdventureRoute2_Switch_Enter_A",
+            "QuickHunt_CollectMapAdventureRoute2_Switch_B"
+        ]
+    },
+    "QuickHunt_CollectMapAdventureRoute2_Switch_Enter_A": {
+        "recognition": "And",
+        "all_of": ["Rec_ExpSlime_Clr"],
+        "next": [
+            "QuickHunt_CollectMapAdventureRoute2_DouCk"
+        ]
+    },
+    "QuickHunt_CollectMapAdventureRoute2_Switch_Enter_B": {
+        "recognition": "And",
+        "all_of": ["Rec_GoldGoblin_Clr"],
+        "next": [
+            "QuickHunt_CollectMapAdventureRoute2_DouCk"
+        ]
+    },
+    "Rec_GoldGoblin_Clr": {
+        "desc": "[识别]狩猎场左侧-金币关选中",
         "recognition": "ColorMatch",
         "roi": [
             119,
@@ -393,21 +534,11 @@
             3,
             255
         ],
-        "count": 10,
-        "action": "Click",
-        "target": [
-            510,
-            531
-        ],
-        "anchor": "AdventureRoute_Switch_roi",
-        "post_delay": 1500,
-        "next": [
-            "QuickHunt_CollectMapAdventureRoute2_Switch_Enter",
-            "QuickHunt_CollectMapAdventureRoute2_Switch_A"
-        ]
+        "count": 10
     },
-    "QuickHunt_CollectMapAdventureRoute2_Switch_B": {
-        "desc": "经验关卡转金币",
+    "Rec_ExpSlime_Clr": {
+        "desc": "[识别]狩猎场左侧-经验关选中",
+
         "recognition": "ColorMatch",
         "roi": [
             114,
@@ -426,64 +557,12 @@
             3,
             255
         ],
-        "count": 10,
-        "action": "Click",
-        "target": [
-            341,
-            558
-        ],
-        "anchor": "AdventureRoute_Switch_roi",
-        "post_delay": 1500,
-        "next": [
-            "QuickHunt_CollectMapAdventureRoute2_Switch_Enter",
-            "QuickHunt_CollectMapAdventureRoute2_Switch_B"
-        ]
-    },
-    "QuickHunt_CollectMapAdventureRoute2_Switch_Enter": {
-        "recognition": "ColorMatch",
-        "roi": "[Anchor]AdventureRoute_Switch_roi",
-        "method": 40,
-        "lower": [
-            0,
-            0,
-            180
-        ],
-        "upper": [
-            90,
-            3,
-            255
-        ],
-        "count": 10,
-        "next": [
-            "QuickHunt_CollectMapAdventureRoute2_DouCk"
-        ]
+        "count": 10
     },
     "QuickHunt_CollectMapAdventureRoute2_DouCk": {
         "enabled": true,
-        "recognition": "ColorMatch",
-        "roi": [
-            180,
-            14,
-            149,
-            66
-        ],
-        "method": 4,
-        "lower": [
-            130,
-            130,
-            122
-        ],
-        "upper": [
-            221,
-            218,
-            209
-        ],
-        "count": 100,
-        "action": "Click",
-        "target": [
-            138,
-            280
-        ],
+        "recognition": "And",
+        "all_of": ["QuickHunt_CollectMapAdventureRoute1"],
         "post_delay": 2000,
         "next": [
             "QuickHunt_CollectMapAdventureRouteDoubleCk2",
@@ -493,18 +572,8 @@
         "focus": "BM.航线-备选"
     },
     "QuickHunt_CollectMapAdventureRouteDoubleCk2": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            413,
-            592,
-            159,
-            110
-        ],
-        "template": [
-            "DoubleExp.png",
-            "DoubleGold.png"
-        ],
-        "threshold": 0.8,
+        "recognition": "And",
+        "all_of": ["QuickHunt_CollectMapAdventureRouteDoubleCk1"],
         "next": [
             "QuickHunt_NoAP_Rice",
             "QuickHunt_FastBattleMAXTouchAdventureRoute",
@@ -513,18 +582,8 @@
         "focus": "BM.航线-资源备选-双倍ck"
     },
     "QuickHunt_CollectMapAdventureRouteDoubleCk2No": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            413,
-            592,
-            159,
-            110
-        ],
-        "template": [
-            "DoubleNoExp.png",
-            "DoubleNoGold.png"
-        ],
-        "threshold": 0.8,
+        "recognition": "And",
+        "all_of": ["QuickHunt_CollectMapAdventureRouteDoubleCk1No"],
         "next": [
             "QuickHunt_CollectMapAdventureRouteDoubleCk2No_ToCentral"
         ],
@@ -545,17 +604,8 @@
     },
     "QuickHunt_CollectMapAdventureRouteDoubleCk2No_ToCentral_CK": {
         "desc": "目的是不用中断、在主流程里把地图复位，配个其他中断使用。T2，默认接狩猎R2",
-        "recognition": "OCR",
-        "roi": [
-            538,
-            372,
-            107,
-            30
-        ],
-        "expected": [
-            "哥布林遗迹"
-        ],
-        "only_rec": true,
+        "recognition": "And",
+        "all_of": ["QuickHunt_CollectMap_Initialize_Out_Ty2"],
         "next": [
             "QuickHunt_NoAP_Rice",
             "QuickHunt_AdventureRouteReBackHuntingGrounds_Pipeline"
@@ -566,40 +616,38 @@
         "desc": "B-2.冒险航线次数选择，点击MAX",
         "recognition": "OCR",
         "roi": [
-            679,
-            316,
-            235,
-            135
+            402,
+            306,
+            474,
+            54
         ],
         "expected": [
             "MAX"
         ],
         "action": "Click",
-        "target": [
-            465,
-            330
-        ],
         "next": [
             "QuickHunt_FastBattleStart"
         ]
     },
     "QuickHunt_NoAP_Rice": {
-        "recognition": "OCR",
-        "roi": [
-            534,
-            451,
-            77,
-            38
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "roi": [
+                    667,
+                    536,
+                    78,
+                    39
+                ],
+                "expected": ["\\d"]
+            },
+            "Sub_Ocr_Red_Clr"
         ],
-        "expected": [
-            "取消"
-        ],
-        "action": "Click",
         "next": [
-            "QuickHunt_NoAP_Rice",
             "[JumpBack]QuickHunt_CollectMap_Initialize"
         ],
-        "focus": "BB.付费米饭无AP弹窗"
+        "focus": "BB.米饭无AP,按钮消耗数变红"
     },
     "QuickHunt_CrystalCave": {
         "desc": "圣石洞穴入口",
@@ -609,25 +657,8 @@
         ]
     },
     "QuickHunt_CollectMapCrystalCave": {
-        "recognition": "ColorMatch",
-        "roi": [
-            180,
-            14,
-            149,
-            66
-        ],
-        "method": 4,
-        "lower": [
-            130,
-            130,
-            122
-        ],
-        "upper": [
-            221,
-            218,
-            209
-        ],
-        "count": 200,
+        "recognition": "And",
+        "all_of": ["QuickHunt_CollectMapAdventureRoute1"],
         "action": "Click",
         "target": [
             138,
@@ -650,9 +681,8 @@
             28
         ],
         "expected": [
-            "[水光风火暗]之洞穴"
+            "[火水光风火暗]之洞穴"
         ],
-        "only_rec": false,
         "next": [
             "QuickHunt_NoTorchesAP_Skip",
             "QuickHunt_FastBattleTouch_StoneSelect_Smart",
@@ -662,12 +692,13 @@
     "QuickHunt_NoTorchesAP_Skip": {
         "recognition": "OCR",
         "roi": [
-            1036,
+            1040,
             32,
-            67,
-            25
+            69,
+            27
         ],
         "expected": "^0/\\d+",
+        "only_rec": true,
         "next": [
             "Global_ToSandBox"
         ],
@@ -758,21 +789,119 @@
         "desc": "【圣石模式分流,后侧】|区分：正常、均衡 | 行为:寻找火之洞穴，点击属性图_火.| smart(补短)在前一个节点分流,先点击火再依次均衡是正确的,不要前移均衡的判定! | 注意,通过HUB开关控制是否切入均衡模式。模式正常走MAXTouch，故hub要在max前，且max不能false，因为hub出口是maxtouch。",
         "recognition": "OCR",
         "roi": [
-            181,
-            98,
-            100,
-            41
+            192,
+            106,
+            79,
+            27
+        ],
+        "expected": [
+            "火之洞穴",
+            "火的洞穴"
+        ],
+        "only_rec": true,
+        "next": [
+            "QuickHunt_StoneSelect_CkDone",
+            "[JumpBack]QuickHunt_StoneSelect_Fire",
+            "[JumpBack]QuickHunt_StoneSelect_Water",
+            "[JumpBack]QuickHunt_StoneSelect_Wind",
+            "[JumpBack]QuickHunt_StoneSelect_Light",
+            "[JumpBack]QuickHunt_StoneSelect_Duck"
+        ]
+    },
+    "QuickHunt_StoneSelect_Fire": {
+        "desc": "圣石选属性.Loc分离",
+        "max_hit": 5,
+        "recognition": "OCR",
+        "roi": [
+            178,
+            94,
+            126,
+            283
         ],
         "expected": [
             "火之洞穴"
         ],
         "action": "Click",
-        "target": [
-            230,
-            120
+
+        "anchor": "Ocr_clr",
+        "post_delay": 1500
+    },
+    "QuickHunt_StoneSelect_Water": {
+        "desc": "圣石选属性.Loc分离",
+        "enabled": false,
+        "max_hit": 5,
+        "recognition": "OCR",
+        "roi": [
+            178,
+            94,
+            126,
+            283
         ],
-        "post_delay": 1000,
-        "timeout": 3000,
+        "expected": [
+            "水之洞穴"
+        ],
+        "action": "Click",
+        "anchor": "Ocr_clr",
+        "post_delay": 1500
+    },
+    "QuickHunt_StoneSelect_Wind": {
+        "desc": "圣石选属性.Loc分离",
+        "enabled": false,
+        "max_hit": 5,
+        "recognition": "OCR",
+        "roi": [
+            178,
+            94,
+            126,
+            283
+        ],
+        "expected": [
+            "风之洞穴"
+        ],
+        "action": "Click",
+        "anchor": "Ocr_clr",
+        "post_delay": 1500
+    },
+    "QuickHunt_StoneSelect_Light": {
+        "desc": "圣石选属性.Loc分离",
+        "enabled": false,
+        "max_hit": 5,
+        "recognition": "OCR",
+        "roi": [
+            178,
+            94,
+            126,
+            283
+        ],
+        "expected": [
+            "光之洞穴"
+        ],
+        "action": "Click",
+        "anchor": "Ocr_clr",
+        "post_delay": 1500
+    },
+
+    "QuickHunt_StoneSelect_Duck": {
+        "desc": "圣石选属性.Loc分离",
+        "enabled": false,
+        "max_hit": 5,
+        "recognition": "OCR",
+        "roi": [
+            178,
+            94,
+            126,
+            283
+        ],
+        "expected": [
+            "暗之洞穴"
+        ],
+        "action": "Click",
+        "anchor": "Ocr_clr",
+        "post_delay": 1500
+    },
+    "QuickHunt_StoneSelect_CkDone": {
+        "recognition": "And",
+        "all_of": ["Anc_Ocr_Enable_Clr"],
         "next": [
             "QuickHunt_NoAP_Torch",
             "QuickHunt_TurnCharact_Start",
@@ -784,19 +913,15 @@
         "desc": "3.圣石洞穴次数选择，点击MAX",
         "recognition": "OCR",
         "roi": [
-            754,
+            408,
             301,
-            116,
+            462,
             64
         ],
         "expected": [
             "MAX"
         ],
         "action": "Click",
-        "target": [
-            810,
-            330
-        ],
         "next": [
             "QuickHunt_CrystalCave_End",
             "[JumpBack]QuickHunt_FastBattleStart"
@@ -818,19 +943,25 @@
         "focus": "BB.付费火把无AP弹窗"
     },
     "QuickHunt_QuickBattleButton": {
-        "desc": "寻找快速狩猎，点击(更新识别色彩?) | 设定最大值,在后续不打和死循环之间,两害区其轻.",
-        "max_hit": 50,
-        "recognition": "OCR",
-        "roi": [
-            1033,
-            635,
-            80,
-            26
+        "desc": "寻找快速狩猎，点击(OCR+CLR)必定1级界面才点击",
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    1029,
+                    632,
+                    89,
+                    33
+                ],
+                "expected": [
+                    "快速狩猎"
+                ],
+                "only_rec": true
+            },
+            "Sub_Ocr_Enable_Clr"
         ],
-        "expected": [
-            "快速狩猎"
-        ],
-        "only_rec": true,
         "action": "Click",
         "post_wait_freezes": 500,
         "focus": "BB.快速狩猎-启动！"
@@ -886,16 +1017,8 @@
     },
     "QuickHunt_FastBattleReward": {
         "desc": "狩猎Reward,新思路,正则式的分组容错,每组内只要识别到1个字就算过",
-        "recognition": "OCR",
-        "roi": [
-            551,
-            623,
-            168,
-            51
-        ],
-        "expected": [
-            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-        ],
+        "recognition": "And",
+        "all_of": ["Rec_Reward_Ocr"],
         "action": "Click",
         "target": [
             1,
@@ -1000,6 +1123,16 @@
         "expected": [
             "哥布林遗迹"
         ],
+        "replace": [
+            [
+                "遺",
+                "遗"
+            ],
+            [
+                "跡",
+                "迹"
+            ]
+        ],
         "only_rec": true,
         "next": [
             "[Anchor]BattleMap_Reset"
@@ -1043,17 +1176,8 @@
     },
     "QuickHunt_CrystalCave_End": {
         "desc": "返回本子地图",
-        "recognition": "OCR",
-        "roi": [
-            538,
-            372,
-            107,
-            30
-        ],
-        "expected": [
-            "哥布林遗迹"
-        ],
-        "only_rec": true,
+        "recognition": "And",
+        "all_of": ["QuickHunt_CollectMap_Initialize_Out_Ty2"],
         "next": [
             "Global_ToSandBox"
         ],
@@ -1089,16 +1213,8 @@
     },
     "QuickHunt_TurnCharact_QuickBattleMenu": {
         "desc": "确认快速狩猎菜单",
-        "recognition": "OCR",
-        "roi": [
-            643,
-            530,
-            147,
-            38
-        ],
-        "expected": [
-            "狩猎"
-        ],
+        "recognition": "And",
+        "all_of": ["QuickHunt_FastBattleStart"],
         "post_delay": 1500,
         "next": [
             "QuickHunt_TurnCharact_NoAP",
@@ -1108,23 +1224,8 @@
         "focus": "BTM.快速狩猎-菜单！"
     },
     "QuickHunt_TurnCharact_NoAP": {
-        "recognition": "ColorMatch",
-        "roi": [
-            647,
-            539,
-            134,
-            32
-        ],
-        "lower": [
-            241,
-            0,
-            0
-        ],
-        "upper": [
-            255,
-            139,
-            133
-        ],
+        "recognition": "And",
+        "all_of": ["QuickHunt_NoFreeAP"],
         "next": [
             "Global_ToSandBox"
         ],
@@ -1149,9 +1250,9 @@
     "QuickHunt_TurnCharact_TurnDuo_Int": {
         "recognition": "TemplateMatch",
         "roi": [
-            802,
+            785,
             322,
-            84,
+            101,
             150
         ],
         "template": ["SubBattle_+1.png"],
@@ -1160,16 +1261,8 @@
         "focus": "BTM.刷取次数调整"
     },
     "QuickHunt_TurnCharact_BattleStart": {
-        "recognition": "OCR",
-        "roi": [
-            643,
-            532,
-            96,
-            31
-        ],
-        "expected": [
-            "狩猎"
-        ],
+        "recognition": "And",
+        "all_of": ["QuickHunt_FastBattleStart"],
         "action": "Click",
         "post_delay": 4000,
         "next": [
@@ -1183,16 +1276,8 @@
     },
     "QuickHunt_TurnCharact_FastBattleReward": {
         "desc": "狩猎Reward",
-        "recognition": "OCR",
-        "roi": [
-            551,
-            623,
-            168,
-            51
-        ],
-        "expected": [
-            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-        ],
+        "recognition": "And",
+        "all_of": ["Rec_Reward_Ocr"],
         "action": "Click",
         "post_delay": 3000,
         "next": [
@@ -1202,24 +1287,30 @@
         "focus": "BTM.结算-战利品页面返回"
     },
     "QuickHunt_TurnCharact": {
-        "recognition": "ColorMatch",
-        "roi": [
-            176,
-            92,
-            133,
-            285
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "ColorMatch",
+                "roi": [
+                    176,
+                    92,
+                    133,
+                    285
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
         ],
-        "lower": [
-            254,
-            254,
-            254
-        ],
-        "upper": [
-            255,
-            255,
-            255
-        ],
-        "count": 25,
         "action": "Click",
         "target_offset": [
             0,
@@ -1251,17 +1342,8 @@
     "QuickHunt_CollectMap_SwipLeft": {
         "desc": "移动大地图-史贝伦大陆西北",
         "enabled": false,
-        "recognition": "OCR",
-        "roi": [
-            538,
-            372,
-            107,
-            30
-        ],
-        "expected": [
-            "哥布林遗迹"
-        ],
-        "only_rec": true,
+        "recognition": "And",
+        "all_of": ["QuickHunt_CollectMap_Initialize_Out_Ty2"],
         "action": "Swipe",
         "begin": [
             556,
@@ -1279,17 +1361,8 @@
     "QuickHunt_CollectMap_SwipNoth": {
         "desc": "移动大地图-史贝伦大陆东北",
         "enabled": false,
-        "recognition": "OCR",
-        "roi": [
-            538,
-            372,
-            107,
-            30
-        ],
-        "expected": [
-            "哥布林遗迹"
-        ],
-        "only_rec": true,
+        "recognition": "And",
+        "all_of": ["QuickHunt_CollectMap_Initialize_Out_Ty2"],
         "action": "Swipe",
         "begin": [
             974,
