@@ -795,7 +795,8 @@
             27
         ],
         "expected": [
-            "火[之的]洞穴"
+            "火之洞穴",
+            "火的洞穴"
         ],
         "only_rec": true,
         "next": [
@@ -857,6 +858,7 @@
         "expected": [
             "风之洞穴"
         ],
+        "action": "Click",
         "anchor": "Ocr_clr",
         "post_delay": 1500
     },
@@ -1128,7 +1130,7 @@
             ],
             [
                 "跡",
-                "跡"
+                "迹"
             ]
         ],
         "only_rec": true,
