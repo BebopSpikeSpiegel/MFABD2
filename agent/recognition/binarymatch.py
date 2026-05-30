@@ -339,7 +339,7 @@ class HSVShapeMatching(CustomRecognition):
 # [参数说明]
 #   hsv_ranges   (list)  红色 HSV 范围，默认覆盖标准红色双段（H 绕 0 点）。
 #                        格式：[{lower:[H,S,V], upper:[H,S,V]}, ...]
-#   red_area     (list)  红色 blob 的像素面积范围 [min, max]，默认 [50, 1200]。
+#   red_area     (list)  红色 blob 的像素面积范围 [min, max]，默认 [30, 1200]。
 #                        过小：噪点；过大：非红点的大面积红色 UI 元素。
 #   inner_v_min  (int)   内部亮色像素的亮度下限 V（0-255），默认 50。
 #                        用于过滤被红圈包围区域内的暗像素（抗锯齿边缘、渲染阴影）。
