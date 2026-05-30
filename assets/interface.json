@@ -411,26 +411,22 @@
                 {
                     "name": "风",
                     "pipeline_override": {
-                        "QuickHunt_FastBattleTouch_StoneSelect": {
-                            "QuickHunt_StoneSelect_Fire": {
-                                "enabled": false
-                            },
-                            "QuickHunt_StoneSelect_Wind": {
-                                "enabled": true
-                            }
+                        "QuickHunt_StoneSelect_Fire": {
+                            "enabled": false
+                        },
+                        "QuickHunt_StoneSelect_Wind": {
+                            "enabled": true
                         }
                     }
                 },
                 {
                     "name": "光",
                     "pipeline_override": {
-                        "QuickHunt_FastBattleTouch_StoneSelect": {
-                            "QuickHunt_StoneSelect_Fire": {
-                                "enabled": false
-                            },
-                            "QuickHunt_StoneSelect_Light": {
-                                "enabled": true
-                            }
+                        "QuickHunt_StoneSelect_Fire": {
+                            "enabled": false
+                        },
+                        "QuickHunt_StoneSelect_Light": {
+                            "enabled": true
                         }
                     }
                 },
