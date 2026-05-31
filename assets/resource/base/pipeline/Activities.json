@@ -30,8 +30,8 @@
             58
         ],
         "next": [
-            "Activities_Call_Mail_Out",
-            "[JumpBack]Mail_NewRed"
+            "[JumpBack]Mail_NewRed",
+            "Activities_Call_Mail_Out"
         ]
     },
     "Activities_Call_Mail_Out": {
