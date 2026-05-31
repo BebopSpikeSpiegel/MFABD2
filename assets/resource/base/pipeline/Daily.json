@@ -35,10 +35,10 @@
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
-            255,
-            84,
-            81,
-            90
+            298,
+            88,
+            29,
+            28
         ],
         "action": "Click",
         "target_offset": [
