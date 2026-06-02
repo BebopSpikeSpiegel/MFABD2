@@ -278,7 +278,7 @@ jobs:
           # -------------------------------------------------------------------
           - os: win
             arch: x86_64
-            runner: windows-2025
+            runner: windows-2025-vs2026
             mfa_os: "win"
             mfa_arch: "x64"
             # Windows 专用配置
@@ -294,7 +294,7 @@ jobs:
           # -------------------------------------------------------------------
           - os: win
             arch: aarch64
-            runner: windows-2025
+            runner: windows-2025-vs2026
             mfa_os: "win"
             mfa_arch: "arm64"
             # Windows 专用配置 (切到 3.11)
