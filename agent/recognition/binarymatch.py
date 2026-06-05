@@ -551,7 +551,10 @@ _W_CENT = 0.05     # 居中：小补充
 _DEFAULT_MIN_CONF = 0.25   # 精准 ROI 感叹号默认阈值；大 ROI 泛找请显式调高
 
 # 同一检测点(节点名+ROI)两次落盘的最小间隔(秒)，防 next 自循环刷屏；RDD_DUMP_INTERVAL 可调
-_DUMP_MIN_INTERVAL = float(os.environ.get("RDD_DUMP_INTERVAL", "2.0"))
+try:
+    _DUMP_MIN_INTERVAL = float(os.environ.get("RDD_DUMP_INTERVAL", "2.0"))
+except (TypeError, ValueError):
+    _DUMP_MIN_INTERVAL = 2.0   # 环境变量非法时兜底，避免 import 阶段崩溃中断 Agent 启动
 _RESOLVED_LOG_DIR = None
 
 
@@ -635,17 +638,29 @@ class RedDotDetector(CustomRecognition):
         finally:
             self._caller = None
 
-        if reco and reco.hit:
+        # reco is None：识别根本没跑起来(预设节点名写错/被禁用/图像空) —— 配置错误，与漏检区分
+        if reco is None:
+            mfaalog.error(f"[RedDotDetector] preset 未启动: {preset_node}（节点不存在/被禁用/图像空？）")
+            return CustomRecognition.AnalyzeResult(box=None, detail={
+                "result": "error", "mode": "preset", "preset": preset_node,
+                "roi": [rx, ry, rw, rh],
+                "error": f"preset node not started: {preset_node}",
+            })
+
+        if reco.hit:
             bx, by, bw, bh = reco.box
             adjusted = (bx + rx, by + ry, bw, bh)
             mfaalog.info(f"[RedDotDetector] [preset:{preset_node}] hit -> {adjusted}")
             return CustomRecognition.AnalyzeResult(
                 box=adjusted, detail={"result": "hit", "preset": preset_node})
 
+        # 真未命中：阶段原因已由预设节点(独立模式)记进嵌套识别记录；这里附带透传其 raw_detail
+        raw = getattr(reco, "raw_detail", None)
         mfaalog.warning(f"[RedDotDetector] miss@preset | {argv.node_name} via {preset_node}")
         return CustomRecognition.AnalyzeResult(box=None, detail={
             "result": "miss", "mode": "preset", "preset": preset_node,
             "roi": [rx, ry, rw, rh],
+            "preset_detail": raw,
             "hint": "阶段原因见预设节点(独立模式)的 detail；失败截图见 debug/RedDotDetector/ 下以本节点名命名的 rdd_* 文件",
         })
 
