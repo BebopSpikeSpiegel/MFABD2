@@ -44,3 +44,7 @@ Release 头部草稿 · 注入目标：GitHub Release Notes 顶部
 ---target: all---
 > 159 Moons of Grace , And miles to go with you.
 ---end---
+
+---target: stable---
+正式版:最近版本存在红点漏真问题,V2终版修复已出Pr但仍需公测反馈。故此版本使用V2中间版，这不符合一贯开发流程，只作为临时修复。
+---end---
