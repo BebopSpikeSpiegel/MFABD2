@@ -2118,7 +2118,8 @@
             1
         ],
         "end_hold": 800,
-        "duration": 500
+        "duration": 500,
+        "post_delay": 1500
     },
     "Setup_SetSkill_tab3_Reset5": {
         "action": "Click",
@@ -2234,7 +2235,8 @@
             1
         ],
         "end_hold": 800,
-        "duration": 500
+        "duration": 500,
+        "post_delay": 1500
     },
     "Setup_SetSkill_3-1_Shake1": {
         "desc": "Shake,图钉技能组切出去再切回来，技能就会自动排列——选中的黄色在前，方便滑动隐藏",
@@ -2339,7 +2341,8 @@
             1
         ],
         "end_hold": 800,
-        "duration": 500
+        "duration": 500,
+        "post_delay": 1500
     },
     "Setup_SetSkill_3-2_Shake1": {
         "action": "Click",
@@ -2442,7 +2445,8 @@
             1
         ],
         "end_hold": 800,
-        "duration": 500
+        "duration": 500,
+        "post_delay": 1500
     },
     "Setup_SetSkill_3-3_Shake1": {
         "action": "Click",
@@ -2546,7 +2550,8 @@
             1
         ],
         "end_hold": 800,
-        "duration": 500
+        "duration": 500,
+        "post_delay": 1500
     },
     "Setup_SetSkill_3-4_Shake1": {
         "action": "Click",
@@ -2697,7 +2702,8 @@
             1
         ],
         "end_hold": 800,
-        "duration": 500
+        "duration": 500,
+        "post_delay": 1500
     },
     "Setup_SetSkill_LiftYew_ReLiftEnd": {
         "desc": "判断当前页是否包含未选择技能的第一个.方法,左侧识别到黄色图标",
@@ -2747,7 +2753,7 @@
         ],
         "end_hold": 600,
         "duration": 500,
-        "post_delay": 1000,
+        "post_delay": 1500,
         "focus": "将技能列表复位"
     }
 }
