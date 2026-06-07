@@ -271,8 +271,8 @@
         "recognition": "OCR",
         "roi": [
             1040,
-            32,
-            69,
+            33,
+            111,
             27
         ],
         "expected": "^0/\\d+",
@@ -306,7 +306,7 @@
         ]
     },
     "QuickHunt_CollectMapAdventureRoute1": {
-        "desc": "A-2.interface，默认为金币优先，已留空|色核识别逻辑，确认再1级菜单中,无浮窗",
+        "desc": "色核识别逻辑，确认再1级菜单中,无浮窗|A-2.interface，默认为金币优先，已留空",
         "recognition": "And",
         "all_of": [
             {
@@ -390,6 +390,7 @@
             "DoubleExp.png",
             "DoubleGold.png"
         ],
+        "green_mask": true,
         "threshold": 0.8,
         "next": [
             "QuickHunt_NoAP_Rice",
@@ -502,14 +503,14 @@
     },
     "QuickHunt_CollectMapAdventureRoute2_Switch_Enter_A": {
         "recognition": "And",
-        "all_of": ["Rec_ExpSlime_Clr"],
+        "all_of": ["Rec_GoldGoblin_Clr"],
         "next": [
             "QuickHunt_CollectMapAdventureRoute2_DouCk"
         ]
     },
     "QuickHunt_CollectMapAdventureRoute2_Switch_Enter_B": {
         "recognition": "And",
-        "all_of": ["Rec_GoldGoblin_Clr"],
+        "all_of": ["Rec_ExpSlime_Clr"],
         "next": [
             "QuickHunt_CollectMapAdventureRoute2_DouCk"
         ]
@@ -566,8 +567,7 @@
         "post_delay": 2000,
         "next": [
             "QuickHunt_CollectMapAdventureRouteDoubleCk2",
-            "QuickHunt_CollectMapAdventureRouteDoubleCk2No",
-            "QuickHunt_CollectMapAdventureRoute2"
+            "QuickHunt_CollectMapAdventureRouteDoubleCk2No"
         ],
         "focus": "BM.航线-备选"
     },
@@ -693,8 +693,8 @@
         "recognition": "OCR",
         "roi": [
             1040,
-            32,
-            69,
+            33,
+            111,
             27
         ],
         "expected": "^0/\\d+",

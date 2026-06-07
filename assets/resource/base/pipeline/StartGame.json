@@ -517,6 +517,7 @@
         "next": [
             "[JumpBack]StartGame_BackMapPage2",
             "Setup_Entry2",
+            "[JumpBack]Global_ToHomePage",
             "StartGame_BackMapPageOG"
         ],
         "focus": "SM.主页面ck-弹窗消消乐~"

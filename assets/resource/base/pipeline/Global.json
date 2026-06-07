@@ -661,7 +661,6 @@
             40,
             255
         ],
-        "connected": true,
         "count": 40
     },
     "Anc_Ocr_Unable_Clr": {
@@ -679,7 +678,6 @@
             20,
             150
         ],
-        "connected": true,
         "count": 25
     },
     "Sub_Ocr_Enable_Clr": {
@@ -697,7 +695,6 @@
             40,
             255
         ],
-        "connected": true,
         "count": 40
     },
     "Sub_Ocr_Unable_Clr": {
@@ -721,7 +718,6 @@
             20,
             150
         ],
-        "connected": true,
         "count": 25
     },
     "Sub_Ocr_Red_Clr": {

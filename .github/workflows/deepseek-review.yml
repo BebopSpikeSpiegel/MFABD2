@@ -1,11 +1,12 @@
 # =============================================================================
-#  MFABD2 — DeepSeek PR 自动评审
+#  MFABD2 — DeepSeek PR 自动评审（v2：不截文档 + 审核范围/参考资料分层 + 跨文件核对）
 #  路径建议：.github/workflows/deepseek-review.yml
 #  依赖密钥：repository secret  DEEPSEEK_API_KEY
 #  可选变量：repository variable
 #            - DEEPSEEK_MODEL      默认 deepseek-v4-pro（也可填 deepseek-v4-flash）
 #            - DEEPSEEK_BASE_URL   默认 https://api.deepseek.com
-#            - DEEPSEEK_THINKING   默认 "true"（仅对 v4-pro 生效；flash 不开思考更便宜）
+#            - DEEPSEEK_THINKING   默认 "true"（V4 思考模式：reasoning_effort=high）
+#            - DEEPSEEK_MAX_TOKENS 默认 32000（思考模式会消耗输出预算，别给太小）
 # =============================================================================
 
 name: DeepSeek PR Reviewer
@@ -24,30 +25,32 @@ permissions:
   pull-requests: write
   contents: read
 
-# 同一 PR 新推 commit 时取消上一次还在跑的评审，避免重复消耗额度
 concurrency:
   group: deepseek-review-${{ github.event.pull_request.number || inputs.pr_number }}
   cancel-in-progress: true
 
 jobs:
   review:
-    # 草稿 PR 跳过（手动 dispatch 仍允许）
     if: |
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
-      - name: 检出代码
+      # 关键改动：签出【PR head】而非默认分支，使整棵 PR 工作树落到本地磁盘，
+      # 供脚本读取「完整文件」「跨文件被引用节点」「agent 注册表」等参考资料。
+      # refs/pull/N/head 对同仓库与 fork PR 均可用。
+      - name: 检出 PR head
         uses: actions/checkout@v4
         with:
+          ref: refs/pull/${{ github.event.pull_request.number || inputs.pr_number }}/head
           fetch-depth: 1
 
-      - name: 设置 Python 3.11
+      - name: 设置 Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
           cache: pip
 
       - name: 安装依赖
@@ -56,8 +59,8 @@ jobs:
       - name: 缓存官方文档（24h 复用）
         uses: actions/cache@v4
         with:
+          key: maafw-docs-v2
           path: .deepseek_docs_cache
-          key: maafw-docs-${{ github.run_id }}
           restore-keys: |
             maafw-docs-
 
@@ -67,31 +70,34 @@ jobs:
           DEEPSEEK_MODEL:    ${{ vars.DEEPSEEK_MODEL    || 'deepseek-v4-pro' }}
           DEEPSEEK_BASE_URL: ${{ vars.DEEPSEEK_BASE_URL || 'https://api.deepseek.com' }}
           DEEPSEEK_THINKING: ${{ vars.DEEPSEEK_THINKING || 'true' }}
-          DEEPSEEK_MAX_TOKENS: ${{ vars.DEEPSEEK_MAX_TOKENS || '16384' }}
+          DEEPSEEK_MAX_TOKENS: ${{ vars.DEEPSEEK_MAX_TOKENS || '32000' }}
           GITHUB_TOKEN:      ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER:         ${{ github.event.pull_request.number || inputs.pr_number }}
           REPO:              ${{ github.repository }}
           EVENT_NAME:        ${{ github.event_name }}
-          MAX_DIFF_CHARS:    '60000'    # 给模型的 diff 最大字符数
-          PER_DOC_CHARS:     '12000'    # 每篇官方文档最大注入字符数
+          MAX_DIFF_CHARS:    '400000'    # 审核范围 diff 上限（V4 上下文 1M，放宽）
+          PER_DOC_CHARS:     '200000'    # 每篇官方文档上限（约等于不截断）
+          PER_FILE_CHARS:    '80000'     # 每个改动文件完整版上限
+          MAX_REF_CHARS:     '300000'    # 参考资料总预算
         run: |
           python << 'PYEOF'
           # -*- coding: utf-8 -*-
           """
           MFABD2 PR 自动评审脚本（GitHub Actions 内联）
-          逻辑分四段：拉 PR diff → 按需拉文档 → 调 DeepSeek → 发/更新评论
+          分层：审核范围(diff hunks) + 参考资料(完整文件/跨文件引用/Agent 注册表) -> DeepSeek -> 评论
           """
           import hashlib
           import json
           import os
           import pathlib
+          import re
           import sys
           import time
           from typing import Optional
-
+          
           import requests
           from openai import OpenAI
-
+          
           # --------------------- 0. 环境变量 --------------------- #
           api_key   = os.environ["DEEPSEEK_API_KEY"]
           model     = os.environ.get("DEEPSEEK_MODEL", "deepseek-v4-pro").strip()
@@ -101,26 +107,28 @@ jobs:
           pr_number = os.environ.get("PR_NUMBER", "").strip()
           repo      = os.environ["REPO"]
           event     = os.environ.get("EVENT_NAME", "manual")
-          max_diff_chars = int(os.environ.get("MAX_DIFF_CHARS", "60000"))
-          per_doc_chars  = int(os.environ.get("PER_DOC_CHARS", "12000"))
-          max_tokens     = int(os.environ.get("DEEPSEEK_MAX_TOKENS", "16384"))
-
+          max_diff_chars = int(os.environ.get("MAX_DIFF_CHARS", "400000"))
+          per_doc_chars  = int(os.environ.get("PER_DOC_CHARS", "200000"))
+          per_file_chars = int(os.environ.get("PER_FILE_CHARS", "80000"))
+          max_ref_chars  = int(os.environ.get("MAX_REF_CHARS", "300000"))
+          max_tokens     = int(os.environ.get("DEEPSEEK_MAX_TOKENS", "32000"))
+          workspace = pathlib.Path(os.environ.get("GITHUB_WORKSPACE", ".")).resolve()
+          
           if not pr_number:
               print("❌ 未检测到 PR 编号，工作流结束。")
               sys.exit(0)
-
-          # 隐藏标记，用来在 PR 评论列表里找回上一次的 bot 评论并就地更新
+          
           BOT_MARKER = "<!-- mfabd2-deepseek-reviewer-bot:v1 -->"
-
           GH_HEADERS = {
               "Authorization": f"token {gh_token}",
               "Accept": "application/vnd.github+json",
               "X-GitHub-Api-Version": "2022-11-28",
               "User-Agent": "mfabd2-deepseek-reviewer",
           }
-
-          # --------------------- 1. 通用：带退避的 HTTP --------------------- #
-          def http(method: str, url: str, *, max_retries: int = 4, **kwargs) -> requests.Response:
+          RES_ROOT = "assets/resource"
+          
+          # --------------------- 1. 带退避的 HTTP --------------------- #
+          def http(method, url, *, max_retries=4, **kwargs):
               kwargs.setdefault("timeout", 30)
               last = None
               for attempt in range(max_retries):
@@ -135,9 +143,8 @@ jobs:
                       print(f"⚠️  请求失败 {url} ({attempt+1}/{max_retries}): {e}，{wait:.1f}s 后重试")
                       time.sleep(wait)
               raise RuntimeError(f"请求最终失败 {url}: {last}")
-
-          # --------------------- 2. 拉取 PR 元信息 + 改动文件（分页） --------------------- #
-          # 先拉 PR 改动，再据此决定该加载哪些文档（按需加载，省 token）
+          
+          # --------------------- 2. PR 元信息 + 改动文件 --------------------- #
           pr_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
           pr_resp = http("GET", pr_url, headers=GH_HEADERS)
           if pr_resp.status_code != 200:
@@ -146,7 +153,8 @@ jobs:
           pr_meta  = pr_resp.json()
           pr_title = pr_meta.get("title", "")
           pr_body  = (pr_meta.get("body") or "")[:1500]
-
+          head_sha = (pr_meta.get("head") or {}).get("sha", "")
+          
           files_changed = []
           page = 1
           while True:
@@ -162,26 +170,51 @@ jobs:
               if len(chunk) < 100:
                   break
               page += 1
-
+          
           if not files_changed:
               print("ℹ️  PR 无文件变更，结束。")
               sys.exit(0)
-
-          # 改动分类（提前到这里，供文档触发器和后续 focus 共用）
+          
+          # 二进制判定（提前定义，供资料层与 diff 层共用）
+          SKIP_EXT = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".ico",
+                      ".zip", ".rar", ".7z", ".gz", ".tar", ".whl", ".exe", ".dll",
+                      ".pdf", ".mp3", ".mp4", ".wav", ".onnx", ".bin", ".so", ".dylib"}
+          def is_binary(name):
+              n = name.lower()
+              return any(n.endswith(ext) for ext in SKIP_EXT)
+          
+          # 改动分类（依据真实仓库结构：assets/resource/<pack>/pipeline/*.json，agent/**/*.py）
           changed_set = {f["filename"] for f in files_changed}
+          def pack_of(path):
+              parts = path.split("/")
+              if path.startswith(RES_ROOT + "/") and len(parts) >= 3:
+                  return parts[2]
+              return None
           pipeline_jsons = [x for x in changed_set
-                            if x.startswith("assets/resource/") and x.endswith(".json") and "pipeline" in x]
+                            if x.startswith(RES_ROOT + "/") and x.endswith(".json") and "/pipeline/" in x]
           other_resource_jsons = [x for x in changed_set
-                                  if x.startswith("assets/resource/") and x.endswith(".json")
+                                  if x.startswith(RES_ROOT + "/") and x.endswith(".json")
                                   and x not in pipeline_jsons]
           python_files = [x for x in changed_set if x.startswith("agent/") and x.endswith(".py")]
           interface_changed = "assets/interface.json" in changed_set
+          affected_packs = sorted({p for p in (pack_of(x) for x in pipeline_jsons) if p})
+          # 参考包：实测扫描 assets/resource 下所有含 pipeline/ 的包（base、pc...），
+          # 比从 diff 猜更稳；跨包引用解析更完整。磁盘扫描失败时回退到 affected+base。
+          def discover_packs():
+              root = workspace / RES_ROOT
+              packs = []
+              if root.is_dir():
+                  for d in sorted(root.iterdir()):
+                      if d.is_dir() and (d / "pipeline").is_dir():
+                          packs.append(d.name)
+              return packs
+          disk_packs = discover_packs()
+          ref_packs = disk_packs if disk_packs else sorted(set(affected_packs) | {"base"})
           print(f"🗂️  改动分类：pipeline={len(pipeline_jsons)} 其他JSON={len(other_resource_jsons)} "
-                f"py={len(python_files)} interface={'是' if interface_changed else '否'}")
-
-          # --------------------- 3. 按需加载官方文档 --------------------- #
-          # 每篇文档配 (URL, 触发条件)；触发条件返回 False 时跳过下载，节省 ~3k-5k token。
-          # always=True 表示无条件加载（流水线协议是基础协议，多数 PR 都涉及）。
+                f"py={len(python_files)} interface={'是' if interface_changed else '否'} "
+                f"受影响包={affected_packs or '无'} 参考包(实测)={ref_packs}")
+          
+          # --------------------- 3. 官方文档（不截断；PER_DOC_CHARS 默认极大） --------------------- #
           DOC_SPECS = {
               "任务流水线协议": {
                   "url": "https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md",
@@ -202,12 +235,11 @@ jobs:
           cache_dir = pathlib.Path(".deepseek_docs_cache")
           cache_dir.mkdir(parents=True, exist_ok=True)
           ONE_DAY = 86400
-
           doc_blocks = []
           loaded_names, skipped_names = [], []
           for name, spec in DOC_SPECS.items():
               if not spec["trigger"]():
-                  print(f"⏭️  跳过文档 [{name}]：未触发（条件：{spec['trigger_desc']}）")
+                  print(f"⏭️  跳过文档 [{name}]：未触发（{spec['trigger_desc']}）")
                   skipped_names.append(name)
                   continue
               url = spec["url"]
@@ -222,37 +254,212 @@ jobs:
                       if r.status_code == 200:
                           text = r.text
                           cache_file.write_text(text, encoding="utf-8")
-                          print(f"✅ 下载文档: {name}")
+                          print(f"✅ 下载文档: {name}（{len(text)} 字符）")
                       else:
                           print(f"⚠️  文档 {name} HTTP {r.status_code}")
                   except Exception as e:
                       print(f"⚠️  文档 {name} 失败: {e}")
               if text:
-                  doc_blocks.append(f"【{name}】\n{text[:per_doc_chars]}")
+                  doc_blocks.append(f"【{name}】\n{text[:per_doc_chars]}")  # 默认 20 万字符 ≈ 不截断
                   loaded_names.append(name)
-
-          doc_knowledge = ("\n\n---\n\n".join(doc_blocks)
-                           if doc_blocks
-                           else "（本次 PR 改动不涉及需引用的协议文档，模型将依赖训练知识 + 项目通用规范进行评审）")
-          print(f"📚 文档汇总：加载 {len(loaded_names)}/{len(DOC_SPECS)} 篇，"
-                f"跳过 {len(skipped_names)} 篇")
-
-          # 跳过二进制 / 资产文件（不送给模型读 base64）
-          SKIP_EXT = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".ico",
-                      ".zip", ".rar", ".7z", ".gz", ".tar", ".whl", ".exe", ".dll",
-                      ".pdf", ".mp3", ".mp4", ".wav", ".onnx", ".bin", ".so", ".dylib"}
-
-          def is_binary(name: str) -> bool:
-              n = name.lower()
-              return any(n.endswith(ext) for ext in SKIP_EXT)
-
-          # 按文件级拼接 diff，按字符预算控制总量
+          doc_knowledge = ("\n\n---\n\n".join(doc_blocks) if doc_blocks
+                           else "（本次改动不涉及需引用的协议文档，依赖模型知识 + 项目规范）")
+          print(f"📚 文档：加载 {len(loaded_names)}/{len(DOC_SPECS)} 篇（不截断）")
+          
+          # --------------------- 3b. 参考资料层（从本地 PR head checkout 读取） --------------------- #
+          def read_local(rel_path):
+              p = workspace / rel_path
+              try:
+                  if p.is_file():
+                      return p.read_text(encoding="utf-8", errors="replace")
+              except Exception as e:
+                  print(f"⚠️  读取本地文件失败 {rel_path}: {e}")
+              return None
+          
+          def strip_json_comments(s):
+              # 容忍 MaaFW 带注释的 JSON：去 /* */ 与 // 注释后再解析
+              s = re.sub(r"/\*.*?\*/", "", s, flags=re.S)
+              s = re.sub(r"(?m)//[^\n]*$", "", s)
+              return s
+          
+          def load_pipeline_nodes(pack):
+              idx, bodies = {}, {}
+              root = workspace / RES_ROOT / pack / "pipeline"
+              if not root.is_dir():
+                  return idx, bodies
+              for fp in sorted(root.rglob("*.json")):
+                  rel = fp.relative_to(workspace).as_posix()
+                  txt = read_local(rel)
+                  if txt is None:
+                      continue
+                  try:
+                      data = json.loads(strip_json_comments(txt))
+                  except Exception:
+                      continue
+                  if not isinstance(data, dict):
+                      continue
+                  for node_name, body in data.items():
+                      idx.setdefault(node_name, rel)
+                      if isinstance(body, dict):
+                          bodies.setdefault(node_name, body)
+              return idx, bodies
+          
+          node_index, node_bodies = {}, {}   # name -> [rel,...] ; name -> body(dict)
+          for pack in ref_packs:
+              idx, bodies = load_pipeline_nodes(pack)
+              for nm, rel in idx.items():
+                  node_index.setdefault(nm, [])
+                  if rel not in node_index[nm]:
+                      node_index[nm].append(rel)
+              for nm, body in bodies.items():
+                  node_bodies.setdefault(nm, body)
+          print(f"🧩 节点索引：{len(node_index)} 个（来自包 {ref_packs}）")
+          
+          REF_FIELDS = ("next", "interrupt", "on_error")
+          def collect_refs(body):
+              names, customs = set(), set()
+              if not isinstance(body, dict):
+                  return names, customs
+              for k in REF_FIELDS:
+                  v = body.get(k)
+                  if isinstance(v, str):
+                      names.add(v)
+                  elif isinstance(v, list):
+                      names.update(x for x in v if isinstance(x, str))
+              for k in ("custom_action", "custom_recognition"):
+                  v = body.get(k)
+                  if isinstance(v, str):
+                      customs.add(v)
+              return names, customs
+          
+          changed_pipeline_full = {}
+          referenced_nodes, referenced_customs, defined_in_diff = set(), set(), set()
+          for rel in pipeline_jsons:
+              txt = read_local(rel)
+              if txt is None:
+                  continue
+              changed_pipeline_full[rel] = txt
+              try:
+                  data = json.loads(strip_json_comments(txt))
+              except Exception:
+                  print(f"⚠️  改动 pipeline 解析失败（仍作文本资料）：{rel}")
+                  continue
+              if isinstance(data, dict):
+                  for nm, body in data.items():
+                      defined_in_diff.add(nm)
+                      ns, cs = collect_refs(body)
+                      referenced_nodes |= ns
+                      referenced_customs |= cs
+          
+          def scan_agent_registry():
+              reg_a, reg_r = {}, {}
+              agent_root = workspace / "agent"
+              if not agent_root.is_dir():
+                  return reg_a, reg_r
+              pat_named = re.compile(
+                  r"@AgentServer\.(custom_action|custom_recognition)\s*\(\s*(?:name\s*=\s*)?[\"']([^\"']+)[\"']")
+              pat_deco = re.compile(r"@AgentServer\.(custom_action|custom_recognition)\b")
+              pat_def = re.compile(r"(?:async\s+)?def\s+(\w+)|class\s+(\w+)")
+              for fp in sorted(agent_root.rglob("*.py")):
+                  rel = fp.relative_to(workspace).as_posix()
+                  try:
+                      lines = fp.read_text(encoding="utf-8", errors="replace").splitlines()
+                  except Exception:
+                      continue
+                  for i, line in enumerate(lines):
+                      m = pat_named.search(line)
+                      if m:
+                          kind, nm = m.group(1), m.group(2)
+                          (reg_a if kind == "custom_action" else reg_r).setdefault(nm, []).append(f"{rel}:{i+1}")
+                          continue
+                      md = pat_deco.search(line)
+                      if md:  # 无显式名：取后续首个 def/class 名
+                          kind = md.group(1)
+                          for j in range(i + 1, min(i + 6, len(lines))):
+                              mdef = pat_def.search(lines[j])
+                              if mdef:
+                                  nm = mdef.group(1) or mdef.group(2)
+                                  (reg_a if kind == "custom_action" else reg_r).setdefault(nm, []).append(f"{rel}:{i+1}")
+                                  break
+              return reg_a, reg_r
+          
+          reg_action, reg_reco = scan_agent_registry()
+          registered_names = set(reg_action) | set(reg_reco)
+          print(f"🐍 Agent 注册：custom_action={len(reg_action)} custom_recognition={len(reg_reco)}")
+          
+          # 组装参考资料分节
+          ref_sections = []
+          
+          # A. 改动文件完整版（资料，非审核范围）
+          full_changed = []
+          for rel in sorted(changed_set):
+              if is_binary(rel):
+                  continue
+              txt = changed_pipeline_full.get(rel) or read_local(rel)
+              if txt is None:
+                  continue
+              full_changed.append(f"##### `{rel}`\n```\n{txt[:per_file_chars]}\n```")
+          if full_changed:
+              ref_sections.append("### A. 改动文件【完整版】（资料：跨 hunk 上下文，非审核范围）\n\n"
+                                  + "\n\n".join(full_changed))
+          
+          # B. 节点索引（校验跳转目标是否存在）
+          if node_index:
+              multi = {n: ps for n, ps in node_index.items() if len(ps) > 1}
+              idx_line = "，".join(f"`{n}`" for n in sorted(node_index))
+              extra = ""
+              if multi:
+                  extra = "\n\n> 跨包同名（可能 override，按 interface.json 覆盖顺序生效）：" + \
+                          "；".join(f"`{n}`→{ps}" for n, ps in sorted(multi.items()))
+              ref_sections.append(
+                  f"### B. Pipeline 节点索引（参考包 {ref_packs}，共 {len(node_index)} 节点）\n"
+                  f"用途：校验 next / interrupt / on_error 跳转目标是否存在。\n\n{idx_line}{extra}")
+          
+          # C. 改动文件引用的跨文件节点完整定义 + 悬空引用
+          cross = sorted(referenced_nodes - defined_in_diff)
+          resolved_blocks, dangling = [], []
+          for n in cross:
+              if n in node_bodies:
+                  loc = "，".join(node_index.get(n, []))
+                  resolved_blocks.append(
+                      f"- `{n}`（定义于 {loc}）：\n```json\n{json.dumps(node_bodies[n], ensure_ascii=False, indent=2)}\n```")
+              elif n in node_index:
+                  resolved_blocks.append(f"- `{n}`：存在于 {('，'.join(node_index[n]))}")
+              else:
+                  dangling.append(n)
+          if resolved_blocks:
+              ref_sections.append("### C. 改动文件引用的【跨文件节点】完整定义（资料）\n\n" + "\n".join(resolved_blocks))
+          if dangling:
+              ref_sections.append("### C-⚠. 改动文件引用、但在参考包中【未找到定义】的节点\n"
+                  "（请核对：拼写错误 / 漏建节点 / 属于未纳入的资源包）：\n"
+                  + "\n".join(f"- `{n}`" for n in dangling))
+          
+          # D. Agent 自定义注册表
+          reg_lines = [f"- custom_action `{n}` → {'，'.join(locs)}" for n, locs in sorted(reg_action.items())]
+          reg_lines += [f"- custom_recognition `{n}` → {'，'.join(locs)}" for n, locs in sorted(reg_reco.items())]
+          ref_sections.append("### D. Agent 自定义注册表（扫描 `agent/**/*.py`）\n"
+              + ("\n".join(reg_lines) if reg_lines else "（未扫描到 @AgentServer.custom_* 注册）"))
+          
+          # E. 改动 pipeline 引用的 Custom 方法对齐
+          if referenced_customs:
+              al = [f"- ✅ `{c}` 已在 agent 注册" for c in sorted(referenced_customs & registered_names)]
+              al += [f"- ⚠️ `{c}` 在改动 pipeline 中被引用，但 agent 注册表【未找到】" for c in sorted(referenced_customs - registered_names)]
+              ref_sections.append("### E. 改动 pipeline 引用的 Custom 方法对齐\n" + "\n".join(al))
+          
+          reference_material = "\n\n---\n\n".join(ref_sections) if ref_sections else "（无可用参考资料）"
+          ref_truncated = False
+          if len(reference_material) > max_ref_chars:
+              reference_material = reference_material[:max_ref_chars] + "\n\n[... 参考资料超预算，已截断 ...]"
+              ref_truncated = True
+          print(f"📎 参考资料：{len(reference_material)} 字符（截断={ref_truncated}）")
+          
+          # --------------------- 4. diff（审核范围；仅 hunk） --------------------- #
           diff_chunks, total = [], 0
           truncated, skipped_bin = False, []
           for f in files_changed:
-              fn     = f.get("filename", "")
+              fn = f.get("filename", "")
               status = f.get("status", "")
-              patch  = f.get("patch")
+              patch = f.get("patch")
               if is_binary(fn):
                   skipped_bin.append(fn)
                   continue
@@ -265,252 +472,222 @@ jobs:
                   break
               diff_chunks.append(block)
               total += len(block)
-
           if not diff_chunks:
               print("ℹ️  全部变更均为二进制资源，无文本可审。")
               sys.exit(0)
-
           diff_content = "\n\n".join(diff_chunks)
           if truncated:
               diff_content += "\n\n[... 因长度限制，剩余 diff 已截断 ...]"
-
-          # --------------------- 4. 项目侧重点识别 --------------------- #
-          # 改动分类已在 section 2 末尾完成；此处仅根据分类组装 focus 文本
-
+          
+          # --------------------- 5. 审查重点 --------------------- #
           focus = []
           if pipeline_jsons:
-              focus.append(
-                  "- **流水线 JSON**：核对 next / on_error / interrupt 跳转是否成环或失联；"
-                  "recognition 类型与所需参数（如 OCR 的 expected/replace、TemplateMatch 的 template/threshold）是否齐备；"
-                  "regex 字段是 JSON 字符串需双重转义；"
-                  "`doc` 字段（开发者注释）必须与实际 action / next 行为一致，否则视为陈旧注释。"
-              )
+              focus.append("- **流水线逻辑**（重点）：用资料 B/C 核对 next/on_error/interrupt 的【控制流】——死循环、不可达节点、悬空跳转、"
+                  "分支条件写反、循环缺退出；尤其注意 on_error 语义是否被误用（它针对 action 执行出错，不是 recognition 未命中）。"
+                  "schema/字段合法性已由 CI 覆盖，非重点；`doc` 注释须与实际行为一致，否则按陈旧注释标记。")
           if other_resource_jsons:
-              focus.append(
-                  "- **资源 JSON（非流水线）**：核对结构、字段类型、命名规范，避免无效字段或拼写错误。"
-              )
+              focus.append("- **资源 JSON（非流水线）**：结构/字段合法性由 CI 覆盖；仅关注会影响逻辑的内容（取值自相矛盾、引用错位等）。")
           if python_files:
-              focus.append(
-                  "- **Agent Python**：检查 `@AgentServer.custom_action` 注册名/类名是否与 Pipeline 的 "
-                  "`action: Custom` + `custom_action` 字段匹配；"
-                  "`custom_action_param` 抵达时是 **JSON 字符串**，必须 `json.loads()` 解包；"
-                  "Custom Action 内不应硬编码 ROI、过滤词、阈值等业务参数（数据-逻辑分离原则）—— "
-                  "这些应该来自 Pipeline 节点；"
-                  "MaaResource / MaaController / MaaTasker 的生命周期与异常兜底；"
-                  "`RecognitionDetail` 应使用 `filtered_results` 而非 `all_results`，以应用置信度阈值。"
-              )
+              focus.append("- **Custom 代码**（重点，CI 看不懂 Python）：用资料 D/E 核对注册名与 Pipeline 双向对齐（含孤儿）；"
+                  "param 抵达时是 JSON 字符串需 `json.loads()`——核对 Python 实际读取的键/类型与 Pipeline 传入是否一致；"
+                  "`analyze` 须返回 `AnalyzeResult(box, detail)` 或 None、`run` 返回值是否符合绑定契约，detail/box 的结构与语义是否正确；"
+                  "不应硬编码 ROI/过滤词/阈值（数据-逻辑分离）；资源/异常兜底；`RecognitionDetail` 用 `filtered_results`。")
           if interface_changed:
-              focus.append(
-                  "- **interface.json**：对照《工程接口 V2》核对 task / option / resource / controller 等字段、"
-                  "类型、必填项；新增任务是否同时在 pipeline 中提供入口节点。"
-              )
+              focus.append("- **interface.json**：字段合法性由 CI 覆盖；重点是逻辑——新增 task 是否有 pipeline 入口、"
+                  "option/override 覆盖顺序是否产生预期外行为。")
           if not focus:
-              focus.append("- 通用审查：代码风格、潜在 Bug、逻辑错误、异常兜底、命名一致性。")
-
-          # --------------------- 5. 组装 Prompt --------------------- #
+              focus.append("- 聚焦逻辑/语义错误（schema 与完整性已由 CI 覆盖）。")
+          
+          # --------------------- 5b. 组装 Prompt --------------------- #
           system_prompt = (
-              "你是 MaaFramework（MAA）项目的资深代码审查专家，正在审查 MFABD2 项目（基于 MaaFW 的 "
-              "Brown Dust 2 自动化）。请严格以用户提供的官方文档内容为准；与你内置知识冲突时以文档为准。"
-              "用中文回复，语气专业、具体；引用文件名和代码片段时必须基于 diff 中真实存在的内容，"
-              "**禁止臆造行号或代码**；无法从 diff/文档中得到支持的结论必须显式标注「不确定」。"
+              "你是 MaaFramework（MAA）项目的资深代码审查专家，正在审查 MFABD2 项目"
+              "（基于 MaaFW 的 Brown Dust 2 自动化）。\n\n"
+              "【审核范围 vs 参考资料】\n"
+              "- 审核对象仅限「六、审核范围」中 unified diff 的改动。\n"
+              "- 「五、参考资料」（完整文件、节点索引、Agent 注册表等）只用于理解上下文与校验跨文件引用，"
+              "本身不在评审范围，不要对其中未改动的内容提意见。\n\n"
+              "【评审重点：聚焦 CI 查不到的问题】\n"
+              "本仓库另有 CI 调用 MaaFW 实测来校验 JSON schema、字段合法性、资源完整性——这些会被 CI 捕获，"
+              "【不是你的重点】，除非问题在 Custom（自定义识别/动作）代码内部（CI 看不懂 Python）。\n"
+              "你的价值在于 CI 查不到的：① 控制流/逻辑错误（死循环、不可达节点、分支条件写反、计数/状态逻辑、"
+              "next/on_error 语义误用）；② Custom 代码与 Pipeline 的契约（param 键/类型对齐、analyze/run 返回值与结构是否合规、"
+              "box/detail 语义、副作用与回调）；③ 数据-逻辑分离、文案/标识符一致性等语义问题。\n\n"
+              "【彻底性（重要）】发现一个问题后，必须在 diff 范围内排查【同类问题的全部出现位置】，禁止只举一例；"
+              "每条问题都要给出「影响范围」（会导致什么、波及哪些节点/任务）与「修复」（具体怎么改）。\n\n"
+              "【官方文档使用规则】\n"
+              "1. 文档对某字段/行为有【明确规定】、而 diff 与之【明确冲突】时，以文档为准并指出冲突。\n"
+              "2. 某字段若在文档中【未出现】，不得据此断言「该字段不存在/无效」——MaaFW 字段众多，"
+              "缺席≠不存在；此时最多标注「不确定」，严禁断言「框架不存在此字段」。\n\n"
+              "【避免误报】对看不懂但疑似有意为之的写法/优化，不要直接判为错误；无把握时归入「疑问/需作者确认」而非「问题」。\n"
+              "引用文件名/代码必须基于 diff 或参考资料中真实存在的内容，禁止臆造行号或代码。用中文回复，专业、具体。"
           )
-
-          # 注：以下"项目通用规范"部分把你团队的工程约定固化进 prompt，
-          # 这是把 AI 评审从"通用代码审查"提升为"项目内代码审查"的关键。
-          user_prompt = f"""\
-          # 一、官方文档（节选，请优先依据）
-
+          
+          user_prompt = f"""# 一、官方文档（完整，请优先依据）
+          
           {doc_knowledge}
-
+          
           ---
-
-          # 二、本次 PR 元信息
-
+          
+          # 二、PR 元信息
+          
           - 仓库: `{repo}`
           - PR #{pr_number}: **{pr_title}**
+          - head: `{head_sha[:12]}`
           - 描述（截断 1500 字符）：
-
-          {pr_body or "（PR 描述为空）"}
-
-          # 三、本次审查重点（基于改动文件路径自动识别）
-
+          
+          {pr_body or '（PR 描述为空）'}
+          
+          # 三、审查重点（按改动路径自动识别）
+          
           {chr(10).join(focus)}
-
-          # 四、MFABD2 项目通用规范（必须检查）
-
-          1. **doc 字段一致性**：流水线 JSON 中的 `doc` 是开发者业务注释，必须与 `action` / `next` / `recognition` 等实际字段语义一致，不一致时按"陈旧注释"标记。
-          2. **Custom Action 双向对齐**：Pipeline 中 `action: Custom` + `custom_action: "X"` 必须能在 `agent/` 下找到对应 `@AgentServer.custom_action("X")` 注册的实现；反之 Python 中注册的 action 名也应被某个 Pipeline 节点引用，否则视为孤儿。
-          3. **正则限制**：MaaFW 使用 C++ `std::regex`，**对 lookbehind / lookahead 支持不稳定**（已踩坑：`(\\d+)\\s*[/:|\\-~]\\s*\\1(?!\\d)` 出现误匹配）。审查中遇到 `(?=...)` `(?!...)` `(?<=...)` `(?<!...)` 应建议改为锚点写法（`^...$`）。
-          4. **数据-逻辑分离**：CustomAction 的 Python 代码不应出现硬编码 ROI 坐标、OCR 过滤词、阈值等业务参数；这些应通过 Pipeline 节点的 `custom_action_param` 传入。
-          5. **OCR 噪声过滤**：优先使用 Pipeline OCR 节点的 `replace` 字段在引擎层过滤，而不是在 Python 后处理中处理。
-          6. **JSON 中的正则**：所有 `regex` 字段必须按 JSON 字符串规则转义（反斜杠双写）。
-          7. **filtered vs all**：`RecognitionDetail` 取识别结果时使用 `filtered_results`（已应用阈值），不要用 `all_results`。
-
-          # 五、输出格式（请严格遵守 Markdown 结构）
-
+          
+          # 四、MFABD2 项目通用规范（逻辑优先；schema 类已由 CI 覆盖）
+          
+          1. **doc 字段一致性**（逻辑）：流水线 `doc` 业务注释须与 `action`/`next`/`recognition` 实际语义一致，否则按陈旧注释标记。
+          2. **Custom 双向对齐**（CI 查不到）：Pipeline 的 `custom_action/custom_recognition` 须能在资料 D 找到；反之 agent 注册名也应被某节点引用，否则为孤儿。资料 E 已给初步对齐结果。
+          3. **正则限制**（行为）：MaaFW 用 C++ `std::regex`，对 lookbehind/lookahead 支持不稳定；遇到 `(?=)` `(?!)` `(?<=)` `(?<!)` 建议改锚点写法。
+          4. **数据-逻辑分离**：Custom 的 Python 不应硬编码 ROI/过滤词/阈值，应由 `param` 传入。
+          5. **OCR 噪声过滤**：优先用 Pipeline OCR 的 `replace` 在引擎层过滤，而非 Python 后处理。
+          6. **JSON 正则转义**：纯转义错误 CI 会查；但若转义错误【改变了匹配语义】，属逻辑问题，仍要指出。
+          7. **filtered vs all**：取识别结果用 `filtered_results`，不要用 `all_results`。
+          
+          > ⚠ 分工：JSON schema、字段是否存在/合法、资源文件是否齐全，已由 CI 调 MaaFW 实测覆盖，**非本次评审重点**（Custom 内部逻辑除外）。请把火力放在 CI 查不到的逻辑/语义/契约错误上。
+          
+          # 五、参考资料（仅供核对，非审核对象）
+          
+          {reference_material}
+          
+          # 六、输出格式（严格遵守 Markdown 结构）
+          
           ## 概览
-          （1–3 句话总结这次 PR 在做什么、整体质量如何）
-
-          ## 阻塞性问题（必须修改）
-          若无写"无"。每条必须包含：
-          - **文件**：`path/to/file:相关 hunk`
-          - **问题**：客观描述
-          - **原因**：引用上面文档第 X 节 / 项目规范第 X 条
-          - **建议**：具体怎么改
-
+          （1–3 句话：这次 PR 在做什么、整体质量如何）
+          
+          ## 阻塞性问题（必须修改；聚焦逻辑 / Custom）
+          若无写"无"。每条包含：
+          - **文件**：`path:相关 hunk`
+          - **问题**：客观描述。**若同类问题在多处出现，必须在此列出全部位置，禁止只举一例。**
+          - **影响范围**：会导致什么后果、波及哪些节点/任务
+          - **原因**：引用文档第 X 节 / 项目规范第 X 条 / 资料 B-E
+          - **修复**：具体怎么改
+          
           ## 建议改进（非阻塞）
-          同上格式。
-
+          同上格式（含影响范围与修复）。
+          
           ## 疑问 / 需要作者确认
-          列出无法仅凭 diff 判断、需要作者补充上下文的点。
-
+          列出仅凭材料无法判断、需作者补充的点；以及看不懂但疑似有意为之的写法（归此处而非问题）。
+          
           ---
-
-          # 六、本次 PR 的 unified diff
-
+          
+          # 七、审核范围：本次 PR 的 unified diff
+          
           ```diff
           {diff_content}
           ```
           """
-
+          
           if skipped_bin:
-              user_prompt += "\n\n> ⓘ 以下二进制/资源文件未参与本次代码审查：" + ", ".join(skipped_bin[:30])
+              user_prompt += "\n\n> ⓘ 以下二进制/资源文件未参与审查：" + "，".join(skipped_bin[:30])
               if len(skipped_bin) > 30:
-                  user_prompt += f" 等 {len(skipped_bin)} 个文件"
-
+                  user_prompt += f" 等 {len(skipped_bin)} 个"
+          
           # --------------------- 6. 调用 DeepSeek --------------------- #
-          # 6.1 预飞：先用 requests 直接探测 api.deepseek.com 是否可达；
-          #         若网络层有问题，可避免后续 OpenAI SDK 抛出含糊的 "Connection error."
           import socket
           import urllib.parse as _urlparse
           host = _urlparse.urlparse(base_url).hostname or "api.deepseek.com"
-          print(f"🔍 预飞检查：解析 {host} ...")
+          print(f"🔍 预飞：解析 {host} ...")
           try:
               ip = socket.gethostbyname(host)
               print(f"   DNS OK → {ip}")
           except Exception as e:
-              print(f"❌ DNS 失败：{e}（runner 出网受限或 DeepSeek 域名解析异常）")
+              print(f"❌ DNS 失败：{e}")
               sys.exit(1)
           try:
               probe = requests.get(f"{base_url.rstrip('/')}/v1/models",
-                                   headers={"Authorization": f"Bearer {api_key}"},
-                                   timeout=15)
-              print(f"   HTTPS 探测 → HTTP {probe.status_code} "
-                    f"(200=可达且鉴权OK; 401=可达但 Key 无效; 402=余额不足)")
-              if probe.status_code == 401:
-                  print("⚠️  API Key 鉴权失败；请检查 secret DEEPSEEK_API_KEY 是否正确填写。")
-              elif probe.status_code == 402:
-                  print("⚠️  账户余额不足（DeepSeek 预付费）；请前往 platform.deepseek.com 充值。")
+                                   headers={"Authorization": f"Bearer {api_key}"}, timeout=15)
+              print(f"   HTTPS 探测 → HTTP {probe.status_code} (200=OK;401=Key错;402=余额不足)")
           except Exception as e:
               print(f"❌ HTTPS 探测失败：{type(e).__name__}: {e}")
-              print("   可能原因：runner 出网被防火墙拦截 / TLS 握手失败 / DeepSeek 临时不可用。")
               sys.exit(1)
-
-          client = OpenAI(api_key=api_key, base_url=base_url, timeout=180.0, max_retries=0)
-          print(f"🤖 调用模型 `{model}` (thinking={thinking}) ...")
-
-          # v4-pro 默认开思考；flash 也支持但开了会变慢，按 env 决定
+          
+          client = OpenAI(api_key=api_key, base_url=base_url, timeout=300.0, max_retries=0)
+          print(f"🤖 调用 `{model}` (thinking={thinking}) ...")
+          # V4 思考模式官方写法：reasoning_effort + extra_body.thinking（思考模式下 temperature 会被忽略）
           create_kwargs = dict(
               model=model,
-              messages=[
-                  {"role": "system", "content": system_prompt},
-                  {"role": "user",   "content": user_prompt},
-              ],
+              messages=[{"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}],
               max_tokens=max_tokens,
           )
-          if thinking and "v4" in model:
-              # 注：v4 系列开 thinking 模式后 temperature/top_p 会被忽略
+          if thinking:
               create_kwargs["reasoning_effort"] = "high"
               create_kwargs["extra_body"] = {"thinking": {"type": "enabled"}}
           else:
-              create_kwargs["temperature"] = 0.2
-
+              create_kwargs["extra_body"] = {"thinking": {"type": "disabled"}}
+          
           try:
-              import openai as _openai_mod  # 用于精确 except
-              last_err = None
-              completion = None
+              import openai as _openai_mod
+              last_err, completion = None, None
               for attempt in range(3):
                   try:
                       completion = client.chat.completions.create(**create_kwargs)
                       break
                   except _openai_mod.APIConnectionError as e:
                       last_err = e
-                      cause = getattr(e, "__cause__", None)
-                      print(f"⚠️  连接错误 (尝试 {attempt+1}/3): {e!r}")
-                      if cause:
-                          print(f"     根因: {type(cause).__name__}: {cause}")
+                      print(f"⚠️  连接错误 ({attempt+1}/3): {e!r}")
                       if attempt < 2:
                           time.sleep(2.0 * (2 ** attempt))
                   except _openai_mod.AuthenticationError as e:
                       print(f"❌ 鉴权失败：{e}")
-                      print("   请检查 secret DEEPSEEK_API_KEY 是否设置且正确。")
                       sys.exit(1)
                   except _openai_mod.PermissionDeniedError as e:
-                      print(f"❌ 权限不足：{e}")
-                      print(f"   `{model}` 可能未对你的账户开放，或余额不足。"
-                            "建议把 vars.DEEPSEEK_MODEL 改为 `deepseek-chat` 试试。")
+                      print(f"❌ 权限不足/余额不足：{e}")
                       sys.exit(1)
                   except _openai_mod.NotFoundError as e:
-                      print(f"❌ 模型不存在：{e}")
-                      print(f"   当前模型名 `{model}` 在 DeepSeek API 中不可用；"
-                            "请改用 `deepseek-v4-pro` / `deepseek-v4-flash` / `deepseek-chat`。")
+                      print(f"❌ 模型不存在 `{model}`：{e}")
                       sys.exit(1)
                   except _openai_mod.BadRequestError as e:
                       print(f"❌ 请求格式错误：{e}")
                       sys.exit(1)
               if completion is None:
-                  raise last_err or RuntimeError("DeepSeek 调用失败：未知原因")
+                  raise last_err or RuntimeError("DeepSeek 调用失败")
               reply = (completion.choices[0].message.content or "").strip()
               finish_reason = getattr(completion.choices[0], "finish_reason", "")
               usage = getattr(completion, "usage", None)
               if usage:
-                  print(f"📊 token: prompt={usage.prompt_tokens}, "
-                        f"completion={usage.completion_tokens}, total={usage.total_tokens}, "
-                        f"finish_reason={finish_reason}")
-              # ⚠️ 截断检测：若 finish_reason='length'，输出在 max_tokens 处被硬切，需提醒
+                  print(f"📊 token: prompt={usage.prompt_tokens} completion={usage.completion_tokens} "
+                        f"total={usage.total_tokens} finish={finish_reason}")
               truncated_by_length = (finish_reason == "length")
               if truncated_by_length:
-                  print(f"⚠️  响应在 max_tokens={max_tokens} 处被截断；"
-                        f"请在仓库 Variables 中调高 DEEPSEEK_MAX_TOKENS（建议 24000-32000）。")
-                  reply += (
-                      "\n\n---\n\n"
-                      f"> ⚠️ **本次评审输出在 `max_tokens={max_tokens}` 处被截断，结论可能不完整。**\n"
-                      f"> 请在仓库 *Settings → Variables* 中调高 `DEEPSEEK_MAX_TOKENS` 后重新触发评审。"
-                  )
+                  print(f"⚠️  输出在 max_tokens={max_tokens} 处截断；建议调高 DEEPSEEK_MAX_TOKENS。")
+                  reply += (f"\n\n---\n\n> ⚠️ **本次输出在 `max_tokens={max_tokens}` 处被截断，结论可能不完整。**"
+                            f" 请调高 `DEEPSEEK_MAX_TOKENS` 后重试。")
           except Exception as e:
               import traceback
-              print(f"❌ DeepSeek 调用最终失败：{type(e).__name__}: {e}")
-              cause = getattr(e, "__cause__", None)
-              if cause:
-                  print(f"   根因: {type(cause).__name__}: {cause}")
-              print("   完整堆栈：")
+              print(f"❌ DeepSeek 调用失败：{type(e).__name__}: {e}")
               traceback.print_exc()
               sys.exit(1)
-
+          
           if not reply:
               print("⚠️  模型返回为空，跳过评论。")
               sys.exit(0)
-
-          # --------------------- 7. 发布或更新评论（去重） --------------------- #
+          
+          # --------------------- 7. 发布/更新评论（去重） --------------------- #
           comment_body = (
               f"{BOT_MARKER}\n"
               f"### 🤖 DeepSeek 自动评审报告\n"
-              f"**模型**：`{model}`　"
-              f"**触发**：`{event}`　"
+              f"**模型**：`{model}`　**触发**：`{event}`　"
               f"**Diff 截断**：{'是' if truncated else '否'}　"
               f"**输出截断**：{'⚠️ 是' if truncated_by_length else '否'}　"
-              f"**改动文件**：{len(files_changed)} 个（其中 {len(skipped_bin)} 个二进制已跳过）\n\n"
-              f"{reply}\n\n"
-              f"---\n"
-              f"_本评论由 GitHub Actions + DeepSeek 自动生成；最终判断以人工审查为准。_"
+              f"**参考资料截断**：{'是' if ref_truncated else '否'}　"
+              f"**改动文件**：{len(files_changed)}（二进制跳过 {len(skipped_bin)}）\n\n"
+              f"{reply}\n\n---\n"
+              f"_由 GitHub Actions + DeepSeek 自动生成；以人工审查为准。_"
           )
-
           comments_url = f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments"
-          existing_id: Optional[int] = None
+          existing_id = None
           page = 1
           while True:
-              r = http("GET", comments_url, headers=GH_HEADERS,
-                       params={"per_page": 100, "page": page})
+              r = http("GET", comments_url, headers=GH_HEADERS, params={"per_page": 100, "page": page})
               if r.status_code != 200:
                   break
               items = r.json()
@@ -521,20 +698,15 @@ jobs:
               if existing_id or len(items) < 100:
                   break
               page += 1
-
           if existing_id:
               patch_url = f"https://api.github.com/repos/{repo}/issues/comments/{existing_id}"
               r = http("PATCH", patch_url, headers=GH_HEADERS, json={"body": comment_body})
-              if r.status_code == 200:
-                  print(f"✅ 已更新现有评论 (id={existing_id})")
-              else:
-                  print(f"❌ 更新评论失败 [{r.status_code}]: {r.text[:300]}")
+              print("✅ 已更新评论" if r.status_code == 200 else f"❌ 更新失败 [{r.status_code}]: {r.text[:300]}")
+              if r.status_code != 200:
                   sys.exit(1)
           else:
               r = http("POST", comments_url, headers=GH_HEADERS, json={"body": comment_body})
-              if r.status_code == 201:
-                  print("✅ 已发布新评论")
-              else:
-                  print(f"❌ 发布评论失败 [{r.status_code}]: {r.text[:300]}")
+              print("✅ 已发布评论" if r.status_code == 201 else f"❌ 发布失败 [{r.status_code}]: {r.text[:300]}")
+              if r.status_code != 201:
                   sys.exit(1)
           PYEOF

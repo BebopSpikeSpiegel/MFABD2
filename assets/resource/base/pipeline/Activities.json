@@ -30,20 +30,15 @@
             58
         ],
         "next": [
-            "Activities_Call_Mail_Out",
-            "[JumpBack]Mail_NewRed"
+            "[JumpBack]Mail_NewRed",
+            "Activities_Call_Mail_Out"
         ]
     },
     "Activities_Call_Mail_Out": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Rec_HomePage_GA_Ocr"
         ],
         "next": [
             "Activities_Start"

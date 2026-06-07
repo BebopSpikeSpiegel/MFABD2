@@ -35,10 +35,10 @@
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
-            255,
-            84,
-            81,
-            90
+            298,
+            88,
+            29,
+            28
         ],
         "action": "Click",
         "target_offset": [
@@ -601,7 +601,7 @@
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
-        "focus": "点击'客人',移动画面"
+        "focus": "移动画面,预设位置1"
     },
     "Daily_Busin_DecorCoin_Move_2": {
         "max_hit": 2,
@@ -626,7 +626,7 @@
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
-        "focus": "点击'员工',移动画面"
+        "focus": "移动画面,预设位置2"
     },
     "Daily_Busin_DecorCoin_Move_3": {
         "max_hit": 2,
@@ -651,7 +651,7 @@
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
-        "focus": "点击'员工',移动画面"
+        "focus": "移动画面,预设位置3"
     },
     "Daily_Busin_NoGift": {
         "recognition": "OCR",
