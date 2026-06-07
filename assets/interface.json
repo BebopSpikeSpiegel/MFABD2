@@ -729,21 +729,23 @@
                     "name": "UR",
                     "pipeline_override": {
                         "Equip_filterSR": {
-                            "roi": [
-                                548,
-                                399,
-                                55,
-                                34
-                            ],
-                            "template": [
-                                "filterUR.png"
-                            ]
+                            "enabled": false
+                        },
+                        "Equip_filterUR": {
+                            "enabled": true
                         }
                     }
                 },
                 {
                     "name": "SR",
-                    "pipeline_override": {}
+                    "pipeline_override": {
+                        "Equip_filterSR": {
+                            "enabled": true
+                        },
+                        "Equip_filterUR": {
+                            "enabled": false
+                        }
+                    }
                 }
             ]
         },

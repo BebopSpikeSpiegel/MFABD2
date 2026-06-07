@@ -1792,8 +1792,24 @@
         "anchor": "Setup_EquipDec",
         "next": [
             "Setup_EquipDec",
-            "Equip_EquipDec"
+            "[JumpBack]Equip_EquipDec"
         ]
+    },
+    "Equip_EquipDec": {
+        "desc": "点击一键分解",
+        "recognition": "OCR",
+        "roi": [
+            1017,
+            599,
+            174,
+            121
+        ],
+        "expected": [
+            "键分解"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "focus": "装备分解"
     },
     "Setup_EquipDec": {
         "recognition": "OCR",
