@@ -36,6 +36,7 @@
             "[JumpBack]Event_Mamono_Hub",
             "[JumpBack]Event_MiniGame_Hub",
             "[JumpBack]SeasonEvent_ReMamono_Hub",
+            "Global_ToHomePage_Enter",
             "Global_ToHomePage"
         ],
         "focus": "EM.赛季活动进入确认."

@@ -552,9 +552,10 @@
             120,
             35
         ],
-        "post_delay": 1000,
+        "post_delay": 3000,
         "next": [
-            "Activities_BackHomePage",
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage",
             "Activities_Fin"
         ],
         "focus": "GA.退出活动"
