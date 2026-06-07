@@ -696,8 +696,7 @@
                 50,
                 1200
             ],
-            "inner_v_min": 228,
-            "inner_s_max": 125,
+            "min_confidence": 0.25,
             "gap_ratio": 0.35,
             "debug": true
         }
@@ -707,10 +706,10 @@
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {"preset": "RedDot_Preset"},
         "roi": [
-            640,
+            723,
             616,
-            17,
-            16
+            18,
+            18
         ]
     }
 }
