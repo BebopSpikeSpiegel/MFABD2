@@ -1639,9 +1639,9 @@
                 {
                     "name": "半自动爬塔(从选层数界面开始)",
                     "pipeline_override": {
-                        "SemiAuto_Evil_SemiautoTower_Start": {
+                        "SemiAuto_TotalStart": {
                             "next": [
-                                "SemiAuto_Evil_SemiautoTower_End"
+                                "SemiAuto_Evil_SemiautoTower_Start"
                             ]
                         }
                     }
@@ -1649,9 +1649,9 @@
                 {
                     "name": "半自动末日之书(从‘去战斗’页面开始)",
                     "pipeline_override": {
-                        "SemiAuto_LastNight_Start": {
+                        "SemiAuto_TotalStart": {
                             "next": [
-                                "SemiAuto_LastNight_End"
+                                "SemiAuto_LastNight_Start"
                             ]
                         }
                     }
