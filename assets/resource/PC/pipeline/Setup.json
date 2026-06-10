@@ -1,0 +1,155 @@
+{
+    "Setup_EquipUp_MJ": {
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "lower": [
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ],
+                "roi": [
+                    1167,
+                    433,
+                    11,
+                    18
+                ],
+                "upper": [
+                    [
+                        255,
+                        255,
+                        255
+                    ]
+                ]
+            },
+            "Rec_SliderSwitch_YewOn_Clr"
+        ]
+    },
+    "Setup_EquipUp_CheckBox_L1": {
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "lower": [
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ],
+                "roi": [
+                    865,
+                    487,
+                    17,
+                    14
+                ],
+                "upper": [
+                    [
+                        255,
+                        255,
+                        255
+                    ]
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
+        ]
+    },
+    "Setup_EquipUp_CheckBox_L2": {
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "lower": [
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ],
+                "roi": [
+                    1038,
+                    484,
+                    18,
+                    17
+                ],
+                "upper": [
+                    [
+                        255,
+                        255,
+                        255
+                    ]
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
+        ]
+    },
+    "Setup_EquipUp_CheckBox_L3": {
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "lower": [
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ],
+                "roi": [
+                    866,
+                    519,
+                    18,
+                    17
+                ],
+                "upper": [
+                    [
+                        255,
+                        255,
+                        255
+                    ]
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
+        ]
+    },
+    "Setup_EquipUp_CheckBox_L4": {
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "lower": [
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ],
+                "roi": [
+                    1051,
+                    519,
+                    18,
+                    17
+                ],
+                "upper": [
+                    [
+                        255,
+                        255,
+                        255
+                    ]
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
+        ]
+    },
+    "Setup_EquipUp_MenuQuit": {
+        "roi": [
+            1110,
+            648,
+            45,
+            43
+        ]
+    }
+}

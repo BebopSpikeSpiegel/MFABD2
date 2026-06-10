@@ -88,7 +88,10 @@
         {
             "name": "[执行]装备制作&炼制日常",
             "entry": "Equip_HomePage",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb",
+                "PC客户端"
+            ],
             "default_check": true,
             "description": "依次执行：<b>N稀有短剑打造</b> → <b>强化</b>与<b>分解</b> → <b>精炼</b>。<br>精炼仅以 SR 或 UR 稀有度装备为对象；首次运行无需提前锁定装备，非正常锁定的装备可能导致流程失败。<br><span style=\"background-color:rgba(255,160,0,0.2)\"><b>组合技：</b>同时启用<精炼等级上限过滤>与<精炼排序>，可构造低等级优先强化队列——当前首位装备超出等级限制后，自动推进到下一优先装备。</span>",
             "option": [

@@ -1,0 +1,546 @@
+{
+    "Equip_Skill3_5_Nothing": {
+        "roi": [
+            1164,
+            496,
+            69,
+            60
+        ],
+        "desc": "PVE点击技能2（栏位4。栏位5留空，摸鱼）"
+    },
+    "Equip_Skill3_5": {
+        "green_mask": true,
+        "roi": [
+            1164,
+            496,
+            69,
+            60
+        ],
+        "target": true,
+        "desc": "PVE点击技能4"
+    },
+    "Equip_EquipMakeGui": {
+        "expected": [
+            "立刻前往装备",
+            "立即前往装備"
+        ],
+        "roi": [
+            1054,
+            652,
+            129,
+            38
+        ],
+        "target": [
+            836,
+            22,
+            21,
+            21
+        ],
+        "desc": "确认制作装备界面"
+    },
+    "Equip_EquipSelect": {
+        "roi": [
+            473,
+            414,
+            355,
+            120
+        ],
+        "desc": "点击筛选武器"
+    },
+    "Equip_EquipMake": {
+        "expected": [
+            "制作",
+            "製作"
+        ],
+        "roi": [
+            894,
+            636,
+            150,
+            71
+        ],
+        "desc": "制作装备界面，点击制作"
+    },
+    "Equip_EquipMakeClose": {
+        "roi": [
+            934,
+            201,
+            26,
+            28
+        ],
+        "desc": "制作完成，点击X"
+    },
+    "Equip_EquipMakeBack": {
+        "recognition": "And",
+        "all_of": [
+            "Equip_EquipMake"
+        ],
+        "target": [
+            102,
+            21,
+            14,
+            16
+        ],
+        "desc": "制作装备界面，左上返回"
+    },
+    "Equip_ToEquipGui": {
+        "recognition": "And",
+        "all_of": [
+            "Equip_EquipMakeGui"
+        ],
+        "desc": "前往装备界面"
+    },
+    "Equip_EquipGui": {
+        "expected": [
+            "键强化",
+            "鍵強化"
+        ],
+        "roi": [
+            955,
+            656,
+            79,
+            27
+        ],
+        "desc": "寻找一键强化并点击"
+    },
+    "Equip_EquipUp": {
+        "roi": [
+            1061,
+            653,
+            37,
+            35
+        ],
+        "template": [
+            "Equip_more.png"
+        ],
+        "desc": "寻找一键强化..."
+    },
+    "Equip_EquipUp_CK": {
+        "expected": [
+            "级别",
+            "等级"
+        ],
+        "replace": [
+            [
+                "級",
+                "级"
+            ]
+        ],
+        "roi": [
+            741,
+            351,
+            64,
+            57
+        ]
+    },
+    "Equip_EquipUpSelectN": {
+        "roi": [
+            856,
+            352,
+            106,
+            57
+        ],
+        "template": [
+            "Equip_N.png"
+        ],
+        "desc": "点击N"
+    },
+    "Equip_EquipUpSelectN_Confirm": {
+        "roi": [
+            856,
+            352,
+            106,
+            57
+        ],
+        "desc": "色核N"
+    },
+    "Equip_EquipUpSelect": {
+        "roi": [
+            1175,
+            661,
+            23,
+            18
+        ],
+        "desc": "点击对号"
+    },
+    "Equip_EquipUp_EnterLV": {
+        "roi": [
+            395,
+            234,
+            24,
+            26
+        ]
+    },
+    "Equip_EquipUp_AndDec": {
+        "roi": [
+            847,
+            460,
+            40,
+            21
+        ]
+    },
+    "Equip_EquipUp_SetLv_Entry": {
+        "roi": [
+            771,
+            186,
+            145,
+            120
+        ]
+    },
+    "Equip_EquipUp_SetLv_SetLv_-1": {
+        "target": [
+            543,
+            227,
+            5,
+            6
+        ]
+    },
+    "Equip_Processing": {
+        "expected": [
+            "进行中",
+            "進行中",
+            "\\d+/\\d+"
+        ],
+        "roi": [
+            564,
+            298,
+            147,
+            169
+        ],
+        "desc": "等待作业装备 */* .匹配数字的*/*"
+    },
+    "Equip_EquipUpSelect_Err": {
+        "expected": [
+            "请选择装备后重新尝试",
+            "請選擇裝備後重新嘗試"
+        ]
+    },
+    "Equip_EquipUp_Action": {
+        "roi": [
+            653,
+            490,
+            96,
+            128
+        ],
+        "desc": "确认强化"
+    },
+    "Equip_EquipUpResult": {
+        "expected": [
+            "确认",
+            "確認"
+        ],
+        "roi": [
+            575,
+            491,
+            133,
+            88
+        ],
+        "desc": "强化结果收取|然后(如果有,返回装备满溢锚点) or 去精炼"
+    },
+    "Equip_Refine_filter": {
+        "green_mask": true,
+        "roi": [
+            1125,
+            51,
+            33,
+            32
+        ],
+        "desc": "点击左上筛选"
+    },
+    "Equip_filter_SubMenu": {
+        "expected": [
+            "装备筛选",
+            "裝備筛選"
+        ],
+        "replace": [
+            [
+                "篩",
+                "筛"
+            ]
+        ],
+        "desc": "筛选,二级菜单,已确认"
+    },
+    "Equip_filterSR": {
+        "threshold": [
+            0.7
+        ],
+        "desc": "点击筛选SR"
+    },
+    "Equip_filterUR": {
+        "roi": [
+            559,
+            388,
+            56,
+            35
+        ],
+        "threshold": [
+            0.7
+        ],
+        "desc": "点击筛选UR"
+    },
+    "Equip_SRColorCk": {
+        "roi": [
+            474,
+            386,
+            68,
+            40
+        ]
+    },
+    "Equip_URColorCk": {
+        "roi": [
+            568,
+            392,
+            39,
+            27
+        ]
+    },
+    "Equip_filter+9": {
+        "roi": [
+            891,
+            234,
+            51,
+            26
+        ]
+    },
+    "Equip_+9ColorCk": {
+        "roi": [
+            889,
+            234,
+            51,
+            26
+        ]
+    },
+    "Equip_filter<C17": {
+        "roi": [
+            795,
+            316,
+            34,
+            14
+        ]
+    },
+    "Equip_filter<C17Ck": {
+        "roi": [
+            787,
+            308,
+            54,
+            29
+        ]
+    },
+    "Equip_filter<C10": {
+        "target": [
+            689,
+            312,
+            41,
+            20
+        ]
+    },
+    "Equip_filter<C10Ck": {
+        "roi": [
+            689,
+            312,
+            41,
+            20
+        ]
+    },
+    "Equip_filterON": {
+        "expected": [
+            "确认",
+            "確認"
+        ],
+        "roi": [
+            872,
+            523,
+            95,
+            36
+        ],
+        "desc": "应用筛选,点击确认"
+    },
+    "Equip_Sequen_Menu": {
+        "roi": [
+            1165,
+            49,
+            44,
+            37
+        ]
+    },
+    "Equip_Sequen_MenuOpenCk": {
+        "roi": [
+            956,
+            73,
+            208,
+            207
+        ]
+    },
+    "Equip_Sequen_MenuSwipDown": {
+        "begin": [
+            986,
+            269,
+            3,
+            3
+        ],
+        "end": [
+            [
+                986,
+                68,
+                3,
+                3
+            ]
+        ]
+    },
+    "Equip_Sequen_MenuFind": {
+        "expected": [
+            "自定义标记",
+            "自訂標記",
+            "自订標記"
+        ],
+        "replace": [
+            [
+                "訂",
+                "订"
+            ]
+        ],
+        "roi": [
+            904,
+            174,
+            294,
+            117
+        ]
+    },
+    "Equip_Sequen_CKAndExt": {
+        "roi": [
+            1100,
+            189,
+            41,
+            94
+        ]
+    },
+    "Equip_FindRefining": {
+        "target": [
+            513,
+            131,
+            10,
+            10
+        ],
+        "desc": "点击第一个装备"
+    },
+    "Equip_Refining_Menu=24": {
+        "roi": [
+            920,
+            419,
+            24,
+            18
+        ],
+        "desc": "识别精炼二级菜单的等级.经过测试Roi的x轴已错开,不会匹配到一级装备平铺列表等级"
+    },
+    "Equip_filter_SubMenu_Mamono": {
+        "roi": [
+            443,
+            313,
+            55,
+            32
+        ],
+        "desc": "防止魔兽装备捣乱"
+    },
+    "Rec_<Equip_Overdrive_RefLvMax_Second_Clr>_Clr_01": {
+        "roi": [
+            341,
+            312,
+            54,
+            32
+        ],
+        "desc": "装备筛选sub,分类:'专用'"
+    },
+    "Rec_<Equip_Overdrive_RefLvMax_Second_Clr>_Clr_02": {
+        "roi": [
+            544,
+            315,
+            66,
+            27
+        ],
+        "desc": "装备筛选sub,分类:'制作'"
+    },
+    "Equip_Overdrive_RefLvMax_OCR": {
+        "expected": [
+            "专\\S*",
+            "\\S*用",
+            "制作",
+            "製作"
+        ],
+        "roi": [
+            324,
+            309,
+            293,
+            38
+        ]
+    },
+    "Equip_Refining": {
+        "expected": [
+            "精炼",
+            "煉製"
+        ],
+        "roi": [
+            880,
+            477,
+            58,
+            27
+        ],
+        "desc": "点击精炼"
+    },
+    "Equip_Overdrive_RefLvMax": {
+        "expected": [
+            "达到最大强化级别",
+            "達成最高強化等級"
+        ]
+    },
+    "Equip_TouchRefining": {
+        "expected": [
+            "精炼",
+            "煉製"
+        ],
+        "roi": [
+            997,
+            654,
+            138,
+            38
+        ],
+        "desc": "精炼界面，点击精炼2"
+    },
+    "Rec_<Equip_Backpack_Full>_Ocr_01": {
+        "roi": [
+            1112,
+            11,
+            33,
+            16
+        ],
+        "desc": "箱庭右上显示背包满"
+    },
+    "Rec_<Equip_Backpack_Full>_Ocr_02": {
+        "roi": [
+            226,
+            621,
+            41,
+            22
+        ],
+        "desc": "主页左下显示背包满"
+    },
+    "Equip_Backpack_Full_Enter": {
+        "green_mask": true,
+        "roi": [
+            75,
+            60,
+            85,
+            296
+        ]
+    },
+    "Equip_Backpack_Equip_Enter": {
+        "expected": [
+            "装备",
+            "裝備"
+        ],
+        "roi": [
+            186,
+            15,
+            51,
+            36
+        ]
+    }
+}
