@@ -6,7 +6,7 @@
         "desc": "[PC覆盖] PC端不支持StopApp，禁用。管路失控时仅记录日志，不尝试重启游戏。"
     },
     "Agt_RedDot_Preset": {
-        "desc": "[PC覆盖] 红点检测PC参数。①detector(binarymatch.py)已弃用 inner_s_max/inner_v_min,故不写。②MFA真机实测:PC红点饱和度偏低(像素S中位~148,下限低到88),base的 S下限140 只框到~33px<red_area下限35→被面积过滤漏检;故 hsv_ranges 的 S下限 140→100(可框~52px,稳过35)。③red_area下限 50→35(PC红点更小)。orange/yellow通知点H>12,不受S放宽影响。",
+        "desc": "[PC覆盖] 红点检测PC参数。①detector(binarymatch.py)已弃用 inner_s_max/inner_v_min,故不写。②MFA真机实测:PC红点饱和度偏低(像素S中位~148,下限低到88),base的 S下限140 只框到~33px<red_area下限35→被面积过滤漏检;故 hsv_ranges 的 S下限 140→100(可框~52px,稳过35)。③red_area下限 50→35(PC红点更小)。orange/yellow通知点H>12,不受S放宽影响。④min_confidence 0.25→0.08:PC红点720p太小,封闭'!'区仅~4px(2×2),gap/vert形状分=0,只剩white(0.39)+cent→conf~0.11<0.25漏检;作者hint即建议降min_confidence提召回。代价:大ROI红点节点(如Pass的[40x478])误检风险升高,如遇误检需为其单独用高conf变体。",
         "custom_recognition_param": {
             "hsv_ranges": [
                 {"lower": [0, 100, 120], "upper": [12, 255, 255]},
@@ -14,7 +14,7 @@
             ],
             "red_area": [35, 1200],
             "gap_ratio": 0.35,
-            "min_confidence": 0.25
+            "min_confidence": 0.08
         }
     }
 }
