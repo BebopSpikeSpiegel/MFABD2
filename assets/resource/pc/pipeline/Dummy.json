@@ -6,7 +6,21 @@
         "desc": "[PC覆盖] PC端不支持StopApp，禁用。管路失控时仅记录日志，不尝试重启游戏。"
     },
     "Agt_RedDot_Preset": {
-        "desc": "[PC覆盖] 红点检测PC参数。①detector(binarymatch.py)已弃用 inner_s_max/inner_v_min,故不写。②MFA真机实测:PC红点饱和度偏低(像素S中位~148,下限低到88),base的 S下限140 只框到~33px<red_area下限35→被面积过滤漏检;故 hsv_ranges 的 S下限 140→100(可框~52px,稳过35)。③red_area下限 50→35(PC红点更小)。orange/yellow通知点H>12,不受S放宽影响。④min_confidence 0.25→0.08:PC红点720p太小,封闭'!'区仅~4px(2×2),gap/vert形状分=0,只剩white(0.39)+cent→conf~0.11<0.25漏检;作者hint即建议降min_confidence提召回。代价:大ROI红点节点(如Pass的[40x478])误检风险升高,如遇误检需为其单独用高conf变体。",
+        "desc": "[PC覆盖] 通用红点预设(覆盖base同名节点的custom_recognition_param)。①移除已弃用的 inner_s_max/inner_v_min(binarymatch.py已忽略)。②hsv_ranges S下限 140→100:PC红点饱和度偏低(实测S中位~148、下限低到88),S≥140只框~33px<red_area下限35→面积阶段漏检。③red_area下限 50→35:PC红点像素更小。min_confidence 维持base默认0.25,避免对大ROI红点节点(如Pass_SelectPass[40×478])全局降阈值增加误检。已确认的小图标(Mail/任务)改用 Agt_RedDot_Preset_Soft。",
+        "custom_recognition_param": {
+            "hsv_ranges": [
+                {"lower": [0, 100, 120], "upper": [12, 255, 255]},
+                {"lower": [165, 100, 120], "upper": [180, 255, 255]}
+            ],
+            "red_area": [35, 1200],
+            "gap_ratio": 0.35,
+            "min_confidence": 0.25
+        }
+    },
+    "Agt_RedDot_Preset_Soft": {
+        "desc": "[PC覆盖] 小图标专用红点预设(独立完整节点)。与 Agt_RedDot_Preset 仅 min_confidence 不同(0.25→0.08):PC小红点720p下封闭'!'区仅~4px,gap/vert形状分=0,conf~0.11,需降阈值才召回。仅供已确认的小图标ROI(Mail_NewRed/RewardsDaily_InIndex)引用,把低阈值的误检风险限定在小ROI内,不波及大ROI。",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {
             "hsv_ranges": [
                 {"lower": [0, 100, 120], "upper": [12, 255, 255]},

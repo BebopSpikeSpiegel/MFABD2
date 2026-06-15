@@ -13,7 +13,7 @@
                 "class_regex": "UnityWndClass",
                 "screencap": "FramePool",
                 "mouse": "PostMessageWithCursorPos",
-                "keyboard": "PostMessageWithCursorPos"
+                "keyboard": "PostMessageWithWindowPos"
             },
             "permission_required": true,
             "display_short_side": 720
