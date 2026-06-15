@@ -19,12 +19,15 @@
         ]
     },
     "RewardsDaily_InIndex": {
-        "desc": "[PC覆盖] 同步左移到PC'任务'按钮位置检测红点;target_offset/action/next继承base。",
+        "desc": "[PC覆盖] ①同步左移到PC'任务'按钮位置检测红点;②改用小图标软阈值预设 Agt_RedDot_Preset_Soft。target_offset/action/next继承base。",
         "roi": [
             428,
             600,
             78,
             96
-        ]
+        ],
+        "custom_recognition_param": {
+            "preset": "Agt_RedDot_Preset_Soft"
+        }
     }
 }

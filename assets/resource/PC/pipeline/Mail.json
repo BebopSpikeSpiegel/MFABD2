@@ -1,11 +1,14 @@
 {
     "Mail_NewRed": {
-        "desc": "[PC覆盖] 实测PC邮件红点720p中心约(1085,23),在base roi[1003,14,64,58](x止1067)右侧外约18px,故右移roi覆盖。其余字段(custom_recognition/target_offset/next等)继承base。待MFA真机RedDotDetector复跑确认。",
+        "desc": "[PC覆盖] ①红点roi右移:实测PC邮件红点720p中心约(1085,23),base roi[1003,14,64,58](x止1067)覆盖不到→右移。②改用小图标软阈值预设 Agt_RedDot_Preset_Soft(min_confidence 0.08)。target_offset/action/next继承base。MFA实测可识别进入领取。",
         "roi": [
             1055,
             10,
             60,
             60
-        ]
+        ],
+        "custom_recognition_param": {
+            "preset": "Agt_RedDot_Preset_Soft"
+        }
     }
 }
