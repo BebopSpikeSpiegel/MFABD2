@@ -1,0 +1,30 @@
+{
+    "RewardsDaily_DailyReward": {
+        "desc": "[PC覆盖] PC底部菜单'任务'按钮720p约x439-470(中心454);base的OCR roi[520,658]在PC上落到了'成就'按钮→左移覆盖。实测主菜单整体较安卓左移。",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    430,
+                    664,
+                    62,
+                    32
+                ],
+                "expected": [
+                    "任务"
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ]
+    },
+    "RewardsDaily_InIndex": {
+        "desc": "[PC覆盖] 同步左移到PC'任务'按钮位置检测红点;target_offset/action/next继承base。",
+        "roi": [
+            428,
+            600,
+            78,
+            96
+        ]
+    }
+}
