@@ -415,9 +415,31 @@
         "enabled": true,
         "max_hit": 1,
         "next": [
-            "Arbitrage_Buy_Select_QC1"
+            "Arbitrage_Buy_ToSelect",
+            "Arbitrage_Buy_SkipSelect"
         ],
         "focus": "Arb.M.购入模块启动"
+    },
+    "Arbitrage_Buy_ToSelect": {
+        "desc": "重扫收藏物品",
+        "recognition": "Custom",
+        "custom_recognition": "CheckCoolDown",
+        "custom_recognition_param": {
+            "card_name": "Arbitrage_BuyItems",
+            "cycle_type": "g_weekly"
+        },
+        "next": [
+            "Arbitrage_Buy_Select_QC1"
+        ],
+        "focus": "Arb.B.购买选收藏模块"
+    },
+    "Arbitrage_Buy_SkipSelect": {
+        "desc": "跳过筛选,直接购买收藏物品",
+        "next": [
+            "[JumpBack]Arbitrage_Favorit_Buy",
+            "Arbitrage_PackList_ResetEnter",
+            "[JumpBack]Arbitrage_PackList_ResetSwip"
+        ]
     },
     "Arbitrage_Buy_Select_QC1": {
         "recognition": "OCR",
@@ -1751,13 +1773,19 @@
         ]
     },
     "Arbitrage_Buy_Select_End": {
+        "action": "Custom",
+        "custom_action": "MarkComplete",
+        "custom_action_param": {
+            "card_name": "Arbitrage_BuyItems",
+            "cycle_type": "g_weekly"
+        },
         "timeout": 1005,
         "next": [
             "[JumpBack]Arbitrage_Favorit_Buy",
             "Arbitrage_PackList_ResetEnter",
             "[JumpBack]Arbitrage_PackList_ResetSwip"
         ],
-        "focus": "Arb.B.购买模块结束"
+        "focus": "Arb.B.购买选收藏模块结束"
     },
     "Arbitrage_Favorit_Buy": {
         "desc": "点击一键购买,maxhit配置,使得双入口也只会判定一次",
