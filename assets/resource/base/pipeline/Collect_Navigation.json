@@ -1129,7 +1129,17 @@
         }
     },
     "Collect_PackEnd_Ck_OnlyOnce": {
+        "desc": "单次运行时,标记已完成",
         "enabled": false,
+        "action": "Custom",
+        "custom_action": "MarkComplete",
+        "custom_action_param": {
+            "card_name": "Collect_OnlyOnce",
+            "cycle_type": "g_weekly"
+        },
+        "next": ["Collect_PackEnd_Ck_OnlyOnce_StopTask"]
+    },
+    "Collect_PackEnd_Ck_OnlyOnce_StopTask": {
         "action": "StopTask",
         "focus": "CM.N.仅进行1张卡带策略-强制结束流程"
     }
