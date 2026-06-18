@@ -6,7 +6,7 @@
         "desc": "[PC覆盖] PC端不支持StopApp，禁用。管路失控时仅记录日志，不尝试重启游戏。"
     },
     "Agt_RedDot_Preset": {
-        "desc": "[PC覆盖] 红点预设(覆盖base同名节点的custom_recognition_param)。①移除已弃用的 inner_s_max/inner_v_min(binarymatch.py已忽略)。②hsv_ranges S下限 140→100:PC红点饱和度偏低。【720空间实测,复刻RedDotDetector算法】邮件红点(720中心1085,23)在 base S140 下只框到 32px<red_area下限50→面积阶段直接漏检;改 S100 后框到 58px。③red_area下限 50→35:作为更小红点(如页内二级红点)的安全余量;min_confidence 维持 0.25 把关,不增大ROI误检。④min_confidence 未改(仍0.25):邮件红点在 S100 下 conf=0.43(3帧一致,vert满分),0.25稳过,无需降阈值——故不再拆分 Soft 预设。",
+        "desc": "[PC覆盖] 通用红点预设(覆盖base同名节点)。①移除已弃用 inner_s_max/inner_v_min。②hsv_ranges S下限 140→100:PC红点饱和度偏低(base S140 仅框32px<red_area50→漏,S100框57~61px)。③red_area下限 50→35:更小红点余量。④min_confidence 维持 0.25:适用于形状清晰的大红点(如商品邮箱/每周任务页签,720实测conf 0.92~0.93)。⚠️注:对极小红点(如邮件铃铛'!'仅~3px),RedDotDetector形状模型在720下不可靠(conf 0.0~0.43飘),应改用 ColorMatch 计数,见 Mail_NewRed。",
         "custom_recognition_param": {
             "hsv_ranges": [
                 {"lower": [0, 100, 120], "upper": [12, 255, 255]},

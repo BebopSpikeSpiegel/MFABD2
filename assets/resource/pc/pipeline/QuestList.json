@@ -29,5 +29,51 @@
         "custom_recognition_param": {
             "preset": "Agt_RedDot_Preset"
         }
+    },
+    "RewardsDaily_GetDailyReward": {
+        "desc": "[PC覆盖] 任务页页面确认OCR'每日任务'标题:base roi[218,19,113,44]在PC上切掉'每'、读成'日任务'匹配失败→左扩到[170,14,115,40]罩住完整标题(720实测标题约[180,17,93,31])。仅改顶层roi,next([JumpBack]RewardsDaily_Get等)继承base。",
+        "roi": [
+            170,
+            14,
+            115,
+            40
+        ]
+    },
+    "RewardsDaily_Get": {
+        "desc": "[PC覆盖] '全部获得'按钮OCR roi:720实测按钮文字在[1093,659,59,20],base roi[1045,645,93,31](x止1138)切掉'得'→[1085,652,80,28]罩住完整'全部获得'(实机点击已验证领取成功)。整段重写all_of;Sub_Ocr_Enable_Clr用roi:OCR自动跟随。action/post_delay继承base。",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    1085,
+                    652,
+                    80,
+                    28
+                ],
+                "expected": [
+                    "全部获得"
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ]
+    },
+    "RewardsDaily_GetDailyRewardBack": {
+        "desc": "[PC覆盖] 领取后'点击画面即可返回'提示:720实测[579,649,113,17](与邮件同款overlay),base roi[558,630,147,34](y偏高)→[560,640,150,38]。action继承base。",
+        "roi": [
+            560,
+            640,
+            150,
+            38
+        ]
+    },
+    "RewardsDaily_TabWeeklyReward": {
+        "desc": "[PC覆盖] 每周任务页签红点:base roi[300,86,67,133]在PC上red_px=0漏检(x从300起,PC红点实为720(284,137))→[255,122,78,40],实测conf=0.93命中。红点检测沿用 Agt_RedDot_Preset。action/next继承base。",
+        "roi": [
+            255,
+            122,
+            78,
+            40
+        ]
     }
 }
