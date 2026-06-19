@@ -13,6 +13,7 @@
             "Rec_HomePage_GA_Ocr",
             "Sub_HomePage_GA_Bright_Clr"
         ],
+        "rate_limit": 2000,
         "next": [
             "Activities_InIndex",
             "Global_ToSandBox"
@@ -62,6 +63,7 @@
             0,
             0
         ],
+        "post_delay": 5000,
         "next": [
             "Activities_Index",
             "Activities_InIndex"
@@ -101,7 +103,7 @@
         "action": "Click",
         "target_offset": [
             -50,
-            3,
+            10,
             0,
             0
         ],
@@ -552,9 +554,10 @@
             120,
             35
         ],
-        "post_delay": 1000,
+        "post_delay": 3000,
         "next": [
-            "Activities_BackHomePage",
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage",
             "Activities_Fin"
         ],
         "focus": "GA.退出活动"
