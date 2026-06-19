@@ -93,7 +93,7 @@
         "desc": "寻找可关注活动|太容易卡后误识别了，加延迟",
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset_Panoram"},
         "roi": [
             269,
             125,
