@@ -129,14 +129,15 @@
             2,
             8
         ],
+        "method": 40,
         "lower": [
-            241,
-            243,
-            247
+            0,
+            0,
+            241
         ],
         "upper": [
-            255,
-            255,
+            180,
+            15,
             255
         ],
         "count": 6,
@@ -208,6 +209,7 @@
     },
     "GachaADV_AREA2#_Enter": {
         "recognition": "ColorMatch",
+        "method": 40,
         "roi": [
             134,
             256,
@@ -215,13 +217,13 @@
             4
         ],
         "lower": [
-            248,
-            248,
-            250
+            0,
+            0,
+            248
         ],
         "upper": [
-            255,
-            255,
+            180,
+            15,
             255
         ],
         "count": 40,
@@ -741,6 +743,7 @@
     "GachaADV_Location2_NoPool_Clr": {
         "desc": "发现卡池位置全黑,为无卡池",
         "recognition": "ColorMatch",
+        "method": 40,
         "roi": [
             186,
             175,
@@ -748,13 +751,13 @@
             80
         ],
         "lower": [
-            1,
-            1,
+            0,
+            0,
             1
         ],
         "upper": [
-            17,
-            22,
+            180,
+            255,
             22
         ],
         "count": 5000,
@@ -766,6 +769,7 @@
     "GachaADV_Location3_NoPool_Clr": {
         "desc": "发现卡池位置全黑,为无卡池",
         "recognition": "ColorMatch",
+        "method": 40,
         "roi": [
             186,
             256,
@@ -773,13 +777,13 @@
             82
         ],
         "lower": [
-            1,
-            1,
+            0,
+            0,
             1
         ],
         "upper": [
-            17,
-            22,
+            180,
+            255,
             22
         ],
         "count": 5000,
@@ -791,6 +795,7 @@
     "GachaADV_Location4_NoPool_Clr": {
         "desc": "发现卡池位置全黑,为无卡池",
         "recognition": "ColorMatch",
+        "method": 40,
         "roi": [
             186,
             337,
@@ -798,13 +803,13 @@
             82
         ],
         "lower": [
-            1,
-            1,
+            0,
+            0,
             1
         ],
         "upper": [
-            17,
-            22,
+            180,
+            255,
             22
         ],
         "count": 5000,
@@ -816,6 +821,7 @@
     "GachaADV_Location5_NoPool_Clr": {
         "desc": "发现卡池位置全黑,为无卡池",
         "recognition": "ColorMatch",
+        "method": 40,
         "roi": [
             186,
             419,
@@ -823,13 +829,13 @@
             107
         ],
         "lower": [
-            1,
-            1,
+            0,
+            0,
             1
         ],
         "upper": [
-            17,
-            22,
+            180,
+            255,
             22
         ],
         "count": 5000,
