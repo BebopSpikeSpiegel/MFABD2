@@ -90,7 +90,8 @@
                     30
                 ],
                 "expected": [
-                    "全部领取"
+                    "全部领取",
+                    "全部获得"
                 ],
                 "only_rec": true
             },
@@ -106,17 +107,9 @@
         "focus": "GM.一般邮件领取"
     },
     "Mail_GetAllBack": {
-        "desc": "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$",
-        "recognition": "OCR",
-        "roi": [
-            556,
-            628,
-            148,
-            36
-        ],
-        "expected": [
-            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-        ],
+        "desc": "领取reward确认和消除",
+        "recognition": "And",
+        "all_of": ["Rec_Reward_Ocr"],
         "action": "Click",
         "post_delay": 1000,
         "next": [
