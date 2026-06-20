@@ -10,45 +10,57 @@
         ],
         "method": 40,
         "lower": [
-            0,
-            100,
-            120
+            [
+                0,
+                100,
+                120
+            ]
         ],
         "upper": [
-            12,
-            255,
-            255
+            [
+                12,
+                255,
+                255
+            ]
         ],
         "connected": true,
-        "count": 30
+        "count": 30,
+        "order_by": "Horizontal",
+        "index": 0
+    },
+    "Mail_Check_MailPage": {
+        "roi": [
+            184,
+            15,
+            102,
+            36
+        ],
+        "expected": [
+            "邮箱",
+            "记录",
+            "信箱"
+        ]
     },
     "Mail_GetAll": {
-        "desc": "[PC覆盖] '全部领取'按钮OCR roi:720实测按钮文字在[1093,659,59,20],base roi[1052,645,82,30](x止1134)切掉'取'→读成'全部领'匹配失败。右扩到[1085,652,80,28]罩住完整'全部领取'(实机点击已验证领取成功)。覆盖须整段重写all_of(MaaFW覆盖替换整字段);Sub_Ocr_Enable_Clr用roi:OCR自动跟随新框。Mail_GetBusAll复用本节点→商品邮箱领取同时被覆盖。action/post_delay/next/focus继承base。",
+        "desc": "识别右下全部获得OCR+高亮CLR。|[PC覆盖] '全部领取'按钮OCR roi:720实测按钮文字在[1093,659,59,20],base roi[1052,645,82,30](x止1134)切掉'取'→读成'全部领'匹配失败。右扩到[1085,652,80,28]罩住完整'全部领取'(实机点击已验证领取成功)。覆盖须整段重写all_of(MaaFW覆盖替换整字段);Sub_Ocr_Enable_Clr用roi:OCR自动跟随新框。Mail_GetBusAll复用本节点→商品邮箱领取同时被覆盖。action/post_delay/next/focus继承base。",
         "all_of": [
             {
-                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     1085,
                     652,
                     80,
-                    28
+                    34
                 ],
                 "expected": [
-                    "全部领取"
+                    "全部领取",
+                    "全部获得",
+                    "全部領取",
+                    "全部獲得"
                 ],
                 "only_rec": true
             },
             "Sub_Ocr_Enable_Clr"
-        ]
-    },
-    "Mail_GetAllBack": {
-        "desc": "[PC覆盖] 领取后'点击画面即可返回'提示:720实测在[579,649,113,17],base roi[556,628,148,36](y偏高,切提示下沿)→下移到[560,640,150,38]罩住。实机底部点击 dismiss 已验证。action/next继承base。",
-        "roi": [
-            560,
-            640,
-            150,
-            38
         ]
     },
     "Mail_TabBus": {
