@@ -19,20 +19,13 @@
         ]
     },
     "GachaADV_GachaRed_HaveNot": {
-        "recognition": "Custom",
-        "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
-        "roi": [
-            89,
-            609,
-            83,
-            84
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_GachaRed_Have"],
         "inverse": true,
         "focus": "GA.[ERR]无可关注抽抽乐"
     },
     "GachaADV_GachaRed_Have": {
-        "desc": "识别左下抽抽乐-点击抽卡",
+        "desc": "识别左下抽抽乐-红点存在-点击抽卡",
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
@@ -56,18 +49,8 @@
     },
     "GachaADV_GachaPage": {
         "desc": "识别抽卡页,后补充文段为特殊卡池",
-        "recognition": "OCR",
-        "roi": [
-            932,
-            141,
-            258,
-            381
-        ],
-        "expected": [
-            "查看概率",
-            "必得.*服装",
-            "每个账号限购1次"
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_PageEnter_1#"],
         "focus": "GA.进入抽抽乐页面"
     },
     "GachaADV_GachaPage2": {
@@ -82,7 +65,7 @@
         "expected": [
             "兑换"
         ],
-        "focus": "GA.进入抽抽乐页面"
+        "focus": "GA.进入正常抽抽乐页面(偏右的单个'兑换'覆盖)"
     },
     "GachaADV_PageEnter_1#": {
         "desc": "确认已在抽卡页",
@@ -128,15 +111,8 @@
         "focus": "GA.服装类卡池"
     },
     "GachaADV_AREA1#_NoRed": {
-        "recognition": "Custom",
-        "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
-        "roi": [
-            110,
-            151,
-            60,
-            70
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_AREA1#"],
         "inverse": true,
         "post_delay": 1000,
         "next": [
@@ -171,7 +147,8 @@
             "[JumpBack]GachaADV_Location3",
             "[JumpBack]GachaADV_Location4",
             "[JumpBack]GachaADV_Location5",
-            "[JumpBack]GachaADV_Slip"
+            "[JumpBack]GachaADV_Slip",
+            "[JumpBack]Gacha_Quick_All"
         ]
     },
     "GachaADV_AREA1#_Post": {
@@ -188,19 +165,8 @@
     },
     "GachaADV_PageEnter_2#": {
         "desc": "确认已在抽卡页",
-        "recognition": "OCR",
-        "roi": [
-            882,
-            145,
-            300,
-            382
-        ],
-        "expected": [
-            "查看概率",
-            "兑换",
-            "必得.*服装",
-            "每个账号限购1次"
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_PageEnter_1#"],
         "next": [
             "GachaADV_AREA2#",
             "GachaADV_AREA2#_NoRed"
@@ -230,15 +196,8 @@
         "focus": "GA.装备类卡池"
     },
     "GachaADV_AREA2#_NoRed": {
-        "recognition": "Custom",
-        "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
-        "roi": [
-            114,
-            241,
-            56,
-            66
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_AREA2#"],
         "inverse": true,
         "post_delay": 1000,
         "next": [
@@ -273,7 +232,8 @@
             "[JumpBack]GachaADV_Location3",
             "[JumpBack]GachaADV_Location4",
             "[JumpBack]GachaADV_Location5",
-            "[JumpBack]GachaADV_Slip"
+            "[JumpBack]GachaADV_Slip",
+            "[JumpBack]Gacha_Quick_All"
         ]
     },
     "GachaADV_AREA2#_Post": {
@@ -338,6 +298,7 @@
         ]
     },
     "GachaADV_Location1_Ck": {
+        "desc": "抽取按钮区域-确认有红点",
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
@@ -353,19 +314,8 @@
         ]
     },
     "GachaADV_Location1_Post": {
-        "recognition": "OCR",
-        "roi": [
-            856,
-            138,
-            335,
-            387
-        ],
-        "expected": [
-            "兑换",
-            "查看概率",
-            "必得.*服装",
-            "每个账号限购1次"
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_PageEnter_1#"],
         "timeout": 3000,
         "next": [
             "[JumpBack]GachaADV_TouchFreeGacha",
@@ -378,6 +328,7 @@
         ]
     },
     "GachaADV_Location1_90LotPost": {
+        "enabled": false,
         "recognition": "OCR",
         "roi": [
             358,
@@ -469,34 +420,16 @@
         ]
     },
     "GachaADV_Location2_Ck": {
-        "recognition": "Custom",
-        "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
-        "roi": [
-            835,
-            521,
-            349,
-            133
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_Location1_Ck"],
         "next": [
             "GachaADV_Location2_90LotPost",
             "GachaADV_Location2_Post"
         ]
     },
     "GachaADV_Location2_Post": {
-        "recognition": "OCR",
-        "roi": [
-            856,
-            138,
-            335,
-            387
-        ],
-        "expected": [
-            "兑换",
-            "查看概率",
-            "必得.*服装",
-            "每个账号限购1次"
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_PageEnter_1#"],
         "timeout": 3000,
         "next": [
             "[JumpBack]GachaADV_TouchFreeGacha",
@@ -509,16 +442,9 @@
         ]
     },
     "GachaADV_Location2_90LotPost": {
-        "recognition": "OCR",
-        "roi": [
-            358,
-            135,
-            839,
-            540
-        ],
-        "expected": [
-            "付费抽目标卡池"
-        ],
+        "enabled": false,
+        "recognition": "And",
+        "all_of": ["GachaADV_Location1_90LotPost"],
         "next": [
             "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
             "[JumpBack]GachaADV_TouchFreeGacha",
@@ -595,34 +521,16 @@
         ]
     },
     "GachaADV_Location3_Ck": {
-        "recognition": "Custom",
-        "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
-        "roi": [
-            835,
-            521,
-            349,
-            133
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_Location1_Ck"],
         "next": [
             "GachaADV_Location3_90LotPost",
             "GachaADV_Location3_Post"
         ]
     },
     "GachaADV_Location3_Post": {
-        "recognition": "OCR",
-        "roi": [
-            856,
-            138,
-            335,
-            387
-        ],
-        "expected": [
-            "兑换",
-            "查看概率",
-            "必得.*服装",
-            "每个账号限购1次"
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_PageEnter_1#"],
         "timeout": 3000,
         "next": [
             "[JumpBack]GachaADV_TouchFreeGacha",
@@ -635,16 +543,9 @@
         ]
     },
     "GachaADV_Location3_90LotPost": {
-        "recognition": "OCR",
-        "roi": [
-            358,
-            135,
-            839,
-            540
-        ],
-        "expected": [
-            "付费抽目标卡池"
-        ],
+        "enabled": false,
+        "recognition": "And",
+        "all_of": ["GachaADV_Location1_90LotPost"],
         "next": [
             "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
             "[JumpBack]GachaADV_TouchFreeGacha",
@@ -717,31 +618,17 @@
         ]
     },
     "GachaADV_Location4_Ck": {
-        "recognition": "Custom",
-        "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
-        "roi": [
-            835,
-            521,
-            349,
-            133
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_Location1_Ck"],
         "next": [
             "GachaADV_Location4_90LotPost",
             "GachaADV_Location4_Post"
         ]
     },
     "GachaADV_Location4_90LotPost": {
-        "recognition": "OCR",
-        "roi": [
-            358,
-            135,
-            839,
-            540
-        ],
-        "expected": [
-            "付费抽目标卡池"
-        ],
+        "enabled": false,
+        "recognition": "And",
+        "all_of": ["GachaADV_Location1_90LotPost"],
         "next": [
             "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
             "[JumpBack]GachaADV_TouchFreeGacha",
@@ -750,19 +637,8 @@
         "focus": "GB.90.**[高危-付费抽]**付费抽卡池匹配成功"
     },
     "GachaADV_Location4_Post": {
-        "recognition": "OCR",
-        "roi": [
-            856,
-            138,
-            335,
-            387
-        ],
-        "expected": [
-            "兑换",
-            "查看概率",
-            "必得.*服装",
-            "每个账号限购1次"
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_PageEnter_1#"],
         "timeout": 3000,
         "next": [
             "[JumpBack]GachaADV_TouchFreeGacha",
@@ -831,31 +707,17 @@
         ]
     },
     "GachaADV_Location5_Ck": {
-        "recognition": "Custom",
-        "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
-        "roi": [
-            835,
-            521,
-            349,
-            133
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_Location1_Ck"],
         "next": [
             "GachaADV_Location5_90LotPost",
             "GachaADV_Location5_Post"
         ]
     },
     "GachaADV_Location5_90LotPost": {
-        "recognition": "OCR",
-        "roi": [
-            358,
-            135,
-            839,
-            540
-        ],
-        "expected": [
-            "付费抽目标卡池"
-        ],
+        "enabled": false,
+        "recognition": "And",
+        "all_of": ["GachaADV_Location1_90LotPost"],
         "next": [
             "[JumpBack]GachaADV_PaidDiamond_90LotFind_Tp1",
             "[JumpBack]GachaADV_TouchFreeGacha",
@@ -864,19 +726,8 @@
         "focus": "GB.90.**[高危-付费抽]**付费抽卡池匹配成功"
     },
     "GachaADV_Location5_Post": {
-        "recognition": "OCR",
-        "roi": [
-            856,
-            138,
-            335,
-            387
-        ],
-        "expected": [
-            "兑换",
-            "查看概率",
-            "必得.*服装",
-            "每个账号限购1次"
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_PageEnter_1#"],
         "next": [
             "[JumpBack]GachaADV_TouchFreeGacha",
             "GachaADV_LocationEnd_Pre"
@@ -1153,7 +1004,6 @@
         "expected": [
             "抽抽乐"
         ],
-        "threshold": 0.8,
         "next": [
             "GachaADV_Slip_Action"
         ],
@@ -1166,17 +1016,8 @@
     },
     "GachaADV_Slip_Action": {
         "desc": "下滑寻找免费抽卡",
-        "recognition": "OCR",
-        "roi": [
-            226,
-            20,
-            272,
-            40
-        ],
-        "expected": [
-            "抽抽乐"
-        ],
-        "threshold": 0.8,
+        "recognition": "And",
+        "all_of": ["GachaADV_Slip"],
         "action": "Swipe",
         "begin": [
             210,
@@ -1212,31 +1053,8 @@
         ],
         "focus": "GA.滑动寻找卡池"
     },
-    "GachaADV_NoFindFreeAndInEnd": {
-        "desc": "拖动后无免费红点且识别到底部普池\\判定未完成",
-        "recognition": "TemplateMatch",
-        "roi": [
-            183,
-            160,
-            176,
-            347
-        ],
-        "template": [
-            "Gachalistend.png"
-        ],
-        "threshold": 0.9,
-        "target_offset": [
-            -50,
-            50,
-            0,
-            0
-        ],
-        "next": [
-            "GachaADV_FinGacha"
-        ],
-        "focus": "GA.卡池列表见底"
-    },
     "GachaADV_SkipPV": {
+        "desc": "正常抽卡页面,2个'兑换'覆盖",
         "max_hit": 20,
         "recognition": "OCR",
         "roi": [
@@ -1265,16 +1083,8 @@
     },
     "GachaADV_PvAnimeIsOver": {
         "desc": "卡池动画结束后,卡片呈现按钮,识别",
-        "recognition": "OCR",
-        "roi": [
-            953,
-            381,
-            239,
-            147
-        ],
-        "expected": [
-            "兑换"
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_SkipPV"],
         "focus": "GA.卡池动画结束(调试用)"
     },
     "GachaADV_PaidDiamond_90LotFind_Tp1": {
@@ -1383,11 +1193,25 @@
         "action": "Click",
         "post_delay": 5000,
         "next": [
+            "[JumpBack]GachaADV_TouchFreeGachaSkip",
             "GachaADV_5X",
             "GachaADV_5X2",
             "GachaADV_TouchFreeGachaBuy",
             "GachaADV_GachaResultBack"
         ]
+    },
+    "GachaADV_TouchFreeGachaSkip": {
+        "desc": "抽卡商店动画,点跳过",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1126,
+            24,
+            69,
+            49
+        ],
+        "template": ["UI_talk.png"],
+        "action": "Click",
+        "post_delay": 500
     },
     "GachaADV_5X": {
         "desc": "五星卡",
@@ -1474,16 +1298,8 @@
         ]
     },
     "GachaADV_5XBug_LightningBall": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1103,
-            21,
-            123,
-            55
-        ],
-        "template": [
-            "Chaga_ProductNext.png"
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_TouchFreeGachaSkip"],
         "action": "Click",
         "post_delay": 1000,
         "next": [
@@ -1516,32 +1332,13 @@
     },
     "GachaADV_GachaResultBack_CK": {
         "desc": "确认已在抽卡页",
-        "recognition": "OCR",
-        "roi": [
-            882,
-            145,
-            300,
-            382
-        ],
-        "expected": [
-            "查看概率",
-            "兑换",
-            "必得.*服装",
-            "每个账号限购1次"
-        ]
+        "recognition": "And",
+        "all_of": ["GachaADV_PageEnter_1#"]
     },
     "GachaADV_FinGacha": {
         "desc": "返回首页",
-        "recognition": "OCR",
-        "roi": [
-            957,
-            133,
-            268,
-            110
-        ],
-        "expected": [
-            "概率"
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_PageEnter_1#"],
         "action": "Click",
         "target": [
             120,
@@ -1552,19 +1349,124 @@
             "GachaADV_EndToHomePage",
             "GachaADV_FinGacha"
         ],
+        "on_error": [
+            "[JumpBack]QuickHunt_Try_Click",
+            "Global_Null"
+        ],
         "focus": "GA.退出抽卡"
     },
     "GachaADV_EndToHomePage": {
         "desc": "识别左下抽抽乐-返回地图页",
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
+        ]
+    },
+    "Gacha_Quick_All": {
+        "desc": "点击页面一键抽抽乐",
         "recognition": "OCR",
         "roi": [
-            98,
-            656,
-            66,
-            32
+            183,
+            596,
+            183,
+            76
         ],
-        "expected": [
-            "抽抽乐"
+        "expected": "所有免费抽抽乐",
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Gacha_Quick_All_SubMsg",
+            "Gacha_Quick_All"
+        ],
+        "focus": "GA.F.一键抽卡启动"
+    },
+    "Gacha_Quick_All_SubMsg": {
+        "recognition": "Or",
+        "any_of": ["GachaADV_TouchFreeGachaConfirmMenu"],
+        "next": ["Gacha_Quick_All_SubMsg_Ck"]
+    },
+    "Gacha_Quick_All_SubMsg_Ck": {
+        "recognition": "OCR",
+        "roi": [
+            660,
+            398,
+            105,
+            99
+        ],
+        "expected": "确认",
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "Gacha_Quick_Briefing",
+            "[JumpBack]Gacha_Quick_Skip",
+            "[JumpBack]Gacha_Quick_5X",
+            "Gacha_Quick_All_SubMsg_Ck"
         ]
+    },
+    "Gacha_Quick_Skip": {
+        "desc": "等于连抽,去点跳过按钮",
+        "recognition": "And",
+        "all_of": ["AutoBattle_Egress_TurnBack_SkipTalk"],
+        "action": "Click",
+        "post_delay": 1500
+    },
+    "Gacha_Quick_5X": {
+        "desc": "假设抽中会跳立绘",
+        "recognition": "Or",
+        "any_of": [
+            "GachaADV_5X",
+            "GachaADV_5X2"
+        ],
+        "action": "Click",
+        "target": [
+            1157,
+            50
+        ],
+        "post_delay": 1500
+    },
+    "Gacha_Quick_Briefing": {
+        "desc": "抽卡结果页,大概",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_<Gacha_Quick_Briefing>_Tmp",
+            "Rec_<Gacha_Quick_Briefing>_Ocr"
+        ],
+        "next": [
+            "Gacha_Quick_End",
+            "[JumpBack]Global_BackPageHub_Once"
+        ]
+    },
+    "Rec_<Gacha_Quick_Briefing>_Tmp": {
+        "desc": "[识别]抽卡结果页,位置01-图案",
+        "recognition": "TemplateMatch",
+        "roi": [
+            119,
+            587,
+            159,
+            68
+        ],
+        "template": ["Gacha_Briefing.png"]
+    },
+    "Rec_<Gacha_Quick_Briefing>_Ocr": {
+        "desc": "[识别]抽卡结果页,位置02-正则",
+        "recognition": "OCR",
+        "roi": [
+            163,
+            603,
+            80,
+            36
+        ],
+        "expected": "^\\d+/\\d+$",
+        "only_rec": true
+    },
+    "Gacha_Quick_End": {
+        "desc": "一键抽卡结束后瞻",
+        "recognition": "And",
+        "all_of": ["GachaADV_PageEnter_1#"],
+        "next": [
+            "Global_ToHomePage"
+        ],
+        "focus": "GA.F.一键抽卡结束"
     }
 }

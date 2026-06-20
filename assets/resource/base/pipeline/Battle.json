@@ -32,10 +32,25 @@
             "Rec_SandBox_Run_Tpl"
         ],
         "timeout": 3000,
+        "rate_limit": 2000,
         "next": [
             "QuickHunt_TouchCollect"
         ],
-        "on_error": ["QuickHunt_CollectNoDot"]
+        "on_error": [
+            "[JumpBack]QuickHunt_Try_Click",
+            "QuickHunt_CollectNoDot"
+        ]
+    },
+    "QuickHunt_Try_Click": {
+        "max_hit": 2,
+        "action": "Click",
+        "target": [
+            1200,
+            660,
+            5,
+            5
+        ],
+        "post_delay": 3000
     },
     "QuickHunt_TouchCollect": {
         "recognition": "Custom",

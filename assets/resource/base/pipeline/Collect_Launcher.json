@@ -7,6 +7,12 @@
         ]
     },
     "Collect_StartGame_HomePage_OnlyOnce": {
+        "recognition": "Custom",
+        "custom_recognition": "CheckCoolDown",
+        "custom_recognition_param": {
+            "card_name": "Collect_OnlyOnce",
+            "cycle_type": "g_weekly"
+        },
         "action": "Custom",
         "custom_action": "PatchBatch",
         "custom_action_param": {
@@ -44,6 +50,7 @@
                 }
             }
         },
+        "timeout": 5000,
         "next": [
             "[JumpBack]Collect_PerPetTask",
             "Collect_Sandplay",

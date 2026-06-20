@@ -222,7 +222,7 @@
         ]
     },
     "AutoBattle_Egress_TurnBack_SkipTalk": {
-        "desc": "失败后,可能会回到旅馆出现对话",
+        "desc": "场景转换,可能出现对话的跳过。战斗失败后,进旅馆。",
         "recognition": "TemplateMatch",
         "roi": [
             796,
@@ -231,6 +231,26 @@
             93
         ],
         "template": ["Chaga_ProductNext.png"],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "[JumpBack]AutoBattle_Egress_TurnBack_Msg",
+            "AutoBattle_Egress_TurnBack_SkipTalk",
+            "Global_Null"
+        ]
+    },
+    "AutoBattle_Egress_TurnBack_Msg": {
+        "desc": "可能的再确认,跳过对话",
+        "recognition": "OCR",
+        "roi": [
+            440,
+            353,
+            423,
+            342
+        ],
+        "expected": [
+            "确认"
+        ],
         "action": "Click",
         "post_delay": 2000
     }

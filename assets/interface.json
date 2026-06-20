@@ -103,7 +103,7 @@
         },
         {
             "name": "[执行]白嫖抽卡",
-            "entry": "Gacha_HomePage",
+            "entry": "GachaADV_Start",
             "controller": ["Adb"],
             "default_check": true,
             "option": [
@@ -868,10 +868,22 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "Gacha_FindFreeGacha": {
+                        "GachaADV_Location1": {
                             "enabled": false
                         },
-                        "Gacha_Slip": {
+                        "GachaADV_Location2": {
+                            "enabled": false
+                        },
+                        "GachaADV_Location3": {
+                            "enabled": false
+                        },
+                        "GachaADV_Location4": {
+                            "enabled": false
+                        },
+                        "GachaADV_Location5": {
+                            "enabled": false
+                        },
+                        "GachaADV_Slip": {
                             "enabled": false
                         }
                     }
@@ -884,31 +896,8 @@
                         }
                     },
                     "option": [
-                        "高级抽卡-按需|强制",
+                        "5星必出保留",
                         "付费钻-总开关"
-                    ]
-                }
-            ]
-        },
-        "高级抽卡-按需|强制": {
-            "description": "关：默认流程检测到问题时自动启用。<br>开：从头调用高级抽卡流程，可配合<5星必出保留>使用。",
-            "type": "switch",
-            "cases": [
-                {
-                    "name": "No",
-                    "pipeline_override": {}
-                },
-                {
-                    "name": "Yes",
-                    "pipeline_override": {
-                        "Gacha_HomePage": {
-                            "next": [
-                                "GachaADV_Start"
-                            ]
-                        }
-                    },
-                    "option": [
-                        "5星必出保留"
                     ]
                 }
             ]
@@ -946,6 +935,21 @@
                     ],
                     "pipeline_override": {
                         "Gacha_PaidDiamond_CustomField": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location1_90LotPost": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location2_90LotPost": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location3_90LotPost": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location4_90LotPost": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location5_90LotPost": {
                             "enabled": true
                         }
                     }
@@ -1011,46 +1015,6 @@
                     ]
                 },
                 "GachaADV_Location1_90LotPost": {
-                    "expected": [
-                        "{目标池1}",
-                        "{目标池2}",
-                        "{目标池3}",
-                        "{目标池4}",
-                        "{目标池5}",
-                        "{目标池6}"
-                    ]
-                },
-                "GachaADV_Location2_90LotPost": {
-                    "expected": [
-                        "{目标池1}",
-                        "{目标池2}",
-                        "{目标池3}",
-                        "{目标池4}",
-                        "{目标池5}",
-                        "{目标池6}"
-                    ]
-                },
-                "GachaADV_Location3_90LotPost": {
-                    "expected": [
-                        "{目标池1}",
-                        "{目标池2}",
-                        "{目标池3}",
-                        "{目标池4}",
-                        "{目标池5}",
-                        "{目标池6}"
-                    ]
-                },
-                "GachaADV_Location4_90LotPost": {
-                    "expected": [
-                        "{目标池1}",
-                        "{目标池2}",
-                        "{目标池3}",
-                        "{目标池4}",
-                        "{目标池5}",
-                        "{目标池6}"
-                    ]
-                },
-                "GachaADV_Location5_90LotPost": {
                     "expected": [
                         "{目标池1}",
                         "{目标池2}",
@@ -1354,7 +1318,8 @@
             "cases": [
                 {
                     "name": "Yes",
-                    "pipeline_override": {}
+                    "pipeline_override": {},
+                    "option": ["购买收藏扫描（每周|每次）"]
                 },
                 {
                     "name": "No",
@@ -1395,6 +1360,25 @@
                             "enabled": false
                         }
                     }
+                }
+            ]
+        },
+        "购买收藏扫描（每周|每次）": {
+            "type": "switch",
+            "default_case": "No",
+            "description": "关：每周仅扫描一次，完成后记录存档，本周内后续运行自动跳过。<br>开：每次运行均执行。",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "Arbitrage_Buy_ToSelect": {
+                            "recognition": "DirectHit"
+                        }
+                    }
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {}
                 }
             ]
         },
@@ -1657,9 +1641,9 @@
                 {
                     "name": "半自动爬塔(从选层数界面开始)",
                     "pipeline_override": {
-                        "SemiAuto_Evil_SemiautoTower_Start": {
+                        "SemiAuto_TotalStart": {
                             "next": [
-                                "SemiAuto_Evil_SemiautoTower_End"
+                                "SemiAuto_Evil_SemiautoTower_Start"
                             ]
                         }
                     }
@@ -1667,14 +1651,45 @@
                 {
                     "name": "半自动末日之书(从‘去战斗’页面开始)",
                     "pipeline_override": {
-                        "SemiAuto_LastNight_Start": {
+                        "SemiAuto_TotalStart": {
                             "next": [
-                                "SemiAuto_LastNight_End"
+                                "SemiAuto_LastNight_Start"
                             ]
                         }
                     }
+                },
+                {
+                    "name": "连续精炼",
+                    "description": "点击待强化装备,看到'连续精炼'后,开始运行",
+                    "pipeline_override": {
+                        "SemiAuto_HomePage": {
+                            "next": ["SemiAuto_SequentialRefined_Str"]
+                        }
+                    },
+                    "option": ["连续精炼次数"]
                 }
             ]
+        },
+        "连续精炼次数": {
+            "type": "input",
+            "inputs": [
+                {
+                    "name": "连续精炼次数",
+                    "pipeline_type": "int",
+                    "default": "300",
+                    "verify": "^(\\d+)$",
+                    "pattern_msg": "应为非负整数",
+                    "description": "达到目标数后结束循环。"
+                }
+            ],
+            "pipeline_override": {
+                "SemiAuto_SRef_Count_R": {
+                    "custom_recognition_param": {
+                        "tag": "SRef",
+                        "max": "{连续精炼次数}"
+                    }
+                }
+            }
         }
     },
     "preset": [
@@ -1789,7 +1804,6 @@
                     "enabled": true,
                     "option": {
                         "一键速抽": "No",
-                        "高级抽卡-按需|强制": "Yes",
                         "5星必出保留": "Yes"
                     }
                 },

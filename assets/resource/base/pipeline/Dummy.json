@@ -119,8 +119,43 @@
                 50,
                 1200
             ],
-            "inner_v_min": 228,
-            "inner_s_max": 125,
+            "min_confidence": 0.25,
+            "gap_ratio": 0.35
+        }
+    },
+    "Agt_RedDot_Preset_Panoram": {
+        "desc": "大范围查找用,收紧条件",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {
+            "hsv_ranges": [
+                {"lower": [
+                        0,
+                        140,
+                        120
+                    ], "upper": [
+                        12,
+                        255,
+                        255
+                    ]},
+                {
+                    "lower": [
+                        165,
+                        140,
+                        120
+                    ],
+                    "upper": [
+                        180,
+                        255,
+                        255
+                    ]
+                }
+            ],
+            "red_area": [
+                50,
+                450
+            ],
+            "min_confidence": 0.5,
             "gap_ratio": 0.35
         }
     }

@@ -130,113 +130,6 @@
         ],
         "focus": "GA.卡池列表见底"
     },
-    "Gacha_Quick_All": {
-        "desc": "点击页面一键抽抽乐",
-        "recognition": "OCR",
-        "roi": [
-            183,
-            596,
-            183,
-            76
-        ],
-        "expected": "所有免费抽抽乐",
-        "action": "Click",
-        "post_delay": 2000,
-        "next": [
-            "Gacha_Quick_All_SubMsg",
-            "Gacha_Quick_All"
-        ],
-        "focus": "GA.F.一键抽卡启动"
-    },
-    "Gacha_Quick_All_SubMsg": {
-        "recognition": "Or",
-        "any_of": ["Gacha_TouchFreeGachaConfirmMenu"],
-        "next": ["Gacha_Quick_All_SubMsg_Ck"]
-    },
-    "Gacha_Quick_All_SubMsg_Ck": {
-        "recognition": "OCR",
-        "roi": [
-            660,
-            398,
-            105,
-            99
-        ],
-        "expected": "确认",
-        "action": "Click",
-        "post_delay": 3000,
-        "next": [
-            "Gacha_Quick_Briefing",
-            "[JumpBack]Gacha_Quick_Skip",
-            "[JumpBack]Gacha_Quick_5X",
-            "Gacha_Quick_All_SubMsg_Ck"
-        ]
-    },
-    "Gacha_Quick_Skip": {
-        "desc": "等于连抽,去点跳过按钮",
-        "recognition": "And",
-        "all_of": ["AutoBattle_Egress_TurnBack_SkipTalk"],
-        "action": "Click",
-        "post_delay": 1500
-    },
-    "Gacha_Quick_5X": {
-        "desc": "假设抽中会跳立绘",
-        "recognition": "Or",
-        "any_of": [
-            "Gacha_5X",
-            "Gacha_5X2"
-        ],
-        "action": "Click",
-        "target": [
-            1157,
-            50
-        ],
-        "post_delay": 1500
-    },
-    "Gacha_Quick_Briefing": {
-        "desc": "抽卡结果页,大概",
-        "recognition": "Or",
-        "any_of": [
-            "Rec_<Gacha_Quick_Briefing>_Tmp",
-            "Rec_<Gacha_Quick_Briefing>_Ocr"
-        ],
-        "next": [
-            "Gacha_Quick_End",
-            "[JumpBack]Global_BackPageHub_Once"
-        ]
-    },
-    "Rec_<Gacha_Quick_Briefing>_Tmp": {
-        "desc": "[识别]抽卡结果页,位置01-图案",
-        "recognition": "TemplateMatch",
-        "roi": [
-            119,
-            587,
-            159,
-            68
-        ],
-        "template": ["Gacha_Briefing.png"]
-    },
-    "Rec_<Gacha_Quick_Briefing>_Ocr": {
-        "desc": "[识别]抽卡结果页,位置02-正则",
-        "recognition": "OCR",
-        "roi": [
-            163,
-            603,
-            80,
-            36
-        ],
-        "expected": "^\\d+/\\d+$",
-        "only_rec": true
-    },
-    "Gacha_Quick_End": {
-        "desc": "一键抽卡结束后瞻",
-        "recognition": "And",
-        "all_of": ["Gacha_GachaPage"],
-        "next": [
-            "Gacha_FindEquRedDot",
-            "Gacha_FindEquRedDot_PBC"
-        ],
-        "focus": "GA.F.一键抽卡结束"
-    },
     "Gacha_FindFreeGacha": {
         "desc": "点击,存在免费抽的卡池,每日首次进入卡池pv动画开始 | GachaADV_Start 临时插入救急",
         "recognition": "Custom",
@@ -612,16 +505,8 @@
     },
     "Gacha_FinGacha": {
         "desc": "返回首页",
-        "recognition": "OCR",
-        "roi": [
-            957,
-            133,
-            268,
-            110
-        ],
-        "expected": [
-            "概率"
-        ],
+        "recognition": "And",
+        "all_of": ["GachaADV_PageEnter_1#"],
         "target": [
             120,
             35

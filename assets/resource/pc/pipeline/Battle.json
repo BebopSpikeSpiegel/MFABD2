@@ -161,6 +161,7 @@
         "focus": "BB.付费火把无AP弹窗",
         "next": [],
         "recognition": "OCR",
+        "color_filter": "",
         "expected": [
             "取消"
         ],
@@ -269,10 +270,6 @@
         }
     },
     "QuickHunt_FastBattleTouch_StoneSelect": {
-        "expected": [
-            "火之洞穴",
-            "火的洞穴"
-        ],
         "roi": [
             158,
             87,
@@ -425,16 +422,6 @@
         "desc": "复位错误:待补充新的复位失败条件,节点还是有意义的"
     },
     "QuickHunt_CollectMap_Initialize_Out_Ty2": {
-        "replace": [
-            [
-                "遺",
-                "遗"
-            ],
-            [
-                "跡",
-                "迹"
-            ]
-        ],
         "roi": [
             448,
             371,

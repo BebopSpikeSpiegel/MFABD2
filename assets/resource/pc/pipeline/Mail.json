@@ -2,6 +2,12 @@
     "Mail_NewRed": {
         "desc": "[PC覆盖] 邮件图标(信封)红点改用 ColorMatch 计红色像素(不用 RedDotDetector 形状模型)。原因(720真机跨窗口实测):该'!'仅~3px,降到720后内部白区0~3px抖,conf 在 0.0~0.43 飘忽——最小窗(1:1)conf=0.0、最大窗(客户区2420x1360降采样)conf=0.1,任何阈值(含Soft 0.08)都不可靠。而红色像素数极稳:最小窗61px、最大窗57px。故改为数红色:method40(HSV),红低H段[0,100,120]~[12,255,255],count=30(<57~61,>噪声),连通。紧凑roi[1055,10,60,60]+连通域防误检。action/target_offset/next/focus继承base。窗口尺寸由 display_short_side:720 归一化,坐标全尺寸通用。",
         "recognition": "ColorMatch",
+        "roi": [
+            1055,
+            10,
+            60,
+            60
+        ],
         "method": 40,
         "lower": [
             0,
@@ -13,14 +19,8 @@
             255,
             255
         ],
-        "count": 30,
         "connected": true,
-        "roi": [
-            1055,
-            10,
-            60,
-            60
-        ]
+        "count": 30
     },
     "Mail_GetAll": {
         "desc": "[PC覆盖] '全部领取'按钮OCR roi:720实测按钮文字在[1093,659,59,20],base roi[1052,645,82,30](x止1134)切掉'取'→读成'全部领'匹配失败。右扩到[1085,652,80,28]罩住完整'全部领取'(实机点击已验证领取成功)。覆盖须整段重写all_of(MaaFW覆盖替换整字段);Sub_Ocr_Enable_Clr用roi:OCR自动跟随新框。Mail_GetBusAll复用本节点→商品邮箱领取同时被覆盖。action/post_delay/next/focus继承base。",

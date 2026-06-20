@@ -1,0 +1,468 @@
+{
+    "GachaADV_GachaRed_Have": {
+        "roi": [
+            92,
+            617,
+            53,
+            52
+        ],
+        "target": [
+            104,
+            652,
+            10,
+            10
+        ],
+        "desc": "识别左下抽抽乐-红点存在-点击抽卡"
+    },
+    "GachaADV_GachaPage2": {
+        "expected": [
+            "兑换",
+            "兌换"
+        ],
+        "roi": [
+            966,
+            398,
+            134,
+            98
+        ],
+        "desc": "识别抽卡页"
+    },
+    "GachaADV_PageEnter_1#": {
+        "expected": [
+            "查看概率",
+            "兑换",
+            "必得.*服装",
+            "每个账号限购1次",
+            "查看机率",
+            "兌换",
+            "每個帳號可購買1次",
+            "必出.*服装"
+        ],
+        "replace": [
+            [
+                "機",
+                "机"
+            ]
+        ],
+        "roi": [
+            882,
+            178,
+            216,
+            314
+        ],
+        "desc": "确认已在抽卡页"
+    },
+    "GachaADV_AREA1#": {
+        "roi": [
+            94,
+            187,
+            49,
+            60
+        ],
+        "target": [
+            115,
+            211,
+            4,
+            3
+        ]
+    },
+    "GachaADV_AREA1#_Enter": {
+        "roi": [
+            115,
+            202,
+            3,
+            6
+        ]
+    },
+    "GachaADV_AREA2#": {
+        "roi": [
+            97,
+            260,
+            37,
+            56
+        ],
+        "target": [
+            115,
+            280,
+            3,
+            6
+        ]
+    },
+    "GachaADV_AREA2#_Enter": {
+        "count": 35,
+        "roi": [
+            112,
+            274,
+            10,
+            5
+        ]
+    },
+    "GachaADV_Location1": {
+        "roi": [
+            279,
+            157,
+            28,
+            43
+        ]
+    },
+    "GachaADV_Location1_Ck": {
+        "roi": [
+            921,
+            607,
+            299,
+            44
+        ],
+        "desc": "抽取按钮区域-确认有红点"
+    },
+    "GachaADV_Location1_90LotPost": {
+        "roi": [
+            406,
+            180,
+            696,
+            320
+        ]
+    },
+    "GachaADV_Location2": {
+        "roi": [
+            269,
+            203,
+            48,
+            81
+        ]
+    },
+    "GachaADV_Location3": {
+        "roi": [
+            273,
+            270,
+            34,
+            83
+        ]
+    },
+    "GachaADV_Location4": {
+        "roi": [
+            277,
+            339,
+            36,
+            83
+        ]
+    },
+    "GachaADV_Location5": {
+        "roi": [
+            279,
+            407,
+            27,
+            96
+        ]
+    },
+    "GachaADV_Location2_NoPool_Clr": {
+        "roi": [
+            160,
+            206,
+            133,
+            66
+        ],
+        "desc": "发现卡池位置全黑,为无卡池"
+    },
+    "GachaADV_Location3_NoPool_Clr": {
+        "roi": [
+            160,
+            278,
+            134,
+            66
+        ],
+        "desc": "发现卡池位置全黑,为无卡池"
+    },
+    "GachaADV_Location4_NoPool_Clr": {
+        "roi": [
+            160,
+            347,
+            134,
+            70
+        ],
+        "desc": "发现卡池位置全黑,为无卡池"
+    },
+    "GachaADV_Location5_NoPool_Clr": {
+        "roi": [
+            160,
+            418,
+            134,
+            76
+        ],
+        "desc": "发现卡池位置全黑,为无卡池"
+    },
+    "GachaADV_Location2_NoPool_Tmp": {
+        "roi": [
+            152,
+            197,
+            149,
+            93
+        ],
+        "desc": "发现卡池位置全黑,为无卡池"
+    },
+    "GachaADV_Location3_NoPool_Tmp": {
+        "roi": [
+            152,
+            266,
+            149,
+            93
+        ],
+        "desc": "发现卡池位置全黑,为无卡池"
+    },
+    "GachaADV_Location4_NoPool_Tmp": {
+        "roi": [
+            152,
+            333,
+            148,
+            94
+        ],
+        "desc": "发现卡池位置全黑,为无卡池"
+    },
+    "GachaADV_Location5_NoPool_Tmp": {
+        "roi": [
+            152,
+            406,
+            148,
+            93
+        ],
+        "desc": "发现卡池位置全黑,为无卡池"
+    },
+    "Rec_<GachaADV_Special_ReservedRights>_Ocr": {
+        "roi": [
+            818,
+            441,
+            50,
+            27
+        ],
+        "desc": "将要触发抽抽乐200保底识别器01,"
+    },
+    "Rec_<GachaADV_Special_ReservedRights>_Tpl": {
+        "roi": [
+            706,
+            231,
+            392,
+            268
+        ],
+        "desc": "将要触发抽抽乐200保底识别器02,"
+    },
+    "GachaADV_Special_SaveGuaranteed": {
+        "roi": [
+            744,
+            397,
+            67,
+            31
+        ]
+    },
+    "GachaADV_Slip": {
+        "expected": [
+            "抽抽乐",
+            "抽抽樂"
+        ],
+        "roi": [
+            185,
+            15,
+            233,
+            41
+        ],
+        "desc": "下滑寻找免费抽卡"
+    },
+    "GachaADV_Slip_Action": {
+        "begin": [
+            174,
+            435,
+            1,
+            1
+        ],
+        "end": [
+            [
+                174,
+                142,
+                1,
+                1
+            ]
+        ],
+        "desc": "下滑寻找免费抽卡"
+    },
+    "GachaADV_SkipPV": {
+        "expected": [
+            "兑换",
+            "兌换"
+        ],
+        "roi": [
+            913,
+            399,
+            186,
+            94
+        ],
+        "desc": "正常抽卡页面,2个'兑换'覆盖"
+    },
+    "GachaADV_PaidDiamond_90LotFind_Tp1": {
+        "roi": [
+            755,
+            569,
+            129,
+            97
+        ]
+    },
+    "GachaADV_PaidDiamond_90LotFind_Tp2": {
+        "roi": [
+            953,
+            381,
+            239,
+            147
+        ]
+    },
+    "GachaADV_PaidDiamond_90LotFind_Tp3": {
+        "expected": [
+            "付费抽抽乐",
+            "付费抽抽樂"
+        ],
+        "roi": [
+            953,
+            381,
+            239,
+            147
+        ]
+    },
+    "GachaADV_TouchFreeGacha": {
+        "expected": [
+            "免费1次",
+            "免費1次"
+        ],
+        "desc": "免费抽流程开始:点击右下免费1抽"
+    },
+    "GachaADV_TouchFreeGachaConfirmMenu": {
+        "expected": [
+            "确认抽抽乐",
+            "確認抽抽樂"
+        ],
+        "roi": [
+            536,
+            227,
+            201,
+            130
+        ],
+        "desc": "抽卡确认通用流程:抽卡菜单弹出,已确认"
+    },
+    "GachaADV_TouchFreeGachaBuy": {
+        "expected": [
+            "购买",
+            "購買"
+        ],
+        "roi": [
+            633,
+            393,
+            171,
+            88
+        ],
+        "desc": "GA.抽卡"
+    },
+    "GachaADV_TouchFreeGachaSkip": {
+        "green_mask": true,
+        "roi": [
+            1147,
+            15,
+            70,
+            50
+        ],
+        "template": [
+            "UI_TalkSkip.png"
+        ],
+        "desc": "抽卡商店动画,点跳过"
+    },
+    "GachaADV_5X": {
+        "expected": [
+            "艾莉诺",
+            "艾莉諾",
+            "這是不用多說的巨作"
+        ],
+        "target": [
+            1175,
+            37,
+            16,
+            7
+        ],
+        "desc": "五星卡"
+    },
+    "GachaADV_5X2": {
+        "target": [
+            1175,
+            37,
+            16,
+            7
+        ],
+        "desc": "五星卡2"
+    },
+    "GachaADV_5XResuNew": {
+        "target": [
+            1175,
+            37,
+            16,
+            7
+        ]
+    },
+    "GachaADV_GachaResultBack": {
+        "expected": [
+            "抽抽乐点数",
+            "抽抽樂點数"
+        ],
+        "roi": [
+            93,
+            650,
+            178,
+            47
+        ],
+        "target": [
+            108,
+            29,
+            10,
+            5
+        ],
+        "desc": "抽卡结果页返回"
+    },
+    "GachaADV_FinGacha": {
+        "target": [
+            108,
+            29,
+            10,
+            5
+        ],
+        "desc": "返回首页"
+    },
+    "Gacha_Quick_All": {
+        "roi": [
+            148,
+            584,
+            184,
+            77
+        ],
+        "desc": "点击页面一键抽抽乐(PC还没拿到样本)"
+    },
+    "Rec_<Gacha_Quick_Briefing>_Tmp": {
+        "roi": [
+            101,
+            615,
+            42,
+            43
+        ],
+        "desc": "[识别]抽卡结果页,位置01-图案"
+    },
+    "Rec_<Gacha_Quick_Briefing>_Ocr": {
+        "roi": [
+            135,
+            624,
+            66,
+            25
+        ],
+        "desc": "[识别]抽卡结果页,位置02-正则"
+    },
+    "GachaADV_NoFindFreeAndInEnd": {
+        "recognition": "DirectHit",
+        "roi": [
+            157,
+            175,
+            137,
+            329
+        ],
+        "desc": "拖动后无免费红点且识别到底部普池\\判定未完成"
+    }
+}
