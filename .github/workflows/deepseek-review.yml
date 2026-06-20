@@ -29,6 +29,9 @@ concurrency:
   group: deepseek-review-${{ github.event.pull_request.number || inputs.pr_number }}
   cancel-in-progress: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   review:
     if: |
