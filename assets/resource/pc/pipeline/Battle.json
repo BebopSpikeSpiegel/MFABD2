@@ -1,105 +1,105 @@
 {
     "QuickHunt_TouchCollect": {
+        "desc": "找到run-点击左上扫荡",
         "roi": [
             77,
             131,
             46,
             45
-        ],
-        "desc": "找到run-点击左上扫荡"
+        ]
     },
     "QuickHunt_MIniMap_locErr": {
+        "desc": "小地图位置调整",
         "roi": [
             278,
             243,
             49,
             42
-        ],
-        "desc": "小地图位置调整"
+        ]
     },
     "QuickHunt_UIEnter": {
-        "expected": [
-            "狩猎场",
-            "狩獵場"
-        ],
+        "desc": "确认菜单存在狩猎场,并初始化位置",
         "roi": [
             88,
             113,
             62,
             26
         ],
-        "desc": "确认菜单存在狩猎场,并初始化位置"
+        "expected": [
+            "狩猎场",
+            "狩獵場"
+        ]
     },
     "QuickHunt_CollectMapHuntingGrounds_1": {
+        "desc": "A-1.选择狩猎场。",
         "roi": [
             700,
             191,
             81,
             24
-        ],
-        "desc": "A-1.选择狩猎场。"
+        ]
     },
     "QuickHunt_CollectMapHuntingGrounds_7": {
-        "expected": [
-            "(?=.*[蜥])(?=.*[蜴])(?=.*[祭坛]).{5,}$",
-            "(?=.*[蜥蜴人])(?=.*[祭壇]).{5,}$"
-        ],
+        "desc": "A-7.选择狩猎场。",
         "roi": [
             245,
             444,
             135,
             89
         ],
-        "desc": "A-7.选择狩猎场。"
+        "expected": [
+            "(?=.*[蜥])(?=.*[蜴])(?=.*[祭坛]).{5,}$",
+            "(?=.*[蜥蜴人])(?=.*[祭壇]).{5,}$"
+        ]
     },
     "QuickHunt_CollectMapHuntingGrounds_9": {
-        "expected": [
-            "守山人休息处",
-            "(?=.*[守山人])(?=.*[的休息處]).{6,}$"
-        ],
+        "desc": "A-9.选择狩猎场。",
         "roi": [
             576,
             468,
             168,
             75
         ],
-        "desc": "A-9.选择狩猎场。"
+        "expected": [
+            "守山人休息处",
+            "(?=.*[守山人])(?=.*[的休息處]).{6,}$"
+        ]
     },
     "QuickHunt_NoRiceAP_Skip": {
+        "desc": "正则无米饭跳过",
         "roi": [
             1077,
             26,
             61,
             26
-        ],
-        "desc": "正则无米饭跳过"
+        ]
     },
     "QuickHunt_FastBattleMAXTouchHuntingGrounds": {
+        "desc": "B-1.狩猎场次数选择，点击MAX",
         "target": [
             485,
             332,
             20,
             20
-        ],
-        "desc": "B-1.狩猎场次数选择，点击MAX"
+        ]
     },
     "QuickHunt_CollectMapAdventureRoute_Select_Glod": {
+        "desc": "硬编码选择航线-金币",
         "target": [
             114,
             163,
             2,
             2
-        ],
-        "desc": "硬编码选择航线-金币"
+        ]
     },
     "QuickHunt_CollectMapAdventureRoute_Select_Exp": {
+        "desc": "硬编码选择航线-经验",
         "target": [
             115,
             234,
             2,
             2
-        ],
-        "desc": "硬编码选择航线-经验"
+        ]
     },
     "QuickHunt_CollectMapAdventureRouteDoubleCk1": {
         "roi": [
@@ -113,63 +113,53 @@
         ]
     },
     "QuickHunt_CollectMapAdventureRoute2_Switch_A": {
+        "desc": "金币A关卡转经验B",
         "target": [
             115,
             234,
             2,
             2
-        ],
-        "desc": "金币A关卡转经验B"
+        ]
     },
     "QuickHunt_CollectMapAdventureRoute2_Switch_B": {
+        "desc": "经验B关卡转金币A",
         "target": [
             114,
             163,
             2,
             2
-        ],
-        "desc": "经验B关卡转金币A"
+        ]
     },
     "Rec_GoldGoblin_Clr": {
+        "desc": "[识别]狩猎场左侧-金币关选中",
         "roi": [
             99,
             150,
             39,
             50
-        ],
-        "desc": "[识别]狩猎场左侧-金币关选中"
+        ]
     },
     "Rec_ExpSlime_Clr": {
+        "desc": "[识别]狩猎场左侧-经验关选中",
         "roi": [
             90,
             214,
             58,
             50
-        ],
-        "desc": "[识别]狩猎场左侧-经验关选中"
+        ]
     },
     "QuickHunt_CollectMapAdventureRouteDoubleCk2No_ToCentral": {
+        "desc": "目的是不用中断、在主流程里把地图复位，配个其他中断使用。T1",
         "target": [
             114,
             163,
             2,
             2
-        ],
-        "desc": "目的是不用中断、在主流程里把地图复位，配个其他中断使用。T1"
+        ]
     },
     "QuickHunt_NoAP_Rice": {
-        "focus": "BB.付费火把无AP弹窗",
-        "next": [],
+        "desc": "付费火把用尽情况",
         "recognition": "OCR",
-        "color_filter": "",
-        "expected": [
-            "取消"
-        ],
-        "index": 0,
-        "model": "",
-        "only_rec": false,
-        "order_by": "Horizontal",
-        "replace": [],
         "roi": [
             461,
             404,
@@ -182,10 +172,16 @@
             0,
             0
         ],
+        "expected": [
+            "取消"
+        ],
+        "replace": [],
+        "only_rec": false,
+        "model": "",
         "threshold": 0.3,
+        "order_by": "Horizontal",
+        "index": 0,
         "action": "Click",
-        "contact": 0,
-        "pressure": 1,
         "target": true,
         "target_offset": [
             0,
@@ -193,7 +189,10 @@
             0,
             0
         ],
-        "desc": "付费火把用尽情况"
+        "contact": 0,
+        "pressure": 1,
+        "next": [],
+        "focus": "BB.付费火把无AP弹窗"
     },
     "QuickHunt_CollectMapCrystalCave": {
         "target": [
@@ -204,16 +203,16 @@
         ]
     },
     "QuickHunt_CollectMapCrystalCaveCK": {
-        "expected": [
-            "[水光风風火暗][之的]洞穴"
-        ],
+        "desc": "【圣石模式分流,前侧】区分‘smart(补短)’ 与 ‘正常、均衡’，通过HUB开关控制是否切入smart",
         "roi": [
             535,
             369,
             72,
             26
         ],
-        "desc": "【圣石模式分流,前侧】区分‘smart(补短)’ 与 ‘正常、均衡’，通过HUB开关控制是否切入smart"
+        "expected": [
+            "[水光风風火暗][之的]洞穴"
+        ]
     },
     "QuickHunt_NoTorchesAP_Skip": {
         "roi": [
@@ -270,165 +269,165 @@
         }
     },
     "QuickHunt_FastBattleTouch_StoneSelect": {
+        "desc": "【圣石模式分流,后侧】|区分：正常、均衡 | 行为:寻找火之洞穴，点击属性图_火.| smart(补短)在前一个节点分流,先点击火再依次均衡是正确的,不要前移均衡的判定! | 注意,通过HUB开关控制是否切入均衡模式。模式正常走MAXTouch，故hub要在max前，且max不能false，因为hub出口是maxtouch。",
         "roi": [
             158,
             87,
             70,
             27
-        ],
-        "desc": "【圣石模式分流,后侧】|区分：正常、均衡 | 行为:寻找火之洞穴，点击属性图_火.| smart(补短)在前一个节点分流,先点击火再依次均衡是正确的,不要前移均衡的判定! | 注意,通过HUB开关控制是否切入均衡模式。模式正常走MAXTouch，故hub要在max前，且max不能false，因为hub出口是maxtouch。"
+        ]
     },
     "QuickHunt_StoneSelect_Fire": {
-        "expected": [
-            "火之洞穴",
-            "火的洞穴"
-        ],
-        "only_rec": false,
+        "desc": "圣石选属性.Loc分离",
         "roi": [
             147,
             79,
             96,
             43
         ],
-        "desc": "圣石选属性.Loc分离"
+        "expected": [
+            "火之洞穴",
+            "火的洞穴"
+        ],
+        "only_rec": false
     },
     "QuickHunt_StoneSelect_Water": {
+        "desc": "圣石选属性.Loc分离",
+        "roi": [
+            146,
+            75,
+            94,
+            245
+        ],
         "expected": [
             "水之洞穴",
             "水的洞穴"
-        ],
+        ]
+    },
+    "QuickHunt_StoneSelect_Wind": {
+        "desc": "圣石选属性.Loc分离",
         "roi": [
             146,
             75,
             94,
             245
         ],
-        "desc": "圣石选属性.Loc分离"
-    },
-    "QuickHunt_StoneSelect_Wind": {
         "expected": [
             "风之洞穴",
             "風的洞穴"
-        ],
+        ]
+    },
+    "QuickHunt_StoneSelect_Light": {
+        "desc": "圣石选属性.Loc分离",
         "roi": [
             146,
             75,
             94,
             245
         ],
-        "desc": "圣石选属性.Loc分离"
-    },
-    "QuickHunt_StoneSelect_Light": {
         "expected": [
             "光之洞穴",
             "光的洞穴"
-        ],
+        ]
+    },
+    "QuickHunt_StoneSelect_Duck": {
+        "desc": "圣石选属性.Loc分离",
         "roi": [
             146,
             75,
             94,
             245
         ],
-        "desc": "圣石选属性.Loc分离"
-    },
-    "QuickHunt_StoneSelect_Duck": {
         "expected": [
             "暗之洞穴",
             "暗的洞穴"
-        ],
-        "roi": [
-            146,
-            75,
-            94,
-            245
-        ],
-        "desc": "圣石选属性.Loc分离"
+        ]
     },
     "QuickHunt_NoAP_Torch": {
+        "desc": "付费火把用尽情况",
         "recognition": "And",
         "all_of": [
             "QuickHunt_NoAP_Rice"
-        ],
-        "desc": "付费火把用尽情况"
+        ]
     },
     "QuickHunt_QuickBattleButton": {
+        "desc": "寻找快速狩猎，点击(OCR+CLR)必定1级界面才点击",
         "all_of": [
             {
                 "recognition": "OCR",
-                "expected": [
-                    "快速狩猎",
-                    "快速狩獵"
-                ],
-                "only_rec": true,
                 "roi": [
                     1069,
                     647,
                     81,
                     27
-                ]
+                ],
+                "expected": [
+                    "快速狩猎",
+                    "快速狩獵"
+                ],
+                "only_rec": true
             },
             "Sub_Ocr_Enable_Clr"
-        ],
-        "desc": "寻找快速狩猎，点击(OCR+CLR)必定1级界面才点击"
+        ]
     },
     "QuickHunt_FastBattleStart": {
+        "desc": "快速狩猎界面，点击狩猎 | 优化记录:这里要等动画,3S",
         "expected": [
             "狩猎",
             "狩獵"
-        ],
-        "desc": "快速狩猎界面，点击狩猎 | 优化记录:这里要等动画,3S"
+        ]
     },
     "QuickHunt_NoFreeAP": {
         "recognition": "And",
         "all_of": [
             {
                 "recognition": "OCR",
-                "expected": [
-                    "\\d"
-                ],
                 "roi": [
                     657,
                     502,
                     79,
                     40
+                ],
+                "expected": [
+                    "\\d"
                 ]
             },
             "Sub_Ocr_Red_Clr"
         ]
     },
     "QuickHunt_CollectMap_Initialize": {
+        "desc": "无判定复位,然后校验,要求极快",
         "target": [
             114,
             163,
             2,
             2
-        ],
-        "desc": "无判定复位,然后校验,要求极快"
+        ]
     },
     "QuickHunt_CollectMap_Initialize_Out_Ty1": {
+        "desc": "1级界面确认,无2级浮窗的灰度现象",
         "roi": [
             148,
             14,
             193,
             56
-        ],
-        "desc": "1级界面确认,无2级浮窗的灰度现象"
+        ]
     },
     "QuickHunt_CollectMap_Initialize_Out_BedReset": {
+        "desc": "复位错误:待补充新的复位失败条件,节点还是有意义的",
         "expected": [
             "废弃矿山",
             "廢棄的礦山"
-        ],
-        "desc": "复位错误:待补充新的复位失败条件,节点还是有意义的"
+        ]
     },
     "QuickHunt_CollectMap_Initialize_Out_Ty2": {
+        "desc": "中央OCR 复位正确",
         "roi": [
             448,
             371,
             94,
             28
-        ],
-        "desc": "中央OCR 复位正确"
+        ]
     },
     "QuickHunt_MapLocReset_once": {
         "roi": [
@@ -445,11 +444,11 @@
         ]
     },
     "QuickHunt_TurnCharact_QuickBattleButton": {
+        "desc": "寻找快速狩猎，点击",
         "recognition": "And",
         "all_of": [
             "QuickHunt_QuickBattleButton"
-        ],
-        "desc": "寻找快速狩猎，点击"
+        ]
     },
     "QuickHunt_TurnCharact_TurnDuo": {
         "roi": [
@@ -464,18 +463,18 @@
             {
                 "sub_name": "OCR",
                 "recognition": "ColorMatch",
+                "roi": [
+                    153,
+                    81,
+                    82,
+                    224
+                ],
                 "lower": [
                     [
                         0,
                         0,
                         0
                     ]
-                ],
-                "roi": [
-                    153,
-                    81,
-                    82,
-                    224
                 ],
                 "upper": [
                     [
