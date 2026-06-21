@@ -1,21 +1,22 @@
 {
     "RewardsDaily_DailyReward": {
+        "desc": "[PC覆盖] 720空间OCR实测:PC底部菜单'任务'文字框[437,668,32,21](中心453,679);base的OCR roi[520,658](x520-572)在PC上落到'成就'(中心525)→左移覆盖到[430,664,62,32]罩住'任务'。PC主菜单整体较安卓左移约67px。",
         "all_of": [
             {
                 "recognition": "OCR",
-                "expected": [
-                    "任务"
-                ],
                 "roi": [
                     430,
                     664,
                     62,
                     32
+                ],
+                "expected": [
+                    "任务",
+                    "任務"
                 ]
             },
             "Sub_Ocr_Enable_Clr"
-        ],
-        "desc": "[PC覆盖] 720空间OCR实测:PC底部菜单'任务'文字框[437,668,32,21](中心453,679);base的OCR roi[520,658](x520-572)在PC上落到'成就'(中心525)→左移覆盖到[430,664,62,32]罩住'任务'。PC主菜单整体较安卓左移约67px。"
+        ]
     },
     "RewardsDaily_InIndex": {
         "roi": [
@@ -23,7 +24,28 @@
             600,
             78,
             96
+        ]
+    },
+    "RewardsDaily_GetDailyReward": {
+        "desc": "[PC覆盖] 任务页页面确认OCR'每日任务'标题:base roi[218,19,113,44]在PC上切掉'每'、读成'日任务'匹配失败→左扩到[170,14,115,40]罩住完整标题(720实测标题约[180,17,93,31])。仅改顶层roi,next([JumpBack]RewardsDaily_Get等)继承base。",
+        "roi": [
+            170,
+            14,
+            115,
+            40
         ],
-        "desc": "[PC覆盖] 同步左移到PC'任务'按钮位置检测红点:base红点roi[522,610,57,84]在PC上压在'成就'上→覆盖到[428,600,78,96]罩住PC'任务'(中心453)。红点检测沿用通用 Agt_RedDot_Preset(min_confidence 0.25)。注:测试时'任务'按钮无红点(无可领日常),此红点的实际conf未经720实测;若真机漏检,看 detail.stat.conf/parts 再按数据调。target_offset/action/next继承base。"
+        "expected": [
+            "每日任务",
+            "每日任務"
+        ]
+    },
+    "RewardsDaily_TabWeeklyReward": {
+        "desc": "[PC覆盖] 每周任务页签红点:base roi[300,86,67,133]在PC上red_px=0漏检(x从300起,PC红点实为720(284,137))→[255,122,78,40],实测conf=0.93命中。红点检测沿用 Agt_RedDot_Preset。action/next继承base。",
+        "roi": [
+            255,
+            122,
+            78,
+            40
+        ]
     }
 }

@@ -5,7 +5,50 @@
             10,
             60,
             60
+        ]
+    },
+    "Mail_Check_MailPage": {
+        "roi": [
+            184,
+            15,
+            102,
+            36
         ],
-        "desc": "[PC覆盖] 红点roi右移:720空间实测PC邮件红点中心(1085,23)、面积58px;base roi[1003,14,64,58](x止1067)覆盖不到→右移到[1055,10,60,60]罩住。红点检测沿用通用 Agt_RedDot_Preset(min_confidence 0.25):720空间复刻RedDotDetector算法实测此红点 conf=0.43(3帧一致),0.25稳过,无需软阈值。target_offset/action/next继承base。"
+        "expected": [
+            "邮箱",
+            "记录",
+            "信箱"
+        ]
+    },
+    "Mail_GetAll": {
+        "desc": "识别右下全部获得OCR+高亮CLR。|[PC覆盖] '全部领取'按钮OCR roi:720实测按钮文字在[1093,659,59,20],base roi[1052,645,82,30](x止1134)切掉'取'→读成'全部领'匹配失败。右扩到[1085,652,80,28]罩住完整'全部领取'(实机点击已验证领取成功)。覆盖须整段重写all_of(MaaFW覆盖替换整字段);Sub_Ocr_Enable_Clr用roi:OCR自动跟随新框。Mail_GetBusAll复用本节点→商品邮箱领取同时被覆盖。action/post_delay/next/focus继承base。",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "roi": [
+                    1085,
+                    652,
+                    80,
+                    34
+                ],
+                "expected": [
+                    "全部领取",
+                    "全部获得",
+                    "全部領取",
+                    "全部獲得"
+                ],
+                "only_rec": true
+            },
+            "Sub_Ocr_Enable_Clr"
+        ]
+    },
+    "Mail_TabBus": {
+        "desc": "[PC覆盖] 商品邮箱页签红点:base roi[184,146,185,62]在PC上red_px=0漏检(PC红点实为720(284,139),base起点y146偏下、抓不到)→[255,124,78,40],实测(有商品邮件时)conf=0.92命中。红点检测沿用 Agt_RedDot_Preset。action/next继承base。",
+        "roi": [
+            255,
+            124,
+            78,
+            40
+        ]
     }
 }
