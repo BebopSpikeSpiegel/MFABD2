@@ -36,7 +36,7 @@
             ],
             "min_confidence": 0.25,
             "red_area": [
-                35,
+                30,
                 1200
             ]
         },
