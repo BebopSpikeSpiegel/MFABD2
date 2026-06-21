@@ -1,4 +1,85 @@
 {
+    "Rec_<Setup_SkillScan_Skill1>_Tpl": {
+        "roi": [
+            1017,
+            629,
+            67,
+            68
+        ],
+        "desc": "[识别]探查技能存在"
+    },
+    "Setup_SkillScan_Skill1_Bin": {
+        "roi": [
+            1017,
+            629,
+            67,
+            68
+        ],
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+    },
+    "Rec_<Setup_SkillScan_Skill2>_Tpl": {
+        "roi": [
+            987,
+            555,
+            67,
+            69
+        ],
+        "desc": "[识别]'吸取'技能存在"
+    },
+    "Setup_SkillScan_Skill2_Bin": {
+        "roi": [
+            987,
+            555,
+            67,
+            69
+        ],
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+    },
+    "Rec_<Setup_SkillScan_Skill3>_Tpl": {
+        "roi": [
+            1018,
+            491,
+            67,
+            64
+        ],
+        "desc": "[识别]'召集'技能存在"
+    },
+    "Setup_SkillScan_Skill3_Bin": {
+        "roi": [
+            1018,
+            491,
+            67,
+            64
+        ],
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+    },
+    "Rec_<Setup_SkillScan_Skill5>_Tpl": {
+        "roi": [
+            1163,
+            494,
+            65,
+            64
+        ],
+        "desc": "[识别]'锻造'技能存在"
+    },
+    "Setup_SkillScan_Skill5_Bin": {
+        "roi": [
+            1163,
+            494,
+            65,
+            64
+        ],
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+    },
+    "Setup_SkillScan_Skill4_Bin": {
+        "roi": [
+            1091,
+            459,
+            64,
+            65
+        ],
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+    },
     "Setup_EquipUp_MJ": {
         "all_of": [
             {
