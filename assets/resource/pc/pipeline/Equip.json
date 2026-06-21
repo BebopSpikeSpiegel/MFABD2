@@ -16,7 +16,12 @@
             69,
             60
         ],
-        "target": true,
+        "target": [
+            1193,
+            521,
+            5,
+            5
+        ],
         "desc": "PVE点击技能4"
     },
     "Equip_EquipMakeGui": {

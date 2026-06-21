@@ -1,0 +1,11 @@
+{
+    "Rec_<Collect_TeleportRecall_Skill>_Tpl": {
+        "roi": [
+            1091,
+            459,
+            64,
+            65
+        ],
+        "desc": "[识别]'传送'技能存在"
+    }
+}
