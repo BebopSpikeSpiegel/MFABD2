@@ -112,6 +112,14 @@
             0.7
         ]
     },
+    "QuickHunt_CollectMapAdventureRouteDoubleCk1No": {
+        "roi": [
+            339,
+            629,
+            233,
+            73
+        ]
+    },
     "QuickHunt_CollectMapAdventureRoute2_Switch_A": {
         "desc": "金币A关卡转经验B",
         "target": [
@@ -178,6 +186,7 @@
         "replace": [],
         "only_rec": false,
         "model": "",
+        "color_filter": "",
         "threshold": 0.3,
         "order_by": "Horizontal",
         "index": 0,
