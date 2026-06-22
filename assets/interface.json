@@ -104,7 +104,10 @@
         {
             "name": "[执行]白嫖抽卡",
             "entry": "GachaADV_Start",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb",
+                "PC客户端"
+            ],
             "default_check": true,
             "option": [
                 "一键速抽"
@@ -163,7 +166,10 @@
             "name": "[领取]任务页(每日/每周)",
             "default_check": true,
             "entry": "RewardsDaily_Start",
-            "controller": ["Adb", "PC客户端"],
+            "controller": [
+                "Adb",
+                "PC客户端"
+            ],
             "description": "领取主界面<code>任务</code>页内的每日与每周任务奖励。"
         },
         {
@@ -187,7 +193,10 @@
             "name": "[领取]领取邮件",
             "default_check": true,
             "entry": "Mail_HomePage",
-            "controller": ["Adb", "PC客户端"],
+            "controller": [
+                "Adb",
+                "PC客户端"
+            ],
             "description": "领取主界面<code>邮件</code>内的全部邮件奖励（含一般与商品类）。<br>无未读红点时自动跳过，不进入邮件页面。"
         },
         {

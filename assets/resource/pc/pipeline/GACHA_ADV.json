@@ -429,13 +429,32 @@
         "desc": "返回首页"
     },
     "Gacha_Quick_All": {
-        "roi": [
-            148,
-            584,
-            184,
-            77
+        "expected": [
+            "所有免费抽抽乐",
+            "全部免费抽取"
         ],
-        "desc": "点击页面一键抽抽乐(PC还没拿到样本)"
+        "roi": [
+            140,
+            608,
+            185,
+            78
+        ],
+        "desc": "点击页面一键抽抽乐"
+    },
+    "Gacha_Quick_All_SubMsg_Ck": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "Gacha_Quick_5X": {
+        "target": [
+            1173,
+            37,
+            6,
+            5
+        ],
+        "desc": "假设抽中会跳立绘"
     },
     "Rec_<Gacha_Quick_Briefing>_Tmp": {
         "roi": [
@@ -443,6 +462,10 @@
             615,
             42,
             43
+        ],
+        "template": [
+            "Gacha_Briefing.png",
+            "Gacha_Briefing2.png"
         ],
         "desc": "[识别]抽卡结果页,位置01-图案"
     },
