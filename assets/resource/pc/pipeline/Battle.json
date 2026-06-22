@@ -1,11 +1,23 @@
 {
     "QuickHunt_TouchCollect": {
         "desc": "找到run-点击左上扫荡",
+        "max_hit": 5,
         "roi": [
             77,
             131,
             46,
             45
+        ],
+        "target_offset": [
+            8,
+            -10,
+            0,
+            0
+        ],
+        "next": [
+            "[JumpBack]Global_WaitingForLoading",
+            "QuickHunt_UIEnter",
+            "QuickHunt_TouchCollect"
         ]
     },
     "QuickHunt_MIniMap_locErr": {
@@ -174,32 +186,10 @@
             163,
             110
         ],
-        "roi_offset": [
-            0,
-            0,
-            0,
-            0
-        ],
         "expected": [
             "取消"
         ],
-        "replace": [],
-        "only_rec": false,
-        "model": "",
-        "color_filter": "",
-        "threshold": 0.3,
-        "order_by": "Horizontal",
-        "index": 0,
         "action": "Click",
-        "target": true,
-        "target_offset": [
-            0,
-            0,
-            0,
-            0
-        ],
-        "contact": 0,
-        "pressure": 1,
         "next": [],
         "focus": "BB.付费火把无AP弹窗"
     },
