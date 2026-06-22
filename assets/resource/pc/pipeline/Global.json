@@ -153,6 +153,7 @@
         "desc": "[识别]主页,抽卡文字背后颜色.roi硬编码"
     },
     "Rec_SandBox_Pin_Tpl": {
+        "green_mask": true,
         "roi": [
             1090,
             646,
