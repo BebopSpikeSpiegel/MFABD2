@@ -186,7 +186,10 @@
             "name": "[领取]通行证奖励",
             "default_check": true,
             "entry": "Pass_HomePage",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb",
+                "PC客户端"
+            ],
             "description": "领取主界面<code>通行证</code>页内的可领奖励。"
         },
         {
