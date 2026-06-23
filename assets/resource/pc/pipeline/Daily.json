@@ -164,5 +164,87 @@
             210,
             95
         ]
+    },
+    "Daily_Busin_GiftGet": {
+        "desc": "点击常客位置获取圣石(水晶)。|[PC覆盖] 礼物盒气泡实测在常客头顶,样本1080(180,217,45,38)中心(202,235)(720(120,145,30,25)),落在base roi[71,176,276,116]×0.667=[47,117,184,77]内;PC roi[45,115,185,80]罩常客带圣石漫游区。模板ChangkeGe.png已降采样31→21存PC/image自动覆盖。target_offset base[-20,35]×0.667=[-13,23]点常客本体。漫游覆盖待MFA验。",
+        "roi": [45, 115, 185, 80],
+        "target_offset": [-13, 23, 0, 0]
+    },
+    "Daily_Busin_NoGift": {
+        "desc": "无圣石情况(OCR'常客')。|[PC覆盖] 720实测'常客'标签在1080(148,313,38,22)中心(167,324)(720(99,209,25,15)),在常客脚下;base roi[71,176,276,116]→PC roi[45,150,185,85]下移罩常客标签区,起点y避开左上'常客笔记'按钮(720 y118)防误匹配。",
+        "roi": [45, 150, 185, 85]
+    },
+    "Daily_Busin_DecorCoin_Exists": {
+        "desc": "【假孤立勿删】装饰币每日计数OCR(每日x/20)。|[PC覆盖] 实机计数器在1080[1142,73,86,28](右上,与base[769,57]位置不同)→720 roi[758,46,75,28]。供Nothing_Binary HSV target_node引用。",
+        "roi": [758, 46, 75, 28]
+    },
+    "Daily_Busin_DecorCoin_IsFull": {
+        "desc": "【假孤立勿删】装饰币满OCR(x/x正则)。|[PC覆盖] 同Exists,1080[1142,73,86,28]→720 roi[758,46,75,28]。供IsFull_Binary HSV target_node引用。",
+        "roi": [758, 46, 75, 28]
+    },
+    "Rec_<Daily_Busin_DecorCoin_PickUp>_Tpl_01": {
+        "desc": "装饰币探查区01-中央。|[PC覆盖] base roi[353,84,925,479]×0.667→[235,56,617,319]。模板UI_BusinCoin.png已降采样45×40→30×27存PC/image自动覆盖,green_mask沿用,匹配度待MFA验。",
+        "roi": [235, 56, 617, 319]
+    },
+    "Rec_<Daily_Busin_DecorCoin_PickUp>_Tpl_02": {
+        "desc": "装饰币探查区02-下方。|[PC覆盖] base roi[273,347,683,362]×0.667→[182,231,455,241]。",
+        "roi": [182, 231, 455, 241]
+    },
+    "Rec_<Daily_Busin_DecorCoin_PickUp>_Tpl_03": {
+        "desc": "装饰币探查区03-左侧。|[PC覆盖] base roi[27,360,347,230]×0.667→[18,240,231,153]。",
+        "roi": [18, 240, 231, 153]
+    },
+    "Daily_Busin_DecorCoin_LocReset": {
+        "desc": "餐厅视图复位:点'常客笔记'。|[PC覆盖] 720实测主视图'常客笔记'按钮在1080[124,182](720[83,121]),base roi[91,139,94,35]→PC roi[80,118,80,28]。实机验证:CursorPos点击(100,119)成功进常客笔记页。target_offset base[0,-5]×0.667=[0,-3]。",
+        "roi": [80, 118, 80, 28],
+        "target_offset": [0, -3, 0, 0]
+    },
+    "Daily_Busin_DecorCoin_LocReset_SubUI": {
+        "desc": "常客笔记子页确认(OCR'常客笔记'标题)。|[PC覆盖] 720实测标题在1080[272,31,136,36]中心(340,49)(720[181,21,91,24]),base roi[215,16,122,51]→PC roi[178,16,100,32]。实机验证:子页已进。",
+        "roi": [178, 16, 100, 32]
+    },
+    "Daily_Busin_DiaDetour": {
+        "desc": "常客钻石旁路(OCR'全部获得')。|[PC覆盖] 实机'全部获得'在常客笔记页右下角1080[1646,992,78,22]中心(1685,1003)(720[1097,661,52,15]),PC宽屏布局与base[1012,636]位置完全不同→PC子roi[1090,655,75,30]。action/Sub_Ocr_Enable_Clr沿用base。",
+        "all_of": [
+            { "sub_name": "OCR", "recognition": "OCR", "roi": [1090, 655, 75, 30], "expected": ["全部获得"] },
+            "Sub_Ocr_Enable_Clr"
+        ]
+    },
+    "Daily_Busin_DecorCoin_Move_1": {
+        "desc": "移动画面预设1。|[PC覆盖] 实机验证:CursorPos swipe可驱动餐馆相机平移。base begin[958,213]end[421,497]×0.667→begin[639,142]end[281,331]。",
+        "begin": [639, 142],
+        "end": [281, 331]
+    },
+    "Daily_Busin_DecorCoin_Move_2": {
+        "desc": "移动画面预设2。|[PC覆盖] base begin[587,242]end[1017,527]×0.667→begin[391,161]end[678,351]。",
+        "begin": [391, 161],
+        "end": [678, 351]
+    },
+    "Daily_Busin_DecorCoin_Move_3": {
+        "desc": "移动画面预设3。|[PC覆盖] base begin[1134,265]end[390,190]×0.667→begin[756,177]end[260,127]。",
+        "begin": [756, 177],
+        "end": [260, 127]
+    },
+    "Daily_Busin_StageUp": {
+        "desc": "餐厅星级'下一阶段'升级。|[PC覆盖] base sub roi[1155,937,158,81]×0.667=[770,625,105,54];实机进成长视图见升级花费区约1080(1150-1260,994)(720~803,663),按钮略低→PC sub roi[760,635,120,55]。默认关(餐馆自动升级),无可升状态未触发实按钮,待MFA验。",
+        "all_of": [
+            { "sub_name": "OCR", "recognition": "OCR", "roi": [760, 635, 120, 55], "expected": "^(?=.*[下])(?=.*[一])(?=.*[阶段]).{2,5}$" },
+            "Sub_Ocr_Enable_Clr"
+        ]
+    },
+    "Daily_Busin_LevelUp": {
+        "desc": "餐厅等级'升级'。|[PC覆盖] 同StageUp区域,base sub roi[1155,937,158,81]→PC sub roi[760,635,120,55]。默认关,待MFA验。",
+        "all_of": [
+            { "sub_name": "OCR", "recognition": "OCR", "roi": [760, 635, 120, 55], "expected": "升级" },
+            "Sub_Ocr_Enable_Clr"
+        ]
+    },
+    "Daily_Busin_LevelUp_Ck": {
+        "desc": "升级动画'点击画面关闭'。|[PC覆盖] base roi[834,761,252,221]×0.667→[555,505,170,150](中下区通用点击关闭)。待MFA验。",
+        "roi": [555, 505, 170, 150]
+    },
+    "Daily_Busin_Quick_BackPVEPage_Str": {
+        "desc": "快速卡带离开餐馆(TemplateMatch BusinQuickIcoGE绿播放键)。|[PC覆盖] base roi[74,81,285,197]×0.667→[49,54,190,131];模板已降采样62×49→41×33存PC/image自动覆盖。注:实机左上默认视图未见该绿播放键(可能离开步才出现),roi/模板按缩放给出,离开链路待实机验证。",
+        "roi": [49, 54, 190, 131]
     }
 }
