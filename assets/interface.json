@@ -154,7 +154,10 @@
             "name": "[领取]日常任务",
             "default_check": true,
             "entry": "Daily_HomePage",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb",
+                "PC客户端"
+            ],
             "option": [
                 "餐馆领装饰币",
                 "餐馆自动升级",
