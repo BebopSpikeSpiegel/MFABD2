@@ -1,4 +1,13 @@
 {
+    "Activities_Call_Mail_Start": {
+        "desc": "option[进入前先领取邮件]:检测主页邮件红点。|[PC覆盖] 与Mail_NewRed同一主页邮件图标红点,base roi[1003,14,64,58]按安卓→[1055,10,60,60](同pc/Mail.json的Mail_NewRed)。算法继承base的RedDotDetector(Agt_RedDot_Preset)。",
+        "roi": [
+            1055,
+            10,
+            60,
+            60
+        ]
+    },
     "Activities_InIndex": {
         "desc": "主页活动入口红点检测进入活动页。|[PC覆盖] 主页底部菜单整体左移,活动图标720中心x593;红点在图标右上角720(611,645)(native(916,968)),base roi[694,611,54,56]按安卓→[595,632,35,30]。target_offset继承base[-5,5]。实机验证有红点→点击进入活动页。",
         "roi": [
