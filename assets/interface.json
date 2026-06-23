@@ -176,7 +176,10 @@
             "name": "[领取]活动页奖励",
             "default_check": true,
             "entry": "Activities_Start",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb",
+                "PC客户端"
+            ],
             "option": [
                 "进入前先领取邮件"
             ],
