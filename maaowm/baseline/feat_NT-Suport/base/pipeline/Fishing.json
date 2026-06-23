@@ -1,0 +1,375 @@
+{
+    "Casting_Rod": {
+        "action": "LongPress",
+        "target": [
+            1130,
+            570
+        ],
+        "duration": 100,
+        "rate_limit": 800,
+        "next": [
+            "Detect_Took_Bait"
+        ],
+        "on_error": [
+            "Move_Forward"
+        ]
+    },
+    "Custom_Fishing_Task": {
+        "action": "Custom",
+        "custom_action": "FishingAction",
+        "custom_action_param": {
+            "max_count": 100
+        }
+    },
+    "Detect_CountDown": {
+        "next": [
+            "Detect_CountDown_Green",
+            "Detect_CountDown_Red"
+        ]
+    },
+    "Detect_CountDown_Green": {
+        "recognition": "ColorMatch",
+        "roi": [
+            384,
+            571,
+            46,
+            40
+        ],
+        "method": 4,
+        "lower": [
+            51,
+            245,
+            147
+        ],
+        "upper": [
+            71,
+            255,
+            167
+        ],
+        "count": 20
+    },
+    "Detect_CountDown_Red": {
+        "recognition": "ColorMatch",
+        "roi": [
+            384,
+            571,
+            46,
+            40
+        ],
+        "method": 4,
+        "lower": [
+            172,
+            66,
+            82
+        ],
+        "upper": [
+            192,
+            86,
+            102
+        ],
+        "count": 20
+    },
+    "Detect_Progress_Blue_Zones": {
+        "recognition": "ColorMatch",
+        "roi": [
+            480,
+            602,
+            383,
+            20
+        ],
+        "method": 40,
+        "lower": [
+            95,
+            130,
+            250
+        ],
+        "upper": [
+            115,
+            255,
+            255
+        ],
+        "count": 10
+    },
+    "Detect_Progress_White_Cursor": {
+        "recognition": "ColorMatch",
+        "roi": [
+            480,
+            602,
+            383,
+            20
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            240
+        ],
+        "upper": [
+            180,
+            30,
+            255
+        ],
+        "count": 15
+    },
+    "Detect_Progress_Yellow_Zones": {
+        "recognition": "ColorMatch",
+        "roi": [
+            480,
+            602,
+            383,
+            20
+        ],
+        "method": 40,
+        "lower": [
+            15,
+            40,
+            250
+        ],
+        "upper": [
+            35,
+            255,
+            255
+        ],
+        "count": 10
+    },
+    "Detect_Took_Bait": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            626,
+            185,
+            25,
+            53
+        ],
+        "template": "Fishing_took_bait.png",
+        "threshold": 0.6,
+        "action": "Click",
+        "target": [
+            1130,
+            570
+        ],
+        "timeout": 6000
+    },
+    "Fishing_Already_Setsail": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1057,
+            483,
+            162,
+            175
+        ],
+        "template": [
+            "Fishhook.png"
+        ],
+        "green_mask": true,
+        "next": [
+            "Fishing_Start"
+        ]
+    },
+    "Fishing_BusinReward": {
+        "desc": "识别点击捕网",
+        "recognition": "OCR",
+        "roi": [
+            88,
+            230,
+            88,
+            25
+        ],
+        "expected": [
+            "经营管理"
+        ],
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            128,
+            202,
+            9,
+            8
+        ],
+        "post_delay": 1000,
+        "next": [
+            "Fishing_InFishingNet"
+        ]
+    },
+    "Fishing_EnterFishingSpot_Frost": {
+        "action": "Click",
+        "target": [
+            221,
+            83,
+            27,
+            29
+        ],
+        "next": [
+            "Fishing_SetSail"
+        ]
+    },
+    "Fishing_EnterFishingSpot_Lake": {
+        "action": "Click",
+        "target": [
+            407,
+            492,
+            22,
+            27
+        ],
+        "next": [
+            "Fishing_SetSail"
+        ]
+    },
+    "Fishing_EnterFishingSpot_Shallow": {
+        "action": "Click",
+        "target": [
+            369,
+            315,
+            22,
+            25
+        ],
+        "next": [
+            "Fishing_SetSail"
+        ]
+    },
+    "Fishing_Entry": {
+        "next": [
+            "Fishing_BusinReward",
+            "Fishing_Already_Setsail",
+            "[JumpBack]Global_ToHomePage"
+        ]
+    },
+    "Fishing_InFishingNet": {
+        "desc": "进入钓鱼界面",
+        "recognition": "OCR",
+        "roi": [
+            757,
+            358,
+            97,
+            35
+        ],
+        "expected": [
+            "立刻前往"
+        ],
+        "action": "Click",
+        "post_delay": 8000,
+        "next": [
+            "Fishing_InMap",
+            "[JumpBack]Fishing_InMap_TalkSkip"
+        ]
+    },
+    "Fishing_InMap": {
+        "desc": "进入地图选择界面",
+        "recognition": "OCR",
+        "roi": [
+            1097,
+            651,
+            107,
+            42
+        ],
+        "expected": [
+            "开始钓鱼"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Fishing_InMap",
+            "Fishing_MapNavigate"
+        ]
+    },
+    "Fishing_InMap_TalkSkip": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1005,
+            15,
+            99,
+            66
+        ],
+        "template": [
+            "UI_talk.png"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Fishing_InMap_TalkSkip_Ck"
+        ],
+        "focus": "消除广场教程对话"
+    },
+    "Fishing_InMap_TalkSkip_Ck": {
+        "recognition": "OCR",
+        "roi": [
+            553,
+            350,
+            333,
+            327
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_delay": 1000
+    },
+    "Fishing_MapNavigate": {
+        "next": [
+            "Fishing_EnterFishingSpot_Lake",
+            "Fishing_EnterFishingSpot_Shallow",
+            "Fishing_EnterFishingSpot_Frost"
+        ]
+    },
+    "Fishing_SetSail": {
+        "recognition": "OCR",
+        "roi": [
+            1040,
+            656,
+            56,
+            32
+        ],
+        "expected": [
+            "启航"
+        ],
+        "action": "Click",
+        "post_delay": 10000,
+        "next": [
+            "[JumpBack]Global_WaitingForLoading",
+            "Fishing_Start"
+        ]
+    },
+    "Fishing_Start": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            802,
+            11,
+            92,
+            74
+        ],
+        "template": [
+            "Fish/Sell_ico.png"
+        ],
+        "post_wait_freezes": 800,
+        "next": [
+            "[JumpBack]SellFish_Start",
+            "Custom_Fishing_Task"
+        ]
+    },
+    "Move_Forward": {
+        "action": "Swipe",
+        "begin": [
+            230,
+            580
+        ],
+        "end": [
+            230,
+            620
+        ],
+        "duration": 1000,
+        "next": [
+            "Casting_Rod"
+        ]
+    },
+    "Reco_Minigame_Total_Time": {
+        "recognition": "OCR",
+        "roi": [
+            384,
+            571,
+            46,
+            40
+        ],
+        "expected": [
+            "^[1-9]\\d*$"
+        ]
+    }
+}

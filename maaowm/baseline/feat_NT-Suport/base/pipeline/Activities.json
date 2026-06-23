@@ -1,0 +1,577 @@
+{
+    "Activities_Start": {
+        "desc": "起始节点-分流",
+        "next": [
+            "Activities_HomePageHub",
+            "[JumpBack]Global_ToHomePage"
+        ]
+    },
+    "Activities_HomePageHub": {
+        "desc": "[通用复位]复位到主界面模块,开始,中继调用",
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
+        ],
+        "rate_limit": 2000,
+        "next": [
+            "Activities_InIndex",
+            "Global_ToSandBox"
+        ]
+    },
+    "Activities_Call_Mail_Start": {
+        "desc": "目的：必须在next中插入中断。进入后call中断；预测返回场景制作next的判定来离开小循环",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
+        "roi": [
+            1003,
+            14,
+            64,
+            58
+        ],
+        "next": [
+            "[JumpBack]Mail_NewRed",
+            "Activities_Call_Mail_Out"
+        ]
+    },
+    "Activities_Call_Mail_Out": {
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Rec_HomePage_GA_Ocr"
+        ],
+        "next": [
+            "Activities_Start"
+        ]
+    },
+    "Activities_InIndex": {
+        "max_hit": 3,
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
+        "roi": [
+            694,
+            611,
+            54,
+            56
+        ],
+        "action": "Click",
+        "target_offset": [
+            -5,
+            5,
+            0,
+            0
+        ],
+        "post_delay": 5000,
+        "next": [
+            "Activities_Index",
+            "Activities_InIndex"
+        ],
+        "focus": "AA.有可关注活动"
+    },
+    "Activities_Index": {
+        "desc": "识别抽卡页",
+        "recognition": "OCR",
+        "roi": [
+            108,
+            110,
+            529,
+            483
+        ],
+        "expected": [
+            "活动"
+        ],
+        "next": [
+            "Activities_FindActive",
+            "Activities_GetAllRe",
+            "Activities_Slip"
+        ],
+        "focus": "AA.进入活动页"
+    },
+    "Activities_FindActive": {
+        "desc": "寻找可关注活动|太容易卡后误识别了，加延迟",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset_Panoram"},
+        "roi": [
+            269,
+            125,
+            30,
+            478
+        ],
+        "action": "Click",
+        "target_offset": [
+            -50,
+            10,
+            0,
+            0
+        ],
+        "post_delay": 3000,
+        "next": [
+            "Activities_GetBorn",
+            "Activities_GetRoll",
+            "Activities_GetPinTu",
+            "Activities_GetBingo",
+            "Activities_Roulette",
+            "Activities_Roulette_Pay_CkIn",
+            "Activities_FreeClothing",
+            "Activities_GetAll",
+            "Activities_NoFindAndInEnd"
+        ],
+        "on_error": [
+            "Activities_Slip"
+        ],
+        "focus": "GA.搜寻活动"
+    },
+    "Activities_GetAll": {
+        "recognition": "OCR",
+        "roi": [
+            544,
+            527,
+            595,
+            37
+        ],
+        "expected": [
+            "全部领取"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Activities_GetAllRe",
+            "Activities_Index"
+        ],
+        "on_error": [
+            "Activities_Slip"
+        ],
+        "focus": "GA.发现活动-常规"
+    },
+    "Activities_GetAllRe": {
+        "desc": "确认抽卡",
+        "recognition": "OCR",
+        "roi": [
+            457,
+            607,
+            413,
+            97
+        ],
+        "expected": [
+            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Activities_GetAllRe",
+            "Activities_Index"
+        ]
+    },
+    "Activities_GetRoll": {
+        "desc": "点击右下抽卡",
+        "recognition": "OCR",
+        "roi": [
+            1068,
+            486,
+            87,
+            37
+        ],
+        "expected": [
+            "自动进行"
+        ],
+        "timeout": 3000,
+        "next": [
+            "Activities_GetRoll_AutoOff",
+            "Activities_GetRoll_AutoOn"
+        ],
+        "on_error": [
+            "Activities_Slip"
+        ],
+        "focus": "GA.发现骰子活动"
+    },
+    "Activities_GetRoll_AutoOff": {
+        "recognition": "ColorMatch",
+        "roi": [
+            1076,
+            534,
+            11,
+            13
+        ],
+        "lower": [
+            211,
+            208,
+            200
+        ],
+        "upper": [
+            231,
+            228,
+            220
+        ],
+        "action": "Click",
+        "target_offset": [
+            10,
+            4,
+            0,
+            0
+        ],
+        "post_delay": 1500,
+        "next": [
+            "Activities_GetRoll_AutoOn",
+            "Activities_Slip"
+        ]
+    },
+    "Activities_GetRoll_AutoOn": {
+        "recognition": "ColorMatch",
+        "roi": [
+            1059,
+            517,
+            104,
+            47
+        ],
+        "lower": [
+            223,
+            195,
+            120
+        ],
+        "upper": [
+            223,
+            195,
+            120
+        ],
+        "post_delay": 15000,
+        "next": [
+            "Activities_Index"
+        ]
+    },
+    "Activities_GetBorn": {
+        "desc": "点击右下抽卡",
+        "recognition": "OCR",
+        "roi": [
+            531,
+            515,
+            114,
+            33
+        ],
+        "expected": [
+            "兑换"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Activities_GetBorn2",
+            "Activities_Index"
+        ],
+        "on_error": [
+            "Activities_Slip"
+        ],
+        "focus": "GA.发现代币兑换活动"
+    },
+    "Activities_GetBorn2": {
+        "desc": "点击右下抽卡",
+        "recognition": "OCR",
+        "roi": [
+            665,
+            403,
+            85,
+            29
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_delay": 5000,
+        "next": [
+            "Activities_GetAllRe",
+            "Activities_Index"
+        ],
+        "on_error": [
+            "Activities_Slip"
+        ],
+        "focus": "GA.代币兑换再确认"
+    },
+    "Activities_GetPinTu": {
+        "recognition": "OCR",
+        "roi": [
+            1002,
+            514,
+            120,
+            49
+        ],
+        "expected": [
+            "全部解锁"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Activities_GetAllRe",
+            "Activities_Index"
+        ],
+        "on_error": [
+            "Activities_Slip"
+        ],
+        "focus": "GA.发现活动-拼图"
+    },
+    "Activities_GetBingo": {
+        "recognition": "OCR",
+        "roi": [
+            533,
+            518,
+            119,
+            54
+        ],
+        "expected": [
+            "全部解锁"
+        ],
+        "action": "Click",
+        "post_wait_freezes": 2000,
+        "post_delay": 2000,
+        "next": [
+            "Activities_GetAllRe",
+            "Activities_Index"
+        ],
+        "on_error": [
+            "Activities_Slip"
+        ],
+        "focus": "GA.发现活动-bingo V.02509"
+    },
+    "Activities_Roulette": {
+        "recognition": "OCR",
+        "expected": [
+            "1次免费"
+        ],
+        "action": "Click",
+        "post_delay": 6000,
+        "timeout": 10000,
+        "next": [
+            "Activities_GetAllRe",
+            "Activities_Roulette"
+        ],
+        "focus": "GA.发现活动-轮盘(免费抽) V.02509"
+    },
+    "Activities_Roulette_Pay_CkIn": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    966,
+                    493,
+                    170,
+                    81
+                ],
+                "expected": [
+                    "旋转"
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ],
+        "action": "Click",
+        "post_delay": 4000,
+        "next": [
+            "Activities_GetAllRe"
+        ],
+        "focus": "GA.发现活动-轮盘(代币抽) V.02509"
+    },
+    "Activities_FreeClothing": {
+        "desc": "免费+5",
+        "recognition": "OCR",
+        "roi": [
+            320,
+            145,
+            602,
+            422
+        ],
+        "expected": [
+            "强化免费赠送",
+            "强化服装的机会",
+            "\\+5强化"
+        ],
+        "action": "Click",
+        "target": [
+            1047,
+            204
+        ],
+        "next": [
+            "Activities_FreeClothing_Ty1",
+            "Activities_FreeClothing_Ty2"
+        ]
+    },
+    "Activities_FreeClothing_Ty1": {
+        "recognition": "OCR",
+        "roi": [
+            320,
+            145,
+            843,
+            422
+        ],
+        "expected": [
+            "立刻获得"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Activities_Index"
+        ]
+    },
+    "Activities_FreeClothing_Ty2": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1060,
+            284,
+            86,
+            269
+        ],
+        "template": [
+            "Ac_Getbutton.png"
+        ],
+        "next": [
+            "Activities_FreeClothing_Ty2_Ck",
+            "Activities_Index"
+        ]
+    },
+    "Activities_FreeClothing_Ty2_Ck": {
+        "recognition": "ColorMatch",
+        "roi": "Activities_FreeClothing_Ty2",
+        "roi_offset": [
+            -30,
+            -30,
+            60,
+            60
+        ],
+        "lower": [
+            0,
+            139,
+            230
+        ],
+        "upper": [
+            180,
+            174,
+            250
+        ],
+        "connected": true,
+        "count": 100,
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Activities_FreeClothing_Ty2_Ck",
+            "Activities_Index"
+        ]
+    },
+    "Activities_ResultBack": {
+        "desc": "抽卡结果页返回",
+        "recognition": "OCR",
+        "roi": [
+            313,
+            139,
+            334,
+            441
+        ],
+        "expected": [
+            "活动"
+        ],
+        "pre_delay": 1000,
+        "action": "Click",
+        "target": [
+            120,
+            35
+        ],
+        "post_delay": 2000,
+        "next": [
+            "Activities_Index"
+        ]
+    },
+    "Activities_Slip": {
+        "desc": "下滑寻找免费抽卡",
+        "recognition": "OCR",
+        "roi": [
+            165,
+            12,
+            347,
+            606
+        ],
+        "expected": [
+            "活动"
+        ],
+        "action": "Swipe",
+        "begin": [
+            210,
+            300
+        ],
+        "end": [
+            210,
+            100
+        ],
+        "end_hold": 1000,
+        "duration": 1000,
+        "next": [
+            "Activities_FindActive",
+            "Activities_NoFindAndInEnd",
+            "Activities_GetAllRe",
+            "Activities_Slip"
+        ],
+        "on_error": [
+            "Activities_Fin"
+        ],
+        "focus": "GA.滑动寻找活动"
+    },
+    "Activities_NoFindAndInEnd": {
+        "desc": "拖动后无免费红点且识别到底部普池\\判定未完成",
+        "recognition": "OCR",
+        "roi": [
+            125,
+            335,
+            176,
+            281
+        ],
+        "expected": [
+            "登录加成",
+            "登录活动"
+        ],
+        "target_offset": [
+            -50,
+            50,
+            0,
+            0
+        ],
+        "next": [
+            "Activities_Fin"
+        ],
+        "focus": "GA.活动列表见底"
+    },
+    "Activities_Fin": {
+        "desc": "返回首页",
+        "recognition": "OCR",
+        "roi": [
+            170,
+            10,
+            124,
+            60
+        ],
+        "expected": [
+            "活动"
+        ],
+        "action": "Click",
+        "target": [
+            120,
+            35
+        ],
+        "post_delay": 3000,
+        "next": [
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage",
+            "Activities_Fin"
+        ],
+        "focus": "GA.退出活动"
+    },
+    "Activities_BackHomePage": {
+        "desc": "返回主页",
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
+        ],
+        "next": [
+            "Activities_InIndex",
+            "Global_ToHomePage_Enter"
+        ]
+    }
+}

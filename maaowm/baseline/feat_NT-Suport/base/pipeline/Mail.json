@@ -1,0 +1,170 @@
+{
+    "Mail_HomePage": {
+        "next": [
+            "Mail_GoinMail",
+            "[JumpBack]Global_ToHomePage"
+        ]
+    },
+    "Mail_GoinMail": {
+        "desc": "识别左下抽抽乐-点击邮件",
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
+        ],
+        "target": [
+            1030,
+            45
+        ],
+        "post_delay": 1000,
+        "timeout": 3000,
+        "next": [
+            "Mail_NewRed"
+        ],
+        "on_error": [
+            "Mail_NormalEnd",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "GM.主页面已确认"
+    },
+    "Mail_NewRed": {
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
+        "roi": [
+            1003,
+            14,
+            64,
+            58
+        ],
+        "action": "Click",
+        "target_offset": [
+            -15,
+            20,
+            0,
+            0
+        ],
+        "post_wait_freezes": 500,
+        "next": [
+            "Mail_Check_MailPage",
+            "Mail_NewRed"
+        ],
+        "focus": "GM.新邮件红点确认"
+    },
+    "Mail_Check_MailPage": {
+        "recognition": "OCR",
+        "roi": [
+            209,
+            15,
+            137,
+            54
+        ],
+        "expected": [
+            "邮箱",
+            "记录"
+        ],
+        "next": [
+            "Mail_GetAllBack",
+            "Mail_GetAll",
+            "Mail_TabBus"
+        ],
+        "on_error": [
+            "Mail_ERRlEnd",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "GM.邮箱页面已确认"
+    },
+    "Mail_GetAll": {
+        "desc": "普通(首页)全部领取",
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    1052,
+                    645,
+                    82,
+                    30
+                ],
+                "expected": [
+                    "全部领取",
+                    "全部获得"
+                ],
+                "only_rec": true
+            },
+            "Sub_Ocr_Enable_Clr"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Mail_GetAllBack",
+            "Mail_GetAll",
+            "Mail_TabBus"
+        ],
+        "focus": "GM.一般邮件领取"
+    },
+    "Mail_GetAllBack": {
+        "desc": "领取reward确认和消除",
+        "recognition": "And",
+        "all_of": ["Rec_Reward_Ocr"],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Mail_GetAllBack",
+            "Mail_TabBus",
+            "Mail_NormalEnd"
+        ],
+        "focus": "GM.邮件已收取"
+    },
+    "Mail_TabBus": {
+        "desc": "切换to月卡信箱",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
+        "roi": [
+            184,
+            146,
+            185,
+            62
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "timeout": 5000,
+        "next": [
+            "Mail_GetBusAll",
+            "Mail_TabBus"
+        ],
+        "on_error": [
+            "Mail_ERRlEnd",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Mail_GetBusAll": {
+        "desc": "商品右键全部领取",
+        "recognition": "And",
+        "all_of": ["Mail_GetAll"],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Mail_GetAllBack",
+            "Mail_GetBusAll"
+        ],
+        "focus": "GM.商品邮件领取"
+    },
+    "Mail_NormalEnd": {
+        "next": [
+            "Global_ToHomePage"
+        ],
+        "focus": "GM.通常结束"
+    },
+    "Mail_ERRlEnd": {
+        "next": [
+            "Global_ToHomePage"
+        ],
+        "focus": "GM.异常结束"
+    }
+}

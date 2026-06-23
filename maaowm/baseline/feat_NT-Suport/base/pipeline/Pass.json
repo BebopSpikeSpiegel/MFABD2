@@ -1,0 +1,185 @@
+{
+    "Pass_HomePage": {
+        "next": [
+            "Pass_InToPass",
+            "[JumpBack]Global_ToHomePage"
+        ]
+    },
+    "Pass_InToPass": {
+        "desc": "识别左下抽抽乐-点击通行证",
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
+        ],
+        "action": "Click",
+        "target": [
+            1063,
+            210
+        ],
+        "post_delay": 1000,
+        "timeout": 5000,
+        "next": [
+            "Pass_EnterPass",
+            "Pass_InToPass"
+        ],
+        "focus": "PM.尝试进入通行证页面"
+    },
+    "Pass_EnterPass": {
+        "recognition": "OCR",
+        "roi": [
+            179,
+            6,
+            148,
+            65
+        ],
+        "expected": "通行证",
+        "next": [
+            "Pass_SelectPass",
+            "[JumpBack]Pass_TrySwip"
+        ],
+        "on_error": [
+            "Pass_Back",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "PM.通行证页面确认"
+    },
+    "Pass_TrySwip": {
+        "max_hit": 2,
+        "action": "Swipe",
+        "begin": [
+            216,
+            518
+        ],
+        "end": [
+            214,
+            190
+        ],
+        "end_hold": 500,
+        "duration": 500,
+        "focus": "PM.尝试滑动寻找红点"
+    },
+    "Pass_SelectPass": {
+        "desc": "选择通行证",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
+        "roi": [
+            262,
+            130,
+            40,
+            478
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "[JumpBack]Pass_SelectPassTask",
+            "Pass_GetAll"
+        ]
+    },
+    "Pass_SelectPassTask": {
+        "desc": "确认通行证页面,选择通行证任务",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_<Pass_SelectPassTask>_Ocr01",
+            "Rec_<Pass_SelectPassTask>_Ocr02"
+        ],
+        "action": "Click",
+        "target": [
+            1145,
+            460
+        ],
+        "post_delay": 1500,
+        "focus": "任务子项页色核检查"
+    },
+    "Rec_<Pass_SelectPassTask>_Ocr01": {
+        "desc": "[识别]通行证页面,位置01",
+        "recognition": "OCR",
+        "roi": [
+            620,
+            167,
+            53,
+            32
+        ],
+        "expected": [
+            "LEVEL"
+        ],
+        "only_rec": true
+    },
+    "Rec_<Pass_SelectPassTask>_Ocr02": {
+        "desc": "[识别]通行证页面,位置02",
+        "recognition": "OCR",
+        "roi": [
+            760,
+            169,
+            45,
+            26
+        ],
+        "expected": [
+            "基础"
+        ],
+        "only_rec": true
+    },
+    "Pass_GetAll": {
+        "desc": "全部获得",
+        "recognition": "OCR",
+        "roi": [
+            757,
+            514,
+            361,
+            66
+        ],
+        "expected": [
+            "全部获得"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Pass_GetAllBack"
+        ],
+        "on_error": [
+            "Pass_EnterPass",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "PM.点击领取"
+    },
+    "Pass_GetAllBack": {
+        "desc": "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$",
+        "recognition": "OCR",
+        "roi": [
+            556,
+            628,
+            148,
+            36
+        ],
+        "expected": [
+            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Pass_SelectPass",
+            "Pass_Back"
+        ]
+    },
+    "Pass_Back": {
+        "desc": "刷完了",
+        "recognition": "OCR",
+        "roi": [
+            212,
+            19,
+            115,
+            43
+        ],
+        "expected": [
+            "通行证"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Global_ToHomePage"
+        ]
+    }
+}

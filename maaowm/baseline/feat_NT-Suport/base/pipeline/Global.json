@@ -1,0 +1,959 @@
+{
+    "Global_Index": {
+        "desc": "依次为:回到主页面|回到箱庭|调出快速卡带菜单|回到快速卡带1|回到传统卡带2|点一次返回按钮 | 卡带读取界面循环等待",
+        "on_error": [
+            "Global_ToHomePage",
+            "Global_ToSandBox",
+            "Global_QuickCart_MenuReset",
+            "Global_BackToQC1",
+            "Global_BackToPve2#",
+            "Global_BackPageHub_Once",
+            "[JumpBack]Global_WaitingForLoading",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "公共复用节点目录。开发整理用，别真引用此节点"
+    },
+    "Global_HomeButton_Once": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1132,
+            4,
+            122,
+            77
+        ],
+        "template": [
+            "MainHomeIceGE.png",
+            "MainHomeRIceGE.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 2000,
+        "focus": "G.点击一次主页面图标"
+    },
+    "Global_BackPageHub_Once": {
+        "desc": "其他页面，返回按钮(一次性)",
+        "max_hit": 35,
+        "recognition": "TemplateMatch",
+        "roi": [
+            1,
+            1,
+            231,
+            124
+        ],
+        "template": [
+            "BackButGe.png",
+            "BackButGe2.png",
+            "UI_qsback.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 3500,
+        "focus": "GO.点击返回按钮"
+    },
+    "Global_QuickCart_MenuReset": {
+        "desc": "调出快速卡带1/2,操作",
+        "recognition": "TemplateMatch",
+        "template": [
+            "QuickCartGeadai.png",
+            "UI_QuickPack_GE.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Global_QuickCart_MenuReset_Ocr",
+            "Global_QuickCart_MenuReset"
+        ],
+        "focus": "GO.调出快速卡带"
+    },
+    "Global_QuickCart_MenuReset_Ocr": {
+        "desc": "调出快速卡带2/2,核对",
+        "recognition": "OCR",
+        "roi": [
+            32,
+            506,
+            306,
+            125
+        ],
+        "expected": [
+            "最近"
+        ],
+        "focus": "GO.快速卡带调出成功"
+    },
+    "Global_ToHomePage": {
+        "desc": "[通用复位]复位到主界面模块,开始,中继调用",
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Rec_HomePage_GA_Clr"
+        ],
+        "inverse": true,
+        "timeout": 8000,
+        "next": [
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage_HomeButton",
+            "Global_ToHomePage_Reset"
+        ],
+        "on_error": [
+            "[JumpBack]StartGame_SeasonSet",
+            "[JumpBack]StartGame_Special",
+            "[JumpBack]StartGame_PVPSet",
+            "[JumpBack]PVP_PerOperationsMain_Error",
+            "[JumpBack]Global_ERR_AtFish",
+            "[JumpBack]Dummy_Err_GetProductsFail",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Global_ToHomePage_HomeButton": {
+        "desc": "找到run-点击返回主页",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "action": "Click",
+        "target": [
+            1186,
+            46
+        ],
+        "post_delay": 3000,
+        "next": [
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage_HomeButton",
+            "[JumpBack]Global_BackPageHub_Once"
+        ],
+        "focus": "G.箱庭地图已确认"
+    },
+    "Global_ToHomePage_Reset": {
+        "desc": "其他页面，返回按钮",
+        "recognition": "And",
+        "all_of": ["Global_BackPageHub_Once"],
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage_HomeButton",
+            "Global_ToHomePage_Reset",
+            "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]Global_BackPageHub_Once"
+        ],
+        "focus": "G=1.页面非预期，点击返回按钮"
+    },
+    "Global_ToHomePage_Enter": {
+        "desc": "[通用复位]复位到主界面模块,结束,中继调用",
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Rec_HomePage_GA_Clr"
+        ]
+    },
+    "Global_ToSandBox": {
+        "desc": "[通用复位]复位到主界面模块,开始,中继调用",
+        "timeout": 10000,
+        "next": [
+            "Global_ToSandBox_Enter",
+            "Global_ToSandBox_Reset",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "on_error": [
+            "Global_BackToQC1",
+            "[JumpBack]StartGame_SeasonSet",
+            "[JumpBack]StartGame_Special",
+            "[JumpBack]StartGame_PVPSet",
+            "[JumpBack]PVP_PerOperationsMain_Error",
+            "[JumpBack]Global_ERR_AtFish",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Global_ToSandBox_Reset": {
+        "desc": "其他页面，返回按钮",
+        "recognition": "And",
+        "all_of": ["Global_BackPageHub_Once"],
+        "action": "Click",
+        "post_delay": 4000,
+        "next": [
+            "[JumpBack]Global_WaitingForLoading",
+            "Global_ToSandBox_Enter",
+            "Global_ToSandBox_Reset"
+        ],
+        "focus": "G=1.页面非预期，点击返回按钮"
+    },
+    "Global_ToSandBox_Enter": {
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "focus": "G.已复位到箱庭"
+    },
+    "Global_BackToPve2#": {
+        "next": [
+            "Global_BackToPve2#_ToCardMenu",
+            "[JumpBack]Global_HomeButton_Once",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G.复位卡带开始"
+    },
+    "Global_BackToPve2#_ToCardMenu": {
+        "desc": "识别左下抽抽乐-主页-点击选择章节",
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Rec_HomePage_GA_Clr"
+        ],
+        "action": "Click",
+        "target": [
+            1111,
+            650
+        ],
+        "next": [
+            "Global_BackToPve2#_CardMenu",
+            "Global_BackToPve2#_ToCardMenu"
+        ]
+    },
+    "Global_BackToPve2#_CardMenu": {
+        "recognition": "OCR",
+        "roi": [
+            175,
+            8,
+            176,
+            62
+        ],
+        "expected": [
+            "游戏卡珍藏集"
+        ],
+        "next": [
+            "Global_BackToPve2#_TouchPVEBook",
+            "[JumpBack]Global_BackToPve2#_PVEBookSwipe_Lift",
+            "[JumpBack]Global_BackToPve2#_PVEBookSwipe"
+        ]
+    },
+    "Global_BackToPve2#_PVEBookSwipe": {
+        "desc": "识别活动游戏卡-上划",
+        "recognition": "OCR",
+        "roi": [
+            118,
+            505,
+            95,
+            42
+        ],
+        "expected": [
+            "活动游戏卡"
+        ],
+        "action": "Swipe",
+        "begin": [
+            30,
+            300
+        ],
+        "end": [
+            30,
+            700
+        ]
+    },
+    "Global_BackToPve2#_PVEBookSwipe_Lift": {
+        "desc": "识别活动游戏卡-上划",
+        "recognition": "OCR",
+        "roi": [
+            111,
+            95,
+            105,
+            37
+        ],
+        "expected": [
+            "剧情游戏卡"
+        ],
+        "action": "Swipe",
+        "begin": [
+            150,
+            215
+        ],
+        "end": [
+            1264,
+            215
+        ],
+        "end_hold": 800,
+        "duration": 500,
+        "post_delay": 1500
+    },
+    "Global_BackToPve2#_TouchPVEBook": {
+        "desc": "点击PVE本子2",
+        "recognition": "TemplateMatch",
+        "roi": [
+            385,
+            143,
+            117,
+            69
+        ],
+        "template": [
+            "pve2.png"
+        ],
+        "action": "Click",
+        "target_offset": [
+            -20,
+            25,
+            0,
+            0
+        ],
+        "post_delay": 5000,
+        "next": [
+            "Global_BackToPve2#_FinBackMapPage",
+            "Global_BackToPve2#_TouchPVEBook",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G.复位用卡带已找到"
+    },
+    "Global_BackToPve2#_FinBackMapPage": {
+        "desc": "识别右下图钉-章节主页",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "focus": "G.Global复位完成，结束~"
+    },
+    "Global_BackToQC1": {
+        "desc": "50次多半是卡死了,死死透别截图了",
+        "max_hit": 50,
+        "recognition": "And",
+        "all_of": ["Global_QuickCart_MenuReset"],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Global_BackToQC1_Menu",
+            "Global_BackToQC1"
+        ],
+        "focus": "GO.快速卡带-复位到QC1"
+    },
+    "Global_BackToQC1_Menu": {
+        "recognition": "OCR",
+        "roi": [
+            185,
+            530,
+            173,
+            51
+        ],
+        "expected": [
+            "剧情游戏卡"
+        ],
+        "action": "Click",
+        "next": [
+            "Global_BackToQC1_Menu_Cor",
+            "Global_BackToQC1_Menu"
+        ],
+        "focus": "GO.快速卡带离开-菜单模式"
+    },
+    "Global_BackToQC1_Menu_Cor": {
+        "recognition": "ColorMatch",
+        "roi": [
+            185,
+            530,
+            173,
+            51
+        ],
+        "lower": [
+            203,
+            203,
+            202
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 200,
+        "next": [
+            "Global_BackToQC1_Pvemap"
+        ],
+        "focus": "GO.菜单模式-色核通过"
+    },
+    "Global_BackToQC1_Pvemap": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            51,
+            582,
+            873,
+            133
+        ],
+        "template": [
+            "KadaiGe.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "target_offset": [
+            -35,
+            25,
+            0,
+            0
+        ],
+        "post_delay": 4000,
+        "next": [
+            "Global_BackToQC1_Fin",
+            "Global_BackToQC1_Pvemap",
+            "[JumpBack]Global_WaitingForLoading"
+        ]
+    },
+    "Global_BackToQC1_Fin": {
+        "desc": "找到图钉-点击返回主页",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "post_delay": 1000,
+        "focus": "GO.卡带复位成功"
+    },
+    "Global_WaitingForLoading": {
+        "desc": "循环等待转场页面",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_<Global_WaitingForLoading>_01",
+            "Rec_<Global_WaitingForLoading>_02",
+            "Rec_<Global_WaitingForLoading>_03",
+            "Rec_<Global_WaitingForLoading>_04",
+            "Rec_<Global_WaitingForLoading>_05",
+            "Rec_<Global_WaitingForLoading>_06"
+        ],
+        "post_delay": 5000,
+        "focus": "GO.等待卡带or转场载入"
+    },
+    "Rec_<Global_WaitingForLoading>_01": {
+        "desc": "[识别]转场等待01,右下的UT",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1049,
+            578,
+            194,
+            124
+        ],
+        "template": "UI_loading_Tr.png",
+        "green_mask": true
+    },
+    "Rec_<Global_WaitingForLoading>_02": {
+        "desc": "[识别]转场等待02,右下的进度圈",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1190,
+            623,
+            76,
+            89
+        ],
+        "template": [
+            "UI_loading_FS0%.png",
+            "UI_loading_FS95%.png",
+            "UI_loading_White%.png"
+        ],
+        "green_mask": true
+    },
+    "Rec_<Global_WaitingForLoading>_03": {
+        "desc": "[识别]转场等待03,中央名称",
+        "recognition": "TemplateMatch",
+        "roi": [
+            501,
+            290,
+            266,
+            119
+        ],
+        "template": "UI_loading_black.png"
+    },
+    "Rec_<Global_WaitingForLoading>_04": {
+        "desc": "[识别]转场等待03,右下0%",
+        "recognition": "OCR",
+        "roi": [
+            1213,
+            658,
+            30,
+            20
+        ],
+        "expected": "0%",
+        "only_rec": true
+    },
+    "Rec_<Global_WaitingForLoading>_05": {
+        "desc": "[识别]转场等待03,大色块-黑",
+        "recognition": "ColorMatch",
+        "roi": [
+            203,
+            476,
+            930,
+            110
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            0
+        ],
+        "upper": [
+            180,
+            5,
+            5
+        ],
+        "connected": true,
+        "count": 102200
+    },
+    "Rec_<Global_WaitingForLoading>_06": {
+        "desc": "[识别]转场等待03,大色块-白",
+        "recognition": "ColorMatch",
+        "roi": [
+            203,
+            476,
+            930,
+            110
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            230
+        ],
+        "upper": [
+            180,
+            5,
+            255
+        ],
+        "connected": true,
+        "count": 102200
+    },
+    "Anc_SliderSwitch_YewOn_Clr": {
+        "desc": "滑块识别,黄色,已enable",
+        "recognition": "ColorMatch",
+        "roi": "[Anchor]SliderSwitchColor",
+        "method": 40,
+        "lower": [
+            17,
+            180,
+            152
+        ],
+        "upper": [
+            23,
+            200,
+            185
+        ],
+        "count": 25,
+        "next": [
+            "Global_SliderSwitch_End"
+        ]
+    },
+    "Anc_SliderSwitch_GryOff_Clr": {
+        "desc": "滑块识别,灰色,已disable",
+        "recognition": "ColorMatch",
+        "roi": "[Anchor]SliderSwitchColor",
+        "method": 40,
+        "lower": [
+            101,
+            59,
+            36
+        ],
+        "upper": [
+            110,
+            68,
+            44
+        ],
+        "count": 25,
+        "next": [
+            "Global_SliderSwitch_End"
+        ]
+    },
+    "Rec_SliderSwitch_YewOn_Clr": {
+        "desc": "[识别]滑块识别,黄色,已enable",
+        "recognition": "ColorMatch",
+        "roi": "Clr",
+        "method": 40,
+        "lower": [
+            17,
+            180,
+            152
+        ],
+        "upper": [
+            23,
+            200,
+            185
+        ],
+        "count": 25
+    },
+    "Rec_SliderSwitch_GryOff_Clr": {
+        "desc": "[识别]滑块识别,灰色,已disable",
+        "recognition": "ColorMatch",
+        "roi": "Clr",
+        "method": 40,
+        "lower": [
+            101,
+            50,
+            30
+        ],
+        "upper": [
+            110,
+            60,
+            46
+        ],
+        "count": 25
+    },
+    "Anc_SliderSwitch_Gry_TurnOn_Clr": {
+        "desc": "【必须用万能识色生成box后锚点引用】，识别灰色，变成黄色",
+        "recognition": "And",
+        "all_of": ["Anc_SliderSwitch_GryOff_Clr"],
+        "timeout": 3000,
+        "next": [
+            "Anc_SliderSwitch_YewOn_Clr",
+            "[JumpBack]Anc_SliderSwitch_Act_Turn"
+        ]
+    },
+    "Anc_SliderSwitch_Yew_TurnOff_Clr": {
+        "desc": "【必须用万能识色生成box后锚点引用】，识别黄色，变成灰色",
+        "recognition": "And",
+        "all_of": ["Anc_SliderSwitch_YewOn_Clr"],
+        "timeout": 3000,
+        "next": [
+            "Anc_SliderSwitch_GryOff_Clr",
+            "[JumpBack]Anc_SliderSwitch_Act_Turn"
+        ]
+    },
+    "Anc_SliderSwitch_Act_Turn": {
+        "desc": "点击滑块,改变颜色",
+        "max_hit": 10,
+        "action": "Click",
+        "target": "[Anchor]SliderSwitchColor",
+        "post_delay": 800
+    },
+    "Global_SliderSwitch_End": {
+        "desc": "调整结束",
+        "next": [
+            "[Anchor]SliderSwitchColor"
+        ]
+    },
+    "Global_Hub_End": {
+        "desc": "避免正常结束时,报错跳出"
+    },
+    "Global_ERR_AtFish": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1168,
+            29,
+            29,
+            35
+        ],
+        "template": ["UI_FishingPier.png"],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Global_ERR_AtFish_SubMenu",
+            "Global_ERR_AtFish"
+        ]
+    },
+    "Global_ERR_AtFish_SubMenu": {
+        "recognition": "OCR",
+        "roi": [
+            704,
+            432,
+            48,
+            26
+        ],
+        "expected": ["确认"],
+        "only_rec": true,
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Global_ERR_AtFish_Pier",
+            "Global_ERR_AtFish_SubMenu"
+        ]
+    },
+    "Global_ERR_AtFish_Pier": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            105,
+            9,
+            67,
+            64
+        ],
+        "template": ["UI_Pier_Back.png"],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 2000,
+        "next": ["[JumpBack]Global_WaitingForLoading"]
+    },
+    "Anc_Ocr_Enable_Clr": {
+        "desc": "[识别]对Ocr节点按钮再次色核,亮色",
+        "recognition": "ColorMatch",
+        "roi": "[Anchor]Ocr_clr",
+        "roi_offset": [
+            -5,
+            -5,
+            10,
+            10
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            215
+        ],
+        "upper": [
+            180,
+            40,
+            255
+        ],
+        "count": 40
+    },
+    "Anc_Ocr_Unable_Clr": {
+        "desc": "[识别]]对Ocr节点按钮再次色核,灰色",
+        "recognition": "ColorMatch",
+        "roi": "[Anchor]Ocr_clr",
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            10
+        ],
+        "upper": [
+            180,
+            20,
+            150
+        ],
+        "count": 25
+    },
+    "Sub_Ocr_Enable_Clr": {
+        "desc": "[检测]Ocr按钮背景/文字,亮色",
+        "recognition": "ColorMatch",
+        "roi": "OCR",
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            215
+        ],
+        "upper": [
+            180,
+            40,
+            255
+        ],
+        "count": 40
+    },
+    "Sub_Ocr_Unable_Clr": {
+        "desc": "[检测]Ocr按钮背景,灰色",
+        "recognition": "ColorMatch",
+        "roi": "OCR",
+        "roi_offset": [
+            -5,
+            -5,
+            10,
+            10
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            10
+        ],
+        "upper": [
+            180,
+            20,
+            150
+        ],
+        "count": 25
+    },
+    "Sub_Ocr_Red_Clr": {
+        "desc": "[检测]Ocr按钮背景/文字,红色",
+        "recognition": "ColorMatch",
+        "roi": "OCR",
+        "method": 40,
+        "lower": [
+            0,
+            150,
+            230
+        ],
+        "upper": [
+            10,
+            255,
+            255
+        ],
+        "connected": true,
+        "count": 10
+    },
+    "Rec_HomePage_GA_Ocr": {
+        "desc": "[识别]主页,抽卡文字",
+        "recognition": "OCR",
+        "roi": [
+            98,
+            656,
+            66,
+            32
+        ],
+        "expected": [
+            "抽抽乐"
+        ]
+    },
+    "Rec_HomePage_GA_Clr": {
+        "desc": "[识别]主页,抽卡文字背后颜色.roi硬编码",
+        "recognition": "ColorMatch",
+        "roi": [
+            104,
+            664,
+            51,
+            17
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            200
+        ],
+        "upper": [
+            149,
+            5,
+            255
+        ],
+        "count": 150
+    },
+    "Sub_HomePage_GA_Bright_Clr": {
+        "desc": "[检测]主页,抽卡文字；是否高亮",
+        "recognition": "ColorMatch",
+        "roi": "Rec_HomePage_GA_Ocr",
+        "roi_offset": [
+            -5,
+            -5,
+            10,
+            10
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            0,
+            180
+        ],
+        "upper": [
+            180,
+            225,
+            255
+        ],
+        "count": 50
+    },
+    "Rec_SandBox_Pin_Tpl": {
+        "desc": "[识别]箱庭,pin按钮的UI",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1117,
+            639,
+            53,
+            51
+        ],
+        "template": [
+            "pin.png"
+        ]
+    },
+    "Rec_SandBox_Run_Tpl": {
+        "desc": "[识别]箱庭,'冲刺'按钮的UI",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1047,
+            516,
+            107,
+            110
+        ],
+        "template": [
+            "Run.png"
+        ],
+        "green_mask": true
+    },
+    "Rec_SandBox_Pin3_Tpl": {
+        "desc": "[识别]箱庭,'pin 第3组'按钮的UI",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1179,
+            639,
+            50,
+            52
+        ],
+        "template": [
+            "pin.png"
+        ]
+    },
+    "Sub_SandBox_Pin3_Bright_Clr": {
+        "desc": "[检测]Rec_SandBox_Pin3_Tpl,是否为黄色选中",
+        "recognition": "ColorMatch",
+        "roi": "Rec_SandBox_Pin3_Tpl",
+        "lower": [
+            192,
+            141,
+            23
+        ],
+        "upper": [
+            223,
+            194,
+            129
+        ],
+        "count": 200
+    },
+    "Sub_SieveExpand_Yew_Clr": {
+        "desc": "[检测]下拉筛选菜单的OCR,是否为选中黄色.Mod=4",
+        "recognition": "ColorMatch",
+        "roi": "OCR",
+        "method": 40,
+        "lower": [
+            18,
+            98,
+            110
+        ],
+        "upper": [
+            23,
+            230,
+            255
+        ],
+        "connected": true,
+        "count": 10
+    },
+    "Rec_Reward_Ocr": {
+        "desc": "[识别]获得奖励,下方文字",
+        "recognition": "OCR",
+        "roi": [
+            551,
+            623,
+            168,
+            51
+        ],
+        "expected": [
+            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
+        ]
+    },
+    "Rec_Pack_FantasiaSquare": {
+        "desc": "在广场,识别静止UI",
+        "recognition": "TemplateMatch",
+        "roi": [
+            656,
+            622,
+            77,
+            66
+        ],
+        "template": [
+            "Mirror_FantasiaSquare_Ico.png"
+        ]
+    },
+    "Rec_Pack_GoldenColosseum": {
+        "desc": "在黄金角斗场",
+        "recognition": "OCR",
+        "roi": [
+            94,
+            601,
+            95,
+            55
+        ],
+        "expected": [
+            "阵形"
+        ]
+    },
+    "Rec_Pack_GlupyDiner": {
+        "desc": "在格鲁菲餐厅",
+        "recognition": "OCR",
+        "roi": [
+            91,
+            25,
+            144,
+            66
+        ],
+        "expected": [
+            "格鲁菲餐厅"
+        ]
+    }
+}

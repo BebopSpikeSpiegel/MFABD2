@@ -1,0 +1,637 @@
+{
+    "SemiAuto_HomePage": {
+        "next": [
+            "SemiAuto_TotalStart"
+        ]
+    },
+    "SemiAuto_TotalStart": {
+        "next": [
+            "SemiAuto_Evil_SemiautoTower_Start"
+        ]
+    },
+    "SemiAuto_HomePageHub": {
+        "desc": "找到run-点击返回主页",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1047,
+            516,
+            107,
+            110
+        ],
+        "template": [
+            "Run.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "target": [
+            1186,
+            46
+        ],
+        "post_delay": 2000,
+        "next": [],
+        "focus": "G=0.页面预期内，普通启动。M.箱庭地图run已确认"
+    },
+    "SemiAuto_HomePageHub1": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1108,
+            637,
+            65,
+            57
+        ],
+        "template": [
+            "pin.png"
+        ],
+        "post_delay": 2000,
+        "next": [],
+        "focus": "G=0.页面预期内，普通启动。BM.箱庭地图pin已确认"
+    },
+    "SemiAuto_HomePageHub2": {
+        "desc": "其他页面，返回按钮",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1,
+            1,
+            231,
+            124
+        ],
+        "template": [
+            "BackButGe.png",
+            "BackButGe2.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [],
+        "focus": "G=1.页面非预期，点击返回按钮"
+    },
+    "SemiAuto_Evil_SemiautoTower_Start": {
+        "next": [
+            "SemiAuto_Evil_SemiautoTower_On"
+        ]
+    },
+    "SemiAuto_HomePage2": {
+        "desc": "识别左下抽抽乐-主页-点击选择章节",
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
+        ],
+        "action": "Click",
+        "target": [
+            1111,
+            650
+        ],
+        "next": [
+            "SemiAuto_MoreBook_Evil",
+            "SemiAuto_HomePageSwipe"
+        ],
+        "focus": "PM.主页面"
+    },
+    "SemiAuto_HomePageSwipe": {
+        "recognition": "OCR",
+        "roi": [
+            99,
+            78,
+            212,
+            630
+        ],
+        "expected": [
+            "角色游戏卡"
+        ],
+        "pre_delay": 1000,
+        "action": "Swipe",
+        "begin": [
+            70,
+            640
+        ],
+        "end": [
+            70,
+            270
+        ],
+        "duration": 500,
+        "next": [
+            "SemiAuto_MoreBook_Evil"
+        ],
+        "focus": "PM.卡带界面垂直复位(一次性)"
+    },
+    "SemiAuto_MoreBook_Evil": {
+        "desc": "点击More本子",
+        "recognition": "OCR",
+        "roi": [
+            392,
+            469,
+            98,
+            40
+        ],
+        "expected": [
+            "挑战"
+        ],
+        "threshold": 0.9,
+        "action": "Click",
+        "target_offset": [
+            0,
+            -100,
+            0,
+            0
+        ],
+        "post_delay": 8000,
+        "next": [
+            "SemiAuto_Evil_Move"
+        ],
+        "focus": "PM.More卡带"
+    },
+    "SemiAuto_Evil_Move": {
+        "roi": [
+            1108,
+            637,
+            65,
+            57
+        ],
+        "template": [
+            "pin.png"
+        ],
+        "action": "LongPress",
+        "target": [
+            651,
+            171
+        ],
+        "duration": 5000,
+        "focus": "MM.向上行走。BM.箱庭地图pin确认"
+    },
+    "SemiAuto_Evil_SemiautoTower_On": {
+        "recognition": "OCR",
+        "roi": [
+            1043,
+            636,
+            118,
+            38
+        ],
+        "expected": [
+            "进入第"
+        ],
+        "action": "Click",
+        "post_wait_freezes": 1000,
+        "post_delay": 800,
+        "next": [
+            "SemiAuto_Evil_SemiautoTower_OnCk",
+            "SemiAuto_Evil_SemiautoTower_On"
+        ]
+    },
+    "SemiAuto_Evil_SemiautoTower_OnCk": {
+        "recognition": "OCR",
+        "roi": [
+            676,
+            403,
+            93,
+            39
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_delay": 5000,
+        "next": [
+            "SemiAuto_Evil_SemiautoTower_InManual",
+            "SemiAuto_Evil_SemiautoTower_InAuto",
+            "SemiAuto_Evil_SemiautoTower_OnCk"
+        ]
+    },
+    "SemiAuto_Evil_SemiautoTower_InManual": {
+        "recognition": "OCR",
+        "roi": [
+            1035,
+            624,
+            81,
+            45
+        ],
+        "expected": [
+            "URN"
+        ],
+        "action": "Click",
+        "target": [
+            1017,
+            43
+        ],
+        "post_delay": 3500,
+        "next": [
+            "SemiAuto_Evil_SemiautoTower_InAuto",
+            "SemiAuto_Evil_SemiautoTower_InManual"
+        ]
+    },
+    "SemiAuto_Evil_SemiautoTower_AuDaemon": {
+        "recognition": "OCR",
+        "roi": [
+            1035,
+            624,
+            81,
+            45
+        ],
+        "expected": [
+            "URN"
+        ],
+        "pre_delay": 10000,
+        "next": [
+            "SemiAuto_Evil_SemiautoTower_InManual"
+        ],
+        "focus": "手操救场了？再给你10秒哦~"
+    },
+    "SemiAuto_Evil_SemiautoTower_InAuto": {
+        "recognition": "OCR",
+        "roi": [
+            50,
+            582,
+            139,
+            54
+        ],
+        "expected": [
+            "自动战斗中"
+        ],
+        "post_delay": 10000,
+        "next": [
+            "SemiAuto_Evil_SemiautoTower_ToNextRound",
+            "SemiAuto_Evil_SemiautoTower_AuDaemon",
+            "SemiAuto_Evil_SemiautoTower_InAuto",
+            "SemiAuto_Evil_SemiautoTower_Defeat"
+        ]
+    },
+    "SemiAuto_Evil_SemiautoTower_ToNextRound": {
+        "recognition": "OCR",
+        "roi": [
+            1054,
+            654,
+            133,
+            36
+        ],
+        "expected": [
+            "前往下"
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "SemiAuto_Evil_SemiautoTower_OnCk",
+            "SemiAuto_Evil_SemiautoTower_ToNextRound"
+        ]
+    },
+    "SemiAuto_Evil_SemiautoTower_OnCk2": {
+        "recognition": "OCR",
+        "roi": [
+            676,
+            403,
+            93,
+            39
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_delay": 5000
+    },
+    "SemiAuto_Evil_SemiautoTower_Defeat": {
+        "recognition": "OCR",
+        "roi": [
+            680,
+            632,
+            93,
+            42
+        ],
+        "expected": [
+            "重新挑战"
+        ],
+        "action": "Click",
+        "target": [
+            569,
+            650
+        ]
+    },
+    "SemiAuto_Evil_SemiautoTower_End": {
+        "next": [
+            "SemiAuto_LastNight_Start"
+        ]
+    },
+    "SemiAuto_LastNight_Start": {
+        "next": [
+            "SemiAuto_LastNight_MenuPage",
+            "SemiAuto_LastNight_ReButt",
+            "SemiAuto_LastNight_Ind"
+        ]
+    },
+    "SemiAuto_LastNight_Ind": {
+        "recognition": "OCR",
+        "roi": [
+            221,
+            50,
+            212,
+            100
+        ],
+        "expected": [
+            "最高伤害",
+            "战斗分布"
+        ],
+        "next": [
+            "SemiAuto_LastNight_Move"
+        ]
+    },
+    "SemiAuto_LastNight_Move": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1108,
+            637,
+            65,
+            57
+        ],
+        "template": [
+            "pin.png"
+        ],
+        "action": "LongPress",
+        "target": [
+            765,
+            316
+        ],
+        "duration": 5000,
+        "next": [
+            "SemiAuto_LastNight_MenuPage"
+        ],
+        "focus": "SM.向上行走。BM.箱庭地图pin确认"
+    },
+    "SemiAuto_LastNight_MenuPage": {
+        "recognition": "OCR",
+        "roi": [
+            182,
+            11,
+            206,
+            66
+        ],
+        "expected": [
+            "末日之书"
+        ],
+        "post_delay": 1000,
+        "next": [
+            "SemiAuto_LastNight_GoBattle"
+        ]
+    },
+    "SemiAuto_LastNight_GoBattle": {
+        "recognition": "OCR",
+        "roi": [
+            980,
+            629,
+            150,
+            44
+        ],
+        "expected": [
+            "去战斗"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "SemiAuto_LastNight_InBattle",
+            "SemiAuto_LastNight_GoBattle"
+        ]
+    },
+    "SemiAuto_LastNight_InBattle": {
+        "recognition": "OCR",
+        "roi": [
+            45,
+            603,
+            252,
+            98
+        ],
+        "expected": [
+            "20次中",
+            "还剩",
+            "次攻击中"
+        ],
+        "action": "Click",
+        "target": [
+            1017,
+            40
+        ],
+        "post_delay": 5000,
+        "next": [
+            "SemiAuto_LastNight_ReButt",
+            "SemiAuto_LastNight_InBattle"
+        ]
+    },
+    "SemiAuto_LastNight_ReButt": {
+        "recognition": "OCR",
+        "roi": [
+            868,
+            653,
+            128,
+            37
+        ],
+        "expected": [
+            "重新挑战"
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "SemiAuto_LastNight_ReCk"
+        ]
+    },
+    "SemiAuto_LastNight_ReCk": {
+        "recognition": "OCR",
+        "roi": [
+            666,
+            402,
+            112,
+            38
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "next": [
+            "SemiAuto_LastNight_InBattle",
+            "SemiAuto_LastNight_ReCk"
+        ],
+        "on_error": [
+            "SemiAuto_LastNight_End"
+        ]
+    },
+    "SemiAuto_LastNight_End": {},
+    "SemiAuto_SequentialRefined_Str": {
+        "next": ["SemiAuto_SRef_SequentialRefined"],
+        "focus": "半自动-连续精炼开始"
+    },
+    "SemiAuto_SRef_SequentialRefined": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    733,
+                    644,
+                    101,
+                    35
+                ],
+                "expected": ["连续精炼"]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ],
+        "action": "Click",
+        "post_delay": 300,
+        "next": [
+            "SemiAuto_SRef_SubMenu",
+            "SemiAuto_SRef_SequentialRefined"
+        ]
+    },
+    "SemiAuto_SRef_SubMenu": {
+        "recognition": "OCR",
+        "roi": [
+            573,
+            133,
+            132,
+            75
+        ],
+        "expected": ["连续精炼"],
+        "next": [
+            "SemiAuto_SRef_QuotaIsMax",
+            "[JumpBack]SemiAuto_SRef_TabMax"
+        ],
+        "focus": "连续精炼菜单,确认"
+    },
+    "SemiAuto_SRef_QuotaIsMax": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "ColorMatch",
+                "roi": [
+                    860,
+                    339,
+                    11,
+                    27
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ],
+        "next": ["SemiAuto_SRef_HaltOnSuccess_TrunOff"],
+        "focus": "连续精炼-最大值确认"
+    },
+    "SemiAuto_SRef_TabMax": {
+        "recognition": "OCR",
+        "roi": [
+            826,
+            266,
+            59,
+            33
+        ],
+        "expected": ["MAX"],
+        "only_rec": true,
+        "action": "Click",
+        "post_delay": 800
+    },
+    "SemiAuto_SRef_HaltOnSuccess_TrunOff": {
+        "recognition": "ColorMatch",
+        "roi": [
+            898,
+            420,
+            27,
+            13
+        ],
+        "lower": [
+            0,
+            0,
+            0
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "anchor": "SliderSwitchColor",
+        "next": [
+            "[JumpBack]Anc_SliderSwitch_Yew_TurnOff_Clr",
+            "SemiAuto_SRef_ButtStr"
+        ]
+    },
+    "SemiAuto_SRef_ButtStr": {
+        "desc": "弹窗菜单,确认点击,进行精炼",
+        "recognition": "OCR",
+        "roi": [
+            659,
+            553,
+            42,
+            24
+        ],
+        "expected": ["精炼"],
+        "only_rec": true,
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "SemiAuto_SRef_Skip",
+            "SemiAuto_SRef_ButtStr"
+        ]
+    },
+    "SemiAuto_SRef_Skip": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1018,
+            618,
+            77,
+            51
+        ],
+        "template": "Chaga_ProductNext.png",
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "SemiAuto_SRef_Result",
+            "SemiAuto_SRef_Skip"
+        ]
+    },
+    "SemiAuto_SRef_Result": {
+        "desc": "精炼结果",
+        "recognition": "OCR",
+        "roi": [
+            610,
+            524,
+            59,
+            39
+        ],
+        "expected": ["确认"],
+        "only_rec": true,
+        "action": "Click",
+        "post_delay": 800,
+        "next": [
+            "SemiAuto_SRef_Result",
+            "SemiAuto_SRef_Count_A"
+        ]
+    },
+    "SemiAuto_SRef_Count_A": {
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "SRef",
+            "value": 1
+        },
+        "timeout": 1,
+        "next": [
+            "SemiAuto_SRef_Count_R"
+        ],
+        "on_error": ["SemiAuto_SequentialRefined_End"]
+    },
+    "SemiAuto_SRef_Count_R": {
+        "recognition": "Custom",
+        "custom_recognition": "CheckTag",
+        "custom_recognition_param": {
+            "tag": "SRef",
+            "max": 300
+        },
+        "next": ["SemiAuto_SRef_SequentialRefined"]
+    },
+    "SemiAuto_SequentialRefined_End": {
+        "focus": "半自动-连续精炼结束"
+    }
+}

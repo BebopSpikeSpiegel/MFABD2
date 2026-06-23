@@ -1,0 +1,848 @@
+{
+    "StartGame_Start": {
+        "next": [
+            "[JumpBack]Env_AccountSave_Switch",
+            "StartGame_Check_App_Alive"
+        ]
+    },
+    "StartGame_Check_App_Alive": {
+        "desc": "步骤(shell探针)：查进程。如果活着> next ,>查不到经常on_error尝试抢救",
+        "action": "Shell",
+        "cmd": "dumpsys window | grep mCurrentFocus | grep com.neowizgames.game.browndust2",
+        "next": [
+            "StartGame_TouchStart",
+            "Global_ToHomePage_Enter",
+            "Global_ToSandBox_Enter",
+            "Global_Null"
+        ],
+        "on_error": [
+            "StartGame_RunApp"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "[color:green]程式已启动[/color]",
+            "Node.Action.Failed": "[color:red]程式未启动[/color]\n\n→程式启动模块"
+        }
+    },
+    "StartGame_RunApp": {
+        "desc": "启动游戏。长白屏超时防御",
+        "pre_wait_freezes": 500,
+        "action": "StartApp",
+        "package": "com.neowizgames.game.browndust2",
+        "post_delay": 8000,
+        "timeout": 60000,
+        "next": [
+            "[JumpBack]StartGame_LinkError",
+            "[JumpBack]StartGame_Error_API",
+            "StartGame_GameIsMaint",
+            "StartGame_Logo",
+            "StartGame_LoadingPage",
+            "[JumpBack]Global_WaitingForLoading"
+        ]
+    },
+    "StartGame_Logo": {
+        "recognition": "OCR",
+        "roi": [
+            530,
+            326,
+            159,
+            64
+        ],
+        "expected": [
+            "NEO"
+        ],
+        "post_delay": 8000,
+        "timeout": 60000,
+        "next": [
+            "[JumpBack]StartGame_PayFailed",
+            "StartGame_LoadingPage",
+            "StartGame_TouchStart",
+            "StartGame_Logo"
+        ],
+        "focus": "NEO"
+    },
+    "StartGame_LoadingPage": {
+        "recognition": "OCR",
+        "roi": [
+            791,
+            102,
+            371,
+            332
+        ],
+        "expected": [
+            "尘埃",
+            "BROWN",
+            "無職生",
+            "異世界"
+        ],
+        "pre_wait_freezes": 3000,
+        "post_delay": 5000,
+        "timeout": 120000,
+        "next": [
+            "StartGame_Update_PGM",
+            "StartGame_Update_Data",
+            "[JumpBack]StartGame_PayFailed",
+            "StartGame_Error_API",
+            "[JumpBack]StartGame_Setup_SoundTurnOff_Start",
+            "StartGame_TouchStart",
+            "StartGame_Loading",
+            "StartGame_LoadingPage",
+            "[JumpBack]StartGame_ModMsg",
+            "StartGame_GameIsMaint"
+        ],
+        "focus": "SM.main"
+    },
+    "StartGame_Update_PGM": {
+        "desc": "游戏程序更新.'商店'特征词是防错预判加入的",
+        "recognition": "OCR",
+        "roi": [
+            462,
+            176,
+            356,
+            143
+        ],
+        "expected": [
+            "更新通知",
+            "前往商店"
+        ],
+        "pre_wait_freezes": 5000,
+        "post_delay": 15000,
+        "next": [
+            "StartGame_Update_PGM_Click"
+        ],
+        "focus": "SM.需要更新-程式"
+    },
+    "StartGame_Update_PGM_Click": {
+        "recognition": "OCR",
+        "roi": [
+            487,
+            400,
+            318,
+            103
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_delay": 8000,
+        "next": [
+            "StartGame_UpdateCloseGame"
+        ],
+        "on_error": [
+            "StartGame_Update_Data_DownLoading"
+        ],
+        "focus": "SM.需要更新-程式,确认"
+    },
+    "StartGame_UpdateCloseGame": {
+        "action": "StopApp",
+        "package": "com.neowizgames.game.browndust2",
+        "next": [
+            "StartGame_UpdateStartEngShop"
+        ]
+    },
+    "StartGame_UpdateStartEngShop": {
+        "action": "StartApp",
+        "package": "com.android.vending",
+        "next": [
+            "StartGame_UpdateEngShop"
+        ],
+        "focus": "程序更新模块str"
+    },
+    "StartGame_UpdateEngShop": {
+        "recognition": "OCR",
+        "roi": [
+            33,
+            89,
+            1047,
+            331
+        ],
+        "expected": [
+            "Update",
+            "更新"
+        ],
+        "action": "Click",
+        "post_delay": 60000,
+        "timeout": 50000,
+        "next": [
+            "StartGame_UpdateShopEnd",
+            "[JumpBack]StartGame_UpdateEngShop_StatusOCR",
+            "[JumpBack]StartGame_UpdateEngShopnothink"
+        ],
+        "focus": "外部更新,开始."
+    },
+    "StartGame_UpdateEngShop_StatusOCR": {
+        "recognition": "OCR",
+        "roi": [
+            162,
+            257,
+            504,
+            108
+        ],
+        "expected": [
+            "Cancel"
+        ],
+        "post_delay": 10000,
+        "focus": "外部更新,下载中..."
+    },
+    "StartGame_UpdateEngShopnothink": {
+        "recognition": "OCR",
+        "roi": [
+            200,
+            349,
+            1048,
+            304
+        ],
+        "expected": [
+            "Think",
+            "No"
+        ],
+        "action": "Click",
+        "post_delay": 10000
+    },
+    "StartGame_UpdateShopEnd": {
+        "recognition": "OCR",
+        "roi": [
+            33,
+            89,
+            1047,
+            331
+        ],
+        "expected": [
+            "Play",
+            "启动",
+            "開始玩"
+        ],
+        "action": "StopApp",
+        "package": "com.android.vending",
+        "post_wait_freezes": 1000,
+        "timeout": 40000,
+        "next": [
+            "StartGame_Start"
+        ],
+        "focus": "外部更新End.回到初始."
+    },
+    "StartGame_Update_Data": {
+        "desc": "下载数据",
+        "recognition": "OCR",
+        "roi": [
+            403,
+            169,
+            466,
+            126
+        ],
+        "expected": [
+            "将下载游戏"
+        ],
+        "post_delay": 10000,
+        "next": [
+            "StartGame_Update_Data_Click",
+            "StartGame_Update_Data"
+        ],
+        "focus": "SM.需要更新-数据"
+    },
+    "StartGame_Update_Data_Click": {
+        "desc": "下载数据",
+        "recognition": "OCR",
+        "roi": [
+            657,
+            453,
+            94,
+            200
+        ],
+        "expected": [
+            "下载"
+        ],
+        "action": "Click",
+        "post_delay": 30000,
+        "next": [
+            "StartGame_Update_Data_DownLoading",
+            "StartGame_TouchStart"
+        ],
+        "on_error": [
+            "StartGame_LoadingPage"
+        ],
+        "focus": "SM.需要更新-数据,下载"
+    },
+    "StartGame_Update_Data_DownLoading": {
+        "desc": "下载数据中",
+        "recognition": "OCR",
+        "roi": [
+            7,
+            626,
+            229,
+            85
+        ],
+        "expected": [
+            "正在下载"
+        ],
+        "post_delay": 30000,
+        "timeout": 8000,
+        "next": [
+            "[JumpBack]StartGame_Update_Data_DownLoading",
+            "[JumpBack]StartGame_PayFailed",
+            "StartGame_TouchStart",
+            "StartGame_GameIsMaint"
+        ],
+        "on_error": [
+            "StartGame_UpdateCloseGame"
+        ],
+        "focus": "SM.数据下载循环"
+    },
+    "StartGame_GameIsMaint": {
+        "desc": "游戏服务器维护",
+        "recognition": "OCR",
+        "roi": [
+            439,
+            142,
+            397,
+            387
+        ],
+        "expected": [
+            "维护和更新",
+            "无法连接和使用游戏"
+        ],
+        "action": "StopTask",
+        "focus": {
+            "toast": [
+                "游戏服务器维护中"
+            ],
+            "aborted": true
+        }
+    },
+    "StartGame_Loading": {
+        "desc": "游戏启动中",
+        "recognition": "OCR",
+        "roi": [
+            820,
+            464,
+            331,
+            72
+        ],
+        "expected": [
+            "游戏启动中"
+        ],
+        "post_delay": 5000,
+        "timeout": 120000,
+        "next": [
+            "StartGame_Update_PGM",
+            "StartGame_Update_Data",
+            "[JumpBack]StartGame_PayFailed",
+            "[JumpBack]StartGame_LinkDown",
+            "StartGame_TouchStart",
+            "StartGame_LoadingPage",
+            "StartGame_Loading",
+            "StartGame_GameIsMaint"
+        ],
+        "focus": "SM.ORC游戏启动中"
+    },
+    "StartGame_PayFailed": {
+        "desc": "支付方式失败点击确认",
+        "recognition": "OCR",
+        "roi": [
+            375,
+            207,
+            517,
+            329
+        ],
+        "expected": [
+            "支付失败"
+        ],
+        "post_delay": 3000,
+        "next": [
+            "StartGame_PayFailedToChick"
+        ],
+        "focus": "SM.支付失败弹窗"
+    },
+    "StartGame_PayFailedToChick": {
+        "recognition": "OCR",
+        "roi": [
+            573,
+            385,
+            135,
+            136
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_delay": 3000
+    },
+    "StartGame_TouchStart": {
+        "desc": "点击进入",
+        "recognition": "OCR",
+        "roi": [
+            827,
+            462,
+            120,
+            56
+        ],
+        "expected": [
+            "OUCH"
+        ],
+        "replace": [[
+                " ",
+                ""
+            ]],
+        "only_rec": true,
+        "color_filter": "Dummy_StartGame_TouchStart_Clr",
+        "pre_delay": 5000,
+        "action": "Click",
+        "target": [
+            490,
+            490,
+            100,
+            100
+        ],
+        "post_wait_freezes": 2000,
+        "post_delay": 10000,
+        "timeout": 30000,
+        "next": [
+            "[JumpBack]StartGame_PayFailed",
+            "StartGame_TouchStart",
+            "StartGame_MainMsgBox_Remove",
+            "[JumpBack]StartGame_PVPSet",
+            "[JumpBack]StartGame_Special",
+            "[JumpBack]Daily_Busin_Quick_BackPVEPage_Str",
+            "[JumpBack]StartGame_NewChar",
+            "[JumpBack]StartGame_SeasonSet",
+            "[JumpBack]PVP_PerOperationsMain_Error",
+            "[JumpBack]StartGame_AtPack_FantasiaSquare",
+            "[JumpBack]StartGame_AtPack_GoldenColosseum",
+            "[JumpBack]Global_WaitingForLoading",
+            "StartGame_SandPlayPage",
+            "[JumpBack]StartGame_BackMapPage"
+        ],
+        "focus": "SM.TO Touch"
+    },
+    "StartGame_NewChar": {
+        "desc": "推出全新新角色识别",
+        "recognition": "OCR",
+        "roi": [
+            121,
+            631,
+            108,
+            41
+        ],
+        "expected": [
+            "推出全新"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "StartGame_NewChar",
+            "StartGame_SeasonSet"
+        ]
+    },
+    "StartGame_SeasonSet": {
+        "desc": "赛季结算",
+        "recognition": "OCR",
+        "roi": [
+            813,
+            580,
+            145,
+            34
+        ],
+        "expected": [
+            "奖励已发放至背包"
+        ],
+        "action": "Click",
+        "post_delay": 2000
+    },
+    "StartGame_PVPSet": {
+        "desc": "段位结算，点击确认",
+        "recognition": "OCR",
+        "roi": [
+            612,
+            642,
+            53,
+            35
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "focus": "SM.进入游戏-PVP结算"
+    },
+    "StartGame_SandPlayPage": {
+        "desc": "识别右下奔跑图标-章节主页",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1047,
+            516,
+            107,
+            110
+        ],
+        "template": [
+            "Run.png"
+        ],
+        "green_mask": true,
+        "anchor": "StartGame_Setup_Change",
+        "post_delay": 2000,
+        "next": [
+            "[JumpBack]StartGame_PVPSet",
+            "[JumpBack]StartGame_Special",
+            "[JumpBack]StartGame_NewChar",
+            "[JumpBack]StartGame_SeasonSet",
+            "Setup_Entry4",
+            "[JumpBack]Setup_Entry2",
+            "StartGame_MainMsgBox_Remove",
+            "[JumpBack]Global_HomeButton_Once",
+            "[JumpBack]StartGame_BackMapPage"
+        ],
+        "focus": "SM.进入游戏-箱庭"
+    },
+    "StartGame_BackMapPage": {
+        "desc": "包里解决启动弹窗。注意新魔兽，新卡池、正常",
+        "max_hit": 1,
+        "action": "Click",
+        "target": [
+            60,
+            460
+        ],
+        "repeat": 10,
+        "post_delay": 5000,
+        "focus": "SM.弹窗消除-无对象"
+    },
+    "StartGame_MainMsgBox_Remove": {
+        "desc": "开始暴力解决广告，左侧点击10次",
+        "recognition": "And",
+        "all_of": ["Rec_HomePage_GA_Ocr"],
+        "action": "Click",
+        "target": [
+            60,
+            460
+        ],
+        "anchor": "StartGame_Setup_Change",
+        "post_delay": 1000,
+        "next": [
+            "[JumpBack]StartGame_BackMapPage2",
+            "Setup_Entry2",
+            "[JumpBack]Global_ToHomePage",
+            "StartGame_BackMapPageOG"
+        ],
+        "focus": "SM.主页面ck-弹窗消消乐~"
+    },
+    "StartGame_BackMapPage2": {
+        "desc": "开始暴力解决广告，左侧点击10次",
+        "max_hit": 1,
+        "action": "Click",
+        "target": [
+            60,
+            460
+        ],
+        "repeat": 10,
+        "repeat_delay": 200,
+        "post_delay": 1000
+    },
+    "StartGame_BackMapPageOG": {
+        "desc": "识别左下抽抽乐-返回地图页(原版)",
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Rec_HomePage_GA_Clr"
+        ],
+        "action": "Click",
+        "target": [
+            120,
+            35
+        ],
+        "post_delay": 2000,
+        "next": [
+            "[JumpBack]StartGame_PVPSet",
+            "[JumpBack]StartGame_Special",
+            "[JumpBack]StartGame_NewChar",
+            "[JumpBack]StartGame_SeasonSet",
+            "[JumpBack]StartGame_AtPack_GlupyDiner",
+            "[JumpBack]StartGame_AtPack_FantasiaSquare",
+            "[JumpBack]StartGame_AtPack_GoldenColosseum",
+            "StartGame_FinBackMapPage",
+            "[JumpBack]StartGame_BackMapPage",
+            "[JumpBack]PVP_PerPetTask",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]PVP_PerOperationsMain_Error",
+            "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk",
+            "[JumpBack]Global_BackPageHub_Once"
+        ],
+        "focus": "SM.返回箱庭"
+    },
+    "StartGame_FinBackMapPage": {
+        "desc": "识别右下奔跑图标-章节主页",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "anchor": "StartGame_Setup_Change",
+        "next": [
+            "[JumpBack]Setup_Entry1",
+            "[JumpBack]StartGame_PerPetTask",
+            "StartGame_End"
+        ],
+        "focus": "SM.返回箱庭成功"
+    },
+    "StartGame_PerPetTask": {
+        "desc": "宠物派遣。此时已因其他步骤充分延时，时机更合适。",
+        "max_hit": 5,
+        "recognition": "TemplateMatch",
+        "roi": [
+            234,
+            217,
+            714,
+            412
+        ],
+        "template": [
+            "PetMidGe.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 5000,
+        "focus": "SM.宠物派遣"
+    },
+    "StartGame_End": {
+        "desc": "启动环节结束",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "focus": "SM.启动流程结束"
+    },
+    "StartGame_LinkError": {
+        "recognition": "OCR",
+        "roi": [
+            490,
+            327,
+            259,
+            48
+        ],
+        "expected": [
+            "与服务器断开连接"
+        ],
+        "next": [
+            "StartGame_LinkError2"
+        ]
+    },
+    "StartGame_LinkError2": {
+        "recognition": "OCR",
+        "roi": [
+            585,
+            404,
+            105,
+            25
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_delay": 8000
+    },
+    "StartGame_Error_API": {
+        "recognition": "OCR",
+        "roi": [
+            452,
+            250,
+            375,
+            218
+        ],
+        "expected": [
+            "API服务器连线发生错误",
+            "登录失败"
+        ],
+        "action": "Click",
+        "target": [
+            640,
+            429
+        ],
+        "focus": "ERROR：API。特殊错误，请检查。"
+    },
+    "StartGame_Special": {
+        "desc": "另类赛季奖励接收",
+        "recognition": "OCR",
+        "roi": [
+            304,
+            164,
+            948,
+            542
+        ],
+        "expected": [
+            "赛季奖励",
+            "奖励已发放至",
+            "奖励已通过",
+            "邮件发放"
+        ],
+        "action": "Click",
+        "target": [
+            39,
+            444,
+            30,
+            21
+        ],
+        "focus": "特殊页面，尝试消除。"
+    },
+    "StartGame_AtPack_FantasiaSquare": {
+        "desc": "在广场启动游戏",
+        "recognition": "And",
+        "all_of": ["Rec_Pack_FantasiaSquare"],
+        "next": [
+            "Global_BackToQC1"
+        ]
+    },
+    "StartGame_AtPack_GoldenColosseum": {
+        "desc": "在黄金角斗场启动游戏",
+        "recognition": "And",
+        "all_of": ["Rec_Pack_GoldenColosseum"],
+        "next": [
+            "Global_BackToQC1"
+        ],
+        "focus": "[WRN]SM.意料外卡带-黄金竞技场"
+    },
+    "StartGame_LinkDown": {
+        "recognition": "OCR",
+        "roi": [
+            489,
+            217,
+            343,
+            295
+        ],
+        "expected": [
+            "与服务器断开连接",
+            "检查网络"
+        ],
+        "action": "Click",
+        "target": [
+            638,
+            443
+        ],
+        "next": [
+            "StartGame_LinkDown_TouchCk"
+        ]
+    },
+    "StartGame_LinkDown_TouchCk": {
+        "recognition": "OCR",
+        "roi": [
+            405,
+            146,
+            433,
+            557
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "next": [
+            "StartGame_Logo"
+        ]
+    },
+    "StartGame_AtPack_GlupyDiner": {
+        "desc": "意料外卡带-格鲁菲餐厅",
+        "recognition": "And",
+        "all_of": ["Rec_Pack_GlupyDiner"],
+        "next": [
+            "Global_BackToPve2#"
+        ],
+        "focus": "[WRN]SM.意料外卡带-格鲁菲餐厅"
+    },
+    "StartGame_Setup_SoundTurnOff_Start": {
+        "desc": "在下载前关闭游戏声音,节省资源和流量",
+        "enabled": false,
+        "max_hit": 1,
+        "recognition": "TemplateMatch",
+        "roi": [
+            82,
+            153,
+            55,
+            52
+        ],
+        "template": [
+            "Str_Setup_Ico.png"
+        ],
+        "action": "Click",
+        "next": [
+            "[JumpBack]StartGame_Setup_SoundTurnOff_Intterp",
+            "StartGame_Setup_SoundTurnOff"
+        ]
+    },
+    "StartGame_Setup_SoundTurnOff_Intterp": {
+        "max_hit": 3,
+        "recognition": "OCR",
+        "roi": [
+            348,
+            210,
+            564,
+            341
+        ],
+        "expected": [
+            "取消",
+            "确认"
+        ],
+        "action": "Click",
+        "post_delay": 1500
+    },
+    "StartGame_Setup_SoundTurnOff": {
+        "recognition": "OCR",
+        "roi": [
+            698,
+            402,
+            102,
+            31
+        ],
+        "expected": [
+            "不使用"
+        ],
+        "next": [
+            "StartGame_Setup_SoundTurnOff_Ck",
+            "StartGame_Setup_SoundTurnOff_Chg"
+        ]
+    },
+    "StartGame_Setup_SoundTurnOff_Ck": {
+        "recognition": "ColorMatch",
+        "roi": "StartGame_Setup_SoundTurnOff",
+        "lower": [
+            53,
+            64,
+            83
+        ],
+        "upper": [
+            53,
+            64,
+            83
+        ],
+        "count": 10,
+        "next": [
+            "StartGame_Setup_SoundTurnOff_End"
+        ]
+    },
+    "StartGame_Setup_SoundTurnOff_Chg": {
+        "action": "Click",
+        "target": "StartGame_Setup_SoundTurnOff",
+        "post_delay": 3000,
+        "next": [
+            "StartGame_Setup_SoundTurnOff_End"
+        ],
+        "focus": "SM.设定变更关闭声音"
+    },
+    "StartGame_Setup_SoundTurnOff_End": {
+        "recognition": "OCR",
+        "roi": [
+            588,
+            557,
+            111,
+            82
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click"
+    },
+    "StartGame_ModMsg": {
+        "desc": "mod弹窗消除,缺乏信息瞎蒙的.",
+        "recognition": "OCR",
+        "expected": [
+            "CONFIRM"
+        ],
+        "action": "Click",
+        "post_delay": 1500
+    }
+}
