@@ -38,5 +38,65 @@
             16,
             21
         ]
+    },
+    "Daily_Square_ToSquare": {
+        "desc": "卡带菜单选广场卡进入梦幻广场(TemplateMatch Qcard_Square)。|[PC覆盖] PC实测广场卡'FANTASIA SQUARE'在'玩法游戏卡'行右滑到底,720封面标志约[1168,455,52,55];模板Qcard_Square已按720重裁(52x55,从native降采样裁,待MFA验匹配度)。roi覆盖到玩法行卡片带[1040,440,820,150];target_offset点卡片主体。实机验证:点广场卡→进梦幻广场。",
+        "roi": [
+            1040,
+            440,
+            820,
+            150
+        ],
+        "target_offset": [
+            -20,
+            15,
+            0,
+            0
+        ]
+    },
+    "Daily_FantasiaSquare": {
+        "desc": "确认已进入梦幻广场(TemplateMatch Mirror_FantasiaSquare_Ico)。|[PC覆盖] 模板维护者已拍PC版(40x40);base roi[656,622,77,66]按安卓,PC底部功能按钮位置不同,roi放宽到底部按钮带待MFA核准。实机验证:进梦幻广场场景确认。",
+        "roi": [
+            560,
+            860,
+            780,
+            120
+        ]
+    },
+    "Daily_DailyIco_1": {
+        "desc": "梦幻广场每日奖励绿勾图标(TemplateMatch Square_DailyIco)。|[PC覆盖] PC实测'每日奖励'绿勾在右上任务列表,720绿勾约[1025,128,30,30](native(1555,205));base roi[968,76,56,256]按安卓→[1015,120,60,45]。模板Square_DailyIco已按720重裁(20x20绿圆白勾,待MFA验)。target_offset继承base[3,0]。",
+        "roi": [
+            1015,
+            120,
+            60,
+            45
+        ]
+    },
+    "Daily_DailyIco_2": {
+        "desc": "每日奖励OCR兜底(识别'移动至艾力克史温女')。|[PC覆盖] 720实测在box(1052,154,125,17)(native[1578,231,188,26]),base roi[968,76,203,256]→[1010,148,180,30]。target_offset继承base[3,0]。实机验证:点击后角色自动寻路到女神像。",
+        "roi": [
+            1010,
+            148,
+            180,
+            30
+        ]
+    },
+    "Daily_OnFoot_LoopFoot": {
+        "desc": "导航中等待(TemplateMatch Square_misstion_Nvi)。|[PC覆盖] PC实测寻路时小地图右上'+'号变为蓝色循环箭头图标(同安卓蓝箭头,DoNothing+post_delay等待),720图标在'+'位置约[1200,140,30,30](native(1819,228));base roi[1168,106,69,247]→[1195,135,40,40]。模板Square_misstion_Nvi已按720重裁(28x28循环箭头+播放三角,待MFA验)。实机验证:点码头/任务点寻路时该图标出现。",
+        "roi": [
+            1195,
+            135,
+            40,
+            40
+        ]
+    },
+    "Daily_Pray": {
+        "desc": "向女神像许愿(OCR'向女神像许愿')。|[PC覆盖] 720实测在box(902,146,136,28)中心(647,107),base roi[545,75,201,91]中心(645,120)PC基本一致,微调[540,72,210,95]。实机验证:点击触发许愿动画、按钮消失=许愿完成。",
+        "roi": [
+            540,
+            72,
+            210,
+            95
+        ]
     }
 }
