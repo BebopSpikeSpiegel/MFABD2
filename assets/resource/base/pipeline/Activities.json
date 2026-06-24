@@ -13,6 +13,7 @@
             "Rec_HomePage_GA_Ocr",
             "Sub_HomePage_GA_Bright_Clr"
         ],
+        "rate_limit": 2000,
         "next": [
             "Activities_InIndex",
             "Global_ToSandBox"
@@ -62,6 +63,7 @@
             0,
             0
         ],
+        "post_delay": 5000,
         "next": [
             "Activities_Index",
             "Activities_InIndex"
@@ -91,7 +93,7 @@
         "desc": "寻找可关注活动|太容易卡后误识别了，加延迟",
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset_Panoram"},
         "roi": [
             269,
             125,
@@ -101,7 +103,7 @@
         "action": "Click",
         "target_offset": [
             -50,
-            3,
+            10,
             0,
             0
         ],
@@ -552,9 +554,10 @@
             120,
             35
         ],
-        "post_delay": 1000,
+        "post_delay": 3000,
         "next": [
-            "Activities_BackHomePage",
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage",
             "Activities_Fin"
         ],
         "focus": "GA.退出活动"

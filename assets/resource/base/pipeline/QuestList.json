@@ -24,7 +24,8 @@
             },
             "Sub_Ocr_Enable_Clr"
         ],
-        "timeout": 2000,
+        "timeout": 5000,
+        "rate_limit": 2000,
         "next": [
             "RewardsDaily_InIndex"
         ]
@@ -46,7 +47,7 @@
             0,
             0
         ],
-        "post_delay": 1000,
+        "post_delay": 5000,
         "next": [
             "RewardsDaily_GetDailyReward",
             "[JumpBack]Global_WaitingForLoading",

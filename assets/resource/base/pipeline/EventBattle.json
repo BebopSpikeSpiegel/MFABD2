@@ -36,6 +36,7 @@
             "[JumpBack]Event_Mamono_Hub",
             "[JumpBack]Event_MiniGame_Hub",
             "[JumpBack]SeasonEvent_ReMamono_Hub",
+            "Global_ToHomePage_Enter",
             "Global_ToHomePage"
         ],
         "focus": "EM.赛季活动进入确认."
@@ -783,13 +784,12 @@
         ],
         "focus": "E.从用户自定等级开始讨伐"
     },
-
     "SeasonEvent_MamonoFollow_HP_Hunting": {
         "desc": "魔兽血条=Ab,正在讨伐中",
-        "recognition": "And",
-        "all_of": [
-            "SeasonEvent_Mamono_HP_Lift_Red",
-            "SeasonEvent_Mamono_HP_Right_Gray"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_Mamono_HP_Hunting_Ocr",
+            "Cpt_Mamono_HP_Hunting_Clr"
         ],
         "next": [
             "SeasonEvent_MamonoFollow_QuickBattle_Enable",
@@ -800,8 +800,9 @@
     "SeasonEvent_MamonoFollow_HP_Hunted": {
         "desc": "魔兽血条=ab,已讨伐完毕",
         "max_hit": 50,
-        "recognition": "And",
-        "all_of": [
+        "recognition": "Or",
+        "any_of": [
+            "Rec_Mamono_HP_Hunted_Ocr",
             "SeasonEvent_Mamono_HP_Lift_Gray"
         ],
         "next": ["Even_MamonoFollowUp_MmnHpUp"],
@@ -810,8 +811,9 @@
     "SeasonEvent_MamonoFollow_HP_NoMeetHunt": {
         "desc": "魔兽血条=AB,完全未讨伐过",
         "max_hit": 10,
-        "recognition": "And",
-        "all_of": [
+        "recognition": "Or",
+        "any_of": [
+            "Rec_Mamono_HP_NoMeetHunt_Ocr",
             "SeasonEvent_Mamono_HP_Right_Red"
         ],
         "next": ["SeasonEvent_MamonoFollow_NormalBattle"],
@@ -1053,9 +1055,21 @@
         "action": "Click",
         "post_delay": 2000,
         "next": [
+            "[JumpBack]Even_MamonoFollowUp_QuickBattle_Cleared",
             "Even_MamonoFollowUp_QuickBattle_PostVerify",
             "Even_MamonoFollowUp_QuickBattle_ck"
         ]
+    },
+    "Even_MamonoFollowUp_QuickBattle_Cleared": {
+        "desc": "已击杀,领取奖励.",
+        "recognition": "And",
+        "all_of": ["Rec_Reward_Ocr"],
+        "action": "Click",
+        "target": [
+            1,
+            1
+        ],
+        "post_delay": 1500
     },
     "Even_MamonoFollowUp_QuickBattle_PostVerify": {
         "recognition": "And",
@@ -1087,10 +1101,10 @@
         "desc": "魔兽血条检查,左侧为红",
         "recognition": "ColorMatch",
         "roi": [
-            716,
-            134,
-            16,
-            33
+            713,
+            133,
+            17,
+            34
         ],
         "method": 40,
         "lower": [
@@ -1184,10 +1198,10 @@
         "desc": "魔兽血条检查,左侧为灰",
         "recognition": "ColorMatch",
         "roi": [
-            723,
-            142,
-            4,
-            10
+            713,
+            133,
+            17,
+            34
         ],
         "method": 40,
         "lower": [
@@ -1202,6 +1216,52 @@
         ],
         "connected": true,
         "count": 20
+    },
+    "Rec_Mamono_HP_Hunted_Ocr": {
+        "desc": "[识别]血量为空",
+        "recognition": "OCR",
+        "roi": [
+            714,
+            136,
+            276,
+            29
+        ],
+        "expected": ["(?<!\\d)0\\s*[/:：|\\-~]\\s*[1-9][\\d,，.]*"]
+    },
+    "Rec_Mamono_HP_NoMeetHunt_Ocr": {
+        "desc": "[识别]血量为全满",
+        "recognition": "OCR",
+        "roi": [
+            714,
+            136,
+            276,
+            29
+        ],
+        "expected": [
+            "(\\d+(?:[,，.]\\d+)*)\\s*[/:：|\\-~]\\s*\\1(?!\\d)",
+            "(\\d+)[,，.](\\d+)\\s*[/:：|\\-~]\\s*\\1[,，.]\\2(?!\\d)"
+        ]
+    },
+    "Rec_Mamono_HP_Hunting_Ocr": {
+        "desc": "[识别]血量非空与全满",
+        "recognition": "OCR",
+        "roi": [
+            714,
+            136,
+            276,
+            29
+        ],
+        "expected": [
+            "(?!0\\s*[/:：|\\-~])(?!(\\d+(?:[,，.]\\d+)*)\\s*[/:：|\\-~]\\s*\\1(?!\\d))(?!(\\d+)[,，.](\\d+)\\s*[/:：|\\-~]\\s*\\2[,，.]\\3(?!\\d))\\d[\\d,，.]*\\s*[/:：|\\-~]\\s*\\d[\\d,，.]*"
+        ]
+    },
+    "Cpt_Mamono_HP_Hunting_Clr": {
+        "desc": "[运算]血量左红右灰",
+        "recognition": "And",
+        "all_of": [
+            "SeasonEvent_Mamono_HP_Lift_Red",
+            "SeasonEvent_Mamono_HP_Right_Gray"
+        ]
     },
     "SeasonEvent_MiniGame_Start": {
         "desc": "小活动入口,先寻找赛季内的'战场探索'.| JB会返回,需要插入中断维持环境,否则可能超时",

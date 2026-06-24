@@ -449,5 +449,189 @@
             "SemiAuto_LastNight_End"
         ]
     },
-    "SemiAuto_LastNight_End": {}
+    "SemiAuto_LastNight_End": {},
+    "SemiAuto_SequentialRefined_Str": {
+        "next": ["SemiAuto_SRef_SequentialRefined"],
+        "focus": "半自动-连续精炼开始"
+    },
+    "SemiAuto_SRef_SequentialRefined": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    733,
+                    644,
+                    101,
+                    35
+                ],
+                "expected": ["连续精炼"]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ],
+        "action": "Click",
+        "post_delay": 300,
+        "next": [
+            "SemiAuto_SRef_SubMenu",
+            "SemiAuto_SRef_SequentialRefined"
+        ]
+    },
+    "SemiAuto_SRef_SubMenu": {
+        "recognition": "OCR",
+        "roi": [
+            573,
+            133,
+            132,
+            75
+        ],
+        "expected": ["连续精炼"],
+        "next": [
+            "SemiAuto_SRef_QuotaIsMax",
+            "[JumpBack]SemiAuto_SRef_TabMax"
+        ],
+        "focus": "连续精炼菜单,确认"
+    },
+    "SemiAuto_SRef_QuotaIsMax": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "ColorMatch",
+                "roi": [
+                    860,
+                    339,
+                    11,
+                    27
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ],
+        "next": ["SemiAuto_SRef_HaltOnSuccess_TrunOff"],
+        "focus": "连续精炼-最大值确认"
+    },
+    "SemiAuto_SRef_TabMax": {
+        "recognition": "OCR",
+        "roi": [
+            826,
+            266,
+            59,
+            33
+        ],
+        "expected": ["MAX"],
+        "only_rec": true,
+        "action": "Click",
+        "post_delay": 800
+    },
+    "SemiAuto_SRef_HaltOnSuccess_TrunOff": {
+        "recognition": "ColorMatch",
+        "roi": [
+            898,
+            420,
+            27,
+            13
+        ],
+        "lower": [
+            0,
+            0,
+            0
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "anchor": "SliderSwitchColor",
+        "next": [
+            "[JumpBack]Anc_SliderSwitch_Yew_TurnOff_Clr",
+            "SemiAuto_SRef_ButtStr"
+        ]
+    },
+    "SemiAuto_SRef_ButtStr": {
+        "desc": "弹窗菜单,确认点击,进行精炼",
+        "recognition": "OCR",
+        "roi": [
+            659,
+            553,
+            42,
+            24
+        ],
+        "expected": ["精炼"],
+        "only_rec": true,
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "SemiAuto_SRef_Skip",
+            "SemiAuto_SRef_ButtStr"
+        ]
+    },
+    "SemiAuto_SRef_Skip": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1018,
+            618,
+            77,
+            51
+        ],
+        "template": "Chaga_ProductNext.png",
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "SemiAuto_SRef_Result",
+            "SemiAuto_SRef_Skip"
+        ]
+    },
+    "SemiAuto_SRef_Result": {
+        "desc": "精炼结果",
+        "recognition": "OCR",
+        "roi": [
+            610,
+            524,
+            59,
+            39
+        ],
+        "expected": ["确认"],
+        "only_rec": true,
+        "action": "Click",
+        "post_delay": 800,
+        "next": [
+            "SemiAuto_SRef_Result",
+            "SemiAuto_SRef_Count_A"
+        ]
+    },
+    "SemiAuto_SRef_Count_A": {
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "SRef",
+            "value": 1
+        },
+        "timeout": 1,
+        "next": [
+            "SemiAuto_SRef_Count_R"
+        ],
+        "on_error": ["SemiAuto_SequentialRefined_End"]
+    },
+    "SemiAuto_SRef_Count_R": {
+        "recognition": "Custom",
+        "custom_recognition": "CheckTag",
+        "custom_recognition_param": {
+            "tag": "SRef",
+            "max": 300
+        },
+        "next": ["SemiAuto_SRef_SequentialRefined"]
+    },
+    "SemiAuto_SequentialRefined_End": {
+        "focus": "半自动-连续精炼结束"
+    }
 }
