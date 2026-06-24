@@ -561,6 +561,7 @@
             "[JumpBack]PVP_PVPMes",
             "[JumpBack]PVP_PVPMes2",
             "[JumpBack]PVP_PerOperationsMain_Error",
+            "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk",
             "[JumpBack]Global_BackPageHub_Once"
         ],
         "focus": "SM.返回箱庭"
