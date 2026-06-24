@@ -2,11 +2,12 @@ import json
 import re
 import time
 import os
+import datetime
 import traceback
 import numpy as np
 from collections import deque
 from typing import Union, Optional
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageDraw, ImageFont
 
 from maa.agent.agent_server import AgentServer
 from maa.custom_recognition import CustomRecognition
@@ -327,42 +328,63 @@ class HSVShapeMatching(CustomRecognition):
 #   预设模式：节点只写 {"preset": "节点名"}，复用预设节点参数；命中坐标自动加回 roi 偏移。
 #             调用者节点名 + ROI 会透传给预设节点，用于失败截图命名（见可观测性）。
 #
-# [识别原理 —— 置信度加权模型]
-#   红块过面积后，取"被红包围的非红区"(enclosed，拓扑封闭，不卡绝对亮度，抗压暗)，
-#   对其打一个 0~1 的置信分，≥ min_confidence 即命中。各分项均为归一化、抗模糊量：
-#     f_gap   连续断层(带两侧门)：清晰帧(PC)主力特征，命中可单独拉满；模糊时自动归零。
-#     f_vert  纵横比 h/w：模糊地板主力，扛得住"等高实心柱"(如投影 [2,2,2,2])，排圆形高光。
-#     f_white 偏白对比：内部 (V/255)(1-S/255) 中位数 − 红环中位数；S 为主、V 为辅，抗压暗。
-#     f_cent  居中：内部水平中心 vs 红块中心，小补充。
-#   权重见模块常量 _W_*；conf 与各分项写入 detail.stat，调参有数据支撑。
+# [识别原理 —— 置信度加权模型 v2]（真假样本论证见 docs/RedDotDetector_打分模型.md）
+#   先做"筛选五步"，任一步不过即淘汰；筛到最后的封闭区(enclosed，被红包围的非红芯)
+#   才进入"打分四项"，每项算 0~1，加权求和 ≥ min_confidence 即命中。
+#
+#   筛选五步：框选 roi → 红掩膜(HSV) → 连块 → 面积(red_area) → 取封闭内部区。
+#
+#   打分四项（权重见模块常量 _SC_W_*；硬不变量 max(单项权重)=0.45 < 阈值0.55，
+#             故命中必须"竖长+偏白"两可靠项同时背书，单项满分越不过阈值）：
+#     vert (竖长 0.45)  内部高/宽：高瘦感叹号→1，矮胖杂块→0。抗模糊主轴之一。
+#     white(偏白 0.45)  白芯白度中位数 − 红环白度中位数；白笔画恒比红环白，杂块不白。
+#                       抗模糊主轴之一，真假最干净的金线。
+#     gap  (断层 0.06)  三段诚实断层 = 深度 × 细窄度。感叹号是上段/凹陷/下段三段，
+#                       凹陷高度纳入计算(占总高超 _SC_GAP_MAX_RATIO=0.40 即视为两块不相干→0)；
+#                       因 adb 模糊会填平真缝/在杂红造假缝，断层不可靠，权重压到最低，仅清晰帧奖励。
+#     cent (居中 0.04)  内部水平中心 vs 红块中心，弱分离，微调。
+#   conf 与各分项写入 detail；金字塔回调结构见下方 [可观测性]。
+#
+# [为什么 v2 这样改]（一句话）
+#   旧版断层权重 0.45 且"有一根空行就满分"，被 adb 模糊在杂红里造的假缝顶满 → 误命中；
+#   且断层是反指标(真货模糊帧断层=0、假货断层=1)。v2 改用抗模糊的竖长+偏白做主轴，
+#   断层降权 + 纳入凹陷高度变诚实，真假分离从"假分>真分"翻转为"真0.63+ / 假0.05"。
 #
 # [参数说明]（HSV 坐标系：OpenCV 标准 H 0-180 / S,V 0-255，内部自动映射 Pillow）
 #   hsv_ranges     (list)  红色 HSV 范围 [{lower:[H,S,V], upper:[H,S,V]}, ...]，H 跨 0 拆两组 OR。
 #   red_area       (list)  红色 blob 面积范围 [min, max]，默认 [30, 1200]。
-#   min_confidence (float) 命中阈值(0-1)，默认 0.25(精准 ROI 调好值)，作者显式指定；
-#                          大 ROI 泛找务必调高(如 0.5+)，避免杂红误判。
+#   min_confidence (float) 命中阈值(0-1)，默认 0.55(v2 量纲；真货约 0.63+，留 0.08 余量)；
+#                          必须 > 最大单项权重 0.45，否则单项就能越阈值，破坏"两项背书"。
+#                          大 ROI 泛找可调高到 0.58。
 #   gap_ratio      (float) 仅用于 detail 里 gap 的"是否成双段"标注，不再作命中门槛。
 #   preset         (str)   预设节点名（预设模式）。
 #   注：旧的 inner_v_min / inner_s_max 已弃用(绝对亮度阈值在模糊下会掉崖)，若残留会被忽略。
 #
-# [可观测性 —— 常驻，无需任何开关]
-#   命中失败时：
-#     · detail 写入 {stage, hint, stat}；stat 含 conf / parts(各分项) / proj(投影) / gap，
-#       随 MAA 识别记录进入日志分析工具(MaaLogAnalyzer / MaaLogs)，图没了也能复盘。
-#     · mfaalog.warning 输出一行精简摘要(上 UI)；print 输出明细与截图路径(仅进 txt 日志)。
-#     · 落盘 roi_crop / red_mask / inner(封闭区) 三张小图(各约几百字节)。
-#   截图位置：自动写入 UI 日志目录(maa.log 同级)下的 RedDotDetector/ 子目录——
-#     · interface 本级(Agent CWD)有 debug 或 config → 用户侧(interface 在根)，用本级 debug；
-#     · 否则 → 开发侧(interface 在 assets)，取上一级 debug。
-#     · 环境变量 RDD_DEBUG_DIR 可强制指定日志目录(仍自动建 RedDotDetector 子目录)。
-#   防自循环刷屏：文件名 = 节点名+ROI(同检测点重复失败直接覆盖，文件数与循环次数无关)，
-#     另加同检测点时间节流(默认 2s，环境变量 RDD_DUMP_INTERVAL 可调)。
+# [可观测性 —— 金字塔回调 + vision 调试图]
+#   detail 采用金字塔结构(命中/失败都有)，三层递进：
+#     第1层  result   = hit / miss
+#     第2层  阶段      = 筛选 / 打分
+#     第3层  · 阶段=筛选 → {卡在: 哪步, 数据: 五步计数}
+#            · 阶段=打分 → {总分, 阈值, 通过, 明细:[每项 值/权重/贡献]}
+#       「贡献」= 值×权重，调参时看这一列，一眼定位谁把分顶上去/谁拖了后腿。
+#     随 MAA 识别记录进入日志分析工具(MaaLogAnalyzer / MaaLogs)，图没了也能复盘。
+#     · mfaalog.warning 输出一行精简摘要(上 UI)；print 输出拼贴明细(仅进 txt 日志)。
 #
-# [一句话调参口诀]（对照 detail.stage）
-#   red_mask    → HSV 没框到红色：降低 S/V 下限 / 校正 roi
-#   area        → 面积不在 red_area：多半 min 太大
-#   interior    → 红块内无封闭非红区(无感叹号轮廓)：roi 偏移 / 红圈破损 / 被模糊填满
-#   confidence  → 有候选但分不够：看 stat.conf 与 parts，降 min_confidence 提召回
+#   vision 调试图(整屏画框，与框架原生图同栏)：受 save_draw 门控——
+#     · 环境变量 RDD_DRAW=1/0 强制开关；否则跟随 maa_option.json 的 save_draw。
+#     · 开启时在整张截图上画 ROI 绿框 + 候选红框 + 拼贴文字(同 print 内容)，
+#       存入 <log_dir>/vision/{时间戳}_{节点名}.jpg，命名对齐框架 save_draws，
+#       MaaLogs/MFAA 当普通 vision 图一并扫到。命中/未命中都画(误命中现场需复盘)。
+#
+#   失败小图(常驻，无开关)：落盘 roi_crop / red_mask / inner 三张(各几百字节)到
+#     <log_dir>/RedDotDetector/，文件名 = 节点名+ROI(同检测点覆盖)，时间节流防自循环刷屏
+#     (默认 2s，RDD_DUMP_INTERVAL 可调)。RDD_DEBUG_DIR 可强制指定日志根目录。
+#
+# [一句话调参口诀]（对照 detail：阶段→卡在/明细）
+#   筛选·红掩膜  → HSV 没框到红色：降低 S/V 下限 / 校正 roi
+#   筛选·面积    → 面积不在 red_area：多半 min 太大
+#   筛选·内部    → 红块内无封闭非红区(无感叹号轮廓)：roi 偏移 / 红圈破损 / 被模糊填满
+#   打分        → 看「明细」贡献列：竖长/偏白低=非感叹号(正常拒)；真货被拒才降 min_confidence
 #
 # ================================================================
 #
@@ -475,64 +497,53 @@ class HSVShapeMatching(CustomRecognition):
 #   · 极度模糊时红色"填满"感叹号缝隙，封闭区消失（物理边界，无法靠参数解决）
 #
 # ────────────────────────────────────────────────────────────────
-# 阶段 4b  置信度加权评分（detail.stage = "confidence"）
+# 阶段 4b  置信度加权评分 v2（detail.阶段 = "打分"）
 # ────────────────────────────────────────────────────────────────
-# 参数：min_confidence（默认 0.25，精准 ROI 调好值；大 ROI 泛找须显式调高到 0.5+）
-# 数据：detail.stat.conf（最高候选分）、detail.stat.parts（各分项得分）
+# 参数：min_confidence（默认 0.55；必须 > 最大单项权重 0.45 → 命中需两项背书）
+# 数据：detail.打分 = {总分, 阈值, 通过, 明细:[每项 值/权重/贡献]}
 #
-# 四个分项（权重在模块常量 _W_* 可直接调整）：
+# 四个分项（权重在模块常量 _SC_W_* 可直接调整；完整真假样本论证见
+#           docs/RedDotDetector_打分模型.md）：
 #
-#   f_gap  (权重 0.45)  连续断层深度（带两侧门）
-#     计算：1 - gap行像素数/投影峰值；要求断层上方≥2行且下方有像素，否则归零。
-#     清晰帧（PC）：感叹号竖线与圆点之间有 1px 红色间隔，f_gap 可贡献满额 0.45。
-#     模糊帧（安卓）：间隔被模糊填平 → f_gap = 0，由 f_vert 兜底。
+#   vert (竖长 0.45)  内部高/宽 clip(h/w−1,0,1)。高瘦感叹号 h/w≥2→1，矮胖杂块≈1→0。
+#                     抗模糊主轴之一(模糊不改变长宽比)。
+#   white(偏白 0.45)  内部白度中位数 − 红环白度中位数，whiteness=(V/255)(1−S/255)。
+#                     白笔画恒比红环白(实测真货 0.30+)，杂块内部不白(实测假货 0.04)，
+#                     抗模糊主轴之一，真假最干净的金线。
+#   gap  (断层 0.06)  三段诚实断层 = 深度 × 细窄度。
+#                     深度  = 1 − 谷底像素/最高行像素(谷有多空)；
+#                     细窄度= 1 − (凹陷连续高度/内部总高)/0.40(缝越宽越不像真缝→0)。
+#                     感叹号是上段/凹陷/下段三段，旧版只看"有无一根空行"把凹陷当点不当段，
+#                     被 adb 模糊在杂红里造的假缝顶满 → 误命中；故降权到最低，仅清晰帧奖励。
+#   cent (居中 0.04)  内部水平居中程度，弱分离，微调。
 #
-#   f_vert (权重 0.35)  内部封闭区纵横比：clip(h/w − 1, 0, 1)
-#     感叹号竖长，h/w 通常 2-4 → f_vert 接近 1。
-#     圆形高光（h/w ≈ 1）→ f_vert ≈ 0；等高实心柱（proj=[2,2,2,2]，h/w≈2）→ f_vert≈1
-#     但等高柱无 gap，总分约 0.27，仍在默认阈值 0.25 以上，保留召回。
-#     模糊态区分"竖条 vs 圆形高光"的主轴，权重第二高。
+# 真假样本实测（proj 来自真机，详见 docs）：
+#   true1(adb清晰)：vert1.0 white0.30 gap0.58 → conf 0.66  命中
+#   true2(adb模糊)：vert1.0 white0.32 gap0    → conf 0.63  命中(断层失效，竖长+偏白兜底)
+#   true3(PC)     ：vert1.0 white0.34 gap0    → conf 0.64  命中
+#   假1(adb杂红)  ：vert0   white0.04 gap0    → conf 0.05  拒(凹陷7/11→细窄度0)
+#   高瘦白假货(推演)：vert1.0 white0.04 cent1 → conf 0.51  拒(偏白补不上，差0.04)
+#   真货 0.63~0.66 / 假货 ≤0.05，中间 0.55 阈值留足两侧余量。
 #
-#   f_white (权重 0.15)  偏白对比：内部 whiteness 中位数 − 红环 whiteness 中位数
-#     whiteness = (V/255)(1−S/255)，S 为主 V 为辅。
-#     模糊压暗时差值平滑衰减（不像绝对阈值那样掉崖）。
-#     感叹号白色 whiteness ≈ 0.5，红环 ≈ 0.2，实测 f_white ≈ 0.3。
-#     仅作辅证；抬高此权重意义不大，感叹号 whiteness 和圆形高光差距不如 vert 稳定。
-#
-#   f_cent (权重 0.05)  内部水平居中程度：小补充，通常接近 1。
-#
-# 典型分值参考（实测 16px 精准 ROI）：
-#   真实感叹号(清晰)：gap≈0.80, vert≈0.70, white≈0.30, cent≈1.0 → conf ≈ 0.65
-#   真实感叹号(模糊)：gap= 0,   vert≈0.70, white≈0.30, cent≈1.0 → conf ≈ 0.32
-#   等高实心柱(最差)：gap= 0,   vert≈0.50, white≈0.30, cent≈0.9 → conf ≈ 0.27
-#   圆形高光：        gap= 0,   vert≈ 0,   white≈0.30, cent≈0.8 → conf ≈ 0.09
-#   默认阈值 0.25 卡在感叹号(最弱)≈0.27 与圆形高光≈0.09 之间，有安全余量。
-#
-# 调参方法：
-#   先看 detail.stat.conf，再看 detail.stat.parts 定位哪项拉低了：
-#     gap=0, vert 正常   → 模糊帧，f_vert 兜底。conf 略低于阈值时直接降 min_confidence。
-#     gap=0, vert 也低   → 感叹号被模糊成类圆形，或 roi 太大内部被填满；
-#                          缩小 roi 让纵横比更高，或接受漏检（物理边界）。
-#     white 低（<0.1）   → 内部与红环颜色接近（少见）；white 仅辅证，先降阈值。
-#   大 ROI 泛找务必调高 min_confidence 到 0.5+，
-#   否则大面积连通域内的偶发竖向结构会误判。
+# 调参方法（看 detail.打分.明细 的"贡献"列）：
+#   竖长 或 偏白 贡献低 → 非感叹号，正常拒，不要为它降阈值；
+#   真货被误拒(两项贡献都不低却差一点) → 适度降 min_confidence；
+#   大 ROI 泛找误判 → 升 min_confidence 到 0.58。
 #
 # ────────────────────────────────────────────────────────────────
 # 物理边界说明
 # ────────────────────────────────────────────────────────────────
-# 模糊程度 = 红色完全填满感叹号缝隙时：enclosed 为空，识别无解，任何参数均无效。
-# 在此之前的连续过渡区（等高实心柱 conf≈0.27），可通过降 min_confidence 兜住，
-# 代价是稍高的误判率（需配合精准 roi 抑制）。
+# 红色完全填满感叹号缝隙时：封闭区为空，识别无解，任何参数均无效(卡在筛选·内部)。
+# 此前的模糊过渡区，竖长+偏白仍稳定可分，不再依赖已失效的断层。
 #
 # ────────────────────────────────────────────────────────────────
-# 一句话调参口诀
+# 一句话调参口诀（对照 detail.阶段）
 # ────────────────────────────────────────────────────────────────
-# roi_crop 没红点              → 改 roi 坐标
-# red_mask 全白                → 降 hsv_ranges S/V 下限
-# detail.stat.area_pass = 0   → 降 red_area min（或升 max）
-# inner.png 全白空图            → 红圈破损或模糊填满，缩小 roi / 等清晰帧
-# conf 有数但不够阈值           → 看 parts：vert 低则缩 roi；直接降 min_confidence
-# 大 ROI 误判杂红               → 提高 min_confidence 到 0.5+
+# 筛选·红掩膜(red_mask)  → red_mask 全白：降 hsv_ranges S/V 下限 / 校 roi
+# 筛选·面积(area)        → area_pass=0：降 red_area min（或升 max）
+# 筛选·内部(interior)    → inner 全白：红圈破损或模糊填满，缩小 roi / 等清晰帧
+# 打分(confidence)       → 看明细贡献列：竖长/偏白低=非感叹号(拒对了)；真货被拒才降 min_confidence
+# 大 ROI 误判杂红         → 提高 min_confidence 到 0.58
 #
 # ================================================================
 
@@ -541,14 +552,19 @@ _RED_RANGES_DEFAULT = [
     {"lower": [165, 130, 100], "upper": [180, 255, 255]},
 ]
 
-# 置信度加权（可按需微调）。无 gap 时上限 = _W_VERT+_W_WHITE+_W_CENT = 0.55；
-# 清晰帧 f_gap 可额外贡献至 _W_GAP，单独足以越过默认阈值。
-# vert(纵横比)是模糊态区分"竖条 vs 圆形高光"的主轴，故权重最高；white 仅作辅证。
-_W_GAP = 0.45      # 连续断层：清晰帧(PC)主力，带两侧门，模糊归零
-_W_VERT = 0.35     # 纵横比：模糊地板主力，扛等高实心柱、排圆形高光
-_W_WHITE = 0.15    # 偏白对比(S 为主、V 为辅，相对红环)：抗压暗的辅证
-_W_CENT = 0.05     # 居中：小补充
-_DEFAULT_MIN_CONF = 0.25   # 精准 ROI 感叹号默认阈值；大 ROI 泛找请显式调高
+# ── 打分权重 sc_w_*（v2）─────────────────────────────────────────────
+# 设计依据见 docs/RedDotDetector_打分模型.md（真假样本论证）。核心两条：
+#   1) 竖长(高瘦) + 偏白(白芯) 抗模糊、是真正的判别金线，并列为主，各 0.45；
+#      断层会被 adb 模糊填平/在杂红里造假缝，是反指标，压到最低 0.06，仅作清晰帧奖励。
+#   2) 硬不变量：max(单项权重)=0.45 < sc_min_conf=0.55 → 任何单项满分都越不过阈值，
+#      命中必须"竖长+偏白"两可靠项同时背书；居中/断层权重小，无法充当假背书。
+_SC_W_VERT  = 0.45   # 竖长：高/宽，抗模糊主轴(高瘦感叹号 vs 矮胖杂块)
+_SC_W_WHITE = 0.45   # 偏白：白芯相对红环的白度差，抗模糊主轴(白笔画 vs 杂色)
+_SC_W_GAP   = 0.06   # 断层：清晰帧小奖励，不可靠(模糊填缝/假缝)，权重压到最低
+_SC_W_CENT  = 0.04   # 居中：微调
+_SC_MIN_CONF = 0.55  # 默认命中阈值；必须 > 最大单项权重(0.45)，保证两项背书
+# 断层"细窄度"：凹陷连续高度 / 内部总高 超过此比例 → 视为"两块不相干"而非缝，细窄度归零
+_SC_GAP_MAX_RATIO = 0.40
 
 # 同一检测点(节点名+ROI)两次落盘的最小间隔(秒)，防 next 自循环刷屏；RDD_DUMP_INTERVAL 可调
 try:
@@ -582,6 +598,31 @@ def _resolve_log_dir() -> str:
     root = cwd if has_marker else os.path.dirname(cwd)
     _RESOLVED_LOG_DIR = os.path.join(root, "debug")
     return _RESOLVED_LOG_DIR
+
+
+def _save_draw_enabled() -> bool:
+    """
+    是否输出 vision 调试图。优先级：
+      · 环境变量 RDD_DRAW(1/true/on) → 强制开/关；
+      · 否则跟随 MaaFramework 的 save_draw(maa_option.json)——
+        打开框架画图开关时，我们的图和框架原生图一起进 <log_dir>/vision；
+      · 读不到则默认关，生产环境保持 vision 干净。
+    """
+    env = os.environ.get("RDD_DRAW")
+    if env is not None:
+        return env.strip().lower() in ("1", "true", "yes", "on")
+    try:
+        cfg = os.path.join(os.path.dirname(_resolve_log_dir()), "config", "maa_option.json")
+        with open(cfg, "r", encoding="utf-8") as f:
+            return bool(json.load(f).get("save_draw", False))
+    except Exception:
+        return False
+
+
+def _vision_ts() -> str:
+    """复刻框架 format_now_for_filename：YYYY.MM.DD-HH.MM.SS.{毫秒}（毫秒不补零）。"""
+    now = datetime.datetime.now()
+    return now.strftime("%Y.%m.%d-%H.%M.%S.") + str(now.microsecond // 1000)
 
 
 @AgentServer.custom_recognition("RedDotDetector")
@@ -647,16 +688,32 @@ class RedDotDetector(CustomRecognition):
                 "error": f"preset node not started: {preset_node}",
             })
 
+        caller_node = getattr(argv, "node_name", "") or preset_node
+
         if reco.hit:
             bx, by, bw, bh = reco.box
             adjusted = (bx + rx, by + ry, bw, bh)
             mfaalog.info(f"[RedDotDetector] [preset:{preset_node}] hit -> {adjusted}")
+            # 预设模式：整屏在本级手里，用嵌套返回的 conf/parts/dbg 画整屏
+            raw = getattr(reco, "raw_detail", None) or {}
+            label = (f"conf={raw.get('conf')} {raw.get('parts')}"
+                     if raw.get("conf") is not None else "HIT")
+            self._emit_vision(caller_node, (rx, ry, rw, rh), argv.image, adjusted,
+                              label, raw.get("dbg"), hit=True)
             return CustomRecognition.AnalyzeResult(
                 box=adjusted, detail={"result": "hit", "preset": preset_node})
 
         # 真未命中：阶段原因已由预设节点(独立模式)记进嵌套识别记录；这里附带透传其 raw_detail
-        raw = getattr(reco, "raw_detail", None)
+        raw = getattr(reco, "raw_detail", None) or {}
         mfaalog.warning(f"[RedDotDetector] miss@preset | {argv.node_name} via {preset_node}")
+        # 整屏画框：best_box(裁剪局部) 加回 roi 偏移
+        st = raw.get("stat", {}) if isinstance(raw, dict) else {}
+        bb = st.get("best_box")
+        box_g = (bb[0] + rx, bb[1] + ry, bb[2], bb[3]) if bb else None
+        label = (f"conf={st.get('conf')} {st.get('parts')}"
+                 if st.get("conf") is not None else "miss")
+        self._emit_vision(caller_node, (rx, ry, rw, rh), argv.image, box_g,
+                          label, raw.get("dbg") if isinstance(raw, dict) else None, hit=False)
         return CustomRecognition.AnalyzeResult(box=None, detail={
             "result": "miss", "mode": "preset", "preset": preset_node,
             "roi": [rx, ry, rw, rh],
@@ -668,12 +725,25 @@ class RedDotDetector(CustomRecognition):
     # 独立模式
     # ------------------------------------------------------------------
 
+    # 参数别名：新两级命名(flt_=筛选 / sc_=打分) ↔ 旧名。新名优先、旧名兼容，
+    # 既支持已迁移到新名的 pipeline，也不破坏仍用旧名的存量节点。
+    _PARAM_ALIAS = {"flt_red_hsv": "hsv_ranges", "flt_area": "red_area",
+                    "sc_min_conf": "min_confidence", "sc_gap_ratio": "gap_ratio"}
+
+    def _normalize_params(self, params: dict) -> dict:
+        out = dict(params)
+        for new, old in self._PARAM_ALIAS.items():
+            if new in params and old not in out:
+                out[old] = params[new]
+        return out
+
     def _run_standalone(self, argv: CustomRecognition.AnalyzeArg, params: dict):
         """独立模式：HSV 过滤 → blob 面积筛选 → 拓扑封闭取内部 → 置信度加权打分。"""
+        params = self._normalize_params(params)
         hsv_ranges = params.get("hsv_ranges", _RED_RANGES_DEFAULT)
         area_min, area_max = params.get("red_area", [30, 1200])
         gap_ratio = params.get("gap_ratio", 0.35)      # 仅用于 detail 的 gap 标注
-        min_conf = params.get("min_confidence", _DEFAULT_MIN_CONF)
+        min_conf = params.get("min_confidence", _SC_MIN_CONF)
 
         # 1. 按 roi 裁剪
         roi = argv.roi
@@ -703,7 +773,7 @@ class RedDotDetector(CustomRecognition):
         labeled, n_blobs = _label_blobs(red_mask)
         stat = {"red_px": int(red_mask.sum()), "n_blobs": int(n_blobs),
                 "area_pass": 0, "max_inner_px": 0, "scored": 0}
-        best, best_mask = None, None
+        best, best_mask, best_box_local = None, None, None
 
         # 4. 逐 blob 检测
         for i in range(1, n_blobs + 1):
@@ -741,15 +811,29 @@ class RedDotDetector(CustomRecognition):
             if best is None or conf > best["conf"]:
                 best = {"conf": conf, "parts": parts, **chk}
                 best_mask = enclosed
+                best_box_local = (bx0, by0, bw, bh)
 
             stat["scored"] += 1
             if conf >= min_conf:
                 result_box = (bx0 + rx, by0 + ry, bw, bh)
                 mfaalog.info(f"[RedDotDetector] hit | box={result_box} conf={conf} {parts}")
+                # 命中也画：误命中现场需要可视化复盘
+                hit_stat = {**stat, "conf": conf, "parts": parts,
+                            "proj": chk.get("proj"),
+                            "gap": {"row": chk.get("gap_row"), "val": chk.get("gap_val"),
+                                    "peak": chk.get("peak"), "ratio": chk.get("ratio"),
+                                    "above_nz": chk.get("above_nz"), "has_below": chk.get("has_below")}}
+                dbg_text = self._compose_dbg(params, hit_stat, f"result: HIT box={list(result_box)}", min_conf)
+                print(f"[RedDotDetector] {node}\n{dbg_text}")
+                if caller is None:   # 非预设：本级持有整屏，直接画
+                    self._emit_vision(node, (rx, ry, rw, rh), argv.image, result_box,
+                                      f"conf={conf} {parts}", dbg_text, hit=True)
                 return CustomRecognition.AnalyzeResult(
                     box=result_box,
-                    detail={"result": "hit", "conf": conf, "parts": parts,
-                            "red_area": area, "box": list(result_box)})
+                    detail={"result": "hit", "阶段": "打分",
+                            "打分": self._score_breakdown(parts, conf, min_conf),
+                            "red_area": area, "box": list(result_box),
+                            "conf": conf, "parts": parts, "dbg": dbg_text})  # conf/parts/dbg 保留给 preset 画图
 
         # 5. 未命中：置信/投影/断层进 stat → detail；落盘失败图；统一出口
         if best is not None:
@@ -759,10 +843,18 @@ class RedDotDetector(CustomRecognition):
             stat["gap"] = {"row": best["gap_row"], "val": best["gap_val"], "peak": best["peak"],
                            "ratio": best["ratio"], "above_nz": best["above_nz"],
                            "has_below": best["has_below"]}
+            stat["best_box"] = list(best_box_local) if best_box_local else None
 
         stage, hint = self._diagnose(stat, area_min, area_max, min_conf)
+        dbg_text = self._compose_dbg(params, stat, f"result: MISS ({stage}) {hint}", min_conf)
         self._dump_failure(node, key_roi, work_bgr, red_mask, best_mask)
-        return self._miss("standalone", stage, hint, stat, params)
+        # 非预设：本级持有整屏，直接画；预设：dbg/best_box 随 detail 上送，由 _run_preset 画整屏
+        if caller is None:
+            box_g = (best_box_local[0] + rx, best_box_local[1] + ry,
+                     best_box_local[2], best_box_local[3]) if best_box_local else None
+            label = f"conf={stat.get('conf')} {stat.get('parts')}" if stat.get("conf") is not None else "miss"
+            self._emit_vision(node, (rx, ry, rw, rh), argv.image, box_g, label, dbg_text, hit=False)
+        return self._miss("standalone", stage, hint, stat, params, dbg_text, min_conf)
 
     # ------------------------------------------------------------------
     # 感叹号结构检测：返回投影 + 断层诊断信息
@@ -778,7 +870,8 @@ class RedDotDetector(CustomRecognition):
         info = {"pass": False, "proj": proj_arr.astype(int).tolist(),
                 "gap_row": None, "gap_val": None,
                 "peak": int(proj_arr.max()) if proj_arr.size else 0,
-                "ratio": None, "above_nz": 0, "has_below": False}
+                "ratio": None, "above_nz": 0, "has_below": False,
+                "gap_run": 0, "height": 0}   # 凹陷连续高度 / 内部总高（三段诚实断层用）
 
         if int(proj_arr.sum()) < 3:
             return info
@@ -801,9 +894,22 @@ class RedDotDetector(CustomRecognition):
         ratio = float(proj_arr[gap_abs] / peak)
         above_nz = int(np.sum(proj_arr[first_nz:gap_abs] > 0))           # 竖线段非零行数
         has_below = bool(np.any(proj_arr[gap_abs + 1:last_nz + 1] > 0))  # 圆点段是否有像素
+
+        # 凹陷连续高度 gap_run：从谷底向上下扩张，统计"低于浅阈值"的连续行数。
+        # 真感叹号的缝只占一两行；假货是大段空白(两块不相干) → gap_run 占比大。
+        height = last_nz - first_nz + 1
+        gap_low = max(0.0, 0.25 * peak)
+        lo = hi = gap_abs
+        while lo - 1 >= first_nz and proj_arr[lo - 1] <= gap_low:
+            lo -= 1
+        while hi + 1 <= last_nz and proj_arr[hi + 1] <= gap_low:
+            hi += 1
+        gap_run = hi - lo + 1
+
         info.update({"gap_row": gap_abs + 1, "gap_val": int(proj_arr[gap_abs]),
                      "peak": int(peak), "ratio": round(ratio, 3),
                      "above_nz": above_nz, "has_below": has_below,
+                     "gap_run": int(gap_run), "height": int(height),
                      "pass": (ratio <= gap_ratio) and above_nz >= 2 and has_below})
         return info
 
@@ -823,30 +929,41 @@ class RedDotDetector(CustomRecognition):
         if len(ys) < 2:
             return 0.0, {"by": "no_inner"}
 
-        # f_gap：连续断层。带两侧门(谷上下都得有料)，渐细收尾不算断层；模糊实心柱→0
+        # f_gap：三段诚实断层 = 深度 × 细窄度（仅清晰帧小奖励，权重最低）。
+        #   感叹号是 上段/凹陷/下段 三段；旧版只看"有没有一根空行"，把凹陷当点不当段，
+        #   于是杂红里的大段空白也被当成满分缝。现在把凹陷高度纳入：
+        #     深度   = 1 − 谷底像素/最高行像素     （谷有多空）
+        #     细窄度 = 1 − (凹陷高度/总高)/上限比例 （缝越宽越不像真缝，越接近"两块不相干"）
+        #   两侧仍需各有料(上段≥1行 且 下段有像素)，否则不成断层 → 0。
         peak = chk.get("peak") or 0
-        if peak and chk.get("has_below") and chk.get("above_nz", 0) >= 2:
-            f_gap = float(np.clip(1.0 - chk["gap_val"] / peak, 0.0, 1.0))
+        gap_run = chk.get("gap_run", 0)
+        height = chk.get("height", 0)
+        if peak and chk.get("has_below") and chk.get("above_nz", 0) >= 1 and height > 0:
+            depth = float(np.clip(1.0 - chk["gap_val"] / peak, 0.0, 1.0))
+            thinness = float(np.clip(1.0 - (gap_run / height) / _SC_GAP_MAX_RATIO, 0.0, 1.0))
+            f_gap = depth * thinness
         else:
             f_gap = 0.0
 
-        # f_vert：纵横比 h/w。扛得住等高实心柱([2,2,2,2]→h/w=2)，排圆形高光(≈1→0)
+        # f_vert：高宽比 h/w。高瘦感叹号 h/w≥2 → 1；矮胖杂块 h/w≈1 → 0。抗模糊主轴之一。
         h = int(ys.max() - ys.min() + 1)
         w = int(xs.max() - xs.min() + 1)
         f_vert = float(np.clip(h / max(w, 1) - 1.0, 0.0, 1.0))
 
-        # f_white：偏白"对比"。内部中位数 − 红环中位数；模糊压暗时差值平滑衰减，不掉崖
+        # f_white：偏白"对比"。内部白度中位数 − 红环白度中位数；模糊压暗时平滑衰减，不掉崖。
+        #   抗模糊主轴之一：白笔画恒比红环白，杂块内部不白 → 这项是真假最干净的金线。
         V, S = box_hsv[..., 2], box_hsv[..., 1]
         w_in = float(np.median(self._whiteness(V[enclosed], S[enclosed])))
         w_rng = float(np.median(self._whiteness(V[box_red], S[box_red]))) if box_red.any() else 0.0
         f_white = float(np.clip(w_in - w_rng, 0.0, 1.0))
 
-        # f_cent：内部水平中心 vs 包围框中心
+        # f_cent：内部水平中心 vs 包围框中心（弱分离，微调）
         cx_e = (int(xs.min()) + int(xs.max())) / 2.0
         cx_c = (enclosed.shape[1] - 1) / 2.0
         f_cent = float(np.clip(1.0 - 2.0 * abs(cx_e - cx_c) / max(enclosed.shape[1], 1), 0.0, 1.0))
 
-        conf = _W_GAP * f_gap + _W_VERT * f_vert + _W_WHITE * f_white + _W_CENT * f_cent
+        conf = (_SC_W_VERT * f_vert + _SC_W_WHITE * f_white
+                + _SC_W_GAP * f_gap + _SC_W_CENT * f_cent)
         parts = {"gap": round(f_gap, 2), "vert": round(f_vert, 2),
                  "white": round(f_white, 2), "cent": round(f_cent, 2)}
         return round(float(conf), 3), parts
@@ -854,6 +971,21 @@ class RedDotDetector(CustomRecognition):
     # ------------------------------------------------------------------
     # 失败诊断 / 统一出口
     # ------------------------------------------------------------------
+
+    # 打分项：英文代号 → 中文名 → 权重（金字塔回调与调试文本共用）
+    _SCORE_META = (("vert", "竖长", _SC_W_VERT), ("white", "偏白", _SC_W_WHITE),
+                   ("gap", "断层", _SC_W_GAP), ("cent", "居中", _SC_W_CENT))
+
+    def _score_breakdown(self, parts: dict, conf, threshold) -> dict:
+        """金字塔第三层：每项 值/权重/贡献(=值×权重)，一眼看出谁把分顶上去。"""
+        parts = parts or {}
+        items = [{"项": cn, "值": round(float(parts.get(en, 0.0)), 3),
+                  "权重": w, "贡献": round(float(parts.get(en, 0.0)) * w, 3)}
+                 for en, cn, w in self._SCORE_META]
+        return {"总分": round(float(conf), 3) if conf is not None else None,
+                "阈值": round(float(threshold), 3) if threshold is not None else None,
+                "通过": bool(conf is not None and threshold is not None and conf >= threshold),
+                "明细": items}
 
     def _diagnose(self, stat: dict, area_min, area_max, min_conf):
         """根据累加器判定卡在哪个阶段，给出修正方向。"""
@@ -869,15 +1001,30 @@ class RedDotDetector(CustomRecognition):
                               f"分项 {stat.get('parts')}；降低 min_confidence 提召回，"
                               f"或检查偏白/竖向是否被模糊吃掉")
 
-    def _miss(self, mode: str, stage: str, hint: str, stat: dict, params: dict):
-        """统一失败出口：精简摘要进 mfaalog(上 UI)，明细 print(仅 txt)，结构化原因进 detail。"""
-        detail = {
-            "result": "miss", "mode": mode, "stage": stage, "hint": hint, "stat": stat,
-            "params": {k: params.get(k) for k in
-                       ("hsv_ranges", "red_area", "gap_ratio", "min_confidence")},
-        }
+    def _miss(self, mode: str, stage: str, hint: str, stat: dict, params: dict,
+              dbg_text: str = None, min_conf=None):
+        """
+        统一失败出口（金字塔回调）：
+          第1层 result=miss；第2层 阶段=筛选/打分；
+          阶段=筛选 → 给"卡在哪步 + 五步计数"；阶段=打分 → 给"总分/阈值 + 每项值/权重/贡献"。
+        stat/conf/parts 等保留，供 preset 上层画图与向后兼容。
+        """
+        if stage == "confidence":      # 走到了打分、但分不够
+            detail = {
+                "result": "miss", "阶段": "打分",
+                "打分": self._score_breakdown(stat.get("parts"), stat.get("conf"), min_conf),
+                "说明": hint, "mode": mode, "stat": stat, "dbg": dbg_text,
+            }
+        else:                           # 卡在筛选某步(红掩膜/面积/内部)
+            detail = {
+                "result": "miss", "阶段": "筛选", "卡在": stage, "说明": hint, "mode": mode,
+                "数据": {"红像素": stat.get("red_px"), "连块数": stat.get("n_blobs"),
+                        "过面积": stat.get("area_pass"), "内部像素": stat.get("max_inner_px"),
+                        "打分数": stat.get("scored")},
+                "stat": stat, "dbg": dbg_text,
+            }
         mfaalog.warning(f"[RedDotDetector] miss@{stage} | {hint}")
-        print(f"[RedDotDetector] miss stat={stat}")
+        print(f"[RedDotDetector] miss\n{dbg_text}" if dbg_text else f"[RedDotDetector] miss stat={stat}")
         return CustomRecognition.AnalyzeResult(box=None, detail=detail)
 
     # ------------------------------------------------------------------
@@ -905,6 +1052,86 @@ class RedDotDetector(CustomRecognition):
         except Exception as e:
             print(f"[RedDotDetector] 调试图保存失败({tag}): {e}")
             return None
+
+    # ------------------------------------------------------------------
+    # vision 调试图：整图画框 + 拼贴文字，落入 <log_dir>/vision（与框架原生图同栏）
+    # ------------------------------------------------------------------
+
+    def _load_font(self, size: int = 14):
+        """优先等宽字体，找不到回退 PIL 内置位图字体（保证无字体依赖也能跑）。"""
+        for name in ("consola.ttf", "DejaVuSansMono.ttf", "arial.ttf"):
+            try:
+                return ImageFont.truetype(name, size)
+            except Exception:
+                continue
+        return ImageFont.load_default()
+
+    def _draw_text_block(self, draw, xy, text: str, font):
+        """多行文字带黑色描边，叠在任意背景上都清晰。"""
+        x, y = xy
+        for i, line in enumerate(text.split("\n")):
+            ly = y + i * 15
+            for ox, oy in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+                draw.text((x + ox, ly + oy), line, fill=(0, 0, 0), font=font)
+            draw.text((x, ly), line, fill=(255, 255, 0), font=font)
+
+    def _compose_dbg(self, params: dict, stat: dict, result_line: str, threshold=None) -> str:
+        """把所有调试量拼成一个字符串：print 与画到图上共用，加减参数只改这里。"""
+        hr = params.get("hsv_ranges", _RED_RANGES_DEFAULT)
+        lines = [
+            result_line,
+            f"params: red_area={params.get('red_area', [30, 1200])} "
+            f"min_conf={params.get('min_confidence', _SC_MIN_CONF)} hsv_groups={len(hr)}",
+            f"stat: red_px={stat.get('red_px')} n_blobs={stat.get('n_blobs')} "
+            f"area_pass={stat.get('area_pass')} inner_px={stat.get('max_inner_px')} scored={stat.get('scored')}",
+        ]
+        if stat.get("conf") is not None:
+            thr = threshold if threshold is not None else params.get("min_confidence", _SC_MIN_CONF)
+            bd = self._score_breakdown(stat.get("parts"), stat.get("conf"), thr)
+            lines.append(f"打分: 总分{bd['总分']} 阈值{bd['阈值']} {'通过' if bd['通过'] else '不过'}")
+            for it in bd["明细"]:
+                lines.append(f"  {it['项']} 值{it['值']:.2f} ×{it['权重']} ={it['贡献']:.3f}")
+            if stat.get("gap"):
+                lines.append(f"gap: {stat.get('gap')}")
+            if stat.get("proj") is not None:
+                lines.append(f"proj: {stat.get('proj')}")
+        return "\n".join(lines)
+
+    def _emit_vision(self, node: str, roi_tuple, full_bgr: np.ndarray,
+                     box_global, label: str, dbg_text: str, hit: bool):
+        """在整张截图上画 ROI 框 + 命中/候选框 + 拼贴文字，存 jpg 入 vision；受 save_draw 门控。"""
+        if not _save_draw_enabled() or full_bgr is None:
+            return
+        try:
+            img = Image.fromarray(full_bgr[..., ::-1]).convert("RGB")
+            draw = ImageDraw.Draw(img)
+            font = self._load_font(14)
+            green, red, magenta = (0, 255, 0), (255, 40, 40), (255, 0, 255)
+
+            rx, ry, rw, rh = roi_tuple
+            if rw > 0 and rh > 0:
+                draw.rectangle([rx, ry, rx + rw - 1, ry + rh - 1], outline=green, width=1)
+                draw.text((rx, max(0, ry - 14)), f"ROI: [{rx}, {ry}, {rw}, {rh}]", fill=green, font=font)
+
+            if box_global is not None:
+                bx, by, bw, bh = box_global
+                draw.rectangle([bx, by, bx + bw - 1, by + bh - 1], outline=red, width=1)
+                draw.text((bx, max(0, by - 14)), label, fill=red, font=font)
+
+            if dbg_text:
+                self._draw_text_block(draw, (5, 5), dbg_text, font)
+
+            draw.text((5, img.height - 18),
+                      f"{node}  {'HIT' if hit else 'miss'}", fill=magenta, font=font)
+
+            vdir = os.path.join(_resolve_log_dir(), "vision")
+            os.makedirs(vdir, exist_ok=True)
+            safe = re.sub(r'[^A-Za-z0-9_.\-]', '_', node or "RedDotDetector")
+            path = os.path.abspath(os.path.join(vdir, f"{_vision_ts()}_{safe}.jpg"))
+            img.save(path, quality=85)
+            print(f"[RedDotDetector] vision draw -> {path}")
+        except Exception as e:
+            print(f"[RedDotDetector] vision draw 失败: {e}")
 
     def _dump_failure(self, node_name, roi_tuple, work_bgr, red_mask, inner_best):
         """失败常驻图：roi_crop + red_mask (+ inner)。固定名覆盖 + 时间节流防自循环刷屏。"""

@@ -404,7 +404,7 @@
         "custom_recognition": "HSVShapeMatching",
         "custom_recognition_param": {
             "target_node": "Daily_Busin_DecorCoin_IsFull",
-            "hsv_ranges": [
+            "flt_red_hsv": [
                 {
                     "lower": [
                         15,
