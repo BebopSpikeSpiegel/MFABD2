@@ -1,75 +1,83 @@
 import sys
-from typing import List
+from typing import List, Dict
 from pathlib import Path
+
+try:
+    import jsonc
+except ImportError:
+    print("❌ 缺少依赖: json-with-comments")
+    print("请运行: pip install json-with-comments")
+    sys.exit(1)
 
 from maa.resource import Resource
 from maa.tasker import Tasker, LoggingLevelEnum
 
-def find_resource_bundles(root_dirs: List[Path]) -> List[Path]:
-    """
-    扫描给定目录，智能找出所有符合 MAA 资源包特征的文件夹
-    """
-    valid_bundles = set() # 使用 set 去重，防止同一个目录被添加多次
-    
-    for root in root_dirs:
-        if not root.exists():
-            print(f"⚠️ 警告: 目录不存在 -> {root}")
+
+def load_combinations(assets_dir: Path) -> List[Dict]:
+    """从 interface.json 的 resource 字段提取有序资源加载组合"""
+    interface_json = assets_dir / "interface.json"
+    if not interface_json.exists():
+        print(f"❌ 未找到 interface.json: {interface_json}")
+        sys.exit(1)
+
+    with open(interface_json, "r", encoding="utf-8") as f:
+        data = jsonc.load(f)
+
+    seen = set()
+    combinations = []
+    for entry in data.get("resource", []):
+        paths = tuple(entry.get("path", []))
+        if paths in seen:
             continue
+        seen.add(paths)
+        resolved = [(assets_dir / p).resolve() for p in paths]
+        name = entry.get("name", " + ".join(paths))
+        combinations.append({"name": name, "paths": resolved})
 
-        print(f"🔍 正在扫描目录: {root}")
-
-        # 规则 1: 查找包含 'pipeline' 文件夹的目录
-        # rglob 会递归查找所有层级。如果找到了 pipeline 文件夹，它的父目录就是我们要的资源包根目录。
-        for p in root.rglob("pipeline"):
-            if p.is_dir():
-                valid_bundles.add(p.parent.resolve())
-
-        # 规则 2: 查找包含 '*pipeline.json' 文件的目录 (支持 pipeline.json, default_pipeline.json 等)
-        for p in root.rglob("*pipeline*.json"):
-            if p.is_file():
-                valid_bundles.add(p.parent.resolve())
-
-    return list(valid_bundles)
+    return combinations
 
 
-def check(dirs: List[Path]) -> bool:
+def check_combination(name: str, paths: List[Path]) -> bool:
+    """对单个资源组合按声明顺序加载并检查"""
+    print(f"\n🔍 检查组合: [{name}]  ({' -> '.join(p.name for p in paths)})")
     resource = Resource()
-    print(f"🚀 开始检查，共发现 {len(dirs)} 个有效的 MAA 资源包...")
-
-    for dir_path in dirs:
-        print(f"  -> 正在加载资源包: {dir_path}")
-        # 将 Path 对象转为字符串后传给底层
-        status = resource.post_bundle(str(dir_path)).wait().status
+    for path in paths:
+        print(f"  -> 加载: {path}")
+        status = resource.post_bundle(str(path)).wait().status
         if not status.succeeded:
-            print(f"❌ 资源包加载失败: {dir_path}")
+            print(f"  ❌ 加载失败: {path}")
             return False
-        print(f"✅ 资源包加载成功: {dir_path}")
-
-    print("🎉 所有资源包检查完毕，未发现错误。")
+        print(f"  ✅ 加载成功: {path}")
+    print(f"✅ 组合 [{name}] 检查通过")
     return True
 
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python check_resource.py <directory1> [directory2] ...")
+        print("Usage: python check_resource.py <assets_dir>")
+        print("  assets_dir: 包含 interface.json 的目录（如 ./assets/）")
         sys.exit(1)
 
     Tasker.set_stdout_level(LoggingLevelEnum.All)
 
-    # 1. 获取传入的原始目录参数
-    input_dirs = [Path(arg) for arg in sys.argv[1:]]
-    
-    # 2. 智能筛选出真正的资源包根目录
-    target_dirs = find_resource_bundles(input_dirs)
+    assets_dir = Path(sys.argv[1]).resolve()
+    combinations = load_combinations(assets_dir)
 
-    if not target_dirs:
-        print("❌ 错误: 未在指定路径下找到任何符合 MAA 规范的资源包结构！")
-        print("请检查是否包含了 pipeline 文件夹或 pipeline.json 等配置文件。")
+    if not combinations:
+        print("❌ interface.json 中未找到任何 resource 组合")
         sys.exit(1)
 
-    # 3. 将筛选后的目录交给 MAA 框架检查
-    if not check(target_dirs):
+    print(f"🚀 从 interface.json 提取到 {len(combinations)} 个资源组合，开始检查...")
+
+    all_passed = True
+    for combo in combinations:
+        if not check_combination(combo["name"], combo["paths"]):
+            all_passed = False
+
+    if not all_passed:
         sys.exit(1)
+
+    print("\n🎉 所有资源组合检查完毕，未发现错误。")
 
 
 if __name__ == "__main__":

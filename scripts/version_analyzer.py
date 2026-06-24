@@ -4,12 +4,9 @@
 """
 
 import re
-from typing import Dict, List
 
-def analyze_version_highlights(release: Dict) -> str:
+def analyze_version_highlights(body: str) -> str:
     """分析版本的亮点标记"""
-    body = release.get('body', '')
-    
     markers = []
     if contains_breaking_change(body):
         markers.append('⚠️')
@@ -45,7 +42,7 @@ def test_analyzer():
     
     print("=== 版本分析器测试 ===")
     for i, test_case in enumerate(test_cases, 1):
-        markers = analyze_version_highlights(test_case)
+        markers = analyze_version_highlights(test_case['body'])
         print(f"测试 {i}: '{test_case['body'][:20]}...' → 标记: '{markers}'")
 
 if __name__ == "__main__":

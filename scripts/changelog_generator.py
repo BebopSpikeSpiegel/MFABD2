@@ -15,7 +15,7 @@ from version_rules import filter_valid_versions, sort_versions
 from history_manager import HistoryManager
 from version_analyzer import analyze_version_highlights
 from History_config import HISTORY_CONFIG, OUTPUT_CONFIG
-from git_operations import get_commit_list, get_merge_commits, get_released_branches_from_main, safe_get_commit_list, ensure_reference_exists, get_commit_timestamp
+from git_operations import get_commit_list, get_merge_commits, get_released_branches_from_main, safe_get_commit_list, ensure_reference_exists, get_commit_timestamp, get_github_login
 from block_parser import parse_targeted_blocks
 
 # ==============================================================================
@@ -136,7 +136,7 @@ def format_commit_message(commit: Dict) -> str:
     subject = commit['subject']
     author = commit['author_name']
     body = commit.get('body', '')  # 获取提交正文
-    
+
     # 清理提交信息（移除类型前缀）
     cleaned_subject = clean_commit_message(subject)
 
@@ -145,12 +145,18 @@ def format_commit_message(commit: Dict) -> str:
     breaking_marker = "⚠️ [破坏性变更] " if highlights['is_breaking'] else ""
     highlight_marker = "💡 " if highlights['is_highlight'] else ""
 
-    # 检测是否为机器人账号（根据配置决定是否显示）
+    # 作者署名：
+    # git 的作者名(%an)与 GitHub 账号无必然关系，直接当 @提及会 @错人（友军 PR 尤甚）。
+    # 优先用 GitHub 登录名做 @提及；解析不到（本地/离线/未关联账号）时回退到纯作者名，
+    # 此时不加 @，避免误 ping 同名陌生用户。
+    login = get_github_login(commit.get('hash', ''), commit.get('author_email', ''))
     is_bot = '[bot]' in author.lower()
-    if HISTORY_CONFIG['show_bot_accounts'] and is_bot:
-        author_display = f"{author} 🤖"
+    if login:
+        author_display = f"@{login}"
+        if HISTORY_CONFIG['show_bot_accounts'] and '[bot]' in login.lower():
+            author_display += " 🤖"
     else:
-        author_display = author
+        author_display = f"{author} 🤖" if (HISTORY_CONFIG['show_bot_accounts'] and is_bot) else author
 
     # 检测协作者信息
     coauthors = detect_coauthors(body)
@@ -158,7 +164,7 @@ def format_commit_message(commit: Dict) -> str:
         coauthor_suffix = " " + " ".join(coauthors)
         author_display += coauthor_suffix
 
-    return f"- {breaking_marker}{highlight_marker}{cleaned_subject} @{author_display}"
+    return f"- {breaking_marker}{highlight_marker}{cleaned_subject} {author_display}"
 
 def parse_merge_subject(subject: str) -> tuple:
     """解析合并提交标题，返回 (分支名, 描述)"""
@@ -452,17 +458,7 @@ def add_historical_versions(current_changelog: str, current_tag: str) -> str:
             print(f"处理历史版本: {tag} (发布时间: {published_at})")
             print(f"内容长度: {len(body)} 字符")
 
-            # 智能标记分析（根据配置决定是否启用）
-            markers = ""
-            if HISTORY_CONFIG['enable_version_highlights']:
-                markers = analyze_version_highlights(release)
-                marker_display = f" {markers}" if markers else ""
-                print(f"版本标记: '{markers}'")
-            else:
-                marker_display = ""
-                print("版本标记: 已禁用")
-
-            # 截断处理
+            # 截断处理（必须先于标记分析，防止历史区块中的 ⚠️/💡 污染检测结果）
             truncated_body = manager.truncate_release_body(body)
             print(f"截断后长度: {len(truncated_body)} 字符")
 
@@ -476,7 +472,17 @@ def add_historical_versions(current_changelog: str, current_tag: str) -> str:
                 print(f"⚠️ 跳过版本 {tag}: Release Notes 与已收录版本内容完全相同（hash={body_hash[:8]}），属异常重复发布")
                 continue
             seen_body_hashes.add(body_hash)
-            
+
+            # 智能标记分析（在截断后的正文上分析，排除历史区块干扰）
+            markers = ""
+            if HISTORY_CONFIG['enable_version_highlights']:
+                markers = analyze_version_highlights(truncated_body)
+                marker_display = f" {markers}" if markers else ""
+                print(f"版本标记: '{markers}'")
+            else:
+                marker_display = ""
+                print("版本标记: 已禁用")
+
             historical_section += f"""<details>
 <summary>{tag} ({published_at}){marker_display}</summary>
 
