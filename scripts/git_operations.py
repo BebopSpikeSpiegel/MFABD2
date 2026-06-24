@@ -97,20 +97,81 @@ def get_simple_commit_list(from_ref: str, to_ref: str) -> List[Dict]:
 
 def get_detailed_commit_info(commit_hash: str) -> Dict:
     """获取单个提交的详细信息"""
+    # 取完整 SHA，供 GitHub API 解析登录名使用（缩写 SHA 在 commits API 上不稳定）
+    full_hash = run_git_command(["log", "-1", "--format=format:%H", commit_hash])
     author = run_git_command(["log", "-1", "--format=format:%an", commit_hash])
     email = run_git_command(["log", "-1", "--format=format:%ae", commit_hash])
     date = run_git_command(["log", "-1", "--format=format:%ad", commit_hash])
     subject = run_git_command(["log", "-1", "--format=format:%s", commit_hash])
     body = run_git_command(["log", "-1", "--format=format:%b", commit_hash])
-    
+
     return {
-        'hash': commit_hash,
+        'hash': full_hash if full_hash else commit_hash,
         'author_name': author if author else '未知',
         'author_email': email if email else '',
         'date': date if date else '',
         'subject': subject if subject else '',
         'body': body if body else ""
     }
+
+
+# ── GitHub 登录名解析 ────────────────────────────────────────────────────────
+# git 的 %an 只是提交者自填的“作者名”，与其 GitHub 账号无必然关系。
+# 直接把它当作 @提及 放进 Release Notes，会误 @到同名的陌生 GitHub 用户
+# （友军 PR 上来时尤其明显）。这里改为通过 commits API 把 SHA 解析为真正的
+# GitHub 登录名；解析不到时由上层回退到纯作者名（不加 @）以避免误 ping。
+_login_cache_by_email: Dict[str, Optional[str]] = {}
+_login_cache_by_sha: Dict[str, Optional[str]] = {}
+
+
+def get_github_login(sha: str, email: str = "") -> Optional[str]:
+    """通过 GitHub commits API 将提交 SHA 解析为 GitHub 登录名（用于 @提及）。
+
+    - 无 GITHUB_TOKEN / GITHUB_REPOSITORY（本地或离线）时返回 None。
+    - 解析失败、网络异常、提交未关联 GitHub 账号时返回 None。
+    - 命中后按 email 与 sha 双重缓存，避免同一作者的多条提交重复请求。
+    """
+    import os
+
+    if email and email in _login_cache_by_email:
+        return _login_cache_by_email[email]
+    if sha and sha in _login_cache_by_sha:
+        return _login_cache_by_sha[sha]
+
+    token = os.environ.get('GITHUB_TOKEN')
+    repo = os.environ.get('GITHUB_REPOSITORY')
+    if not sha or not token or not repo:
+        # 本地调试无凭据：缓存 None，避免反复尝试
+        if email:
+            _login_cache_by_email[email] = None
+        if sha:
+            _login_cache_by_sha[sha] = None
+        return None
+
+    login: Optional[str] = None
+    try:
+        import requests
+        resp = requests.get(
+            f"https://api.github.com/repos/{repo}/commits/{sha}",
+            headers={
+                "Authorization": f"token {token}",
+                "Accept": "application/vnd.github.v3+json",
+                "User-Agent": "MFABD2-Changelog",
+            },
+            timeout=15,
+        )
+        if resp.status_code == 200:
+            author = resp.json().get('author') or {}
+            login = author.get('login') or None
+        else:
+            print(f"⚠️ 解析提交作者登录名失败 {sha[:7]}: HTTP {resp.status_code}")
+    except Exception as e:
+        print(f"⚠️ 解析提交作者登录名异常 {sha[:7]}: {e}")
+
+    if email:
+        _login_cache_by_email[email] = login
+    _login_cache_by_sha[sha] = login
+    return login
 
 def get_commit_list(from_ref: str, to_ref: str) -> List[Dict]:
     """获取两个引用之间的提交列表（稳定版本）"""
