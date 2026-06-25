@@ -87,7 +87,7 @@
         },
         {
             "name": "[执行]白嫖抽卡",
-            "entry": "Gacha_HomePage",
+            "entry": "GachaADV_Start",
             "controller": ["Adb"],
             "default_check": true,
             "option": [
@@ -852,10 +852,22 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "Gacha_FindFreeGacha": {
+                        "GachaADV_Location1": {
                             "enabled": false
                         },
-                        "Gacha_Slip": {
+                        "GachaADV_Location2": {
+                            "enabled": false
+                        },
+                        "GachaADV_Location3": {
+                            "enabled": false
+                        },
+                        "GachaADV_Location4": {
+                            "enabled": false
+                        },
+                        "GachaADV_Location5": {
+                            "enabled": false
+                        },
+                        "GachaADV_Slip": {
                             "enabled": false
                         }
                     }
@@ -868,31 +880,8 @@
                         }
                     },
                     "option": [
-                        "高级抽卡-按需|强制",
+                        "5星必出保留",
                         "付费钻-总开关"
-                    ]
-                }
-            ]
-        },
-        "高级抽卡-按需|强制": {
-            "description": "关：默认流程检测到问题时自动启用。<br>开：从头调用高级抽卡流程，可配合<5星必出保留>使用。",
-            "type": "switch",
-            "cases": [
-                {
-                    "name": "No",
-                    "pipeline_override": {}
-                },
-                {
-                    "name": "Yes",
-                    "pipeline_override": {
-                        "Gacha_HomePage": {
-                            "next": [
-                                "GachaADV_Start"
-                            ]
-                        }
-                    },
-                    "option": [
-                        "5星必出保留"
                     ]
                 }
             ]
@@ -930,6 +919,21 @@
                     ],
                     "pipeline_override": {
                         "Gacha_PaidDiamond_CustomField": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location1_90LotPost": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location2_90LotPost": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location3_90LotPost": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location4_90LotPost": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location5_90LotPost": {
                             "enabled": true
                         }
                     }
@@ -995,46 +999,6 @@
                     ]
                 },
                 "GachaADV_Location1_90LotPost": {
-                    "expected": [
-                        "{目标池1}",
-                        "{目标池2}",
-                        "{目标池3}",
-                        "{目标池4}",
-                        "{目标池5}",
-                        "{目标池6}"
-                    ]
-                },
-                "GachaADV_Location2_90LotPost": {
-                    "expected": [
-                        "{目标池1}",
-                        "{目标池2}",
-                        "{目标池3}",
-                        "{目标池4}",
-                        "{目标池5}",
-                        "{目标池6}"
-                    ]
-                },
-                "GachaADV_Location3_90LotPost": {
-                    "expected": [
-                        "{目标池1}",
-                        "{目标池2}",
-                        "{目标池3}",
-                        "{目标池4}",
-                        "{目标池5}",
-                        "{目标池6}"
-                    ]
-                },
-                "GachaADV_Location4_90LotPost": {
-                    "expected": [
-                        "{目标池1}",
-                        "{目标池2}",
-                        "{目标池3}",
-                        "{目标池4}",
-                        "{目标池5}",
-                        "{目标池6}"
-                    ]
-                },
-                "GachaADV_Location5_90LotPost": {
                     "expected": [
                         "{目标池1}",
                         "{目标池2}",
@@ -1824,7 +1788,6 @@
                     "enabled": true,
                     "option": {
                         "一键速抽": "No",
-                        "高级抽卡-按需|强制": "Yes",
                         "5星必出保留": "Yes"
                     }
                 },
