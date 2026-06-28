@@ -146,17 +146,9 @@
         "focus": "PM.点击领取"
     },
     "Pass_GetAllBack": {
-        "desc": "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$",
-        "recognition": "OCR",
-        "roi": [
-            556,
-            628,
-            148,
-            36
-        ],
-        "expected": [
-            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-        ],
+        "desc": "领取后'点击画面即可返回'提示。",
+        "recognition": "And",
+        "all_of": ["Rec_Reward_Ocr"],
         "action": "Click",
         "post_delay": 1000,
         "next": [
@@ -179,7 +171,8 @@
         "action": "Click",
         "post_delay": 1000,
         "next": [
-            "Global_ToHomePage"
+            "Global_ToHomePage",
+            "Global_ToHomePage_Enter"
         ]
     }
 }

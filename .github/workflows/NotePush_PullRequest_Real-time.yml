@@ -84,7 +84,7 @@ jobs:
           echo "详情: $CONTENT"
 
       - name: Send QQ Notification
-        uses: Y2Nk4/qmsg-action@master
+        uses: Y2Nk4/qmsg-action@ce43bda34f1ba6668ff43ba8d0ad465d1c959723 # master
         with:
           # qq: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_QQ_DEV || secrets.QMSG_QQ_PUB }}
           # groups: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_GROUPS_DEV || secrets.QMSG_GROUPS_PUB }}
