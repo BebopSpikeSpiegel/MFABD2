@@ -185,7 +185,7 @@
             9,
             8
         ],
-        "post_delay": 1000,
+        "post_delay": 2000,
         "next": [
             "Fishing_InFishingNet"
         ]
@@ -227,8 +227,9 @@
         ]
     },
     "Fishing_Entry": {
+        "anchor": {"MainMenu_GoFishing": "Fishing_InFishingNet"},
         "next": [
-            "Fishing_BusinReward",
+            "Daily_Busin_Hub_Post",
             "Fishing_Already_Setsail",
             "[JumpBack]Global_ToHomePage"
         ]
@@ -237,17 +238,18 @@
         "desc": "进入钓鱼界面",
         "recognition": "OCR",
         "roi": [
-            757,
-            358,
-            97,
-            35
+            758,
+            249,
+            106,
+            129
         ],
         "expected": [
             "立刻前往"
         ],
         "action": "Click",
-        "post_delay": 8000,
+        "post_delay": 2000,
         "next": [
+            "[JumpBack]Global_WaitingForLoading",
             "Fishing_InMap",
             "[JumpBack]Fishing_InMap_TalkSkip"
         ]
@@ -322,7 +324,7 @@
             "启航"
         ],
         "action": "Click",
-        "post_delay": 10000,
+        "post_delay": 2000,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
             "Fishing_Start"

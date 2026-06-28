@@ -215,9 +215,9 @@
         "recognition": "OCR",
         "roi": [
             394,
-            161,
+            119,
             493,
-            199
+            241
         ],
         "expected": [
             "餐馆营业额",
@@ -226,6 +226,7 @@
         ],
         "timeout": 8000,
         "next": [
+            "[Anchor]MainMenu_GoFishing",
             "[JumpBack]Daily_GetBusin_SubMenu_Claim",
             "[JumpBack]Daily_GetBusinRewardBack",
             "Daily_Busin_Enter"
@@ -285,9 +286,9 @@
         "recognition": "OCR",
         "roi": [
             699,
-            170,
+            137,
             190,
-            106
+            139
         ],
         "expected": [
             "立刻前往"
