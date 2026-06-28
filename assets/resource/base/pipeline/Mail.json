@@ -29,22 +29,15 @@
         "focus": "GM.主页面已确认"
     },
     "Mail_NewRed": {
-        "recognition": "Custom",
-        "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
+        "recognition": "TemplateMatch",
         "roi": [
             1003,
             14,
             64,
             58
         ],
+        "template": ["Mail.png"],
         "action": "Click",
-        "target_offset": [
-            -15,
-            20,
-            0,
-            0
-        ],
         "post_wait_freezes": 500,
         "next": [
             "Mail_Check_MailPage",
