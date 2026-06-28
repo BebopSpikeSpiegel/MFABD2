@@ -157,7 +157,8 @@
     },
     "Mail_NormalEnd": {
         "next": [
-            "Global_ToHomePage"
+            "Global_ToHomePage",
+            "Global_ToHomePage_Enter"
         ],
         "focus": "GM.通常结束"
     },
