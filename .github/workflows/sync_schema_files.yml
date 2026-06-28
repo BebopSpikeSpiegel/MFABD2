@@ -9,6 +9,9 @@ permissions:
   contents: write
   pull-requests: write # 必须：允许创建 PR
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   check-repository:
     runs-on: ubuntu-latest

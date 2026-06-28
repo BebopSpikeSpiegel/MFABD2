@@ -40,14 +40,19 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.deploy_alpha || 'false' }}-${{ inputs.deploy_beta || 'false' }}
   cancel-in-progress: true
-       
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+permissions:
+  contents: read
 
 jobs:
   meta:
     runs-on: ubuntu-latest
     if: "github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/') || !contains(github.event.head_commit.message, '[deploy-sync]')"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           fetch-depth: 0
       - id: set_tag
@@ -137,7 +142,7 @@ jobs:
 
       # [修改] 下载资源 (改用 steps.parse_config.outputs.mfaa_tag)
       - name: Download MFAA for Detection
-        uses: robinraju/release-downloader@v1
+        uses: robinraju/release-downloader@28fc21f50d76778e7023361aa1f863e717d3d56f # v1
         with:
           repository: MaaXYZ/MFAAvalonia
           latest: false
@@ -213,12 +218,12 @@ jobs:
     needs: meta
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.10"
 
@@ -228,10 +233,10 @@ jobs:
         run: |
             python -m pip install --upgrade pip
             echo "📦 Installing maafw==$TARGET_VERSION (Linux)..."
-            python -m pip install maafw=="$TARGET_VERSION"
+            python -m pip install maafw=="$TARGET_VERSION" json-with-comments
 
       - name: Restore Assets (Clone from Resource Repo)
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           repository: sunyink/MFABD2-Assets
           ref: master
@@ -249,7 +254,7 @@ jobs:
         run: |
             # 赋予执行权限，防止 Linux 下报错
             chmod +x ./check_resource.py
-            python ./check_resource.py ./assets/resource/
+            python ./check_resource.py ./assets/
   install:
     needs: [meta, resource_check]
     # PR 只跑资源检查，不跑完整构建
@@ -360,16 +365,17 @@ jobs:
             is_android: true
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           submodules: true
 
       # 设置构建环境的 Python (用于运行 install.py 等脚本)
       # 这里的版本不影响 Windows 打包进去的嵌入式 Python 版本
       - name: Set up Build Environment
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.10"
+          cache: ""  # 禁用缓存，避免 macOS 上反序列化失败警告
 
       # 显式指定 bash，确保在 Windows 上也能用 cp/rm/mkdir 等命令
       - name: Install Build Dependencies
@@ -385,7 +391,7 @@ jobs:
       # [桌面端] 下载 MFAAvalonia
       - name: Download MFAAvalonia
         if: matrix.is_android == false
-        uses: robinraju/release-downloader@v1
+        uses: robinraju/release-downloader@28fc21f50d76778e7023361aa1f863e717d3d56f # v1
         with:
           repository: MaaXYZ/MFAAvalonia
           latest: false
@@ -398,7 +404,7 @@ jobs:
       # [安卓端] 下载 MaaFramework Core
       - name: Download MaaFramework (Android)
         if: matrix.is_android == true
-        uses: robinraju/release-downloader@v1
+        uses: robinraju/release-downloader@28fc21f50d76778e7023361aa1f863e717d3d56f # v1
         with:
           repository: MaaXYZ/MaaFramework
           latest: false
@@ -409,7 +415,7 @@ jobs:
           extract: true
 
       - name: Restore Assets (Clone from Resource Repo)
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           repository: sunyink/MFABD2-Assets
           ref: master
@@ -777,7 +783,7 @@ jobs:
                   shutil.rmtree(p)
           "
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: MFABD2-${{ needs.meta.outputs.tag }}-${{ matrix.os }}-${{ matrix.is_android && 'arm64' || matrix.arch }}
           path: "install"
@@ -790,12 +796,12 @@ jobs:
       release_body: ${{ steps.set_release_body.outputs.content }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.x"
 
@@ -819,7 +825,7 @@ jobs:
       # 上传 CHANGES.md 到构建物
       # =======================================================
       - name: Upload Changelog Artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: CHANGES
           path: CHANGES.md
@@ -837,12 +843,15 @@ jobs:
     if: (needs.meta.outputs.is_tag_push == 'true') || contains(needs.meta.outputs.tag, '-beta') || contains(needs.meta.outputs.tag, '-alpha') || (github.event_name == 'workflow_dispatch' && contains(needs.meta.outputs.tag, '-ci'))
     needs: [meta, install, changelog]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
     steps:
       - name: Get current timestamp
         id: get_time
         run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
 
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
           path: artifacts
 
@@ -859,7 +868,7 @@ jobs:
           done
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           files: artifacts/release_assets/*.zip
           tag_name: ${{ needs.meta.outputs.tag }}
@@ -955,7 +964,7 @@ jobs:
           echo "Short SHA: $SHORT_SHA"
 
       - name: Send Notification
-        uses: Y2Nk4/qmsg-action@master
+        uses: Y2Nk4/qmsg-action@ce43bda34f1ba6668ff43ba8d0ad465d1c959723 # master
         with:
           # qq: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_QQ_DEV || secrets.QMSG_QQ_PUB }}
           groups: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_GROUPS_DEV || secrets.QMSG_GROUPS_PUB }}

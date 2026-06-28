@@ -1,8 +1,13 @@
 name: PR Real-time Notification
 
 on:
-  pull_request:
+  # 使用 pull_request_target：在基仓上下文运行，fork 发起的 PR 也能读取仓库密文。
+  # 注意：本工作流不 checkout/执行 PR 代码，仅读取事件元数据，故 pull_request_target 安全。
+  pull_request_target:
     types: [opened, closed, reopened]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   pr-notification:
@@ -10,18 +15,19 @@ jobs:
     steps:
       - name: Prepare PR Message
         id: prepare_msg
+        env:
+          # 事件字段统一经 env 注入，避免将用户可控内容（如 PR 标题）直接拼进 shell 造成脚本注入
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_USER: ${{ github.event.pull_request.user.login }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_ACTION: ${{ github.event.action }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          REPO: ${{ github.repository }}
         run: |
-          # --- 1. 获取基础变量 ---
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          PR_USER="${{ github.event.pull_request.user.login }}"
-          PR_NUMBER="${{ github.event.pull_request.number }}"
-          PR_URL="${{ github.event.pull_request.html_url }}"
-          PR_ACTION="${{ github.event.action }}"
-          PR_MERGED="${{ github.event.pull_request.merged }}"
-          
-          # 源分支和目标分支
-          HEAD_REF="${{ github.event.pull_request.head.ref }}"
-          BASE_REF="${{ github.event.pull_request.base.ref }}"
+          # --- 1. 基础变量已由上方 env 注入（PR_TITLE / PR_USER / PR_NUMBER / PR_URL / PR_ACTION / PR_MERGED / HEAD_REF / BASE_REF / REPO） ---
 
           # --- 2. 判断逻辑 ---
           # 默认为更新状态
@@ -55,7 +61,7 @@ jobs:
 
           # --- 3. 组装消息 ---
           # 标题行
-          TITLE="$ACTION_EMOJI [${{ github.repository }}] $ACTION_TEXT"
+          TITLE="$ACTION_EMOJI [$REPO] $ACTION_TEXT"
           
           # 内容详情
           CONTENT="标题: $PR_TITLE"
@@ -78,7 +84,7 @@ jobs:
           echo "详情: $CONTENT"
 
       - name: Send QQ Notification
-        uses: Y2Nk4/qmsg-action@master
+        uses: Y2Nk4/qmsg-action@ce43bda34f1ba6668ff43ba8d0ad465d1c959723 # master
         with:
           # qq: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_QQ_DEV || secrets.QMSG_QQ_PUB }}
           # groups: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_GROUPS_DEV || secrets.QMSG_GROUPS_PUB }}

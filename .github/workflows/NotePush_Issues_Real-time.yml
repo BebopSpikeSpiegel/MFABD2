@@ -6,6 +6,7 @@ on:
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   issue-notification:
@@ -17,12 +18,19 @@ jobs:
       
       - name: Prepare Issue Message
         id: prepare_message
+        env:
+          # 事件字段统一经 env 注入，避免将用户可控内容（如 Issue 标题/标签名）直接拼进 shell 造成脚本注入
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_STATE: ${{ github.event.issue.state }}
+          ISSUE_ACTION: ${{ github.event.action }}
+          ISSUE_CREATED_AT: ${{ github.event.issue.created_at }}
+          ASSIGNEE: ${{ github.event.issue.assignee.login }}
+          LABEL_NAME: ${{ github.event.label.name }}
+          REPO: ${{ github.repository }}
         run: |
-          ISSUE_TITLE="${{ github.event.issue.title }}"
-          ISSUE_AUTHOR="${{ github.event.issue.user.login }}"
-          ISSUE_NUMBER="${{ github.event.issue.number }}"
-          ISSUE_STATE="${{ github.event.issue.state }}"
-          ISSUE_ACTION="${{ github.event.action }}"
+          # --- 基础变量已由上方 env 注入 ---
           
           echo "处理事件: $ISSUE_ACTION (Issue #$ISSUE_NUMBER)"
           
@@ -35,7 +43,7 @@ jobs:
             echo "获取 Issue #$ISSUE_NUMBER 的完整状态..."
             ISSUE_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
-              "https://api.github.com/repos/${{ github.repository }}/issues/$ISSUE_NUMBER")
+              "https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER")
             
             # 提取标签信息
             LABELS=$(echo "$ISSUE_JSON" | jq -r '[.labels[].name] | join(", ")')
@@ -48,8 +56,8 @@ jobs:
             # 构建合并消息
             ACTION_EMOJI="📝"
             ACTION_TEXT="新建了 Issue"
-            TITLE="$ACTION_EMOJI [${{ github.repository }}] $ACTION_TEXT"
-            
+            TITLE="$ACTION_EMOJI [$REPO] $ACTION_TEXT"
+
             CONTENT="标题: $ISSUE_TITLE"
             CONTENT="$CONTENT | 作者: $ISSUE_AUTHOR"
             CONTENT="$CONTENT | 编号: #$ISSUE_NUMBER"
@@ -76,8 +84,7 @@ jobs:
             echo "合并后的消息（包含$LABEL_COUNT个标签，$ASSIGNEE_COUNT个分配）"
             
           else
-            # 对于非 opened 事件，检查是否在新建后的短时间内
-            ISSUE_CREATED_AT="${{ github.event.issue.created_at }}"
+            # 对于非 opened 事件，检查是否在新建后的短时间内（ISSUE_CREATED_AT 已由 env 注入）
             CURRENT_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
             
             # 计算时间差（秒）
@@ -109,17 +116,14 @@ jobs:
               "assigned")
                 ACTION_EMOJI="👤"
                 ACTION_TEXT="分配了 Issue"
-                ASSIGNEE="${{ github.event.issue.assignee.login }}"
                 ;;
               "labeled")
                 ACTION_EMOJI="🏷️"
                 ACTION_TEXT="添加了标签"
-                LABEL_NAME="${{ github.event.label.name }}"
                 ;;
               "unlabeled")
                 ACTION_EMOJI="🏷️"
                 ACTION_TEXT="移除了标签"
-                LABEL_NAME="${{ github.event.label.name }}"
                 ;;
               *)
                 ACTION_EMOJI="📌"
@@ -127,7 +131,7 @@ jobs:
                 ;;
             esac
             
-            TITLE="$ACTION_EMOJI [${{ github.repository }}] $ACTION_TEXT"
+            TITLE="$ACTION_EMOJI [$REPO] $ACTION_TEXT"
             CONTENT="标题: $ISSUE_TITLE"
             CONTENT="$CONTENT | 作者: $ISSUE_AUTHOR"
             CONTENT="$CONTENT | 编号: #$ISSUE_NUMBER"
