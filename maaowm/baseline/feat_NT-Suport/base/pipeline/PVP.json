@@ -1,0 +1,1168 @@
+{
+    "PVP_TaskStart": {
+        "timeout": 5000,
+        "next": [
+            "PVP_Sandplay",
+            "PVP_PullUp_QuickCart",
+            "[JumpBack]PVP_PerPetTask",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]PVP_PerOperationsMain_Error",
+            "[JumpBack]Global_ToSandBox"
+        ],
+        "on_error": [
+            "PVP_WorkaroundIn_Start"
+        ]
+    },
+    "PVP_PullUp_QuickCart": {
+        "recognition": "TemplateMatch",
+        "template": [
+            "QuickCartGeadai.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "PVP_PullUp_QuickCart_FastUI",
+            "PVP_PullUp_QuickCart"
+        ],
+        "focus": "PCM.进入快速卡带"
+    },
+    "PVP_PullUp_QuickCart_FastUI": {
+        "recognition": "OCR",
+        "roi": [
+            32,
+            506,
+            306,
+            125
+        ],
+        "expected": [
+            "最近"
+        ],
+        "next": [
+            "PVP_PullUp_QuickCart_MC_Sort"
+        ],
+        "focus": "PCM.确认快速卡带"
+    },
+    "PVP_PullUp_QuickCart_MC_Sort": {
+        "desc": "分组正则待适配",
+        "recognition": "OCR",
+        "roi": [
+            551,
+            534,
+            138,
+            48
+        ],
+        "expected": [
+            "^(?=.*[玩法])(?=.*[游戏])(?=.*[卡]).{3,12}$"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "PVP_PullUp_QuickCart_MC_Isenable",
+            "PVP_PullUp_QuickCart_MC_Sort"
+        ],
+        "focus": "PCM.快速卡带类选择-玩法"
+    },
+    "PVP_PullUp_QuickCart_MC_Isenable": {
+        "recognition": "ColorMatch",
+        "roi": [
+            551,
+            534,
+            138,
+            48
+        ],
+        "lower": [
+            167,
+            167,
+            165
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 500,
+        "next": [
+            "PVP_PullUp_QuickCart_PVP"
+        ],
+        "focus": "PCM.玩法游戏卡确认"
+    },
+    "PVP_PullUp_QuickCart_PVP": {
+        "desc": "",
+        "recognition": "TemplateMatch",
+        "roi": [
+            51,
+            582,
+            873,
+            133
+        ],
+        "template": [
+            "QuickCart_PVP.png"
+        ],
+        "action": "Click",
+        "post_delay": 3000,
+        "timeout": 50000,
+        "next": [
+            "PVP_PullUp_QuickCart_PVP",
+            "[JumpBack]Global_WaitingForLoading",
+            "PVP_HUB_Sandplay"
+        ],
+        "focus": "PCM.PVP玩法卡带-点击"
+    },
+    "PVP_HUB_Sandplay": {
+        "next": [
+            "PVP_Sandplay",
+            "[JumpBack]PVP_PerPetTask",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]PVP_PerOperationsMain_Error"
+        ],
+        "focus": "PM.HUB(0/2)"
+    },
+    "PVP_Sandplay": {
+        "desc": "防止弹窗滞后,设置两个一样的节点.| 此处int为消除弹窗",
+        "recognition": "TemplateMatch",
+        "roi": [
+            612,
+            29,
+            173,
+            32
+        ],
+        "template": [
+            "pvp_Medals.png"
+        ],
+        "threshold": 0.8,
+        "post_delay": 5000,
+        "next": [
+            "[JumpBack]Setup_Entry1",
+            "PVP_Sandplay_Again",
+            "[JumpBack]PVP_PerPetTask",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]PVP_PerOperationsMain_Error"
+        ],
+        "focus": "PM.PVP箱庭确认,(1/2)"
+    },
+    "PVP_Sandplay_Again": {
+        "desc": "第二次已确认,1/除消除弹窗,2/还要进入舞台,3/复位异常位置",
+        "recognition": "TemplateMatch",
+        "roi": [
+            612,
+            29,
+            173,
+            32
+        ],
+        "template": [
+            "pvp_Medals.png"
+        ],
+        "threshold": 0.8,
+        "next": [
+            "PVP_AutoBattle",
+            "[JumpBack]PVP_PerPetTask",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]PVP_Errmsg1#_Clear",
+            "[JumpBack]PVP_PerOperationsMain_Error",
+            "[JumpBack]PVP_InsandboxAndlocAbnormal",
+            "[JumpBack]PVP_PVPStart",
+            "[JumpBack]PVP_Sandplay_NoFindSrena"
+        ],
+        "focus": "PM.PVP箱庭确认,(2/2)"
+    },
+    "PVP_InsandboxAndlocAbnormal": {
+        "recognition": "TemplateMatch",
+        "template": "pvplocreset.png",
+        "action": "Click",
+        "target_offset": [
+            0,
+            100,
+            0,
+            0
+        ],
+        "post_delay": 6000
+    },
+    "PVP_PVPMes": {
+        "desc": "防守分结算，点击确认",
+        "recognition": "OCR",
+        "roi": [
+            391,
+            418,
+            838,
+            284
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_delay": 1500,
+        "focus": "PM.PVP.防守分结算"
+    },
+    "PVP_PVPMes2": {
+        "desc": "防守分结算，点击画面返回",
+        "recognition": "OCR",
+        "roi": [
+            437,
+            574,
+            528,
+            134
+        ],
+        "expected": [
+            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
+        ],
+        "action": "Click",
+        "target": [
+            1,
+            1
+        ],
+        "post_delay": 1500
+    },
+    "PVP_Errmsg1#_Clear": {
+        "desc": "以防万一,PVP防守分误点",
+        "recognition": "OCR",
+        "roi": [
+            134,
+            143,
+            122,
+            33
+        ],
+        "expected": ["战场角色设置"],
+        "action": "Click",
+        "target": [
+            1,
+            1
+        ],
+        "post_delay": 2000
+    },
+    "PVP_PVPStart": {
+        "desc": "进入PVP舞台",
+        "recognition": "TemplateMatch",
+        "roi": [
+            190,
+            238,
+            900,
+            620
+        ],
+        "template": [
+            "PVPstage.png"
+        ],
+        "action": "Click",
+        "target": [
+            529,
+            414
+        ],
+        "post_delay": 3000,
+        "focus": "PM.PVP.点击舞台物件"
+    },
+    "PVP_PerPetTask": {
+        "desc": "宠物派遣。初始位置就在pvp图防错",
+        "recognition": "TemplateMatch",
+        "roi": [
+            866,
+            550,
+            28,
+            28
+        ],
+        "template": [
+            "PetTask.png"
+        ],
+        "action": "Click",
+        "post_delay": 5000,
+        "focus": "PM.宠物派遣"
+    },
+    "PVP_AutoBattle": {
+        "desc": "点击自动战斗",
+        "recognition": "OCR",
+        "roi": [
+            918,
+            622,
+            87,
+            71
+        ],
+        "expected": [
+            "自动战斗"
+        ],
+        "pre_delay": 1000,
+        "action": "Click",
+        "target": [
+            953,
+            631,
+            14,
+            8
+        ],
+        "post_delay": 1000,
+        "next": [
+            "PVP_AutoBattle_SucCK",
+            "PVP_AutoBattle"
+        ],
+        "focus": "PM.PVP.自动战斗-点击(关键节点)"
+    },
+    "PVP_AutoBattle_SucCK": {
+        "desc": "点击自动战斗",
+        "recognition": "OCR",
+        "roi": [
+            327,
+            165,
+            417,
+            156
+        ],
+        "expected": [
+            "鲜血鸡尾酒"
+        ],
+        "target_offset": [
+            -5,
+            -45,
+            0,
+            0
+        ],
+        "next": [
+            "PVP_JustUseFree"
+        ],
+        "focus": "PM.PVP.自动战斗(关键节点)-菜单ck"
+    },
+    "PVP_JustUseFree": {
+        "recognition": "ColorMatch",
+        "roi": [
+            895,
+            252,
+            37,
+            20
+        ],
+        "lower": [
+            0,
+            0,
+            0
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "anchor": "SliderSwitchColor",
+        "timeout": 4000,
+        "next": [
+            "[JumpBack]PVP_JustUseFree_To_On",
+            "PVP_JustUseFreeOK"
+        ],
+        "on_error": [
+            "Global_BackToQC1",
+            "[JumpBack]Global_ToSandBox"
+        ],
+        "focus": "PM.PVP.开始验证免费鸡尾酒策略"
+    },
+    "PVP_JustUseFree_To_On": {
+        "desc": "修改freeap滑块",
+        "max_hit": 2,
+        "recognition": "And",
+        "all_of": ["Anc_SliderSwitch_GryOff_Clr"],
+        "action": "Click",
+        "post_delay": 2000
+    },
+    "PVP_JustUseFreeOK": {
+        "desc": "识别是否仅用免费鸡尾酒",
+        "recognition": "And",
+        "all_of": ["Anc_SliderSwitch_YewOn_Clr"],
+        "timeout": 5000,
+        "next": [
+            "PVP_Multiplier_Verify"
+        ],
+        "on_error": [
+            "PVP_Multiplier_Adjust_Gomenu"
+        ],
+        "focus": "PM.PVP.免费AP确认"
+    },
+    "PVP_AutoBattleMAX": {
+        "desc": "点击MAX Mini",
+        "max_hit": 5,
+        "recognition": "OCR",
+        "roi": [
+            826,
+            421,
+            70,
+            34
+        ],
+        "expected": [
+            "MAX"
+        ],
+        "action": "Click",
+        "target": [
+            865,
+            435
+        ],
+        "post_delay": 1000,
+        "timeout": 5000,
+        "next": [
+            "PVP_AutoBattleMAX_CK",
+            "PVP_AutoBattleMAX"
+        ],
+        "on_error": [
+            "PVP_AutoBattleStart",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "PVP_AutoBattleMAX_BackUp": {
+        "desc": "给Ap残留不足以打完当前倍数用的",
+        "enabled": false,
+        "max_hit": 5,
+        "recognition": "OCR",
+        "roi": [
+            826,
+            421,
+            70,
+            34
+        ],
+        "expected": [
+            "MAX"
+        ],
+        "action": "Click",
+        "target": [
+            865,
+            435
+        ],
+        "post_delay": 1000,
+        "timeout": 5000,
+        "next": [
+            "PVP_AutoBattleMAX_CK",
+            "PVP_AutoBattleMAX"
+        ],
+        "on_error": [
+            "PVP_AutoBattleStart",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "PVP_AutoBattleMAX_CK": {
+        "recognition": "ColorMatch",
+        "roi": [
+            839,
+            501,
+            31,
+            42
+        ],
+        "lower": [
+            218,
+            218,
+            205
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 500,
+        "next": [
+            "PVP_AutoBattleStart"
+        ],
+        "focus": "PM.MAX确认"
+    },
+    "PVP_Multiplier_Verify": {
+        "recognition": "OCR",
+        "roi": [
+            844,
+            186,
+            96,
+            36
+        ],
+        "expected": [
+            "^40$"
+        ],
+        "replace": [
+            [
+                "倍",
+                ""
+            ]
+        ],
+        "next": [
+            "PVP_AutoBattleMAX"
+        ]
+    },
+    "PVP_Multiplier_Adjust_Gomenu": {
+        "action": "Click",
+        "target": [
+            919,
+            206
+        ],
+        "post_wait_freezes": 500,
+        "next": [
+            "PVP_Multiplier_Adjust_Set"
+        ],
+        "focus": "PM.[WRN]倍率检查不通过,调整旁路启用"
+    },
+    "PVP_Multiplier_Adjust_Set": {
+        "desc": "默认max倍",
+        "recognition": "OCR",
+        "roi": [
+            451,
+            101,
+            379,
+            184
+        ],
+        "expected": "^(?=.*[设置])(?=.*[鲜血鸡尾酒])(?=.*[消耗量]).{4,12}$",
+        "action": "Click",
+        "target": [
+            812,
+            353
+        ],
+        "post_delay": 500,
+        "timeout": 10000,
+        "next": [
+            "PVP_Multiplier_Adjust_Set_Enter",
+            "[JumpBack]PVP_Multiplier_Adjust_Set_Add"
+        ],
+        "on_error": [
+            "PVP_Multiplier_Adjust_Set_Err_Retry"
+        ]
+    },
+    "PVP_Multiplier_Adjust_Set_Add": {
+        "desc": "改倍率,先intface改最小,这里enable,硬编码点击加5,直到后面ocr达标",
+        "max_hit": 10,
+        "action": "Click",
+        "target": [
+            686,
+            346,
+            27,
+            19
+        ],
+        "post_delay": 1500
+    },
+    "PVP_Multiplier_Adjust_Set_Err_Retry": {
+        "max_hit": 3,
+        "next": [
+            "PVP_Multiplier_Adjust_Set"
+        ],
+        "focus": "PB.调整倍数异常,重试"
+    },
+    "PVP_Multiplier_Adjust_Set_Enter": {
+        "desc": "判定倍数改对了,然后再确定",
+        "recognition": "OCR",
+        "roi": [
+            596,
+            372,
+            105,
+            50
+        ],
+        "expected": [
+            "40"
+        ],
+        "replace": [
+            [
+                "倍",
+                ""
+            ]
+        ],
+        "next": [
+            "PVP_Multiplier_Adjust_Enter",
+            "PVP_Multiplier_Adjust_Set"
+        ]
+    },
+    "PVP_Multiplier_Adjust_Enter": {
+        "recognition": "OCR",
+        "roi": [
+            596,
+            448,
+            209,
+            167
+        ],
+        "expected": "确认",
+        "action": "Click",
+        "post_wait_freezes": 500,
+        "next": [
+            "PVP_Multiplier_Adjust_Enter",
+            "PVP_AutoBattleMAX",
+            "PVP_AutoBattleMAX_BackUp"
+        ]
+    },
+    "PVP_AutoBattleStart": {
+        "desc": "点击战斗开始 | 考虑动画时间以及防止网络卡顿",
+        "recognition": "OCR",
+        "roi": [
+            614,
+            552,
+            180,
+            55
+        ],
+        "expected": [
+            "战斗开始"
+        ],
+        "action": "Click",
+        "post_delay": 10000,
+        "timeout": 30000,
+        "next": [
+            "PVP_BattleResult",
+            "PVP_AutoBattleStart",
+            "PVP_AutoBattle_APShortage",
+            "[JumpBack]PVP_AutoBattle_Battling",
+            "[JumpBack]PVP_BattleWaitingLoad"
+        ],
+        "focus": "PM.PVP.PVP战斗开始"
+    },
+    "PVP_AutoBattle_Battling": {
+        "desc": "识别战斗中",
+        "recognition": "OCR",
+        "roi": [
+            50,
+            576,
+            203,
+            69
+        ],
+        "expected": [
+            "正在进行"
+        ],
+        "post_delay": 5000,
+        "focus": "PM.PVP.PVP战斗进行中..."
+    },
+    "PVP_BattleResult": {
+        "desc": "反复战斗结果",
+        "recognition": "OCR",
+        "roi": [
+            540,
+            166,
+            201,
+            78
+        ],
+        "expected": [
+            "反复战斗结果"
+        ],
+        "action": "Click",
+        "target": [
+            1,
+            1
+        ],
+        "post_delay": 2000,
+        "next": [
+            "PVP_BattleResult",
+            "PVP_BattleLeave",
+            "PVP_BattleFaildLeave"
+        ],
+        "focus": "PM.PVP.PVP战斗结算~"
+    },
+    "PVP_BattleWaitingLoad": {
+        "desc": "匹配PVP对手画面,等待...",
+        "recognition": "OCR",
+        "roi": [
+            1040,
+            36,
+            62,
+            21
+        ],
+        "expected": [
+            "40"
+        ],
+        "replace": [
+            [
+                "o",
+                "0"
+            ],
+            [
+                "O",
+                "0"
+            ]
+        ],
+        "post_delay": 5000
+    },
+    "PVP_BattleLeave": {
+        "desc": "识别离开",
+        "recognition": "OCR",
+        "roi": [
+            1069,
+            652,
+            96,
+            43
+        ],
+        "expected": [
+            "离开"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "PVP_PVPMes_Back",
+            "PVP_BackPVEPage",
+            "PVP_BattleLeave"
+        ],
+        "focus": "PM.PVP.正常离开"
+    },
+    "PVP_BattleFaildLeave": {
+        "desc": "识别离开",
+        "recognition": "OCR",
+        "roi": [
+            698,
+            635,
+            51,
+            32
+        ],
+        "expected": [
+            "离开"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "PVP_PVPMes_Back",
+            "PVP_BackPVEPage"
+        ],
+        "focus": "PM.PVP.失败离开"
+    },
+    "PVP_PVPMes_Back": {
+        "desc": "升降级点击确认",
+        "recognition": "OCR",
+        "roi": [
+            614,
+            642,
+            49,
+            35
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_wait_freezes": 500,
+        "next": [
+            "PVP_BackPVEPage"
+        ]
+    },
+    "PVP_AutoBattle_APShortage": {
+        "desc": "出现Ap不足应对一套,入口",
+        "recognition": "OCR",
+        "roi": [
+            540,
+            225,
+            191,
+            42
+        ],
+        "expected": [
+            "不足"
+        ],
+        "only_rec": true,
+        "next": [
+            "PVP_AutoBattle_APShortage_Depleted",
+            "PVP_AutoBattle_APShortage_Remaining"
+        ],
+        "focus": "PM.PVP-AP不足以执行计划"
+    },
+    "PVP_AutoBattle_APShortage_Depleted": {
+        "desc": "此时AP为零,结束",
+        "recognition": "OCR",
+        "roi": [
+            1040,
+            36,
+            62,
+            21
+        ],
+        "expected": [
+            "^[0]\\D+\\d+$"
+        ],
+        "replace": [
+            [
+                "o",
+                "0"
+            ],
+            [
+                "O",
+                "0"
+            ]
+        ],
+        "action": "Click",
+        "target": [
+            1,
+            1
+        ],
+        "next": [
+            "Global_BackToQC1"
+        ]
+    },
+    "PVP_AutoBattle_APShortage_Remaining": {
+        "desc": "还有残余AP但是不够刷满目标倍数,改到1刷完",
+        "recognition": "OCR",
+        "roi": [
+            1040,
+            36,
+            62,
+            21
+        ],
+        "expected": [
+            "^[1-9]\\d*\\D+\\d+$"
+        ],
+        "replace": [
+            [
+                "o",
+                "0"
+            ],
+            [
+                "O",
+                "0"
+            ]
+        ],
+        "action": "Click",
+        "target": [
+            1,
+            1
+        ],
+        "timeout": 1,
+        "next": [
+            "PVP_AutoBattle_APShortage_Remaining_Return"
+        ],
+        "on_error": [
+            "Global_BackToQC1",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "PVP_AutoBattle_APShortage_Remaining_Return": {
+        "desc": "patch成1倍重开,只执行一次,有很多转向改动,后期维护注意",
+        "max_hit": 1,
+        "action": "Custom",
+        "custom_action": "PatchBatch",
+        "custom_action_param": {
+            "patches": {
+                "PVP_Multiplier_Verify": {
+                    "expected": [
+                        "^1$"
+                    ]
+                },
+                "PVP_Multiplier_Adjust_Set": {
+                    "target": [
+                        453,
+                        351,
+                        20,
+                        18
+                    ]
+                },
+                "PVP_Multiplier_Adjust_Set_Enter": {
+                    "expected": [
+                        "^1$"
+                    ]
+                },
+                "PVP_Multiplier_Adjust_Set_Add": {
+                    "enabled": false
+                },
+                "PVP_Multiplier_Adjust_Enter": {
+                    "timeout": 3000,
+                    "on_error": [
+                        "PVP_AutoBattleStart",
+                        "Global_Null_Exception",
+                        "Global_Null_Panic"
+                    ]
+                },
+                "PVP_AutoBattleMAX_BackUp": {
+                    "enabled": true
+                }
+            }
+        },
+        "next": [
+            "PVP_TaskStart"
+        ]
+    },
+    "PVP_BackPVEPage": {
+        "desc": "找到图钉-点击返回主页",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1122,
+            646,
+            40,
+            38
+        ],
+        "template": [
+            "pin.png"
+        ],
+        "next": [
+            "Global_BackToQC1"
+        ],
+        "focus": "PM.开始离开PVP卡带"
+    },
+    "PVP_PerOperationsMain_Error": {
+        "recognition": "OCR",
+        "roi": [
+            480,
+            139,
+            322,
+            429
+        ],
+        "expected": [
+            "没有赛季奖励",
+            "error"
+        ],
+        "next": [
+            "PVP_PerOperationsMain_Error_Processing"
+        ],
+        "focus": "PB.[WRN]游戏异常弹窗"
+    },
+    "PVP_PerOperationsMain_Error_Processing": {
+        "recognition": "OCR",
+        "roi": [
+            480,
+            139,
+            322,
+            429
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_wait_freezes": 500
+    },
+    "PVP_Sandplay_NoFindSrena": {
+        "desc": "如果1不是结算页面,2找不到舞台物件.尝试点击箱庭内其他特征物变换位置",
+        "recognition": "TemplateMatch",
+        "template": [
+            "pvp_nofind_UT_bk.png",
+            "pvp_nofind_ut_bk2.png",
+            "pvp_nofind_UT_ft.png",
+            "pvp_nofind_UT_Rt.png",
+            "pvp_nofind_twoaudience.png",
+            "pvp_nofind_waiter_fr.png",
+            "pvp_nofind_aman_sit.png"
+        ],
+        "action": "Click",
+        "post_delay": 5000,
+        "focus": "null"
+    },
+    "PVP_WorkaroundIn_Start": {
+        "next": [
+            "PVP_WorkaroundIn_CkAtPass",
+            "PVP_WorkaroundIn_GoInPass",
+            "[JumpBack]Global_ToHomePage"
+        ],
+        "focus": "PWB.[WRN]PVP进入舞台备用方案启用"
+    },
+    "PVP_WorkaroundIn_GoInPass": {
+        "desc": "识别左下抽抽乐-点击通行证",
+        "recognition": "And",
+        "all_of": [
+            "Rec_HomePage_GA_Ocr",
+            "Sub_HomePage_GA_Bright_Clr"
+        ],
+        "action": "Click",
+        "target": [
+            1063,
+            210
+        ],
+        "post_delay": 1000,
+        "next": [
+            "PVP_WorkaroundIn_CkAtPass",
+            "PVP_WorkaroundIn_GoInPass"
+        ],
+        "focus": "PWM.尝试进入通行证页面"
+    },
+    "PVP_WorkaroundIn_CkAtPass": {
+        "desc": "目前默认就是这个通行证,后续需要维护加判定,和异常状态返回",
+        "recognition": "OCR",
+        "roi": [
+            217,
+            14,
+            101,
+            49
+        ],
+        "expected": [
+            "通行证"
+        ],
+        "next": [
+            "PVP_WorkaroundIn_PassIsEnter",
+            "[JumpBack]Pass_WorkaroundIn_PassTab_Change"
+        ]
+    },
+    "Pass_WorkaroundIn_PassTab_Change": {
+        "desc": "选择通行证任务列表中pvp相关",
+        "recognition": "ColorMatch",
+        "lower": [
+            [
+                153,
+                151,
+                146
+            ]
+        ],
+        "upper": [
+            [
+                153,
+                151,
+                146
+            ]
+        ],
+        "count": 100,
+        "action": "Click",
+        "target": [
+            1145,
+            250
+        ],
+        "post_delay": 1000,
+        "focus": "PWB.任务子项页色核检查"
+    },
+    "PVP_WorkaroundIn_PassIsEnter": {
+        "recognition": "OCR",
+        "roi": [
+            957,
+            164,
+            72,
+            35
+        ],
+        "expected": [
+            "高级"
+        ],
+        "next": [
+            "Pass_WorkaroundIn_TextPVP",
+            "Pass_WorkaroundIn_TemplinePVP",
+            "Pass_WorkaroundIn_Swip_pre",
+            "[JumpBack]Pass_WorkaroundIn_PassTabEnter",
+            "[JumpBack]Pass_WorkaroundIn_Swip"
+        ]
+    },
+    "Pass_WorkaroundIn_PassTabEnter": {
+        "desc": "选择通行证任务列表中pvp相关",
+        "recognition": "ColorMatch",
+        "roi": [
+            1119,
+            362,
+            53,
+            219
+        ],
+        "lower": [
+            [
+                153,
+                151,
+                146
+            ]
+        ],
+        "upper": [
+            [
+                153,
+                151,
+                146
+            ]
+        ],
+        "count": 100,
+        "action": "Click",
+        "target": [
+            1145,
+            460
+        ],
+        "post_delay": 1000,
+        "focus": "PWB.任务子项页色核检查"
+    },
+    "Pass_WorkaroundIn_TextPVP": {
+        "recognition": "OCR",
+        "roi": [
+            610,
+            151,
+            492,
+            362
+        ],
+        "expected": "在镜中之战进行战斗",
+        "next": [
+            "Pass_WorkaroundIn_TyrFindButt_Ubanle_Ocr",
+            "Pass_WorkaroundIn_TyrFindButt_Find_Ocr"
+        ],
+        "focus": "PWB.目标条目发现-OCR"
+    },
+    "Pass_WorkaroundIn_TyrFindButt_Ubanle_Ocr": {
+        "recognition": "TemplateMatch",
+        "roi": "Pass_WorkaroundIn_TextPVP",
+        "roi_offset": [
+            0,
+            -45,
+            490,
+            130
+        ],
+        "template": [
+            "PassGotoUnable.png"
+        ],
+        "focus": "PWB.已完成,路径消失-OCR"
+    },
+    "Pass_WorkaroundIn_TyrFindButt_Find_Ocr": {
+        "recognition": "TemplateMatch",
+        "roi": "Pass_WorkaroundIn_TextPVP",
+        "roi_offset": [
+            0,
+            -45,
+            490,
+            130
+        ],
+        "template": [
+            "PassGotoSomeone.png"
+        ],
+        "action": "Click",
+        "next": [
+            "Pass_WorkaroundIn_TyrFindButt_Find_Ocr",
+            "PVP_HUB_Sandplay"
+        ],
+        "focus": "PWB.路径发现,点击-OCR"
+    },
+    "Pass_WorkaroundIn_TemplinePVP": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            610,
+            151,
+            492,
+            362
+        ],
+        "template": [
+            "PassList_PVP.png"
+        ],
+        "next": [
+            "Pass_WorkaroundIn_TyrFindButt_Ubanle_Tmp",
+            "Pass_WorkaroundIn_TyrFindButt_Find_Tmp"
+        ],
+        "focus": "PWB.目标条目发现-Temp"
+    },
+    "Pass_WorkaroundIn_TyrFindButt_Ubanle_Tmp": {
+        "recognition": "TemplateMatch",
+        "roi": "Pass_WorkaroundIn_TemplinePVP",
+        "roi_offset": [
+            0,
+            -45,
+            490,
+            100
+        ],
+        "template": [
+            "PassGotoUnable.png"
+        ],
+        "focus": "PWB.已完成,路径消失-Tmp"
+    },
+    "Pass_WorkaroundIn_TyrFindButt_Find_Tmp": {
+        "recognition": "TemplateMatch",
+        "roi": "Pass_WorkaroundIn_TemplinePVP",
+        "roi_offset": [
+            0,
+            -45,
+            490,
+            100
+        ],
+        "template": [
+            "PassGotoSomeone.png"
+        ],
+        "action": "Click",
+        "next": [
+            "Pass_WorkaroundIn_TyrFindButt_Find_Tmp",
+            "PVP_HUB_Sandplay"
+        ],
+        "focus": "PWB.路径发现,点击-Tmp"
+    },
+    "Pass_WorkaroundIn_Swip_pre": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            610,
+            151,
+            492,
+            362
+        ],
+        "template": [
+            "PassGotoUnable.png"
+        ],
+        "next": [
+            "Global_ToSandBox"
+        ],
+        "focus": "PWB.未完成任务见底,未找到目标"
+    },
+    "Pass_WorkaroundIn_Swip": {
+        "action": "Swipe",
+        "begin": [
+            787,
+            480
+        ],
+        "end": [
+            787,
+            200
+        ],
+        "end_hold": 1000,
+        "duration": 500,
+        "focus": "PWB.滑动后继续寻找"
+    }
+}
