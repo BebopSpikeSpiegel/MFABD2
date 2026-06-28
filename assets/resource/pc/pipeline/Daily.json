@@ -113,16 +113,16 @@
         "roi": [474, 570, 82, 28]
     },
     "Daily_Square_ToSquare": {
-        "desc": "卡带菜单选广场卡进入梦幻广场(TemplateMatch Qcard_Square)。|[PC覆盖] PC实测广场卡'FANTASIA SQUARE'在'玩法游戏卡'行右滑到底,720封面标志约[1168,455,52,55];模板Qcard_Square已按720重裁(52x55,从native降采样裁,待MFA验匹配度)。roi覆盖到玩法行卡片带[1040,440,820,150];target_offset点卡片主体。实机验证:点广场卡→进梦幻广场。",
+        "desc": "卡带菜单选广场卡进入梦幻广场(TemplateMatch Qcard_Square)。|[PC覆盖·2026-06-28重裁修复0.34] 根因:旧模板52×55其实是native-1080尺寸未真正降采样,scale比720帧大1.5倍→TemplateMatch仅0.34。修法:MaaMCP取1080帧→整帧cv2.INTER_AREA缩到1280×720(复刻MFA的MaaFW降采样)→在玩法游戏卡行最右广场卡上裁'FANTASIA SQUARE'金色字标,得正确720尺寸模板84×34存PC/image。字标720[1159,419,84,34],top y419在旧roi(y440)之上故roi上扩为[1110,395,180,110]罩住;同帧自匹配峰值1.0、次峰仅0.51,阈值0.7可唯一命中、排除其余6卡。target_offset从字标中心(1201,436)微调到卡片中心。仍待MFA整链复验。",
         "roi": [
-            1040,
-            440,
-            820,
-            150
+            1110,
+            395,
+            180,
+            110
         ],
         "target_offset": [
-            -20,
-            15,
+            -10,
+            10,
             0,
             0
         ]
