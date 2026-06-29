@@ -113,28 +113,30 @@
         "roi": [474, 570, 82, 28]
     },
     "Daily_Square_ToSquare": {
-        "desc": "卡带菜单选广场卡进入梦幻广场(TemplateMatch Qcard_Square)。|[PC覆盖·2026-06-28重裁修复0.34] 根因:旧模板52×55其实是native-1080尺寸未真正降采样,scale比720帧大1.5倍→TemplateMatch仅0.34。修法:MaaMCP取1080帧→整帧cv2.INTER_AREA缩到1280×720(复刻MFA的MaaFW降采样)→在玩法游戏卡行最右广场卡上裁'FANTASIA SQUARE'金色字标,得正确720尺寸模板84×34存PC/image。字标720[1159,419,84,34],top y419在旧roi(y440)之上故roi上扩为[1110,395,180,110]罩住;同帧自匹配峰值1.0、次峰仅0.51,阈值0.7可唯一命中、排除其余6卡。target_offset从字标中心(1201,436)微调到卡片中心。仍待MFA整链复验。",
+        "desc": "卡带菜单选广场卡进入梦幻广场(TemplateMatch Qcard_Square)。|[PC覆盖·2026-06-30重做] 上一版两错:①模板从MaaMCP整帧cv2缩720裁,但MFA实截客户端区、尺度差~2%→实机仅0.34-0.377;②roi被误设[1110,395,180,110](右上角餐厅背景),而玩法游戏卡行实在底部y~616(以MFA on_error帧Daily_Square_Menu_Cor为准)→在背景里瞎匹配。修法:直接用MFA自存on_error 720帧,在最右FANTASIA SQUARE卡裁彩虹+金字标art 64×46存PC/image;roi指回底部卡带行[10,600,1260,90];green_mask关(卡是彩色art非绿UI)。同帧自匹配1.000、次峰(他卡)0.565、阈0.7唯一命中。target_offset[0,10]落卡中心。",
         "roi": [
-            1110,
-            395,
-            180,
-            110
+            10,
+            600,
+            1260,
+            90
         ],
+        "green_mask": false,
         "target_offset": [
-            -10,
+            0,
             10,
             0,
             0
         ]
     },
     "Daily_FantasiaSquare": {
-        "desc": "确认已进入梦幻广场(TemplateMatch Mirror_FantasiaSquare_Ico)。|[PC覆盖] 模板维护者已拍PC版(40x40);base roi[656,622,77,66]按安卓,PC底部功能按钮位置不同,roi放宽到底部按钮带待MFA核准。实机验证:进梦幻广场场景确认。",
+        "desc": "确认已进入梦幻广场(TemplateMatch Mirror_FantasiaSquare_Ico)。|[PC覆盖·2026-06-30修] ①上一版roi[560,860,780,120]误用1080坐标→y860掉出720帧外→确认恒失败、整条许愿不跑。改roi[640,628,120,72]罩住地面mirror图标(MFA实帧稳定命中box[665,646])。②MFA实帧维护者PC模板仅0.647<默认0.7阈值→闸门仍关,而真位置峰值0.647、异位置仅0.47→降threshold到0.55(高于误匹配地板、低于真峰,选择性安全),不动维护者模板。FantasiaSquare是总闸,过后才接DailyIco(点'移动至女神像'日常自动寻路)→Daily_Pray许愿。",
         "roi": [
-            560,
-            860,
-            780,
-            120
-        ]
+            640,
+            628,
+            120,
+            72
+        ],
+        "threshold": 0.55
     },
     "Daily_DailyIco_1": {
         "desc": "梦幻广场每日奖励绿勾图标(TemplateMatch Square_DailyIco)。|[PC覆盖] PC实测'每日奖励'绿勾在右上任务列表,720绿勾约[1025,128,30,30](native(1555,205));base roi[968,76,56,256]按安卓→[1015,120,60,45]。模板Square_DailyIco已按720重裁(20x20绿圆白勾,待MFA验)。target_offset继承base[3,0]。",
