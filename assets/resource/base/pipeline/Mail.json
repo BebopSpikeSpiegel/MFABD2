@@ -12,10 +12,6 @@
             "Rec_HomePage_GA_Ocr",
             "Sub_HomePage_GA_Bright_Clr"
         ],
-        "target": [
-            1030,
-            45
-        ],
         "post_delay": 1000,
         "timeout": 3000,
         "next": [
@@ -29,15 +25,22 @@
         "focus": "GM.主页面已确认"
     },
     "Mail_NewRed": {
-        "recognition": "TemplateMatch",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
         "roi": [
             1003,
             14,
             64,
             58
         ],
-        "template": ["Mail.png"],
         "action": "Click",
+        "target_offset": [
+            -15,
+            20,
+            0,
+            0
+        ],
         "post_wait_freezes": 500,
         "next": [
             "Mail_Check_MailPage",
