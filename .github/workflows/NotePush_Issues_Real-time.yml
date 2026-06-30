@@ -6,7 +6,6 @@ on:
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   issue-notification:
@@ -14,7 +13,7 @@ jobs:
     
     steps:
       - name: Check Out Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       
       - name: Prepare Issue Message
         id: prepare_message
@@ -162,15 +161,22 @@ jobs:
       
       - name: Send QQ Notification
         if: steps.prepare_message.outputs.skip_notification != 'true'
-        uses: Y2Nk4/qmsg-action@master
-        with:
-          # qq: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_QQ_DEV || secrets.QMSG_QQ_PUB }}
-          # groups: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_GROUPS_DEV || secrets.QMSG_GROUPS_PUB }}
-          groups: ${{ secrets.QMSG_GROUPS_DEV }}
-          key: ${{ secrets.QMSG_KEY }}
-          message: |
-            ${{ steps.prepare_message.outputs.title }}
-            ${{ steps.prepare_message.outputs.content }}
+        env:
+          # 经 env 注入，避免用户可控内容（Issue 标题等）直接拼进命令行
+          QMSG_KEY: ${{ secrets.QMSG_KEY }}
+          QMSG_GROUPS: ${{ secrets.QMSG_GROUPS_DEV }}
+          TITLE: ${{ steps.prepare_message.outputs.title }}
+          CONTENT: ${{ steps.prepare_message.outputs.content }}
+        run: |
+          MSG="$TITLE"$'\n'"$CONTENT"
+          RESP=$(curl -sS -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
+            --data-urlencode "msg=${MSG}" \
+            --data-urlencode "qq=${QMSG_GROUPS}")
+          echo "Qmsg 响应: $RESP"
+          echo "$RESP" | jq -e '.success == true' >/dev/null || {
+            echo "::error::Qmsg 推送失败"
+            exit 1
+          }
       
       - name: Skip Notification Log
         if: steps.prepare_message.outputs.skip_notification == 'true'

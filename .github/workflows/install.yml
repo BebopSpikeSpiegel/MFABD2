@@ -964,13 +964,11 @@ jobs:
           echo "Short SHA: $SHORT_SHA"
 
       - name: Send Notification
-        uses: Y2Nk4/qmsg-action@ce43bda34f1ba6668ff43ba8d0ad465d1c959723 # master
-        with:
-          # qq: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_QQ_DEV || secrets.QMSG_QQ_PUB }}
-          groups: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_GROUPS_DEV || secrets.QMSG_GROUPS_PUB }}
-          # groups: ${{ secrets.QMSG_NOTIFY_GROUPS }}
-          key: ${{ secrets.QMSG_KEY }}
-          message: |
+        env:
+          # 经 env 注入，避免用户可控内容直接拼进命令行
+          QMSG_KEY: ${{ secrets.QMSG_KEY }}
+          QMSG_GROUPS: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_GROUPS_DEV || secrets.QMSG_GROUPS_PUB }}
+          MSG: |
             🏗️ [${{ github.repository }}] 构建完成
             👤 提交者: ${{ github.actor }}
             🌿 分支: ${{ github.ref_name }}
@@ -982,3 +980,13 @@ jobs:
             ${{ steps.commit-info.outputs.body != '' && format('📖 描述: {0}', steps.commit-info.outputs.body) || '📖 描述: 无' }}
             🔗 查看提交: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
             🔨 构建下载: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          # 直发 Qmsg 群消息：POST /group/<KEY>
+          RESP=$(curl -sS -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
+            --data-urlencode "msg=${MSG}" \
+            --data-urlencode "qq=${QMSG_GROUPS}")
+          echo "Qmsg 响应: $RESP"
+          echo "$RESP" | jq -e '.success == true' >/dev/null || {
+            echo "::error::Qmsg 推送失败"
+            exit 1
+          }

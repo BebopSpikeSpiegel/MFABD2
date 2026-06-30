@@ -20,7 +20,7 @@ env:
   PREVIEW_LEN: 80      # 评论正文预览保留的字符数（原为 30，偏短）
   FETCH_PER_PAGE: 50   # 每次拉取的 PR 数量上限（原为 30）
   PR_LIMIT: 8          # 消息中最多显示的 PR 条数（原为 5）
-  COMMENT_LIMIT: 8     # 消息中最多显示的评论条数（原为 5）
+  COMMENT_LIMIT: 8     # 评论按 Issue 分组后，最多显示的话题数（每话题内评论全列）
   ASSIGN_LIMIT: 5      # 消息中最多显示的分配条数（原为 3）
 
 jobs:
@@ -246,45 +246,55 @@ jobs:
           CLEANED_JSON=$(cat summary_data.json | tr -d '\000-\031')
           SUMMARY_DATA=$(echo "$CLEANED_JSON")
           
-          MESSAGE="📊 [${{ github.repository }}] 项目动态 ($TIME_LABEL)"
+          MESSAGE="📊 [${{ github.repository }}] 项目动态 · $TIME_LABEL"
           
           # --- 1. 处理 PR (新增) ---
           if [ "$PR_COUNT" -gt 0 ]; then
-             MESSAGE="$MESSAGE"$'\n'"🔀 PR 变更 ($PR_COUNT)"
-             # 循环读取
+             MESSAGE="$MESSAGE"$'\n\n'"🔀 PR ($PR_COUNT)"
              LEN=$(echo "$SUMMARY_DATA" | jq '.prs | length')
              LIMIT=$PR_LIMIT
-             
              for i in $(seq 0 $((LEN-1))); do
                 if [ "$i" -ge "$LIMIT" ]; then
-                   MESSAGE="$MESSAGE"$'\n'"  ...等 $((PR_COUNT-LIMIT)) 个 PR"
+                   MESSAGE="$MESSAGE"$'\n'" …等 $((PR_COUNT-LIMIT)) 个 PR"
                    break
                 fi
-                ITEM=$(echo "$SUMMARY_DATA" | jq -r ".prs[$i]")
+                ITEM=$(echo "$SUMMARY_DATA" | jq -c ".prs[$i]")
                 NUM=$(echo "$ITEM" | jq -r '.number')
                 TITLE=$(echo "$ITEM" | jq -r '.title')
                 STATUS=$(echo "$ITEM" | jq -r '.status')
                 USER=$(echo "$ITEM" | jq -r '.user')
-                MESSAGE="$MESSAGE"$'\n'"  - $STATUS [#$NUM] $TITLE ($USER)"
+                # status 形如 "🟣 合并"：拆出 emoji 放标题行、文字放子项
+                EMOJI="${STATUS%% *}"
+                STATE_TEXT="${STATUS#* }"
+                MESSAGE="$MESSAGE"$'\n'" $EMOJI #$NUM $TITLE"
+                MESSAGE="$MESSAGE"$'\n'"    └ $USER · $STATE_TEXT"
              done
           fi
 
           # --- 2. 处理评论 ---
           if [ "$COMMENT_COUNT" -gt 0 ]; then
-            MESSAGE="$MESSAGE"$'\n'"💬 新评论 ($COMMENT_COUNT)"
-            LEN=$(echo "$SUMMARY_DATA" | jq '.comments | length')
-            LIMIT=$COMMENT_LIMIT
-            for i in $(seq 0 $((LEN-1))); do
-                if [ "$i" -ge "$LIMIT" ]; then
-                   MESSAGE="$MESSAGE"$'\n'"  ...等 $((COMMENT_COUNT-LIMIT)) 条评论"
+            # 按 Issue 编号分组：标题只印一次，多条评论作为子项缩进
+            GROUPED=$(echo "$SUMMARY_DATA" | jq -c '.comments | group_by(.number)')
+            TOPIC_COUNT=$(echo "$GROUPED" | jq 'length')
+            MESSAGE="$MESSAGE"$'\n\n'"💬 评论 ($COMMENT_COUNT 条 · $TOPIC_COUNT 话题)"
+            TLIMIT=$COMMENT_LIMIT
+            for t in $(seq 0 $((TOPIC_COUNT-1))); do
+                if [ "$t" -ge "$TLIMIT" ]; then
+                   MESSAGE="$MESSAGE"$'\n'" …等 $((TOPIC_COUNT-TLIMIT)) 个话题"
                    break
                 fi
-                ITEM=$(echo "$SUMMARY_DATA" | jq -r ".comments[$i]")
-                NUM=$(echo "$ITEM" | jq -r '.number')
-                TITLE=$(echo "$ITEM" | jq -r '.title')
-                AUTHOR=$(echo "$ITEM" | jq -r '.author')
-                PREVIEW=$(echo "$ITEM" | jq -r '.preview')
-                MESSAGE="$MESSAGE"$'\n'"  - [#$NUM] $TITLE：$AUTHOR：$PREVIEW..."
+                GROUP=$(echo "$GROUPED" | jq -c ".[$t]")
+                NUM=$(echo "$GROUP" | jq -r '.[0].number')
+                TITLE=$(echo "$GROUP" | jq -r '.[0].title')
+                MESSAGE="$MESSAGE"$'\n'" #$NUM $TITLE"
+                CLEN=$(echo "$GROUP" | jq 'length')
+                for c in $(seq 0 $((CLEN-1))); do
+                    AUTHOR=$(echo "$GROUP" | jq -r ".[$c].author")
+                    PREVIEW=$(echo "$GROUP" | jq -r ".[$c].preview")
+                    # 末条用 └，其余用 ├
+                    if [ "$c" -eq "$((CLEN-1))" ]; then CONN="└"; else CONN="├"; fi
+                    MESSAGE="$MESSAGE"$'\n'"    $CONN $AUTHOR：$PREVIEW…"
+                done
             done
           fi
           
@@ -305,26 +315,32 @@ jobs:
           
           # --- 4. 处理分配 ---
           if [ "$ASSIGN_COUNT" -gt 0 ]; then
-            MESSAGE="$MESSAGE"$'\n'"👤 分配 ($ASSIGN_COUNT)"
+            MESSAGE="$MESSAGE"$'\n\n'"👤 分配 ($ASSIGN_COUNT)"
             LEN=$(echo "$SUMMARY_DATA" | jq '.assignments | length')
             LIMIT=$ASSIGN_LIMIT
             for i in $(seq 0 $((LEN-1))); do
-                if [ "$i" -ge "$LIMIT" ]; then break; fi
-                ITEM=$(echo "$SUMMARY_DATA" | jq -r ".assignments[$i]")
+                if [ "$i" -ge "$LIMIT" ]; then
+                   MESSAGE="$MESSAGE"$'\n'" …等 $((ASSIGN_COUNT-LIMIT)) 个"
+                   break
+                fi
+                ITEM=$(echo "$SUMMARY_DATA" | jq -c ".assignments[$i]")
                 NUM=$(echo "$ITEM" | jq -r '.number')
                 ASSIGNEE=$(echo "$ITEM" | jq -r '.assignee')
-                MESSAGE="$MESSAGE"$'\n'"  - [#$NUM] -> $ASSIGNEE"
+                MESSAGE="$MESSAGE"$'\n'" #$NUM → $ASSIGNEE"
             done
           fi
           
           if [ "$TOTAL_COUNT" -eq 0 ]; then
-             MESSAGE="$MESSAGE"$'\n'"💤 本时段无动态"
+             MESSAGE="$MESSAGE"$'\n\n'"💤 本时段无动态"
           fi
-          
-          # 输出
+
+          echo "===== 生成的消息 ====="
+          printf '%s\n' "$MESSAGE"
+
+          # 输出（printf 保留换行，避免 echo -e 误解析标题里的反斜杠）
           {
             echo "message<<EOF"
-            echo -e "$MESSAGE"
+            printf '%s\n' "$MESSAGE"
             echo "EOF"
           } >> $GITHUB_OUTPUT
                 
