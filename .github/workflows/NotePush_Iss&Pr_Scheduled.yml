@@ -16,7 +16,6 @@ on:
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   # ===== 消息长度 / 条数控制（按需调整，改这里即可生效）=====
   PREVIEW_LEN: 80      # 评论正文预览保留的字符数（原为 30，偏短）
   FETCH_PER_PAGE: 50   # 每次拉取的 PR 数量上限（原为 30）
@@ -29,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       
       - name: Calculate Time Windows
         id: time_calc
@@ -331,10 +330,19 @@ jobs:
                 
       - name: Send QQ Notification
         if: steps.fetch_activities.outputs.total_count != '0'
-        uses: Y2Nk4/qmsg-action@master
-        with:
-          # qq: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_QQ_DEV || secrets.QMSG_QQ_PUB }}
-          # groups: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_GROUPS_DEV || secrets.QMSG_GROUPS_PUB }}
-          groups: ${{ secrets.QMSG_GROUPS_PUB }}
-          key: ${{ secrets.QMSG_KEY }}
-          message: ${{ steps.generate_message.outputs.message }}
+        env:
+          # 经 env 注入，避免用户可控的消息内容直接拼进命令行
+          QMSG_KEY: ${{ secrets.QMSG_KEY }}
+          QMSG_GROUPS: ${{ secrets.QMSG_GROUPS_PUB }}
+          MSG: ${{ steps.generate_message.outputs.message }}
+        run: |
+          # 直发 Qmsg 群消息：POST /group/<KEY>，--data-urlencode 自动处理换行与特殊字符
+          RESP=$(curl -sS -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
+            --data-urlencode "msg=${MSG}" \
+            --data-urlencode "qq=${QMSG_GROUPS}")
+          echo "Qmsg 响应: $RESP"
+          # 校验服务端 success 字段，失败则让步骤失败（与原 action 行为一致）
+          echo "$RESP" | jq -e '.success == true' >/dev/null || {
+            echo "::error::Qmsg 推送失败"
+            exit 1
+          }
