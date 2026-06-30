@@ -39,8 +39,9 @@ jobs:
           
           # 如果是手动触发的测试模式
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ inputs.test_mode }}" == "true" ]; then
-            # 当天0点 UTC
-            START_TIME=$(date -u -d "00:00:00" +"%Y-%m-%dT%H:%M:%SZ")
+            # 北京时间(UTC+8，无夏令时)当天 0 点，再转成 UTC：覆盖整个今天含凌晨，避免漏掉夜间活动
+            BJ_TODAY=$(date -u -d "+8 hours" +%Y-%m-%d)
+            START_TIME=$(date -u -d "$BJ_TODAY 00:00:00 +0800" +"%Y-%m-%dT%H:%M:%SZ")
             TIME_LABEL="今天汇总"
           else
             # 根据定时任务确定时间窗口
