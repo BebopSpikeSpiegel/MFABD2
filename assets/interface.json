@@ -451,11 +451,8 @@
                     "name": "优先双倍",
                     "description": "优先：先按资源倾向筛选，若恰好有双倍则打航线；否则转打狩猎场。",
                     "pipeline_override": {
-                        "QuickHunt_CollectMapAdventureRouteDoubleCk1No": {
-                            "next": [
-                                "QuickHunt_CollectMapAdventureRouteDoubleCk2No_ToCentral",
-                                "[JumpBack]QuickHunt_CollectMap_Initialize"
-                            ]
+                        "QuickHunt_AdventureRouteReBackHuntingGrounds": {
+                            "enabled": true
                         }
                     }
                 },

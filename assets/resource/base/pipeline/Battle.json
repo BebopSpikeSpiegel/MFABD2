@@ -441,6 +441,7 @@
         ]
     },
     "QuickHunt_AdventureRouteReBackHuntingGrounds": {
+        "desc": "优先双倍开关,返回去狩猎场",
         "enabled": false,
         "next": [
             "QuickHunt_AdventureRouteReBackHuntingGrounds_Pipeline"
