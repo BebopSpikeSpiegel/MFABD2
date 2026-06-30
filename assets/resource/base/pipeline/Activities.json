@@ -556,14 +556,14 @@
         ],
         "post_delay": 3000,
         "next": [
-            "Global_ToHomePage_Enter",
-            "Global_ToHomePage",
+            "Activities_BackHomePage",
+            "[JumpBack]Global_ToHomePage",
             "Activities_Fin"
         ],
         "focus": "GA.退出活动"
     },
     "Activities_BackHomePage": {
-        "desc": "返回主页",
+        "desc": "成功返回主页",
         "recognition": "And",
         "all_of": [
             "Rec_HomePage_GA_Ocr",
