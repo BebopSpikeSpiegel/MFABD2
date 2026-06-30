@@ -46,8 +46,9 @@ jobs:
             # 根据定时任务确定时间窗口
             CURRENT_HOUR=$(date -u +"%H")
             case $CURRENT_HOUR in
-              "01")  # 对应北京时间 09:00
-                START_TIME=$(date -u -d "18:00:00 yesterday" +"%Y-%m-%dT%H:%M:%SZ")
+              "01")  # 对应北京时间 09:00（覆盖昨天「下午汇总」终点 18:00 至今，含整晚，无缝衔接）
+                # 昨天 10:00 UTC = 北京昨天 18:00，正好接上「下午汇总」的终点，避免夜间空洞
+                START_TIME=$(date -u -d "10:00:00 yesterday" +"%Y-%m-%dT%H:%M:%SZ")
                 TIME_LABEL="昨夜汇总"
                 ;;
               "06")  # 对应北京时间 14:00
@@ -137,7 +138,7 @@ jobs:
           COMMENTS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/$REPO/issues/comments?since=$START_TIME&sort=created&direction=desc" | \
-            jq -c '.[] | select(.created_at >= "'$START_TIME'" and .created_at <= "'$END_TIME'")')
+            jq -c '.[] | select(.created_at >= "'$START_TIME'" and .created_at < "'$END_TIME'")')
           
           COMMENT_COUNT=0
           COMMENTS_ARRAY="["
@@ -170,7 +171,7 @@ jobs:
           EVENTS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/$REPO/issues/events?since=$START_TIME" | \
-            jq -c '.[] | select(.created_at >= "'$START_TIME'" and .created_at <= "'$END_TIME'")')
+            jq -c '.[] | select(.created_at >= "'$START_TIME'" and .created_at < "'$END_TIME'")')
           
           LABEL_COUNT=0
           LABELS_ARRAY="["
