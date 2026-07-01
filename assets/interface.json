@@ -580,6 +580,7 @@
                                 "[JumpBack]QuickHunt_OpenGui",
                                 "[JumpBack]QuickHunt_AdventureRoute",
                                 "[JumpBack]QuickHunt_HuntingGrounds",
+                                "[JumpBack]QuickHunt_RiceRecheck",
                                 "[JumpBack]QuickHunt_CrystalCave"
                             ]
                         }
