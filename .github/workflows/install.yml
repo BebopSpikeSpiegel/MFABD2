@@ -936,12 +936,10 @@ jobs:
           # 提取第一行作为摘要
           SUBJECT=$(echo "$COMMIT_MSG" | head -n 1)
 
-          # 简化描述处理
+          # 简化描述处理（jq 按 Unicode 字符截取，避免 head -c 字节截断 CJK）
           if [ $(echo "$COMMIT_MSG" | wc -l) -gt 1 ]; then
-            BODY=$(echo "$COMMIT_MSG" | tail -n +2 | head -c 100 | tr -d '\n')
-            if [ ${#BODY} -eq 100 ]; then
-              BODY="$BODY..."
-            fi
+            BODY=$(echo "$COMMIT_MSG" | tail -n +2 | tr -d '\n' | \
+              jq -Rrs 'if length > 100 then .[0:100] + "..." else . end')
           else
             BODY=""
           fi
