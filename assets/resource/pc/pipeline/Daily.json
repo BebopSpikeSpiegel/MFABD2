@@ -89,20 +89,18 @@
         ]
     },
     "Daily_GetBusin_SubMenu_Claim": {
-        "desc": "子菜单OCR领取(获得/结算/回收)+色核点击。|[PC覆盖] 720实测'结算'在box(789,260,29,16)中心(803,268),base子OCR roi[640,156,251,416]按安卓→[640,180,260,260]罩住结算/获得区。【2026-06-24修复】原误加only_rec:true→大roi多段文字被当单行识别返回空、结算从未成功;去掉only_rec改完整OCR(检测+识别)才能框到'结算'。action/Sub_Ocr_Enable_Clr继承base。",
+        "desc": "子菜单OCR点击'一键获得'一键领取+色核。|[PC覆盖] #322 sunyink:应点底部'一键获得'(非'结算')。720实机OCR det实测'一键获得'在box(703,532,49,18);原PC误识别'结算'(roi[640,180,260,260]仅到y440,框不到y532的一键获得)。改roi[660,505,180,60]罩底部一键获得,expected'键获得'(det易丢'一',与base #322一致)。action/Sub_Ocr_Enable_Clr继承base。",
         "all_of": [
             {
                 "recognition": "OCR",
                 "roi": [
-                    640,
+                    660,
+                    505,
                     180,
-                    260,
-                    260
+                    60
                 ],
                 "expected": [
-                    "获得",
-                    "结算",
-                    "回收"
+                    "键获得"
                 ]
             },
             "Sub_Ocr_Enable_Clr"
