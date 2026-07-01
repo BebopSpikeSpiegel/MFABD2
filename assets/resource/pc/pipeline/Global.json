@@ -174,13 +174,14 @@
         ]
     },
     "Rec_SandBox_Pin3_Tpl": {
-        "desc": "[识别]箱庭,'pin 第3组'按钮的UI",
+        "desc": "[识别]箱庭,'pin 第3组'按钮的UI。|[PC覆盖·2026-06-30修] 与Rec_SandBox_Pin_Tpl同用pin.png,但PC覆盖只给Pin_Tpl加了green_mask漏了本节点→同按钮同模板不带green_mask仅0.459<0.7→Equip_Skill_Tap3卡死。证据:Global_ToSandBox_Enter里带green_mask的Pin_Tpl在第3pin[1198,655]打0.860。修:补green_mask:true;roi[1195,655,41,39]右缘1236裁掉第3pin(1198+40=1238)→放宽到[1188,646,56,52]罩全(x1188避开第2pin≤1187)",
         "roi": [
-            1195,
-            655,
-            41,
-            39
-        ]
+            1188,
+            646,
+            56,
+            52
+        ],
+        "green_mask": true
     },
     "Rec_Reward_Ocr": {
         "desc": "[识别]获得奖励,下方文字",

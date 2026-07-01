@@ -86,15 +86,6 @@
             26
         ]
     },
-    "QuickHunt_FastBattleMAXTouchHuntingGrounds": {
-        "desc": "B-1.狩猎场次数选择，点击MAX",
-        "target": [
-            485,
-            332,
-            20,
-            20
-        ]
-    },
     "QuickHunt_CollectMapAdventureRoute_Select_Glod": {
         "desc": "硬编码选择航线-金币",
         "target": [
