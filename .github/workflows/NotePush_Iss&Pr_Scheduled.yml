@@ -326,7 +326,7 @@ jobs:
           MSG: ${{ steps.generate_message.outputs.message }}
         run: |
           # 直发 Qmsg 群消息：POST /group/<KEY>，--data-urlencode 自动处理换行与特殊字符
-          RESP=$(curl -sS --max-time 30 --connect-timeout 10 -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
+          RESP=$(curl -sS --max-time 60 -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
             --data-urlencode "msg=${MSG}" \
             --data-urlencode "qq=${QMSG_GROUPS}")
           echo "Qmsg 响应: $RESP"

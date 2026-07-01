@@ -55,7 +55,9 @@
     "QuickHunt_TouchCollect": {
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
+        "custom_recognition_param": {
+            "preset": "Agt_RedDot_Preset"
+        },
         "roi": [
             100,
             163,
@@ -171,7 +173,9 @@
         "desc": "ERR触发,复位到默认狩猎场,再重新位移,有最大限制",
         "max_hit": 5,
         "recognition": "And",
-        "all_of": ["QuickHunt_UIEnter"],
+        "all_of": [
+            "QuickHunt_UIEnter"
+        ],
         "action": "Click",
         "target_offset": [
             0,
@@ -440,6 +444,7 @@
         ]
     },
     "QuickHunt_AdventureRouteReBackHuntingGrounds": {
+        "desc": "优先双倍开关,返回去狩猎场",
         "enabled": false,
         "next": [
             "QuickHunt_AdventureRouteReBackHuntingGrounds_Pipeline"
@@ -484,7 +489,9 @@
     "QuickHunt_CollectMapAdventureRoute2_Switch_A": {
         "desc": "金币A关卡转经验B",
         "recognition": "And",
-        "all_of": ["Rec_GoldGoblin_Clr"],
+        "all_of": [
+            "Rec_GoldGoblin_Clr"
+        ],
         "action": "Click",
         "target": [
             137,
@@ -501,7 +508,9 @@
     "QuickHunt_CollectMapAdventureRoute2_Switch_B": {
         "desc": "经验B关卡转金币A",
         "recognition": "And",
-        "all_of": ["Rec_ExpSlime_Clr"],
+        "all_of": [
+            "Rec_ExpSlime_Clr"
+        ],
         "action": "Click",
         "target": [
             137,
@@ -517,14 +526,18 @@
     },
     "QuickHunt_CollectMapAdventureRoute2_Switch_Enter_A": {
         "recognition": "And",
-        "all_of": ["Rec_GoldGoblin_Clr"],
+        "all_of": [
+            "Rec_GoldGoblin_Clr"
+        ],
         "next": [
             "QuickHunt_CollectMapAdventureRoute2_DouCk"
         ]
     },
     "QuickHunt_CollectMapAdventureRoute2_Switch_Enter_B": {
         "recognition": "And",
-        "all_of": ["Rec_ExpSlime_Clr"],
+        "all_of": [
+            "Rec_ExpSlime_Clr"
+        ],
         "next": [
             "QuickHunt_CollectMapAdventureRoute2_DouCk"
         ]
@@ -576,7 +589,9 @@
     "QuickHunt_CollectMapAdventureRoute2_DouCk": {
         "enabled": true,
         "recognition": "And",
-        "all_of": ["QuickHunt_CollectMapAdventureRoute1"],
+        "all_of": [
+            "QuickHunt_CollectMapAdventureRoute1"
+        ],
         "post_delay": 2000,
         "next": [
             "QuickHunt_CollectMapAdventureRouteDoubleCk2",
@@ -586,7 +601,9 @@
     },
     "QuickHunt_CollectMapAdventureRouteDoubleCk2": {
         "recognition": "And",
-        "all_of": ["QuickHunt_CollectMapAdventureRouteDoubleCk1"],
+        "all_of": [
+            "QuickHunt_CollectMapAdventureRouteDoubleCk1"
+        ],
         "next": [
             "QuickHunt_NoAP_Rice",
             "QuickHunt_FastBattleMAXTouchAdventureRoute",
@@ -596,7 +613,9 @@
     },
     "QuickHunt_CollectMapAdventureRouteDoubleCk2No": {
         "recognition": "And",
-        "all_of": ["QuickHunt_CollectMapAdventureRouteDoubleCk1No"],
+        "all_of": [
+            "QuickHunt_CollectMapAdventureRouteDoubleCk1No"
+        ],
         "next": [
             "QuickHunt_CollectMapAdventureRouteDoubleCk2No_ToCentral"
         ],
@@ -618,7 +637,9 @@
     "QuickHunt_CollectMapAdventureRouteDoubleCk2No_ToCentral_CK": {
         "desc": "目的是不用中断、在主流程里把地图复位，配个其他中断使用。T2，默认接狩猎R2",
         "recognition": "And",
-        "all_of": ["QuickHunt_CollectMap_Initialize_Out_Ty2"],
+        "all_of": [
+            "QuickHunt_CollectMap_Initialize_Out_Ty2"
+        ],
         "next": [
             "QuickHunt_NoAP_Rice",
             "QuickHunt_AdventureRouteReBackHuntingGrounds_Pipeline"
@@ -653,7 +674,9 @@
                     78,
                     39
                 ],
-                "expected": ["\\d"]
+                "expected": [
+                    "\\d"
+                ]
             },
             "Sub_Ocr_Red_Clr"
         ],
@@ -671,7 +694,9 @@
     },
     "QuickHunt_CollectMapCrystalCave": {
         "recognition": "And",
-        "all_of": ["QuickHunt_CollectMapAdventureRoute1"],
+        "all_of": [
+            "QuickHunt_CollectMapAdventureRoute1"
+        ],
         "action": "Click",
         "target": [
             138,
@@ -912,7 +937,9 @@
     },
     "QuickHunt_StoneSelect_CkDone": {
         "recognition": "And",
-        "all_of": ["Anc_Ocr_Enable_Clr"],
+        "all_of": [
+            "Anc_Ocr_Enable_Clr"
+        ],
         "next": [
             "QuickHunt_NoAP_Torch",
             "QuickHunt_TurnCharact_Start",
@@ -1029,7 +1056,9 @@
     "QuickHunt_FastBattleReward": {
         "desc": "狩猎Reward,新思路,正则式的分组容错,每组内只要识别到1个字就算过",
         "recognition": "And",
-        "all_of": ["Rec_Reward_Ocr"],
+        "all_of": [
+            "Rec_Reward_Ocr"
+        ],
         "action": "Click",
         "target": [
             1,
@@ -1188,7 +1217,9 @@
     "QuickHunt_CrystalCave_End": {
         "desc": "返回本子地图",
         "recognition": "And",
-        "all_of": ["QuickHunt_CollectMap_Initialize_Out_Ty2"],
+        "all_of": [
+            "QuickHunt_CollectMap_Initialize_Out_Ty2"
+        ],
         "next": [
             "Global_ToSandBox"
         ],
@@ -1225,7 +1256,9 @@
     "QuickHunt_TurnCharact_QuickBattleMenu": {
         "desc": "确认快速狩猎菜单",
         "recognition": "And",
-        "all_of": ["QuickHunt_FastBattleStart"],
+        "all_of": [
+            "QuickHunt_FastBattleStart"
+        ],
         "post_delay": 1500,
         "next": [
             "QuickHunt_TurnCharact_NoAP",
@@ -1236,7 +1269,9 @@
     },
     "QuickHunt_TurnCharact_NoAP": {
         "recognition": "And",
-        "all_of": ["QuickHunt_NoFreeAP"],
+        "all_of": [
+            "QuickHunt_NoFreeAP"
+        ],
         "next": [
             "Global_ToSandBox"
         ],
@@ -1266,14 +1301,18 @@
             101,
             150
         ],
-        "template": ["SubBattle_+1.png"],
+        "template": [
+            "SubBattle_+1.png"
+        ],
         "action": "Click",
         "post_delay": 500,
         "focus": "BTM.刷取次数调整"
     },
     "QuickHunt_TurnCharact_BattleStart": {
         "recognition": "And",
-        "all_of": ["QuickHunt_FastBattleStart"],
+        "all_of": [
+            "QuickHunt_FastBattleStart"
+        ],
         "action": "Click",
         "post_delay": 4000,
         "next": [
@@ -1288,7 +1327,9 @@
     "QuickHunt_TurnCharact_FastBattleReward": {
         "desc": "狩猎Reward",
         "recognition": "And",
-        "all_of": ["Rec_Reward_Ocr"],
+        "all_of": [
+            "Rec_Reward_Ocr"
+        ],
         "action": "Click",
         "post_delay": 3000,
         "next": [
@@ -1354,7 +1395,9 @@
         "desc": "移动大地图-史贝伦大陆西北",
         "enabled": false,
         "recognition": "And",
-        "all_of": ["QuickHunt_CollectMap_Initialize_Out_Ty2"],
+        "all_of": [
+            "QuickHunt_CollectMap_Initialize_Out_Ty2"
+        ],
         "action": "Swipe",
         "begin": [
             556,
@@ -1373,7 +1416,9 @@
         "desc": "移动大地图-史贝伦大陆东北",
         "enabled": false,
         "recognition": "And",
-        "all_of": ["QuickHunt_CollectMap_Initialize_Out_Ty2"],
+        "all_of": [
+            "QuickHunt_CollectMap_Initialize_Out_Ty2"
+        ],
         "action": "Swipe",
         "begin": [
             974,
