@@ -169,7 +169,7 @@ jobs:
           CONTENT: ${{ steps.prepare_message.outputs.content }}
         run: |
           MSG="$TITLE"$'\n'"$CONTENT"
-          RESP=$(curl -sS --max-time 30 --connect-timeout 10 -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
+          RESP=$(curl -sS --max-time 60 -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
             --data-urlencode "msg=${MSG}" \
             --data-urlencode "qq=${QMSG_GROUPS}")
           echo "Qmsg 响应: $RESP"
