@@ -11,6 +11,7 @@
             "[JumpBack]QuickHunt_OpenGui",
             "[JumpBack]QuickHunt_HuntingGrounds",
             "[JumpBack]QuickHunt_AdventureRoute",
+            "[JumpBack]QuickHunt_RiceRecheck",
             "[JumpBack]QuickHunt_CrystalCave"
         ],
         "focus": "B.M 快速狩猎调度器"
@@ -1151,28 +1152,31 @@
         ],
         "only_rec": true,
         "next": [
-            "QuickHunt_RiceRecheck",
             "[Anchor]BattleMap_Reset"
         ],
         "focus": "BB.狩猎-复位模块出口\n\n 复位位置正确-成功"
     },
     "QuickHunt_RiceRecheck": {
-        "desc": "#327 免费米饭清空兜底复检:复位收口反判米饭余量,分子>0(仍有免费米饭)则回航线找当天双倍图续打(无视双倍策略,一律吃双倍);命中0/N不匹配则跳过本节点,走原收尾锚点.max_hit兜底防极端死循环",
-        "recognition": "OCR",
-        "roi": [
-            1040,
-            33,
-            111,
-            27
+        "desc": "#327 免费米饭清空兜底(jb1,挂Hub航线后):inverse判米饭是否耗尽,未耗尽(仍有免费米饭)则JumpBack打一轮当天双倍图(无视双倍策略,一律吃双倍),打完出栈回本节点自循环;耗尽则null出栈返回Hub继续洞穴.不写on_error(靠出栈自然结束,不触发Panic).max_hit防死循环",
+        "recognition": "Or",
+        "any_of": [
+            "QuickHunt_NoRiceAP_Skip"
         ],
-        "expected": "^[1-9]\\d*/\\d+",
-        "only_rec": true,
+        "inverse": true,
         "max_hit": 20,
+        "next": [
+            "[JumpBack]QuickHunt_RiceRecheck_Hunt",
+            "QuickHunt_RiceRecheck"
+        ],
+        "focus": "BM.#327 免费米饭未清空,回航线找双倍图续打"
+    },
+    "QuickHunt_RiceRecheck_Hunt": {
+        "desc": "#327 兜底续打一轮(JumpBack子任务,打完null出栈返回jb1复检):先独立判当前关双倍图打MAX,否则切另一关找双倍/两关都无退狩猎场用光",
         "next": [
             "QuickHunt_RiceRecheck_DoubleCk",
             "QuickHunt_CollectMapAdventureRoute2"
         ],
-        "focus": "BM.#327 免费米饭未清空,回航线找双倍图续打"
+        "focus": "BM.#327 打一轮双倍图"
     },
     "QuickHunt_RiceRecheck_DoubleCk": {
         "desc": "#327 兜底:独立判当前关是否双倍图(固定DoubleExp/DoubleGold模板,不受'忽视双倍'override污染);命中(当前关双倍)则打MAX,未命中则miss落到CollectMapAdventureRoute2切另一关找双倍/两关都无则退狩猎场用光",
