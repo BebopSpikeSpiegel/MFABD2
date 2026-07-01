@@ -122,7 +122,6 @@
         ],
         "focus": "开始出售鱼获"
     },
-
     "SellFish_Step2_NoFish": {
         "recognition": "OCR",
         "roi": [

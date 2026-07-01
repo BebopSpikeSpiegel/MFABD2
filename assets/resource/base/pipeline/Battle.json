@@ -372,7 +372,6 @@
         ],
         "focus": "BM.航线-首选-金币"
     },
-
     "QuickHunt_CollectMapAdventureRoute_Select_Exp": {
         "desc": "硬编码选择航线-经验",
         "enabled": false,
@@ -554,7 +553,6 @@
     },
     "Rec_ExpSlime_Clr": {
         "desc": "[识别]狩猎场左侧-经验关选中",
-
         "recognition": "ColorMatch",
         "roi": [
             114,
@@ -837,7 +835,6 @@
             "火之洞穴"
         ],
         "action": "Click",
-
         "anchor": "Ocr_clr",
         "post_delay": 1500
     },
@@ -895,7 +892,6 @@
         "anchor": "Ocr_clr",
         "post_delay": 1500
     },
-
     "QuickHunt_StoneSelect_Duck": {
         "desc": "圣石选属性.Loc分离",
         "enabled": false,
