@@ -800,7 +800,7 @@
         "recognition": "Or",
         "any_of": [
             "Rec_Mamono_HP_Hunted_Ocr",
-            "SeasonEvent_Mamono_HP_Lift_Gray"
+            "Cpt_Mamono_HP_Hunted_Clr"
         ],
         "next": ["Even_MamonoFollowUp_MmnHpUp"],
         "focus": "E. HP=ab.此Lv魔兽已讨伐完毕..."
@@ -1171,20 +1171,20 @@
         "recognition": "ColorMatch",
         "roi": [
             982,
-            144,
-            10,
-            11
+            139,
+            6,
+            24
         ],
         "method": 40,
         "lower": [
+            100,
             0,
-            0,
-            60
+            35
         ],
         "upper": [
-            170,
-            50,
-            95
+            140,
+            30,
+            85
         ],
         "connected": true,
         "count": 20
@@ -1193,21 +1193,21 @@
         "desc": "魔兽血条检查,左侧为灰",
         "recognition": "ColorMatch",
         "roi": [
-            713,
-            133,
-            17,
-            34
+            714,
+            139,
+            16,
+            23
         ],
         "method": 40,
         "lower": [
+            100,
             0,
-            0,
-            60
+            35
         ],
         "upper": [
-            170,
-            50,
-            95
+            140,
+            30,
+            85
         ],
         "connected": true,
         "count": 20
@@ -1221,7 +1221,7 @@
             276,
             29
         ],
-        "expected": ["(?<!\\d)0\\s*[/:：|\\-~]\\s*[1-9][\\d,，.]*"]
+        "expected": ["(?<![\\d,，.])0\\s*[/:：|\\-~]\\s*[1-9][\\d,，.]*"]
     },
     "Rec_Mamono_HP_NoMeetHunt_Ocr": {
         "desc": "[识别]血量为全满",
@@ -1238,7 +1238,7 @@
         ]
     },
     "Rec_Mamono_HP_Hunting_Ocr": {
-        "desc": "[识别]血量非空与全满",
+        "desc": "[识别]血量非空与非全满",
         "recognition": "OCR",
         "roi": [
             714,
@@ -1247,7 +1247,7 @@
             29
         ],
         "expected": [
-            "(?!0\\s*[/:：|\\-~])(?!(\\d+(?:[,，.]\\d+)*)\\s*[/:：|\\-~]\\s*\\1(?!\\d))(?!(\\d+)[,，.](\\d+)\\s*[/:：|\\-~]\\s*\\2[,，.]\\3(?!\\d))\\d[\\d,，.]*\\s*[/:：|\\-~]\\s*\\d[\\d,，.]*"
+            "(?<![\\d,，.])(?!0\\s*[/:：|\\-~])(?!(\\d+(?:[,，.]\\d+)*)\\s*[/:：|\\-~]\\s*\\1(?!\\d))(?!(\\d+)[,，.](\\d+)\\s*[/:：|\\-~]\\s*\\2[,，.]\\3(?!\\d))\\d[\\d,，.]*\\s*[/:：|\\-~]\\s*\\d[\\d,，.]*"
         ]
     },
     "Cpt_Mamono_HP_Hunting_Clr": {
@@ -1255,6 +1255,14 @@
         "recognition": "And",
         "all_of": [
             "SeasonEvent_Mamono_HP_Lift_Red",
+            "SeasonEvent_Mamono_HP_Right_Gray"
+        ]
+    },
+    "Cpt_Mamono_HP_Hunted_Clr": {
+        "desc": "[运算]血量左灰右灰(空血).右灰约束避免满血时左侧暗色像素误命中Lift_Gray",
+        "recognition": "And",
+        "all_of": [
+            "SeasonEvent_Mamono_HP_Lift_Gray",
             "SeasonEvent_Mamono_HP_Right_Gray"
         ]
     },
