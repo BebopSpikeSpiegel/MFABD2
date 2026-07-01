@@ -16,14 +16,25 @@ on:
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  # ===== 消息长度 / 条数控制（按需调整，改这里即可生效）=====
+  PREVIEW_LEN: 80      # 评论正文预览保留的字符数（原为 30，偏短）
+  FETCH_PER_PAGE: 50   # 每次拉取的 PR 数量上限（原为 30）
+  PR_LIMIT: 8          # 最多显示的 PR 条目数
+  ISSUE_LIMIT: 8       # 最多显示的 Issue 条目数
+  ACT_LIMIT: 6         # 每个条目下最多显示的活动行数（评论/标签/分配），超出折叠
 
 jobs:
   summary-report:
+    permissions:
+      contents: read
+      issues: read
+      pull-requests: read
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       
       - name: Calculate Time Windows
         id: time_calc
@@ -34,15 +45,17 @@ jobs:
           
           # 如果是手动触发的测试模式
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ inputs.test_mode }}" == "true" ]; then
-            # 当天0点 UTC
-            START_TIME=$(date -u -d "00:00:00" +"%Y-%m-%dT%H:%M:%SZ")
+            # 北京时间(UTC+8，无夏令时)当天 0 点，再转成 UTC：覆盖整个今天含凌晨，避免漏掉夜间活动
+            BJ_TODAY=$(date -u -d "+8 hours" +%Y-%m-%d)
+            START_TIME=$(date -u -d "$BJ_TODAY 00:00:00 +0800" +"%Y-%m-%dT%H:%M:%SZ")
             TIME_LABEL="今天汇总"
           else
             # 根据定时任务确定时间窗口
             CURRENT_HOUR=$(date -u +"%H")
             case $CURRENT_HOUR in
-              "01")  # 对应北京时间 09:00
-                START_TIME=$(date -u -d "18:00:00 yesterday" +"%Y-%m-%dT%H:%M:%SZ")
+              "01")  # 对应北京时间 09:00（覆盖昨天「下午汇总」终点 18:00 至今，含整晚，无缝衔接）
+                # 昨天 10:00 UTC = 北京昨天 18:00，正好接上「下午汇总」的终点，避免夜间空洞
+                START_TIME=$(date -u -d "10:00:00 yesterday" +"%Y-%m-%dT%H:%M:%SZ")
                 TIME_LABEL="昨夜汇总"
                 ;;
               "06")  # 对应北京时间 14:00
@@ -73,262 +86,252 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           sudo apt-get update && sudo apt-get install -y jq
-          
+
           echo "开始获取活动数据..."
-          
+
+          # 各源以 NDJSON（每行一条记录）累积，最后用 jq -s 合成数组，避免手工拼接转义出错
+          # 每条记录都带 ts（活动时间戳），便于在生成阶段按时间排序、折叠时保留最新
+          ISSUE_NDJSON=""; PR_NDJSON=""; COMMENT_NDJSON=""; LABEL_NDJSON=""; ASSIGN_NDJSON=""
+
           # ---------------------------------------------------
-          # 1. 获取 PR 数据
+          # 1. PR：窗口内有状态变化（新建/合并/关闭）的 PR
           # ---------------------------------------------------
           echo "Fetching PRs..."
           PRS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/$REPO/pulls?state=all&sort=updated&direction=desc&per_page=30")
-          
-          PR_COUNT=0
-          PRS_ARRAY="["
-          
-          # 检查 JSON 是否有效且非空
-          if [ -n "$PRS_JSON" ] && echo "$PRS_JSON" | jq -e 'length > 0' >/dev/null; then
-             LEN=$(echo "$PRS_JSON" | jq 'length')
-             # 使用 seq 生成序列时，确保 LEN > 0
-             if [ "$LEN" -gt 0 ]; then
-               for i in $(seq 0 $(($LEN - 1))); do
-                  ITEM=$(echo "$PRS_JSON" | jq ".[$i]")
-                  
-                  CREATED_AT=$(echo "$ITEM" | jq -r '.created_at')
-                  CLOSED_AT=$(echo "$ITEM" | jq -r '.closed_at')
-                  MERGED_AT=$(echo "$ITEM" | jq -r '.merged_at')
-                  
-                # 状态判定
-                  STATUS=""
-                  # 使用 [[ ]] 进行字符串/时间比较更安全
-                  if [[ "$MERGED_AT" != "null" && "$MERGED_AT" > "$START_TIME" ]]; then
-                     STATUS="🟣 合并"
-                  elif [[ "$CLOSED_AT" != "null" && "$CLOSED_AT" > "$START_TIME" ]]; then
-                     STATUS="🚫 关闭"
-                  elif [[ "$CREATED_AT" > "$START_TIME" ]]; then
-                     STATUS="🆕 新建"
-                  fi
-                  
-                # 如果有状态变化，加入列表
-                  if [ -n "$STATUS" ]; then
-                     NUMBER=$(echo "$ITEM" | jq -r '.number')
-                     TITLE=$(echo "$ITEM" | jq -r '.title' | sed 's/"/\\"/g')
-                     USER=$(echo "$ITEM" | jq -r '.user.login')
-                     
-                     if [ $PR_COUNT -gt 0 ]; then PRS_ARRAY="$PRS_ARRAY,"; fi
-                     PRS_ARRAY="$PRS_ARRAY{\"number\": $NUMBER, \"title\": \"$TITLE\", \"user\": \"$USER\", \"status\": \"$STATUS\"}"
-                     PR_COUNT=$((PR_COUNT + 1))
-                  fi
-               done
-             fi
+            "https://api.github.com/repos/$REPO/pulls?state=all&sort=updated&direction=desc&per_page=$FETCH_PER_PAGE")
+
+          if echo "$PRS_JSON" | jq -e 'type=="array" and length>0' >/dev/null 2>&1; then
+            LEN=$(echo "$PRS_JSON" | jq 'length')
+            for i in $(seq 0 $((LEN-1))); do
+              ITEM=$(echo "$PRS_JSON" | jq -c ".[$i]")
+              CREATED_AT=$(echo "$ITEM" | jq -r '.created_at')
+              CLOSED_AT=$(echo "$ITEM" | jq -r '.closed_at')
+              MERGED_AT=$(echo "$ITEM" | jq -r '.merged_at')
+              STATUS=""; TS=""
+              if [[ "$MERGED_AT" != "null" && "$MERGED_AT" > "$START_TIME" && "$MERGED_AT" < "$END_TIME" ]]; then
+                STATUS="🟣 合并"; TS="$MERGED_AT"
+              elif [[ "$CLOSED_AT" != "null" && "$CLOSED_AT" > "$START_TIME" && "$CLOSED_AT" < "$END_TIME" ]]; then
+                STATUS="🚫 关闭"; TS="$CLOSED_AT"
+              elif [[ "$CREATED_AT" > "$START_TIME" && "$CREATED_AT" < "$END_TIME" ]]; then
+                STATUS="🆕 新建"; TS="$CREATED_AT"
+              fi
+              if [ -n "$STATUS" ]; then
+                REC=$(echo "$ITEM" | jq -c --arg status "$STATUS" --arg ts "$TS" '{number, title, user:.user.login, status:$status, ts:$ts}')
+                PR_NDJSON="$PR_NDJSON$REC"$'\n'
+              fi
+            done
           fi
-          PRS_ARRAY="$PRS_ARRAY]"
 
           # ---------------------------------------------------
-          # 2. 获取 Issue 评论 (修正了 split 错误)
+          # 1b. Issue：窗口内新建/关闭的 Issue（issues 接口含 PR，需排除带 pull_request 的）
+          # ---------------------------------------------------
+          echo "Fetching Issues..."
+          ISSUES_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO/issues?state=all&sort=updated&direction=desc&per_page=$FETCH_PER_PAGE&since=$START_TIME")
+
+          if echo "$ISSUES_JSON" | jq -e 'type=="array" and length>0' >/dev/null 2>&1; then
+            LEN=$(echo "$ISSUES_JSON" | jq 'length')
+            for i in $(seq 0 $((LEN-1))); do
+              ITEM=$(echo "$ISSUES_JSON" | jq -c ".[$i]")
+              # 跳过 PR
+              if [ "$(echo "$ITEM" | jq 'has("pull_request")')" = "true" ]; then continue; fi
+              CREATED_AT=$(echo "$ITEM" | jq -r '.created_at')
+              CLOSED_AT=$(echo "$ITEM" | jq -r '.closed_at')
+              STATUS=""; TS=""
+              if [[ "$CLOSED_AT" != "null" && "$CLOSED_AT" > "$START_TIME" && "$CLOSED_AT" < "$END_TIME" ]]; then
+                STATUS="✅ 关闭"; TS="$CLOSED_AT"
+              elif [[ "$CREATED_AT" > "$START_TIME" && "$CREATED_AT" < "$END_TIME" ]]; then
+                STATUS="🆕 新建"; TS="$CREATED_AT"
+              fi
+              if [ -n "$STATUS" ]; then
+                REC=$(echo "$ITEM" | jq -c --arg status "$STATUS" --arg ts "$TS" '{number, title, user:.user.login, status:$status, ts:$ts}')
+                ISSUE_NDJSON="$ISSUE_NDJSON$REC"$'\n'
+              fi
+            done
+          fi
+
+          # ---------------------------------------------------
+          # 2. 评论：过滤机器人（.user.type=="Bot"），并判断父级是 PR 还是 Issue
+          #    （PR 在 issues 接口里带 pull_request 字段）
           # ---------------------------------------------------
           echo "Fetching Comments..."
           COMMENTS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/$REPO/issues/comments?since=$START_TIME&sort=created&direction=desc" | \
-            jq -c '.[] | select(.created_at >= "'$START_TIME'" and .created_at <= "'$END_TIME'")')
-          
-          COMMENT_COUNT=0
-          COMMENTS_ARRAY="["
-          
+            jq -c '.[] | select(.created_at >= "'$START_TIME'" and .created_at < "'$END_TIME'" and .user.type != "Bot")')
+
           if [ -n "$COMMENTS_JSON" ]; then
             while IFS= read -r comment; do
-              if [ -n "$comment" ]; then
-                ISSUE_URL=$(echo "$comment" | jq -r '.issue_url')
-                
-                # --- 修复点：使用 basename 提取编号 ---
-                ISSUE_NUMBER=$(basename "$ISSUE_URL")
-                
-                ISSUE_TITLE=$(curl -s -H "Authorization: token $GH_TOKEN" "$ISSUE_URL" | jq -r '.title' | sed 's/"/\\"/g')
-                AUTHOR=$(echo "$comment" | jq -r '.user.login')
-                BODY=$(echo "$comment" | jq -r '.body' | sed 's/"/\\"/g' | tr '\n' ' ')
-                PREVIEW=$(echo "$BODY" | cut -c 1-30)
-                
-                if [ $COMMENT_COUNT -gt 0 ]; then COMMENTS_ARRAY="$COMMENTS_ARRAY,"; fi
-                COMMENTS_ARRAY="$COMMENTS_ARRAY{\"number\": $ISSUE_NUMBER, \"title\": \"$ISSUE_TITLE\", \"author\": \"$AUTHOR\", \"preview\": \"$PREVIEW\"}"
-                COMMENT_COUNT=$((COMMENT_COUNT + 1))
-              fi
+              [ -z "$comment" ] && continue
+              ISSUE_URL=$(echo "$comment" | jq -r '.issue_url')
+              ISSUE_NUMBER=$(basename "$ISSUE_URL")
+              PARENT_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" "$ISSUE_URL")
+              ISSUE_TITLE=$(echo "$PARENT_JSON" | jq -r '.title')
+              IS_PR=$(echo "$PARENT_JSON" | jq 'has("pull_request")')
+              BODY=$(echo "$comment" | jq -r '.body' | tr '\n\r\t' '   ')
+              PREVIEW=$(printf '%s' "$BODY" | jq -Rrs ".[0:$PREVIEW_LEN]")
+              REC=$(echo "$comment" | jq -c \
+                --argjson num "$ISSUE_NUMBER" \
+                --arg title "$ISSUE_TITLE" \
+                --argjson is_pr "$IS_PR" \
+                --arg preview "$PREVIEW" \
+                '{number:$num, title:$title, is_pr:$is_pr, author:.user.login, preview:$preview, ts:.created_at}')
+              COMMENT_NDJSON="$COMMENT_NDJSON$REC"$'\n'
             done <<< "$COMMENTS_JSON"
           fi
-          COMMENTS_ARRAY="$COMMENTS_ARRAY]"
-          
+
           # ---------------------------------------------------
-          # 3. 获取 Issue 事件 (标签/分配)
+          # 3. 事件：标签/分配，并判断父级是 PR 还是 Issue
           # ---------------------------------------------------
           echo "Fetching Events..."
           EVENTS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/$REPO/issues/events?since=$START_TIME" | \
-            jq -c '.[] | select(.created_at >= "'$START_TIME'" and .created_at <= "'$END_TIME'")')
-          
-          LABEL_COUNT=0
-          LABELS_ARRAY="["
-          ASSIGN_COUNT=0
-          ASSIGNMENTS_ARRAY="["
-          
+            jq -c '.[] | select(.created_at >= "'$START_TIME'" and .created_at < "'$END_TIME'")')
+
           if [ -n "$EVENTS_JSON" ]; then
             while IFS= read -r event; do
-              if [ -n "$event" ]; then
-                EVENT_TYPE=$(echo "$event" | jq -r '.event')
-                ISSUE_NUMBER=$(echo "$event" | jq -r '.issue.number')
-                ISSUE_TITLE=$(echo "$event" | jq -r '.issue.title' | sed 's/"/\\"/g')
-                
-                case "$EVENT_TYPE" in
-                  "labeled")
-                    LABEL_NAME=$(echo "$event" | jq -r '.label.name')
-                    if [ $LABEL_COUNT -gt 0 ]; then LABELS_ARRAY="$LABELS_ARRAY,"; fi
-                    LABELS_ARRAY="$LABELS_ARRAY{\"number\": $ISSUE_NUMBER, \"title\": \"$ISSUE_TITLE\", \"change\": \"添加了$LABEL_NAME\"}"
-                    LABEL_COUNT=$((LABEL_COUNT + 1))
-                    ;;
-                  "unlabeled")
-                    LABEL_NAME=$(echo "$event" | jq -r '.label.name')
-                    if [ $LABEL_COUNT -gt 0 ]; then LABELS_ARRAY="$LABELS_ARRAY,"; fi
-                    LABELS_ARRAY="$LABELS_ARRAY{\"number\": $ISSUE_NUMBER, \"title\": \"$ISSUE_TITLE\", \"change\": \"移除了$LABEL_NAME\"}"
-                    LABEL_COUNT=$((LABEL_COUNT + 1))
-                    ;;
-                  "assigned")
-                    ASSIGNEE=$(echo "$event" | jq -r '.assignee.login')
-                    if [ $ASSIGN_COUNT -gt 0 ]; then ASSIGNMENTS_ARRAY="$ASSIGNMENTS_ARRAY,"; fi
-                    ASSIGNMENTS_ARRAY="$ASSIGNMENTS_ARRAY{\"number\": $ISSUE_NUMBER, \"title\": \"$ISSUE_TITLE\", \"assignee\": \"$ASSIGNEE\"}"
-                    ASSIGN_COUNT=$((ASSIGN_COUNT + 1))
-                    ;;
-                esac
-              fi
+              [ -z "$event" ] && continue
+              EVENT_TYPE=$(echo "$event" | jq -r '.event')
+              case "$EVENT_TYPE" in
+                labeled)
+                  REC=$(echo "$event" | jq -c '{number:.issue.number, title:.issue.title, is_pr:(.issue|has("pull_request")), change:("添加了"+.label.name), ts:.created_at}')
+                  LABEL_NDJSON="$LABEL_NDJSON$REC"$'\n' ;;
+                unlabeled)
+                  REC=$(echo "$event" | jq -c '{number:.issue.number, title:.issue.title, is_pr:(.issue|has("pull_request")), change:("移除了"+.label.name), ts:.created_at}')
+                  LABEL_NDJSON="$LABEL_NDJSON$REC"$'\n' ;;
+                assigned)
+                  REC=$(echo "$event" | jq -c '{number:.issue.number, title:.issue.title, is_pr:(.issue|has("pull_request")), assignee:.assignee.login, ts:.created_at}')
+                  ASSIGN_NDJSON="$ASSIGN_NDJSON$REC"$'\n' ;;
+              esac
             done <<< "$EVENTS_JSON"
           fi
-          
-          LABELS_ARRAY="$LABELS_ARRAY]"
-          ASSIGNMENTS_ARRAY="$ASSIGNMENTS_ARRAY]"
-          
+
           # ---------------------------------------------------
-          # 4. 汇总输出
+          # 4. NDJSON → 数组 → summary_data.json
           # ---------------------------------------------------
-          cat > summary_data.json << EOF
-          {
-            "prs": $PRS_ARRAY,
-            "comments": $COMMENTS_ARRAY,
-            "labels": $LABELS_ARRAY,
-            "assignments": $ASSIGNMENTS_ARRAY
-          }
-          EOF
-          
-          TOTAL_COUNT=$((PR_COUNT + COMMENT_COUNT + LABEL_COUNT + ASSIGN_COUNT))
-          
-          echo "pr_count=$PR_COUNT" >> $GITHUB_OUTPUT
-          echo "comment_count=$COMMENT_COUNT" >> $GITHUB_OUTPUT
-          echo "label_count=$LABEL_COUNT" >> $GITHUB_OUTPUT  
-          echo "assign_count=$ASSIGN_COUNT" >> $GITHUB_OUTPUT
+          ISSUES_ARRAY=$(printf '%s' "$ISSUE_NDJSON" | jq -s '.')
+          PRS_ARRAY=$(printf '%s' "$PR_NDJSON" | jq -s '.')
+          COMMENTS_ARRAY=$(printf '%s' "$COMMENT_NDJSON" | jq -s '.')
+          LABELS_ARRAY=$(printf '%s' "$LABEL_NDJSON" | jq -s '.')
+          ASSIGNMENTS_ARRAY=$(printf '%s' "$ASSIGN_NDJSON" | jq -s '.')
+
+          jq -n \
+            --argjson issues "$ISSUES_ARRAY" \
+            --argjson prs "$PRS_ARRAY" \
+            --argjson comments "$COMMENTS_ARRAY" \
+            --argjson labels "$LABELS_ARRAY" \
+            --argjson assignments "$ASSIGNMENTS_ARRAY" \
+            '{issues:$issues, prs:$prs, comments:$comments, labels:$labels, assignments:$assignments}' > summary_data.json
+
+          ISSUE_COUNT=$(echo "$ISSUES_ARRAY" | jq 'length')
+          PR_COUNT=$(echo "$PRS_ARRAY" | jq 'length')
+          COMMENT_COUNT=$(echo "$COMMENTS_ARRAY" | jq 'length')
+          LABEL_COUNT=$(echo "$LABELS_ARRAY" | jq 'length')
+          ASSIGN_COUNT=$(echo "$ASSIGNMENTS_ARRAY" | jq 'length')
+          TOTAL_COUNT=$((ISSUE_COUNT + PR_COUNT + COMMENT_COUNT + LABEL_COUNT + ASSIGN_COUNT))
+
           echo "total_count=$TOTAL_COUNT" >> $GITHUB_OUTPUT
-          
-          echo "数据统计: PR=$PR_COUNT, Comment=$COMMENT_COUNT, Label=$LABEL_COUNT"
+          echo "数据统计: Issue=$ISSUE_COUNT, PR=$PR_COUNT, Comment=$COMMENT_COUNT, Label=$LABEL_COUNT, Assign=$ASSIGN_COUNT"
       - name: Generate Summary Message
         id: generate_message
         env:
           TIME_LABEL: ${{ steps.time_calc.outputs.time_label }}
-          PR_COUNT: ${{ steps.fetch_activities.outputs.pr_count }}
-          COMMENT_COUNT: ${{ steps.fetch_activities.outputs.comment_count }}
-          LABEL_COUNT: ${{ steps.fetch_activities.outputs.label_count }}
-          ASSIGN_COUNT: ${{ steps.fetch_activities.outputs.assign_count }}
           TOTAL_COUNT: ${{ steps.fetch_activities.outputs.total_count }}
         run: |
-          # 清理数据
-          CLEANED_JSON=$(cat summary_data.json | tr -d '\000-\031')
-          SUMMARY_DATA=$(echo "$CLEANED_JSON")
-          
-          MESSAGE="📊 [${{ github.repository }}] 项目动态 ($TIME_LABEL)"
-          
-          # --- 1. 处理 PR (新增) ---
-          if [ "$PR_COUNT" -gt 0 ]; then
-             MESSAGE="$MESSAGE"$'\n'"🔀 PR 变更 ($PR_COUNT)"
-             # 循环读取
-             LEN=$(echo "$SUMMARY_DATA" | jq '.prs | length')
-             LIMIT=5 # PR 比较重要，多显示几条
-             
-             for i in $(seq 0 $((LEN-1))); do
-                if [ "$i" -ge "$LIMIT" ]; then
-                   MESSAGE="$MESSAGE"$'\n'"  ...等 $((PR_COUNT-LIMIT)) 个 PR"
-                   break
-                fi
-                ITEM=$(echo "$SUMMARY_DATA" | jq -r ".prs[$i]")
-                NUM=$(echo "$ITEM" | jq -r '.number')
-                TITLE=$(echo "$ITEM" | jq -r '.title')
-                STATUS=$(echo "$ITEM" | jq -r '.status')
-                USER=$(echo "$ITEM" | jq -r '.user')
-                MESSAGE="$MESSAGE"$'\n'"  - $STATUS [#$NUM] $TITLE ($USER)"
-             done
+          # 清理控制字符（保留可见内容）
+          SUMMARY_DATA=$(tr -d '\000-\010\013\014\016-\037' < summary_data.json)
+
+          MESSAGE="📊 [${{ github.repository }}] 项目动态 · $TIME_LABEL"
+
+          # 构建实体：把 Issue/PR/评论/标签/分配 全部归到 {编号}，每个编号只出现一次
+          # 每条活动带 ts，按时间升序排列；类别(type)：只要该编号涉及 PR 即为 pr，否则 issue
+          # （编号在 GitHub 中 PR/Issue 不会冲突）
+          ENTITIES=$(echo "$SUMMARY_DATA" | jq -c '
+            [
+              (.issues[]      | {number, type:"issue", title, ts, act:("\(.status) · \(.user)")}),
+              (.prs[]         | {number, type:"pr",    title, ts, act:("\(.status) · \(.user)")}),
+              (.comments[]    | {number, type:(if .is_pr then "pr" else "issue" end), title, ts, act:("💬 \(.author)：\(.preview)…")}),
+              (.labels[]      | {number, type:(if .is_pr then "pr" else "issue" end), title, ts, act:("🏷 \(.change)")}),
+              (.assignments[] | {number, type:(if .is_pr then "pr" else "issue" end), title, ts, act:("👤 → \(.assignee)")})
+            ]
+            | group_by(.number)
+            | map({
+                number: .[0].number,
+                type:  (if any(.[]; .type=="pr") then "pr" else "issue" end),
+                title: .[0].title,
+                acts:  ([ .[] | {ts, act} ] | sort_by(.ts) | map(.act))
+              })
+          ')
+
+          # 渲染一个类别：$1=type $2=icon $3=label $4=该类别最多显示的条目数
+          render_category() {
+            local TYPE="$1" ICON="$2" LABEL="$3" LIMIT="$4"
+            local LIST CNT e
+            LIST=$(echo "$ENTITIES" | jq -c "[ .[] | select(.type==\"$TYPE\") ]")
+            CNT=$(echo "$LIST" | jq 'length')
+            [ "$CNT" -eq 0 ] && return
+            MESSAGE="$MESSAGE"$'\n\n'"$ICON $LABEL ($CNT)"
+            for e in $(seq 0 $((CNT-1))); do
+              if [ "$e" -ge "$LIMIT" ]; then
+                MESSAGE="$MESSAGE"$'\n'" …等 $((CNT-LIMIT)) 个"
+                break
+              fi
+              local ENT NUM TITLE ALEN START_IDX a TXT CONN
+              ENT=$(echo "$LIST" | jq -c ".[$e]")
+              NUM=$(echo "$ENT" | jq -r '.number')
+              TITLE=$(echo "$ENT" | jq -r '.title')
+              MESSAGE="$MESSAGE"$'\n'" #$NUM $TITLE"
+              ALEN=$(echo "$ENT" | jq '.acts | length')
+              # 折叠：活动超过 ACT_LIMIT 时，顶部用 ├ 标省略较早的，只保留最新 ACT_LIMIT 条
+              # 末条始终是最新活动，用 └ 作明确截止标记
+              START_IDX=0
+              if [ "$ALEN" -gt "$ACT_LIMIT" ]; then
+                MESSAGE="$MESSAGE"$'\n'"    ├ …省略较早的 $((ALEN-ACT_LIMIT)) 条"
+                START_IDX=$((ALEN-ACT_LIMIT))
+              fi
+              for a in $(seq "$START_IDX" $((ALEN-1))); do
+                TXT=$(echo "$ENT" | jq -r ".acts[$a]")
+                if [ "$a" -eq "$((ALEN-1))" ]; then CONN="└"; else CONN="├"; fi
+                MESSAGE="$MESSAGE"$'\n'"    $CONN $TXT"
+              done
+            done
+          }
+
+          render_category "pr"    "🔀" "PR"    "$PR_LIMIT"
+          render_category "issue" "📋" "Issue" "$ISSUE_LIMIT"
+
+          if [ "$TOTAL_COUNT" -eq 0 ]; then
+             MESSAGE="$MESSAGE"$'\n\n'"💤 本时段无动态"
           fi
 
-          # --- 2. 处理评论 ---
-          if [ "$COMMENT_COUNT" -gt 0 ]; then
-            MESSAGE="$MESSAGE"$'\n'"💬 新评论 ($COMMENT_COUNT)"
-            LEN=$(echo "$SUMMARY_DATA" | jq '.comments | length')
-            LIMIT=5
-            for i in $(seq 0 $((LEN-1))); do
-                if [ "$i" -ge "$LIMIT" ]; then
-                   MESSAGE="$MESSAGE"$'\n'"  ...等 $((COMMENT_COUNT-LIMIT)) 条评论"
-                   break
-                fi
-                ITEM=$(echo "$SUMMARY_DATA" | jq -r ".comments[$i]")
-                NUM=$(echo "$ITEM" | jq -r '.number')
-                TITLE=$(echo "$ITEM" | jq -r '.title')
-                AUTHOR=$(echo "$ITEM" | jq -r '.author')
-                PREVIEW=$(echo "$ITEM" | jq -r '.preview')
-                MESSAGE="$MESSAGE"$'\n'"  - [#$NUM] $TITLE：$AUTHOR：$PREVIEW..."
-            done
-          fi
-          
-          # --- 3. 处理标签 ---
-          # 标签区块已禁用
-          # if [ "$LABEL_COUNT" -gt 0 ]; then
-          #   MESSAGE="$MESSAGE"$'\n'"🏷️ 标签 ($LABEL_COUNT)"
-          #   LEN=$(echo "$SUMMARY_DATA" | jq '.labels | length')
-          #   LIMIT=3
-          #   for i in $(seq 0 $((LEN-1))); do
-          #       if [ "$i" -ge "$LIMIT" ]; then break; fi
-          #       ITEM=$(echo "$SUMMARY_DATA" | jq -r ".labels[$i]")
-          #       NUM=$(echo "$ITEM" | jq -r '.number')
-          #       CHANGE=$(echo "$ITEM" | jq -r '.change')
-          #       MESSAGE="$MESSAGE"$'\n'"  - [#$NUM] $CHANGE"
-          #   done
-          # fi
-          
-          # --- 4. 处理分配 ---
-          if [ "$ASSIGN_COUNT" -gt 0 ]; then
-            MESSAGE="$MESSAGE"$'\n'"👤 分配 ($ASSIGN_COUNT)"
-            LEN=$(echo "$SUMMARY_DATA" | jq '.assignments | length')
-            LIMIT=3
-            for i in $(seq 0 $((LEN-1))); do
-                if [ "$i" -ge "$LIMIT" ]; then break; fi
-                ITEM=$(echo "$SUMMARY_DATA" | jq -r ".assignments[$i]")
-                NUM=$(echo "$ITEM" | jq -r '.number')
-                ASSIGNEE=$(echo "$ITEM" | jq -r '.assignee')
-                MESSAGE="$MESSAGE"$'\n'"  - [#$NUM] -> $ASSIGNEE"
-            done
-          fi
-          
-          if [ "$TOTAL_COUNT" -eq 0 ]; then
-             MESSAGE="$MESSAGE"$'\n'"💤 本时段无动态"
-          fi
-          
-          # 输出
+          echo "===== 生成的消息 ====="
+          printf '%s\n' "$MESSAGE"
+
+          # 输出（printf 保留换行，避免 echo -e 误解析标题里的反斜杠）
           {
             echo "message<<EOF"
-            echo -e "$MESSAGE"
+            printf '%s\n' "$MESSAGE"
             echo "EOF"
           } >> $GITHUB_OUTPUT
                 
       - name: Send QQ Notification
         if: steps.fetch_activities.outputs.total_count != '0'
-        uses: Y2Nk4/qmsg-action@master
-        with:
-          # qq: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_QQ_DEV || secrets.QMSG_QQ_PUB }}
-          # groups: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_GROUPS_DEV || secrets.QMSG_GROUPS_PUB }}
-          groups: ${{ secrets.QMSG_GROUPS_PUB }}
-          key: ${{ secrets.QMSG_KEY }}
-          message: ${{ steps.generate_message.outputs.message }}
+        env:
+          # 经 env 注入，避免用户可控的消息内容直接拼进命令行
+          QMSG_KEY: ${{ secrets.QMSG_KEY }}
+          QMSG_GROUPS: ${{ secrets.QMSG_GROUPS_PUB }}
+          MSG: ${{ steps.generate_message.outputs.message }}
+        run: |
+          # 直发 Qmsg 群消息：POST /group/<KEY>，--data-urlencode 自动处理换行与特殊字符
+          RESP=$(curl -sS --max-time 30 --connect-timeout 10 -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
+            --data-urlencode "msg=${MSG}" \
+            --data-urlencode "qq=${QMSG_GROUPS}")
+          echo "Qmsg 响应: $RESP"
+          # 校验服务端 success 字段，失败则让步骤失败（与原 action 行为一致）
+          echo "$RESP" | jq -e '.success == true' >/dev/null || {
+            echo "::error::Qmsg 推送失败"
+            exit 1
+          }
