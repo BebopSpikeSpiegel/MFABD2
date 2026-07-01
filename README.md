@@ -217,13 +217,9 @@ Mac 版 Agent 功能在根目录提供一键修复环境脚本，遇到环境问
 
 ## 参与开发
 
-如需参与开发，请先阅读以下规范，确保本地测试通过后再提交 PR，合并请使用 `--no-ff` 非快速合并。
+长期是一人填战壕,**很欢迎友军**。无论你想改 Pipeline、写 Agent、补资源，还是只是反馈个带日志的 Bug——
 
-- [Pipeline 协议规范](https://maafw.xyz/docs/1.1-QuickStarted)
-- [开发帮助文档](/开发帮助.txt)
-- [资源包制作工具] [MaaOWM](https://github.com/sunyink/MaaOWM)，多资源包依序挂载，卸载后向目标包写回Diff字段。
-
-**提交辅助 Hook**：执行 `git config core.hooksPath scripts/hooks` 后，`git commit` 将自动打开提交信息辅助界面，便于规范提交格式与触发发版流程。
+👉 **完整参与指南见 [CONTRIBUTING.md](CONTRIBUTING.md)**：要什么 / 不要什么、提交后会经历什么、怎么搭环境、怎么进开发群，都在里面。
 
 ---
 
