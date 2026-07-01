@@ -1151,9 +1151,50 @@
         ],
         "only_rec": true,
         "next": [
+            "QuickHunt_RiceRecheck",
             "[Anchor]BattleMap_Reset"
         ],
         "focus": "BB.狩猎-复位模块出口\n\n 复位位置正确-成功"
+    },
+    "QuickHunt_RiceRecheck": {
+        "desc": "#327 免费米饭清空兜底复检:复位收口反判米饭余量,分子>0(仍有免费米饭)则回航线找当天双倍图续打(无视双倍策略,一律吃双倍);命中0/N不匹配则跳过本节点,走原收尾锚点.max_hit兜底防极端死循环",
+        "recognition": "OCR",
+        "roi": [
+            1040,
+            33,
+            111,
+            27
+        ],
+        "expected": "^[1-9]\\d*/\\d+",
+        "only_rec": true,
+        "max_hit": 20,
+        "next": [
+            "QuickHunt_RiceRecheck_DoubleCk",
+            "QuickHunt_CollectMapAdventureRoute2"
+        ],
+        "focus": "BM.#327 免费米饭未清空,回航线找双倍图续打"
+    },
+    "QuickHunt_RiceRecheck_DoubleCk": {
+        "desc": "#327 兜底:独立判当前关是否双倍图(固定DoubleExp/DoubleGold模板,不受'忽视双倍'override污染);命中(当前关双倍)则打MAX,未命中则miss落到CollectMapAdventureRoute2切另一关找双倍/两关都无则退狩猎场用光",
+        "recognition": "TemplateMatch",
+        "roi": [
+            413,
+            592,
+            159,
+            110
+        ],
+        "template": [
+            "DoubleExp.png",
+            "DoubleGold.png"
+        ],
+        "green_mask": true,
+        "threshold": 0.8,
+        "next": [
+            "QuickHunt_NoAP_Rice",
+            "QuickHunt_FastBattleMAXTouchAdventureRoute",
+            "[JumpBack]QuickHunt_QuickBattleButton"
+        ],
+        "focus": "BM.#327 当前关即双倍图,打MAX消化米饭"
     },
     "QuickHunt_MapLocReset_once": {
         "recognition": "ColorMatch",
