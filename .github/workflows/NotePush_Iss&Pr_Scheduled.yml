@@ -171,7 +171,7 @@ jobs:
               ISSUE_TITLE=$(echo "$PARENT_JSON" | jq -r '.title')
               IS_PR=$(echo "$PARENT_JSON" | jq 'has("pull_request")')
               BODY=$(echo "$comment" | jq -r '.body' | tr '\n\r\t' '   ')
-              PREVIEW=$(echo "$BODY" | cut -c 1-"$PREVIEW_LEN")
+              PREVIEW=$(printf '%s' "$BODY" | jq -Rrs ".[0:$PREVIEW_LEN]")
               REC=$(echo "$comment" | jq -c \
                 --argjson num "$ISSUE_NUMBER" \
                 --arg title "$ISSUE_TITLE" \
