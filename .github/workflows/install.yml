@@ -967,7 +967,7 @@ jobs:
         env:
           # 经 env 注入，避免用户可控内容直接拼进命令行
           QMSG_KEY: ${{ secrets.QMSG_KEY }}
-          QMSG_GROUPS: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_GROUPS_DEV || secrets.QMSG_GROUPS_PUB }}
+          QMSG_GROUPS: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_GROUPS_DEV || needs.meta.outputs.version_type != 'ci' && secrets.QMSG_GROUPS_PUB || '' }}
           MSG: |
             🏗️ [${{ github.repository }}] 构建完成
             👤 提交者: ${{ github.actor }}
@@ -982,7 +982,7 @@ jobs:
             🔨 构建下载: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           # 直发 Qmsg 群消息：POST /group/<KEY>
-          RESP=$(curl -sS -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
+          RESP=$(curl -sS --max-time 30 --connect-timeout 10 -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
             --data-urlencode "msg=${MSG}" \
             --data-urlencode "qq=${QMSG_GROUPS}")
           echo "Qmsg 响应: $RESP"

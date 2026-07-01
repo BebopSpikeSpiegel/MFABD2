@@ -25,10 +25,16 @@ env:
 
 jobs:
   summary-report:
+    permissions:
+      contents: read
+      issues: read
+      pull-requests: read
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repository
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       
       - name: Calculate Time Windows
         id: time_calc
@@ -103,11 +109,11 @@ jobs:
               CLOSED_AT=$(echo "$ITEM" | jq -r '.closed_at')
               MERGED_AT=$(echo "$ITEM" | jq -r '.merged_at')
               STATUS=""; TS=""
-              if [[ "$MERGED_AT" != "null" && "$MERGED_AT" > "$START_TIME" ]]; then
+              if [[ "$MERGED_AT" != "null" && "$MERGED_AT" > "$START_TIME" && "$MERGED_AT" < "$END_TIME" ]]; then
                 STATUS="🟣 合并"; TS="$MERGED_AT"
-              elif [[ "$CLOSED_AT" != "null" && "$CLOSED_AT" > "$START_TIME" ]]; then
+              elif [[ "$CLOSED_AT" != "null" && "$CLOSED_AT" > "$START_TIME" && "$CLOSED_AT" < "$END_TIME" ]]; then
                 STATUS="🚫 关闭"; TS="$CLOSED_AT"
-              elif [[ "$CREATED_AT" > "$START_TIME" ]]; then
+              elif [[ "$CREATED_AT" > "$START_TIME" && "$CREATED_AT" < "$END_TIME" ]]; then
                 STATUS="🆕 新建"; TS="$CREATED_AT"
               fi
               if [ -n "$STATUS" ]; then
@@ -134,9 +140,9 @@ jobs:
               CREATED_AT=$(echo "$ITEM" | jq -r '.created_at')
               CLOSED_AT=$(echo "$ITEM" | jq -r '.closed_at')
               STATUS=""; TS=""
-              if [[ "$CLOSED_AT" != "null" && "$CLOSED_AT" > "$START_TIME" ]]; then
+              if [[ "$CLOSED_AT" != "null" && "$CLOSED_AT" > "$START_TIME" && "$CLOSED_AT" < "$END_TIME" ]]; then
                 STATUS="✅ 关闭"; TS="$CLOSED_AT"
-              elif [[ "$CREATED_AT" > "$START_TIME" ]]; then
+              elif [[ "$CREATED_AT" > "$START_TIME" && "$CREATED_AT" < "$END_TIME" ]]; then
                 STATUS="🆕 新建"; TS="$CREATED_AT"
               fi
               if [ -n "$STATUS" ]; then
@@ -320,7 +326,7 @@ jobs:
           MSG: ${{ steps.generate_message.outputs.message }}
         run: |
           # 直发 Qmsg 群消息：POST /group/<KEY>，--data-urlencode 自动处理换行与特殊字符
-          RESP=$(curl -sS -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
+          RESP=$(curl -sS --max-time 30 --connect-timeout 10 -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
             --data-urlencode "msg=${MSG}" \
             --data-urlencode "qq=${QMSG_GROUPS}")
           echo "Qmsg 响应: $RESP"
