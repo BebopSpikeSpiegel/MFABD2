@@ -77,7 +77,9 @@
         {
             "name": "[执行]地图采集[单章]",
             "entry": "Collect_StartGame_HomePage_OnlyOnce",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb"
+            ],
             "default_check": true,
             "description": "<地图采集[完整]>的单卡带模式，满足日常任务所需即停止。",
             "option": [
@@ -117,7 +119,9 @@
         {
             "name": "[执行]竞技场",
             "entry": "PVP_TaskStart",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb"
+            ],
             "default_check": true,
             "option": [
                 "竞技场战斗倍数"
@@ -127,7 +131,9 @@
         {
             "name": "[执行]赛季活动快速战斗",
             "entry": "Event_HomePage",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb"
+            ],
             "option": [
                 "赛季活动快速战斗难度",
                 "魔兽初始等级"
@@ -137,13 +143,17 @@
         {
             "name": "[执行]肉鸽塔每日快速战斗",
             "entry": "Redemption_HomePage",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb"
+            ],
             "description": "刷取每期强化代币（黑晶石），用于点亮修改器辅助高难关卡。自动选取当前可用最高难度，打完每日3次免费AP。<br><b>注意：</b>强化代币与强化效果期内累计，跨期清零不继承。"
         },
         {
             "name": "[执行]周常任务",
             "entry": "Weekly_Start",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb"
+            ],
             "option": [
                 "末日之书",
                 "周常钓鱼"
@@ -154,7 +164,9 @@
             "name": "[领取]日常任务",
             "default_check": true,
             "entry": "Daily_HomePage",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb"
+            ],
             "option": [
                 "餐馆领装饰币",
                 "餐馆自动升级",
@@ -209,7 +221,9 @@
             "name": "[执行]地图采集[完整]",
             "entry": "Collect_StartGame_HomePage",
             "default_check": true,
-            "controller": ["Adb"],
+            "controller": [
+                "Adb"
+            ],
             "description": "进入卡带，对含传送阵的地图依次执行探查、吸取、召集。<br><span style=\"background-color:rgba(255,160,0,0.2)\"><b>前提：</b>传送阵须已激活，且周围箱庭迷雾已探明，使区域地图能完整显示传送阵图标。</span><br><b>周常CD：</b>自动跳过本周已刷卡带，进度记录于 <code>agent_save_data.json</code>，可手动迁移。刷取顺序：卡带框从左到右，依故事→角色→活动大类推进。",
             "option": [
                 "简单类跳过",
@@ -220,7 +234,9 @@
         {
             "name": "[执行]商店套利",
             "entry": "Arbitrage_Start",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb"
+            ],
             "description": "卡带商店跑商套利：逐卡带扫购低价原料收藏一键购买，按每日最高价择机出售；同时制作高利润料理待出售变现。<br>三个环节均可独立开关，按需组合。",
             "option": [
                 "利润商品-低价进货",
@@ -231,7 +247,9 @@
         {
             "name": "[半自动]自动钓鱼",
             "entry": "Fishing_Entry",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb"
+            ],
             "option": [
                 "钓鱼地点",
                 "目标次数"
@@ -240,14 +258,18 @@
         },
         {
             "name": "[全局]结束游戏",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb"
+            ],
             "entry": "Close_HomePage"
         },
         {
             "name": "[手动]生活技能刷级",
             "description": "手动触发生活技能刷级流程。目前支持<code>砍价</code>技能，更多技能待后续扩展。",
             "entry": "Practise_Start",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb"
+            ],
             "option": [
                 "选择要刷取的技能"
             ]
@@ -255,7 +277,9 @@
         {
             "name": "[特殊]半自动操作",
             "entry": "SemiAuto_HomePage",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb"
+            ],
             "option": [
                 "半自动作业"
             ],
@@ -482,11 +506,8 @@
                     "name": "优先双倍",
                     "description": "优先：先按资源倾向筛选，若恰好有双倍则打航线；否则转打狩猎场。",
                     "pipeline_override": {
-                        "QuickHunt_CollectMapAdventureRouteDoubleCk1No": {
-                            "next": [
-                                "QuickHunt_CollectMapAdventureRouteDoubleCk2No_ToCentral",
-                                "[JumpBack]QuickHunt_CollectMap_Initialize"
-                            ]
+                        "QuickHunt_AdventureRouteReBackHuntingGrounds": {
+                            "enabled": true
                         }
                     }
                 },
@@ -1159,7 +1180,9 @@
                     "description": "常规战，由简单级进挑战级。快速战，仅挑战级。\n\n队伍自配，练度高成功率大。",
                     "pipeline_override": {
                         "SeasonEvent_Battle_Start": {
-                            "next": ["Event_EnterBattle_Auto"]
+                            "next": [
+                                "Event_EnterBattle_Auto"
+                            ]
                         }
                     }
                 },
@@ -1167,7 +1190,9 @@
                     "name": "普通",
                     "pipeline_override": {
                         "SeasonEvent_Battle_Start": {
-                            "next": ["SeasonEvent_EnterlBattle_Normal"]
+                            "next": [
+                                "SeasonEvent_EnterlBattle_Normal"
+                            ]
                         }
                     }
                 },
@@ -1175,7 +1200,9 @@
                     "name": "挑战",
                     "pipeline_override": {
                         "SeasonEvent_Battle_Start": {
-                            "next": ["SeasonEvent_EnterlBattle_Challenge"]
+                            "next": [
+                                "SeasonEvent_EnterlBattle_Challenge"
+                            ]
                         }
                     }
                 }
@@ -1334,7 +1361,9 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {},
-                    "option": ["购买收藏扫描（每周|每次）"]
+                    "option": [
+                        "购买收藏扫描（每周|每次）"
+                    ]
                 },
                 {
                     "name": "No",
@@ -1678,10 +1707,14 @@
                     "description": "点击待强化装备,看到'连续精炼'后,开始运行",
                     "pipeline_override": {
                         "SemiAuto_HomePage": {
-                            "next": ["SemiAuto_SequentialRefined_Str"]
+                            "next": [
+                                "SemiAuto_SequentialRefined_Str"
+                            ]
                         }
                     },
-                    "option": ["连续精炼次数"]
+                    "option": [
+                        "连续精炼次数"
+                    ]
                 }
             ]
         },
@@ -1738,7 +1771,9 @@
                 {
                     "name": "[执行]地图采集[单章]",
                     "enabled": true,
-                    "option": {"简单类跳过": "Yes"}
+                    "option": {
+                        "简单类跳过": "Yes"
+                    }
                 },
                 {
                     "name": "[执行]竞技场",
@@ -1783,7 +1818,9 @@
                 {
                     "name": "[执行]地图采集[完整]",
                     "enabled": true,
-                    "option": {"简单类跳过": "Yes"}
+                    "option": {
+                        "简单类跳过": "Yes"
+                    }
                 },
                 {
                     "name": "[全局]结束游戏",
@@ -1829,7 +1866,9 @@
                 {
                     "name": "[执行]竞技场",
                     "enabled": true,
-                    "option": {"竞技场战斗倍数": "1倍"}
+                    "option": {
+                        "竞技场战斗倍数": "1倍"
+                    }
                 },
                 {
                     "name": "[执行]赛季活动快速战斗",
@@ -1842,7 +1881,9 @@
                 {
                     "name": "[领取]日常任务",
                     "enabled": true,
-                    "option": {"餐馆自动升级": "Yes"}
+                    "option": {
+                        "餐馆自动升级": "Yes"
+                    }
                 },
                 {
                     "name": "[领取]任务页(每日/每周)",
@@ -1871,7 +1912,9 @@
                 {
                     "name": "[执行]地图采集[完整]",
                     "enabled": true,
-                    "option": {"简单类跳过": "Yes"}
+                    "option": {
+                        "简单类跳过": "Yes"
+                    }
                 },
                 {
                     "name": "[全局]结束游戏",
