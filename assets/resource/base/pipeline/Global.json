@@ -371,9 +371,9 @@
     "Global_BackToQC1_Menu_Cor": {
         "recognition": "ColorMatch",
         "roi": [
-            185,
-            530,
-            173,
+            364,
+            532,
+            174,
             51
         ],
         "lower": [
