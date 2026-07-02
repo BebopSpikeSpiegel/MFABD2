@@ -37,13 +37,28 @@
         ]
     },
     "Activities_FindActive": {
-        "desc": "左侧列表竖条扫描红点选可领活动。|[PC覆盖] PC红点在活动卡片右上角(同通行证布局,非安卓卡片左边竖条),720红点列x337~360 y173~527(native x505~540 y260~790),base roi[269,125,30,478]位置不同→[337,173,23,354]。红点为清晰红点沿用Agt_RedDot_Preset_Panoram;点红点后需左下偏选中卡片主体→target_offset改[-85,30](base[-50,10])。实机确认活动任务/拼图活动卡片右上角有红点。红点检测置信度待MFA复验。",
+        "desc": "左侧列表竖条扫描红点选可领活动。|[PC覆盖] 红点在活动卡片右上角(x同列~335-350)。【2026-07-03实机定案】PC 720列表小红点仅12×11px,感叹号断层被抗锯齿糊平→检测器gap分项恒0,无gap置信上限0.55(权重gap0.45/vert0.35/white0.15/cent0.05),实测conf 0.442<Panoram预设阈0.5永远miss(log stage=confidence实锤,内布利斯Pickup红点漏检)。preset模式不支持参数覆盖→改独立模式(参数照抄Panoram)+min_confidence降0.4(仍高于精准roi默认0.25,靠enclosed拓扑+vert防杂红)。roi左扩补回被切2px(红点box x335起,原x337切左缘),y按实测列表可视区(卡片y95~600)扩[330,100,30,460](原y173-527首尾卡红点会漏)。点红点后左下偏选卡片主体target_offset[-85,30]。",
         "roi": [
-            337,
-            173,
-            23,
-            354
+            330,
+            100,
+            30,
+            460
         ],
+        "custom_recognition_param": {
+            "hsv_ranges": [
+                {
+                    "lower": [0, 140, 120],
+                    "upper": [12, 255, 255]
+                },
+                {
+                    "lower": [165, 140, 120],
+                    "upper": [180, 255, 255]
+                }
+            ],
+            "red_area": [50, 450],
+            "gap_ratio": 0.35,
+            "min_confidence": 0.4
+        },
         "target_offset": [
             -85,
             30,
