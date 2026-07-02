@@ -1,4 +1,40 @@
 {
+    "Global_ToHomePage": {
+        "desc": "[PC覆盖·2026-07-03] 通用复位加第四分支修'餐馆场景启动任务逻辑真空':base三分支Enter(要主页)/HomeButton(要箱庭)/Reset(要左上返回箭头)在餐馆3D场景全miss→8s超时→on_error全miss→Global_Null_Exception循环(实测22次,逼近35次Panic阈值).追加BusinExit_PC(识别'格鲁菲餐厅'标题→点右上Home)兜住.next数组整替换,on_error继承base.",
+        "next": [
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage_HomeButton",
+            "Global_ToHomePage_Reset",
+            "Global_ToHomePage_BusinExit_PC"
+        ]
+    },
+    "Global_ToHomePage_BusinExit_PC": {
+        "desc": "[PC新增] 餐馆场景退出:OCR'格鲁菲餐厅'标题(roi同pc Daily_Busin_Entered已校准)命中则点右上Home按钮(720实测中心(1197,39))回箱庭,后续HomeButton分支接手回主页.",
+        "recognition": "OCR",
+        "roi": [
+            80,
+            22,
+            115,
+            30
+        ],
+        "expected": [
+            "^(?=.*[格鲁菲])(?=.*[餐厅]).{3,6}$"
+        ],
+        "action": "Click",
+        "target": [
+            1189,
+            31,
+            16,
+            16
+        ],
+        "post_delay": 3000,
+        "next": [
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage_HomeButton",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G=1.餐馆场景,点Home退出"
+    },
     "Global_QuickCart_MenuReset": {
         "desc": "调出快速卡带1/2,操作",
         "template": [
