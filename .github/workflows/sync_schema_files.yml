@@ -46,13 +46,25 @@ jobs:
         run: |
           echo "Syncing for branch: ${{ matrix.branch }}"
           mkdir -p deps/tools
-          
-          # 下载文件
-          curl -s -o deps/tools/interface.schema.json https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/tools/interface.schema.json
-          curl -s -o deps/tools/interface_v2.schema.json https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/tools/interface_v2.schema.json
-          curl -s -o deps/tools/interface_config.schema.json https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/tools/interface_config.schema.json
-          curl -s -o deps/tools/pipeline.schema.json https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/tools/pipeline.schema.json
-          
+
+          # 需要同步的 schema 文件清单（须与上游 MaaXYZ/MaaFramework tools/ 实际文件名一致）
+          files=(
+            interface.schema.json
+            interface_import.schema.json
+            interface_config.schema.json
+            pipeline.schema.json
+            custom.action.schema.json
+            custom.recognition.schema.json
+          )
+
+          base="https://raw.githubusercontent.com/MaaXYZ/MaaFramework/main/tools"
+          for f in "${files[@]}"; do
+            echo "Downloading $f ..."
+            # -f：HTTP 错误（如 404）时退出非 0，避免把 "404: Not Found" 静默写入文件
+            # -L：跟随重定向；--retry：抗网络抖动
+            curl -fSL --retry 3 -o "deps/tools/$f" "$base/$f"
+          done
+
           echo "Downloaded files."
 
       # 使用 peter-evans/create-pull-request 自动处理变更检测和 PR 创建
