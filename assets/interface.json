@@ -373,6 +373,9 @@
                     "pipeline_override": {
                         "QuickHunt_AdventureRoute": {
                             "enabled": false
+                        },
+                        "QuickHunt_RiceRecheck_HuntingGrounds_Entry": {
+                            "enabled": true
                         }
                     }
                 }

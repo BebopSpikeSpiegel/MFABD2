@@ -1157,21 +1157,48 @@
         "focus": "BB.狩猎-复位模块出口\n\n 复位位置正确-成功"
     },
     "QuickHunt_RiceRecheck": {
-        "desc": "#327 免费米饭清空兜底(jb1,挂Hub航线后):inverse判米饭是否耗尽,未耗尽(仍有免费米饭)则JumpBack打一轮当天双倍图(无视双倍策略,一律吃双倍),打完出栈回本节点自循环;耗尽则null出栈返回Hub继续洞穴.不写on_error(靠出栈自然结束,不触发Panic).max_hit防死循环",
+        "desc": "#327 免费米饭清空兜底(jb1,挂Hub航线后):inverse判米饭是否耗尽,未耗尽则续打消化(Hunt强制MAX一轮吃光,故max_hit:1不循环);耗尽则null出栈返回Hub继续洞穴.HuntingGrounds_Entry常闭,UI关航线时开启(优先退狩猎场,避免越权);Hunt复位检查失败则JumpBack调复位模块.不写on_error(靠出栈自然结束,不触发Panic)",
         "recognition": "Or",
         "any_of": [
             "QuickHunt_NoRiceAP_Skip"
         ],
         "inverse": true,
-        "max_hit": 20,
+        "max_hit": 1,
         "next": [
-            "[JumpBack]QuickHunt_RiceRecheck_Hunt",
-            "QuickHunt_RiceRecheck"
+            "QuickHunt_RiceRecheck_HuntingGrounds_Entry",
+            "QuickHunt_RiceRecheck_Hunt",
+            "[JumpBack]QuickHunt_CollectMap_Initialize"
         ],
-        "focus": "BM.#327 免费米饭未清空,回航线找双倍图续打"
+        "focus": "BM.#327 免费米饭未清空,续打消化"
+    },
+    "QuickHunt_RiceRecheck_HuntingGrounds_Entry": {
+        "desc": "#327 兜底小入口(常闭):UI关闭航线时由case开启,剩余米饭优先退回狩猎场消化(避免越权把米饭倒入用户关闭的航线);2次失败再落Hunt用航线兜底",
+        "enabled": false,
+        "max_hit": 2,
+        "anchor": {
+            "BattleMap_Reset": ""
+        },
+        "next": [
+            "QuickHunt_CollectMap"
+        ],
+        "focus": "BM.退回打狩猎场"
     },
     "QuickHunt_RiceRecheck_Hunt": {
-        "desc": "#327 兜底续打一轮(JumpBack子任务,打完null出栈返回jb1复检):先独立判当前关双倍图打MAX,否则切另一关找双倍/两关都无退狩猎场用光",
+        "desc": "#327 兜底续打:先And复核复位正确(防前手异常退出),PatchNode强制覆写航线次数MAX(防'狩猎场MAX/双倍图x1'参数污染),再判当前关双倍图打MAX/切另一关找双倍/两关都无退狩猎场",
+        "recognition": "And",
+        "all_of": [
+            "QuickHunt_CollectMap_Initialize_Out_Ty2"
+        ],
+        "action": "Custom",
+        "custom_action": "PatchNode",
+        "custom_action_param": {
+            "node": "QuickHunt_FastBattleMAXTouchAdventureRoute",
+            "patch": {
+                "expected": [
+                    "MAX"
+                ]
+            }
+        },
         "next": [
             "QuickHunt_RiceRecheck_DoubleCk",
             "QuickHunt_CollectMapAdventureRoute2"
