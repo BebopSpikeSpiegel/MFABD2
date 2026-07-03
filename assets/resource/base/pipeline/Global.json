@@ -370,12 +370,7 @@
     },
     "Global_BackToQC1_Menu_Cor": {
         "recognition": "ColorMatch",
-        "roi": [
-            364,
-            532,
-            174,
-            51
-        ],
+        "roi": "Global_BackToQC1_Menu",
         "lower": [
             203,
             203,
