@@ -129,7 +129,9 @@
     "Global_ToHomePage_Reset": {
         "desc": "其他页面，返回按钮",
         "recognition": "And",
-        "all_of": ["Global_BackPageHub_Once"],
+        "all_of": [
+            "Global_BackPageHub_Once"
+        ],
         "action": "Click",
         "post_delay": 3000,
         "next": [
@@ -171,7 +173,9 @@
     "Global_ToSandBox_Reset": {
         "desc": "其他页面，返回按钮",
         "recognition": "And",
-        "all_of": ["Global_BackPageHub_Once"],
+        "all_of": [
+            "Global_BackPageHub_Once"
+        ],
         "action": "Click",
         "post_delay": 4000,
         "next": [
@@ -190,14 +194,18 @@
         "focus": "G.已复位到箱庭"
     },
     "Global_BackToPve2#": {
+        "desc": "传统卡带复位到2#",
+        "anchor": {
+            "BackToPack": "Global_BackToPve_TouchPVEBook"
+        },
         "next": [
-            "Global_BackToPve2#_ToCardMenu",
+            "Global_BackToPve_ToCardMenu",
             "[JumpBack]Global_HomeButton_Once",
             "[JumpBack]Global_WaitingForLoading"
         ],
         "focus": "G.复位卡带开始"
     },
-    "Global_BackToPve2#_ToCardMenu": {
+    "Global_BackToPve_ToCardMenu": {
         "desc": "识别左下抽抽乐-主页-点击选择章节",
         "recognition": "And",
         "all_of": [
@@ -210,11 +218,12 @@
             650
         ],
         "next": [
-            "Global_BackToPve2#_CardMenu",
-            "Global_BackToPve2#_ToCardMenu"
+            "Global_BackToPve_CardMenu_Tp1",
+            "Global_BackToPve_ToCardMenu"
         ]
     },
-    "Global_BackToPve2#_CardMenu": {
+    "Global_BackToPve_CardMenu_Tp1": {
+        "desc": "判断在传统卡带界面",
         "recognition": "OCR",
         "roi": [
             175,
@@ -226,23 +235,47 @@
             "游戏卡珍藏集"
         ],
         "next": [
-            "Global_BackToPve2#_TouchPVEBook",
-            "[JumpBack]Global_BackToPve2#_PVEBookSwipe_Lift",
-            "[JumpBack]Global_BackToPve2#_PVEBookSwipe"
+            "Global_BackToPve_CardMenu_Tp2",
+            "[JumpBack]Global_BackToPve_PVEBookSwipe"
         ]
     },
-    "Global_BackToPve2#_PVEBookSwipe": {
-        "desc": "识别活动游戏卡-上划",
+    "Global_BackToPve_CardMenu_Tp2": {
+        "desc": "传统卡带界面已上划到顶",
         "recognition": "OCR",
         "roi": [
-            118,
-            505,
-            95,
-            42
+            112,
+            96,
+            105,
+            38
         ],
         "expected": [
-            "活动游戏卡"
+            "店长游戏卡"
         ],
+        "next": [
+            "Global_BackToPve_CardMenu_Tp3",
+            "[JumpBack]Global_BackToPve_PVEBookSwipe_Lift"
+        ]
+    },
+    "Global_BackToPve_CardMenu_Tp3": {
+        "desc": "传统卡带界面已左划到首部",
+        "recognition": "TemplateMatch",
+        "roi": [
+            109,
+            365,
+            226,
+            164
+        ],
+        "template": [
+            "pve1.png"
+        ],
+        "next": [
+            "[Anchor]BackToPack"
+        ]
+    },
+    "Global_BackToPve_PVEBookSwipe": {
+        "desc": "识别活动游戏卡-上划",
+        "recognition": "And",
+        "all_of": ["Global_BackToPve_CardMenu_Tp1"],
         "action": "Swipe",
         "begin": [
             30,
@@ -251,41 +284,36 @@
         "end": [
             30,
             700
-        ]
-    },
-    "Global_BackToPve2#_PVEBookSwipe_Lift": {
-        "desc": "识别活动游戏卡-上划",
-        "recognition": "OCR",
-        "roi": [
-            111,
-            95,
-            105,
-            37
-        ],
-        "expected": [
-            "剧情游戏卡"
-        ],
-        "action": "Swipe",
-        "begin": [
-            150,
-            215
-        ],
-        "end": [
-            1264,
-            215
         ],
         "end_hold": 800,
         "duration": 500,
         "post_delay": 1500
     },
-    "Global_BackToPve2#_TouchPVEBook": {
+    "Global_BackToPve_PVEBookSwipe_Lift": {
+        "desc": "识别活动游戏卡-左划",
+        "recognition": "And",
+        "all_of": ["Global_BackToPve_CardMenu_Tp2"],
+        "action": "Swipe",
+        "begin": [
+            150,
+            445
+        ],
+        "end": [
+            1264,
+            445
+        ],
+        "end_hold": 800,
+        "duration": 500,
+        "post_delay": 1500
+    },
+    "Global_BackToPve_TouchPVEBook": {
         "desc": "点击PVE本子2",
         "recognition": "TemplateMatch",
         "roi": [
-            385,
-            143,
-            117,
-            69
+            320,
+            349,
+            376,
+            213
         ],
         "template": [
             "pve2.png"
@@ -297,15 +325,16 @@
             0,
             0
         ],
+        "anchor": {"BackToPack": ""},
         "post_delay": 5000,
         "next": [
-            "Global_BackToPve2#_FinBackMapPage",
-            "Global_BackToPve2#_TouchPVEBook",
+            "Global_BackToPve_FinBackMapPage",
+            "Global_BackToPve_TouchPVEBook",
             "[JumpBack]Global_WaitingForLoading"
         ],
         "focus": "G.复位用卡带已找到"
     },
-    "Global_BackToPve2#_FinBackMapPage": {
+    "Global_BackToPve_FinBackMapPage": {
         "desc": "识别右下图钉-章节主页",
         "recognition": "Or",
         "any_of": [
@@ -318,7 +347,9 @@
         "desc": "50次多半是卡死了,死死透别截图了",
         "max_hit": 50,
         "recognition": "And",
-        "all_of": ["Global_QuickCart_MenuReset"],
+        "all_of": [
+            "Global_QuickCart_MenuReset"
+        ],
         "action": "Click",
         "post_delay": 2000,
         "next": [
@@ -328,16 +359,8 @@
         "focus": "GO.快速卡带-复位到QC1"
     },
     "Global_BackToQC1_Menu": {
-        "recognition": "OCR",
-        "roi": [
-            185,
-            530,
-            173,
-            51
-        ],
-        "expected": [
-            "剧情游戏卡"
-        ],
+        "recognition": "And",
+        "all_of": ["Collect_QuickCart_SelectType_StoryPack"],
         "action": "Click",
         "next": [
             "Global_BackToQC1_Menu_Cor",
@@ -347,12 +370,7 @@
     },
     "Global_BackToQC1_Menu_Cor": {
         "recognition": "ColorMatch",
-        "roi": [
-            185,
-            530,
-            173,
-            51
-        ],
+        "roi": "Global_BackToQC1_Menu",
         "lower": [
             203,
             203,
@@ -593,7 +611,9 @@
     "Anc_SliderSwitch_Gry_TurnOn_Clr": {
         "desc": "【必须用万能识色生成box后锚点引用】，识别灰色，变成黄色",
         "recognition": "And",
-        "all_of": ["Anc_SliderSwitch_GryOff_Clr"],
+        "all_of": [
+            "Anc_SliderSwitch_GryOff_Clr"
+        ],
         "timeout": 3000,
         "next": [
             "Anc_SliderSwitch_YewOn_Clr",
@@ -603,7 +623,9 @@
     "Anc_SliderSwitch_Yew_TurnOff_Clr": {
         "desc": "【必须用万能识色生成box后锚点引用】，识别黄色，变成灰色",
         "recognition": "And",
-        "all_of": ["Anc_SliderSwitch_YewOn_Clr"],
+        "all_of": [
+            "Anc_SliderSwitch_YewOn_Clr"
+        ],
         "timeout": 3000,
         "next": [
             "Anc_SliderSwitch_GryOff_Clr",
@@ -634,7 +656,9 @@
             29,
             35
         ],
-        "template": ["UI_FishingPier.png"],
+        "template": [
+            "UI_FishingPier.png"
+        ],
         "green_mask": true,
         "action": "Click",
         "post_delay": 2000,
@@ -651,7 +675,9 @@
             48,
             26
         ],
-        "expected": ["确认"],
+        "expected": [
+            "确认"
+        ],
         "only_rec": true,
         "action": "Click",
         "post_delay": 2000,
@@ -668,11 +694,15 @@
             67,
             64
         ],
-        "template": ["UI_Pier_Back.png"],
+        "template": [
+            "UI_Pier_Back.png"
+        ],
         "green_mask": true,
         "action": "Click",
         "post_delay": 2000,
-        "next": ["[JumpBack]Global_WaitingForLoading"]
+        "next": [
+            "[JumpBack]Global_WaitingForLoading"
+        ]
     },
     "Anc_Ocr_Enable_Clr": {
         "desc": "[识别]对Ocr节点按钮再次色核,亮色",

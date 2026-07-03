@@ -698,13 +698,13 @@
         "action": "Custom",
         "custom_action": "PatchNode",
         "custom_action_param": {
-            "node": "Global_BackToPve2#_TouchPVEBook",
+            "node": "Global_BackToPve_TouchPVEBook",
             "patch": {
                 "roi": [
                     109,
-                    140,
-                    191,
-                    151
+                    365,
+                    226,
+                    164
                 ],
                 "template": [
                     "pve1.png"
@@ -712,10 +712,10 @@
             },
             "origin": {
                 "roi": [
-                    385,
-                    143,
-                    117,
-                    69
+                    320,
+                    349,
+                    376,
+                    213
                 ],
                 "template": [
                     "pve2.png"
@@ -869,7 +869,7 @@
         "custom_action": "RestoreBatch",
         "custom_action_param": {
             "nodes": [
-                "Global_BackToPve2#_TouchPVEBook",
+                "Global_BackToPve_TouchPVEBook",
                 "Collect_OperationsMain_ToAreaMap",
                 "Collect_TargetMap1-2",
                 "Collect_ClickBackOnSecureMap"
