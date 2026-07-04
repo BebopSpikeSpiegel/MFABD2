@@ -374,7 +374,7 @@
         },
         "next": [
             "Daily_Busin_Quick_BackPVEPage_Str",
-            "Global_BackToPve2#"
+            "Global_BackToPve_2#"
         ]
     },
     "Daily_Busin_DecorCoin_Exists": {
@@ -402,7 +402,7 @@
         ],
         "on_error": [
             "Daily_Busin_Quick_BackPVEPage_Str",
-            "Global_BackToPve2#",
+            "Global_BackToPve_2#",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
@@ -433,7 +433,7 @@
         "next": [
             "[JumpBack]Daily_Busin_GiftGet",
             "Daily_Busin_Quick_BackPVEPage_Str",
-            "Global_BackToPve2#"
+            "Global_BackToPve_2#"
         ],
         "focus": "装饰币已拾取满"
     },
@@ -676,7 +676,7 @@
         ],
         "next": [
             "Daily_Busin_Quick_BackPVEPage_Str",
-            "Global_BackToPve2#"
+            "Global_BackToPve_2#"
         ],
         "focus": "GBM.无圣石情况"
     },

@@ -22,7 +22,7 @@
         "post_delay": 2000,
         "next": [
             "Arbitrage_Card5#_Goin",
-            "Global_BackToPve_ToCardMenu"
+            "Global_BackToPve_Anc"
         ]
     },
     "Arbitrage_Card5#_Goin": {

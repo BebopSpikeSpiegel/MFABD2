@@ -6,7 +6,9 @@
             "Global_ToSandBox",
             "Global_QuickCart_MenuReset",
             "Global_BackToQC1",
-            "Global_BackToPve2#",
+            "Global_BackToPve_1#",
+            "Global_BackToPve_2#",
+            "Global_BackToPve_Anc",
             "Global_BackPageHub_Once",
             "[JumpBack]Global_WaitingForLoading",
             "Global_Null_Exception",
@@ -193,20 +195,41 @@
         ],
         "focus": "G.已复位到箱庭"
     },
-    "Global_BackToPve2#": {
-        "desc": "传统卡带复位到2#",
+    "Global_BackToPve_1#": {
+        "desc": "【传统卡带识别链-预设入口.预设pve1#】",
         "anchor": {
-            "BackToPack": "Global_BackToPve_TouchPVEBook"
+            "BackToPack": "Global_BackToPve_TouchPVE1#Pack"
         },
         "next": [
             "Global_BackToPve_ToCardMenu",
             "[JumpBack]Global_HomeButton_Once",
             "[JumpBack]Global_WaitingForLoading"
         ],
-        "focus": "G.复位卡带开始"
+        "focus": "G.复位卡带开始.预设1#"
+    },
+    "Global_BackToPve_2#": {
+        "desc": "【传统卡带识别链-预设入口.pve2#】",
+        "anchor": {
+            "BackToPack": "Global_BackToPve_TouchPVE2#Pack"
+        },
+        "next": [
+            "Global_BackToPve_ToCardMenu",
+            "[JumpBack]Global_HomeButton_Once",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G.复位卡带开始.预设2#"
+    },
+    "Global_BackToPve_Anc": {
+        "desc": "【传统卡带识别链-标准入口_必须先声明Anc出口'BackToPack' & Anc出口记得复位锚点'BackToPack'】不许Patch。",
+        "next": [
+            "Global_BackToPve_ToCardMenu",
+            "[JumpBack]Global_HomeButton_Once",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G.复位卡带开始.Anc"
     },
     "Global_BackToPve_ToCardMenu": {
-        "desc": "识别左下抽抽乐-主页-点击选择章节",
+        "desc": "【传统卡带识别链-开始.不要直接连这里!】识别左下抽抽乐-主页-点击选择章节",
         "recognition": "And",
         "all_of": [
             "Rec_HomePage_GA_Ocr",
@@ -257,7 +280,7 @@
         ]
     },
     "Global_BackToPve_CardMenu_Tp3": {
-        "desc": "传统卡带界面已左划到首部",
+        "desc": "【传统卡带识别链-结束. 出口由锚点 'BackToPack' 决定，未设锚会停在此处】固定位置识别pack1#=传统卡带界面已左划到首部",
         "recognition": "TemplateMatch",
         "roi": [
             109,
@@ -306,8 +329,28 @@
         "duration": 500,
         "post_delay": 1500
     },
-    "Global_BackToPve_TouchPVEBook": {
-        "desc": "点击PVE本子2",
+    "Global_BackToPve_TouchPVE1#Pack": {
+        "desc": "【传统卡带识别链-预设出口.pve1#】",
+        "recognition": "Or",
+        "any_of": ["Global_BackToPve_CardMenu_Tp3"],
+        "action": "Click",
+        "target_offset": [
+            -20,
+            25,
+            0,
+            0
+        ],
+        "anchor": {"BackToPack": ""},
+        "post_delay": 5000,
+        "next": [
+            "Global_BackToPve_FinBackMapPage",
+            "Global_BackToPve_TouchPVE1#Pack",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G.复位用卡带已找到.预设pve1#"
+    },
+    "Global_BackToPve_TouchPVE2#Pack": {
+        "desc": "【传统卡带识别链-预设出口.pve2#】",
         "recognition": "TemplateMatch",
         "roi": [
             320,
@@ -329,10 +372,10 @@
         "post_delay": 5000,
         "next": [
             "Global_BackToPve_FinBackMapPage",
-            "Global_BackToPve_TouchPVEBook",
+            "Global_BackToPve_TouchPVE2#Pack",
             "[JumpBack]Global_WaitingForLoading"
         ],
-        "focus": "G.复位用卡带已找到"
+        "focus": "G.复位用卡带已找到.预设pve2#"
     },
     "Global_BackToPve_FinBackMapPage": {
         "desc": "识别右下图钉-章节主页",
@@ -344,7 +387,7 @@
         "focus": "G.Global复位完成，结束~"
     },
     "Global_BackToQC1": {
-        "desc": "50次多半是卡死了,死死透别截图了",
+        "desc": "【快速复位QC1.全屏按钮起点（作为完整链调用）】50次多半是卡死了,死死透别截图了",
         "max_hit": 50,
         "recognition": "And",
         "all_of": [
@@ -359,6 +402,7 @@
         "focus": "GO.快速卡带-复位到QC1"
     },
     "Global_BackToQC1_Menu": {
+        "desc": "【快速复位QC1.快速菜单启后（无序，仅第一个）（卡带菜单时调用入口）（用pin识别做出口）】",
         "recognition": "And",
         "all_of": ["Collect_QuickCart_SelectType_StoryPack"],
         "action": "Click",
@@ -415,6 +459,7 @@
     },
     "Global_BackToQC1_Fin": {
         "desc": "找到图钉-点击返回主页",
+        "doc": "【快速复位QC1.终点】",
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Pin_Tpl",
