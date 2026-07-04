@@ -66,12 +66,7 @@
     },
     "PVP_PullUp_QuickCart_MC_Isenable": {
         "recognition": "ColorMatch",
-        "roi": [
-            36,
-            527,
-            1104,
-            63
-        ],
+        "roi": "PVP_PullUp_QuickCart_MC_Sort",
         "lower": [
             167,
             167,

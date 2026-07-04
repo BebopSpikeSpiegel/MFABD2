@@ -370,7 +370,7 @@
     },
     "Global_BackToQC1_Menu_Cor": {
         "recognition": "ColorMatch",
-        "roi": "Global_BackToQC1_Menu",
+        "roi": "Collect_QuickCart_SelectType_StoryPack",
         "lower": [
             203,
             203,

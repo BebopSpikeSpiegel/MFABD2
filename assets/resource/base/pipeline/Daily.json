@@ -797,10 +797,10 @@
     "Daily_Square_Menu": {
         "recognition": "OCR",
         "roi": [
-            542,
-            535,
-            149,
-            42
+            36,
+            527,
+            1104,
+            63
         ],
         "expected": [
             "玩法游戏卡"
