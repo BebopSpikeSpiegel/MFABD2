@@ -347,12 +347,7 @@
     },
     "Global_BackToQC1_Menu_Cor": {
         "recognition": "ColorMatch",
-        "roi": [
-            185,
-            530,
-            173,
-            51
-        ],
+        "roi": "Collect_QuickCart_SelectType_StoryPack",
         "lower": [
             203,
             203,
