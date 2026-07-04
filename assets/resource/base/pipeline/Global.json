@@ -1,11 +1,16 @@
 {
     "Global_Index": {
-        "desc": "依次为:回到主页面|回到箱庭|调出快速卡带菜单|回到快速卡带1|回到传统卡带2|点一次返回按钮 | 卡带读取界面循环等待",
+        "desc": "依次为:回到主页面|回到箱庭|调出快速卡带菜单|回到快速卡带1(预设入口x2)|快速卡带任意门(类型入口x4,Anc出口QCPack)|回到传统卡带(预设入口x2+Anc入口)|点一次返回按钮|卡带读取界面循环等待",
         "on_error": [
             "Global_ToHomePage",
             "Global_ToSandBox",
             "Global_QuickCart_MenuReset",
             "Global_BackToQC1",
+            "Global_BackToQC1_Menu",
+            "Global_BackToQC_Story_Anc",
+            "Global_BackToQC_Character_Anc",
+            "Global_BackToQC_Event_Anc",
+            "Global_BackToQC_Manager_Anc",
             "Global_BackToPve_1#",
             "Global_BackToPve_2#",
             "Global_BackToPve_Anc",
@@ -387,34 +392,120 @@
         "focus": "G.Global复位完成，结束~"
     },
     "Global_BackToQC1": {
-        "desc": "【快速复位QC1.全屏按钮起点（作为完整链调用）】50次多半是卡死了,死死透别截图了",
+        "desc": "【快速卡带识别链-预设入口.全屏按钮起点→QC1】50次多半是卡死了,死死透别截图了",
         "max_hit": 50,
-        "recognition": "And",
-        "all_of": [
-            "Global_QuickCart_MenuReset"
-        ],
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset"],
         "action": "Click",
+        "anchor": {
+            "QCPack": "Global_BackToQC_TouchQC1Pack"
+        },
         "post_delay": 2000,
         "next": [
-            "Global_BackToQC1_Menu",
-            "Global_BackToQC1"
+            "Global_BackToQC_Story_Anc"
         ],
         "focus": "GO.快速卡带-复位到QC1"
     },
     "Global_BackToQC1_Menu": {
-        "desc": "【快速复位QC1.快速菜单启后（无序，仅第一个）（卡带菜单时调用入口）（用pin识别做出口）】",
-        "recognition": "And",
-        "all_of": ["Collect_QuickCart_SelectType_StoryPack"],
-        "action": "Click",
+        "desc": "【快速卡带识别链-预设入口.菜单已起→QC1】守卫:剧情页签可见.不点击,交给走位链",
+        "recognition": "Or",
+        "any_of": ["Collect_QuickCart_SelectType_StoryPack"],
+        "anchor": {
+            "QCPack": "Global_BackToQC_TouchQC1Pack"
+        },
         "next": [
-            "Global_BackToQC1_Menu_Cor",
-            "Global_BackToQC1_Menu"
+            "Global_BackToQC_Story_Anc"
         ],
         "focus": "GO.快速卡带离开-菜单模式"
     },
-    "Global_BackToQC1_Menu_Cor": {
+    "Global_BackToQC_Story_Anc": {
+        "desc": "【快速卡带识别链-剧情页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "next": [
+            "Global_BackToQC_SelectStory",
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "GO.快速卡带复位开始"
+    },
+    "Global_BackToQC_Character_Anc": {
+        "desc": "【快速卡带识别链-角色页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "next": [
+            "Global_BackToQC_SelectCharacter",
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "GO.快速卡带复位开始"
+    },
+    "Global_BackToQC_Event_Anc": {
+        "desc": "【快速卡带识别链-活动页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "next": [
+            "Global_BackToQC_SelectEvent",
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "GO.快速卡带复位开始"
+    },
+    "Global_BackToQC_Manager_Anc": {
+        "desc": "【快速卡带识别链-店长页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "next": [
+            "Global_BackToQC_SelectManager",
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "GO.快速卡带复位开始"
+    },
+    "Global_BackToQC_SelectStory": {
+        "desc": "【快速卡带识别链-走位.不要直接连这里!】借Collect识别点剧情页签",
+        "recognition": "Or",
+        "any_of": ["Collect_QuickCart_SelectType_StoryPack"],
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "Global_BackToQC_StoryCor",
+            "Global_BackToQC_SelectStory"
+        ],
+        "focus": "GO.QC.剧情页签"
+    },
+    "Global_BackToQC_SelectCharacter": {
+        "desc": "【快速卡带识别链-走位.不要直接连这里!】借Collect识别点角色页签",
+        "recognition": "Or",
+        "any_of": ["Collect_QuickCart_SelectType_CharacterPack"],
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "Global_BackToQC_CharacterCor",
+            "Global_BackToQC_SelectCharacter"
+        ],
+        "focus": "GO.QC.角色页签"
+    },
+    "Global_BackToQC_SelectEvent": {
+        "desc": "【快速卡带识别链-走位.不要直接连这里!】借Collect识别点活动页签",
+        "recognition": "Or",
+        "any_of": ["Collect_QuickCart_SelectType_EventPack"],
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "Global_BackToQC_EventCor",
+            "Global_BackToQC_SelectEvent"
+        ],
+        "focus": "GO.QC.活动页签"
+    },
+    "Global_BackToQC_SelectManager": {
+        "desc": "【快速卡带识别链-走位.不要直接连这里!】借Collect识别点店长页签",
+        "recognition": "Or",
+        "any_of": ["Collect_QuickCart_SelectType_ManagerPack"],
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "Global_BackToQC_ManagerCor",
+            "Global_BackToQC_SelectManager"
+        ],
+        "focus": "GO.QC.店长页签"
+    },
+    "Global_BackToQC_StoryCor": {
+        "desc": "【快速卡带识别链-结束.】剧情页签色核.出口由锚点QCPack决定,未设锚会停在此处",
         "recognition": "ColorMatch",
-        "roi": "Collect_QuickCart_SelectType_StoryPack",
+        "roi": "Global_BackToQC_SelectStory",
         "lower": [
             203,
             203,
@@ -427,11 +518,72 @@
         ],
         "count": 200,
         "next": [
-            "Global_BackToQC1_Pvemap"
+            "[Anchor]QCPack"
         ],
-        "focus": "GO.菜单模式-色核通过"
+        "focus": "GO.QC.剧情页签-色核通过"
     },
-    "Global_BackToQC1_Pvemap": {
+    "Global_BackToQC_CharacterCor": {
+        "desc": "【快速卡带识别链-结束.】角色页签色核.出口由锚点QCPack决定,未设锚会停在此处",
+        "recognition": "ColorMatch",
+        "roi": "Global_BackToQC_SelectCharacter",
+        "lower": [
+            167,
+            167,
+            165
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 300,
+        "next": [
+            "[Anchor]QCPack"
+        ],
+        "focus": "GO.QC.角色页签-色核通过"
+    },
+    "Global_BackToQC_EventCor": {
+        "desc": "【快速卡带识别链-结束.】活动页签色核.出口由锚点QCPack决定,未设锚会停在此处",
+        "recognition": "ColorMatch",
+        "roi": "Global_BackToQC_SelectEvent",
+        "lower": [
+            167,
+            167,
+            165
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 500,
+        "next": [
+            "[Anchor]QCPack"
+        ],
+        "focus": "GO.QC.活动页签-色核通过"
+    },
+    "Global_BackToQC_ManagerCor": {
+        "desc": "【快速卡带识别链-结束.】店长页签色核.出口由锚点QCPack决定,未设锚会停在此处",
+        "recognition": "ColorMatch",
+        "roi": "Global_BackToQC_SelectManager",
+        "lower": [
+            167,
+            167,
+            165
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 500,
+        "next": [
+            "[Anchor]QCPack"
+        ],
+        "focus": "GO.QC.店长页签-色核通过"
+    },
+    "Global_BackToQC_TouchQC1Pack": {
+        "desc": "【快速卡带识别链-预设出口.QC1(KadaiGe)】",
         "recognition": "TemplateMatch",
         "roi": [
             51,
@@ -450,16 +602,17 @@
             0,
             0
         ],
+        "anchor": {"QCPack": ""},
         "post_delay": 4000,
         "next": [
-            "Global_BackToQC1_Fin",
-            "Global_BackToQC1_Pvemap",
+            "Global_BackToQC_Fin",
+            "Global_BackToQC_TouchQC1Pack",
             "[JumpBack]Global_WaitingForLoading"
         ]
     },
-    "Global_BackToQC1_Fin": {
+    "Global_BackToQC_Fin": {
         "desc": "找到图钉-点击返回主页",
-        "doc": "【快速复位QC1.终点】",
+        "doc": "【快速卡带识别链-终点】",
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Pin_Tpl",
