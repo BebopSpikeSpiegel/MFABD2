@@ -57,7 +57,8 @@
         ],
         "template": [
             "BackButGe.png",
-            "BackButGe2.png"
+            "BackButGe2.png",
+            "UI_qsback.png"
         ],
         "green_mask": true,
         "action": "Click",

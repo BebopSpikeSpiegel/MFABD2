@@ -554,10 +554,10 @@
         "desc": "点击PVE本子2",
         "recognition": "TemplateMatch",
         "roi": [
-            405,
-            157,
-            78,
-            38
+            320,
+            349,
+            376,
+            213
         ],
         "template": [
             "pve2.png"
