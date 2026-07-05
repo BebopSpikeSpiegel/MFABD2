@@ -17,7 +17,8 @@
     "PVP_PullUp_QuickCart": {
         "recognition": "TemplateMatch",
         "template": [
-            "QuickCartGeadai.png"
+            "QuickCartGeadai.png",
+            "UI_QuickPack_GE.png"
         ],
         "green_mask": true,
         "action": "Click",
@@ -48,10 +49,10 @@
         "desc": "分组正则待适配",
         "recognition": "OCR",
         "roi": [
-            551,
-            534,
-            138,
-            48
+            36,
+            527,
+            1104,
+            63
         ],
         "expected": [
             "^(?=.*[玩法])(?=.*[游戏])(?=.*[卡]).{3,12}$"
@@ -66,12 +67,7 @@
     },
     "PVP_PullUp_QuickCart_MC_Isenable": {
         "recognition": "ColorMatch",
-        "roi": [
-            551,
-            534,
-            138,
-            48
-        ],
+        "roi": "PVP_PullUp_QuickCart_MC_Sort",
         "lower": [
             167,
             167,
