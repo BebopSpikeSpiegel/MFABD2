@@ -17,7 +17,8 @@
     "PVP_PullUp_QuickCart": {
         "recognition": "TemplateMatch",
         "template": [
-            "QuickCartGeadai.png"
+            "QuickCartGeadai.png",
+            "UI_QuickPack_GE.png"
         ],
         "green_mask": true,
         "action": "Click",
@@ -66,12 +67,7 @@
     },
     "PVP_PullUp_QuickCart_MC_Isenable": {
         "recognition": "ColorMatch",
-        "roi": [
-            36,
-            527,
-            1104,
-            63
-        ],
+        "roi": "PVP_PullUp_QuickCart_MC_Sort",
         "lower": [
             167,
             167,
