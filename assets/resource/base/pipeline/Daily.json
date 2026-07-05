@@ -247,7 +247,7 @@
         "focus": "DM.经营子菜单 | Err,如果点多了会回到一级主菜单,用err回去"
     },
     "Daily_GetBusin_SubMenu_Claim": {
-        "desc": "点击'一键获得'一键领取(结合色核)。#322 sunyink:原expected误写'获得/结算/回收'三子按钮,实应识别'一键获得'单按钮(现靠'获得'左侧优先+颜色AND兜底才未出bug);改识别词'键获得'(det易丢'一')",
+        "desc": "点击'一键获得'一键领取(结合色核)。#322 sunyink:原expected误写'获得/结算/回收'三子按钮,实应识别'一键获得'单按钮(现靠'获得'左侧优先+颜色AND兜底才未出bug);改识别词'键获得'(det易丢'一')。roi底边416致按钮(y≈600)出框恒miss,下延至500",
         "recognition": "And",
         "all_of": [
             {
@@ -257,7 +257,7 @@
                     640,
                     156,
                     251,
-                    416
+                    500
                 ],
                 "expected": [
                     "键获得"
@@ -373,7 +373,7 @@
         },
         "next": [
             "Daily_Busin_Quick_BackPVEPage_Str",
-            "Global_BackToPve2#"
+            "Global_BackToPve_2#"
         ]
     },
     "Daily_Busin_DecorCoin_Exists": {
@@ -401,7 +401,7 @@
         ],
         "on_error": [
             "Daily_Busin_Quick_BackPVEPage_Str",
-            "Global_BackToPve2#",
+            "Global_BackToPve_2#",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
@@ -432,7 +432,7 @@
         "next": [
             "[JumpBack]Daily_Busin_GiftGet",
             "Daily_Busin_Quick_BackPVEPage_Str",
-            "Global_BackToPve2#"
+            "Global_BackToPve_2#"
         ],
         "focus": "装饰币已拾取满"
     },
@@ -675,7 +675,7 @@
         ],
         "next": [
             "Daily_Busin_Quick_BackPVEPage_Str",
-            "Global_BackToPve2#"
+            "Global_BackToPve_2#"
         ],
         "focus": "GBM.无圣石情况"
     },
@@ -796,10 +796,10 @@
     "Daily_Square_Menu": {
         "recognition": "OCR",
         "roi": [
-            542,
-            535,
-            149,
-            42
+            36,
+            527,
+            1104,
+            63
         ],
         "expected": [
             "玩法游戏卡"

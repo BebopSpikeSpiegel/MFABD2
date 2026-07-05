@@ -9,10 +9,10 @@
     "Redemption_Menu": {
         "recognition": "OCR",
         "roi": [
-            542,
-            535,
-            149,
-            42
+            36,
+            527,
+            1104,
+            63
         ],
         "expected": [
             "玩法游戏卡"
@@ -554,10 +554,10 @@
         "desc": "点击PVE本子2",
         "recognition": "TemplateMatch",
         "roi": [
-            405,
-            157,
-            78,
-            38
+            320,
+            349,
+            376,
+            213
         ],
         "template": [
             "pve2.png"

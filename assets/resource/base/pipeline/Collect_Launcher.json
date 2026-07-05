@@ -166,7 +166,8 @@
         "next": [
             "[JumpBack]Collect_FeatureSwitch_StoryPack",
             "[JumpBack]Collect_FeatureSwitch_CharacterPack",
-            "[JumpBack]Collect_FeatureSwitch_EvenPack"
+            "[JumpBack]Collect_FeatureSwitch_EvenPack",
+            "[JumpBack]Collect_FeatureSwitch_ManagerPack"
         ],
         "focus": "CM.L.调度器"
     },
@@ -204,6 +205,18 @@
         "next": [
             "[JumpBack]Global_QuickCart_MenuReset",
             "Collect_EventPack_SetSimpleSkip"
+        ]
+    },
+    "Collect_FeatureSwitch_ManagerPack": {
+        "enabled": false,
+        "max_hit": 1,
+        "anchor": {
+            "SmartSwipOut": ""
+        },
+        "timeout": 1,
+        "next": [
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "Collect_ManagerPack_SetSimpleSkip"
         ]
     },
     "Collect_StoryPack_SetSimpleSkip": {
@@ -251,6 +264,21 @@
         },
         "next": [
             "Collect_QuickCart_SelectType_EventPack"
+        ]
+    },
+    "Collect_ManagerPack_SetSimpleSkip": {
+        "recognition": "Custom",
+        "custom_recognition": "CheckCoolDown",
+        "custom_recognition_param": {
+            "card_name": "Pack_Manager_SimpleDone",
+            "cycle_type": "g_weekly"
+        },
+        "anchor": {
+            "SmartSwipOut": "Collect_LocatePack_SimpleSkip_Manager",
+            "SetSimpleSkip": "Collect_FirstBootPack_To1_Sandbox_Dit"
+        },
+        "next": [
+            "Collect_QuickCart_SelectType_ManagerPack"
         ]
     },
     "Collect_QuickCart_SelectType_StoryPack": {
@@ -310,6 +338,25 @@
             "Collect_QuickCart_SelectType_EventPack"
         ],
         "focus": "CM.L.活动游戏卡带集"
+    },
+    "Collect_QuickCart_SelectType_ManagerPack": {
+        "recognition": "OCR",
+        "roi": [
+            36,
+            527,
+            1104,
+            63
+        ],
+        "expected": [
+            "店长游戏卡"
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "Collect_QuickCart_ManagerPack_OcrCheck",
+            "Collect_QuickCart_SelectType_ManagerPack"
+        ],
+        "focus": "CM.L.店长游戏卡带集"
     },
     "Collect_QuickCart_StoryPack_OcrCheck": {
         "desc": "当前节点链层数标记：2。初次调取卡带菜单完毕，开始初次点击卡带.先复位再to1,to1没判定的!不可直接IsPresent,防止用户行为干扰",
@@ -392,6 +439,33 @@
             "Collect_FirstBootPack"
         ],
         "focus": "CM.L.活动-卡带调取完毕"
+    },
+    "Collect_QuickCart_ManagerPack_OcrCheck": {
+        "recognition": "ColorMatch",
+        "roi": "Collect_QuickCart_SelectType_ManagerPack",
+        "lower": [
+            167,
+            167,
+            165
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 500,
+        "action": "Custom",
+        "custom_action": "RestoreNode",
+        "custom_action_param": {
+            "node": "Collect_LocatePackFrame_Smart_Swip"
+        },
+        "anchor": {
+            "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
+        },
+        "next": [
+            "Collect_FirstBootPack"
+        ],
+        "focus": "CM.L.店长-卡带调取完毕"
     },
     "Collect_FirstBootPack": {
         "next": [
@@ -1354,7 +1428,7 @@
             "card_name": "Pack_Story_SimpleDone",
             "cycle_type": "g_weekly"
         },
-        "focus": "Py.剧情卡简单全完成标记"
+        "focus": "Py.经典剧情卡简单全完成标记"
     },
     "Collect_LocatePack_SimpleSkip_Character": {
         "action": "Custom",
@@ -1363,7 +1437,7 @@
             "card_name": "Pack_Character_SimpleDone",
             "cycle_type": "g_weekly"
         },
-        "focus": "Py.剧情卡简单全完成标记"
+        "focus": "Py.角色剧情卡简单全完成标记"
     },
     "Collect_LocatePack_SimpleSkip_Event": {
         "action": "Custom",
@@ -1372,7 +1446,16 @@
             "card_name": "Pack_Event_SimpleDone",
             "cycle_type": "g_weekly"
         },
-        "focus": "Py.剧情卡简单全完成标记"
+        "focus": "Py.活动卡简单全完成标记"
+    },
+    "Collect_LocatePack_SimpleSkip_Manager": {
+        "action": "Custom",
+        "custom_action": "MarkComplete",
+        "custom_action_param": {
+            "card_name": "Pack_Manager_SimpleDone",
+            "cycle_type": "g_weekly"
+        },
+        "focus": "Py.店长剧情卡简单全完成标记"
     },
     "Collect_PackLocation_PassFieldsAndHub": {
         "desc": "[路由节点]不可删除。计数器开关，防止同一节点多次进入，下一个节点的action阶段重置计数。",
