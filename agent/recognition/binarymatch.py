@@ -14,6 +14,7 @@ from maa.context import Context
 from maa.define import RectType
 
 from utils import mfaalog
+from .rdd_sampler import RddSampler
 
 
 # ================================================================
@@ -384,6 +385,13 @@ class HSVShapeMatching(CustomRecognition):
 #     <log_dir>/RedDotDetector/，文件名 = 节点名+ROI(同检测点覆盖)，时间节流防自循环刷屏
 #     (默认 2s，RDD_DUMP_INTERVAL 可调)。RDD_DEBUG_DIR 可强制指定日志根目录。
 #
+#   样本采集(语料即回归集，见 rdd_sampler.py)：命中/未命中都把小图 + 完整识别信息
+#     (conf 四项分解/proj/红块 aspect·fill/生效参数)落成累积语料：
+#     <log_dir>/RedDotDetector_samples/ 下唯一命名小图 + samples.jsonl(一行一事件)。
+#     整个文件夹拿走即可离线回放定标(v3)。RDD_SAMPLE=off/fail/all(默认 all，env 穿透
+#     运行侧配置)；RDD_SAMPLE_DIR 指定落盘目录(VSCode 调试 log_dir 被重定向时用)；
+#     同检测点默认 1800s 采一张(RDD_SAMPLE_INTERVAL 可调)+ 画面不变去重。
+#
 # [一句话调参口诀]（对照 detail：阶段→卡在/明细）
 #   筛选·红掩膜  → HSV 没框到红色：降低 S/V 下限 / 校正 roi
 #   筛选·面积    → 面积不在 red_area：多半 min 太大
@@ -615,12 +623,26 @@ def _save_draw_enabled() -> bool:
     env = os.environ.get("RDD_DRAW")
     if env is not None:
         return env.strip().lower() in ("1", "true", "yes", "on")
+    return bool(_read_maa_option().get("save_draw", False))
+
+
+def _read_maa_option() -> dict:
+    """读 UI 侧 maa_option.json(<root>/config/)，读不到返回 {}。save_draw 与采样配置共用。"""
     try:
         cfg = os.path.join(os.path.dirname(_resolve_log_dir()), "config", "maa_option.json")
         with open(cfg, "r", encoding="utf-8") as f:
-            return bool(json.load(f).get("save_draw", False))
+            return json.load(f) or {}
     except Exception:
-        return False
+        return {}
+
+
+# 样本采集器(语料即回归集，详见 rdd_sampler.py 头注)。宿主对 log_dir 的重定向
+# agent 侧无 API 可读(MaaGlobalOption 只有 setter)，默认落 <root>/debug/ 同根；
+# VSCode 调试等重定向场景用 RDD_SAMPLE_DIR 明示。
+_SAMPLER = RddSampler(
+    default_dir_fn=lambda: os.path.join(_resolve_log_dir(), "RedDotDetector_samples"),
+    option_fn=_read_maa_option,
+)
 
 
 @AgentServer.custom_recognition("RedDotDetector")
@@ -798,8 +820,12 @@ class RedDotDetector(CustomRecognition):
 
             chk = self._exclamation_info(enclosed, gap_ratio)       # 投影/断层(供 f_gap 与诊断)
             conf, parts = self._confidence(box_hsv, box_red, enclosed, chk)
+            # 红块几何：aspect(h/w)与 fill 抗模糊抗缩放，v3 形状闸门的定标观测量(先记录不闸门)
+            red_blob = {"w": bw, "h": bh, "area": area,
+                        "aspect": round(bh / max(bw, 1), 2),
+                        "fill": round(area / max(bw * bh, 1), 2)}
             if best is None or conf > best["conf"]:
-                best = {"conf": conf, "parts": parts, **chk}
+                best = {"conf": conf, "parts": parts, "red_blob": red_blob, **chk}
                 best_mask = enclosed
                 best_box_local = (bx0, by0, bw, bh)
 
@@ -808,13 +834,22 @@ class RedDotDetector(CustomRecognition):
                 result_box = (bx0 + rx, by0 + ry, bw, bh)
                 mfaalog.info(f"[RedDotDetector] hit | box={result_box} conf={conf} {parts}")
                 # 命中也画：误命中现场需要可视化复盘
-                hit_stat = {**stat, "conf": conf, "parts": parts,
+                hit_stat = {**stat, "conf": conf, "parts": parts, "red_blob": red_blob,
                             "proj": chk.get("proj"),
                             "gap": {"row": chk.get("gap_row"), "val": chk.get("gap_val"),
                                     "peak": chk.get("peak"), "ratio": chk.get("ratio"),
                                     "above_nz": chk.get("above_nz"), "has_below": chk.get("has_below")}}
                 dbg_text = self._compose_dbg(params, hit_stat, f"result: HIT box={list(result_box)}", min_conf)
                 print(f"[RedDotDetector] {node}\n{dbg_text}")
+                _SAMPLER.record(
+                    node=node, roi=key_roi, result="hit",
+                    images={"roi_crop": work_bgr, "red_mask": red_mask, "inner": enclosed},
+                    meta={"mode": "preset" if caller else "standalone",
+                          "box": list(result_box), "conf": conf, "parts": parts,
+                          "red_blob": red_blob, "proj": chk.get("proj"),
+                          "params": {"hsv_ranges": hsv_ranges,
+                                     "red_area": [area_min, area_max],
+                                     "min_conf": min_conf}})
                 if caller is None:   # 非预设：本级持有整屏，直接做原生回显
                     self._emit_native_vision(context, node, (rx, ry, rw, rh),
                                              argv.image, hsv_ranges, area_min)
@@ -822,13 +857,14 @@ class RedDotDetector(CustomRecognition):
                     box=result_box,
                     detail={"result": "hit", "阶段": "打分",
                             "打分": self._score_breakdown(parts, conf, min_conf),
-                            "red_area": area, "box": list(result_box),
+                            "red_area": area, "red_blob": red_blob, "box": list(result_box),
                             "conf": conf, "parts": parts, "dbg": dbg_text})  # conf/parts/dbg 随识别记录进日志，供复盘
 
         # 5. 未命中：置信/投影/断层进 stat → detail；落盘失败图；统一出口
         if best is not None:
             stat["conf"] = best["conf"]
             stat["parts"] = best["parts"]
+            stat["red_blob"] = best["red_blob"]
             stat["proj"] = best["proj"]
             stat["gap"] = {"row": best["gap_row"], "val": best["gap_val"], "peak": best["peak"],
                            "ratio": best["ratio"], "above_nz": best["above_nz"],
@@ -838,6 +874,24 @@ class RedDotDetector(CustomRecognition):
         stage, hint = self._diagnose(stat, area_min, area_max, min_conf)
         dbg_text = self._compose_dbg(params, stat, f"result: MISS ({stage}) {hint}", min_conf)
         self._dump_failure(node, key_roi, work_bgr, red_mask, best_mask)
+        miss_imgs = {"roi_crop": work_bgr, "red_mask": red_mask}
+        if best_mask is not None:
+            miss_imgs["inner"] = best_mask
+        _SAMPLER.record(
+            node=node, roi=key_roi, result="miss", stage=stage,
+            images=miss_imgs,
+            meta={"mode": "preset" if caller else "standalone",
+                  "box": ([best_box_local[0] + rx, best_box_local[1] + ry,
+                           best_box_local[2], best_box_local[3]] if best_box_local else None),
+                  "conf": stat.get("conf"), "parts": stat.get("parts"),
+                  "red_blob": stat.get("red_blob"), "proj": stat.get("proj"),
+                  "gap": stat.get("gap"),
+                  "filter_stat": {"red_px": stat["red_px"], "n_blobs": stat["n_blobs"],
+                                  "area_pass": stat["area_pass"],
+                                  "max_inner_px": stat["max_inner_px"], "scored": stat["scored"]},
+                  "params": {"hsv_ranges": hsv_ranges,
+                             "red_area": [area_min, area_max],
+                             "min_conf": min_conf}})
         # 非预设：本级持有整屏，直接做原生回显；预设模式由 _run_preset 在整屏上回显
         if caller is None:
             self._emit_native_vision(context, node, (rx, ry, rw, rh),
@@ -1095,6 +1149,10 @@ class RedDotDetector(CustomRecognition):
             f"stat: red_px={stat.get('red_px')} n_blobs={stat.get('n_blobs')} "
             f"area_pass={stat.get('area_pass')} inner_px={stat.get('max_inner_px')} scored={stat.get('scored')}",
         ]
+        if stat.get("red_blob"):
+            rb = stat["red_blob"]
+            lines.append(f"red_blob: {rb['w']}x{rb['h']} area={rb['area']} "
+                         f"h/w={rb['aspect']} fill={rb['fill']}")
         if stat.get("conf") is not None:
             thr = threshold if threshold is not None else params.get("min_confidence", _SC_MIN_CONF)
             bd = self._score_breakdown(stat.get("parts"), stat.get("conf"), thr)
