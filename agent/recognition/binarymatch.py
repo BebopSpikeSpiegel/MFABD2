@@ -2,12 +2,11 @@ import json
 import re
 import time
 import os
-import datetime
 import traceback
 import numpy as np
 from collections import deque
 from typing import Union, Optional
-from PIL import Image, ImageFilter, ImageDraw, ImageFont
+from PIL import Image, ImageFilter
 
 from maa.agent.agent_server import AgentServer
 from maa.custom_recognition import CustomRecognition
@@ -370,11 +369,16 @@ class HSVShapeMatching(CustomRecognition):
 #     随 MAA 识别记录进入日志分析工具(MaaLogAnalyzer / MaaLogs)，图没了也能复盘。
 #     · mfaalog.warning 输出一行精简摘要(上 UI)；print 输出拼贴明细(仅进 txt 日志)。
 #
-#   vision 调试图(整屏画框，与框架原生图同栏)：受 save_draw 门控——
-#     · 环境变量 RDD_DRAW=1/0 强制开关；否则跟随 maa_option.json 的 save_draw。
-#     · 开启时在整张截图上画 ROI 绿框 + 候选红框 + 拼贴文字(同 print 内容)，
-#       存入 <log_dir>/vision/{时间戳}_{节点名}.jpg，命名对齐框架 save_draws，
-#       MaaLogs/MFAA 当普通 vision 图一并扫到。命中/未命中都画(误命中现场需复盘)。
+#   vision 调试图(原生回显)：受 save_draw 门控(RDD_DRAW=0 可强制关)——
+#     · 自定义识别的 C API 回调只有 box+detail 两个输出通道，没有注入 draw 的接口，
+#       Custom 节点自身永远没有原生 vision 图；自建图对不上 reco_id，日志工具不认。
+#     · 故识别结束后借一次内置 ColorMatch(method 40，同 hsv_ranges/red_area min)在
+#       整屏原图上重跑红色过滤，由框架原生画图落盘：绿框=ROI，红字 R:[box]=红色
+#       blob 包围框(与本识别器返回的 box 是同一个红块)。
+#     · 原生图带 reco_id，框架自动存入 <log_dir>/vision(VSCode 调试时即扩展目录)，
+#       MaaLogAnalyzer / MaaLogs 原生显示，与本节点识别记录相邻，可对照金字塔 detail。
+#     · 注意：回显图只体现"红色在哪"(ColorMatch 语义)，被打分拒掉的杂红同样会画框；
+#       命中/未命中都画(误命中现场需复盘)。
 #
 #   失败小图(常驻，无开关)：落盘 roi_crop / red_mask / inner 三张(各几百字节)到
 #     <log_dir>/RedDotDetector/，文件名 = 节点名+ROI(同检测点覆盖)，时间节流防自循环刷屏
@@ -602,11 +606,11 @@ def _resolve_log_dir() -> str:
 
 def _save_draw_enabled() -> bool:
     """
-    是否输出 vision 调试图。优先级：
-      · 环境变量 RDD_DRAW(1/true/on) → 强制开/关；
-      · 否则跟随 MaaFramework 的 save_draw(maa_option.json)——
-        打开框架画图开关时，我们的图和框架原生图一起进 <log_dir>/vision；
-      · 读不到则默认关，生产环境保持 vision 干净。
+    是否执行原生回显(vision 调试图)。优先级：
+      · 环境变量 RDD_DRAW(1/true/on) → 强制开/关(=0 是省一次回显识别的总闸)；
+      · 否则跟随 MaaFramework 的 save_draw(maa_option.json)。
+      · 读不到则默认关。注意：图由框架落盘，若框架 save_draw=false，RDD_DRAW=1
+        只会让回显识别执行、图仍不会保存——强制开仅对开关读取失败的场景有意义。
     """
     env = os.environ.get("RDD_DRAW")
     if env is not None:
@@ -617,12 +621,6 @@ def _save_draw_enabled() -> bool:
             return bool(json.load(f).get("save_draw", False))
     except Exception:
         return False
-
-
-def _vision_ts() -> str:
-    """复刻框架 format_now_for_filename：YYYY.MM.DD-HH.MM.SS.{毫秒}（毫秒不补零）。"""
-    now = datetime.datetime.now()
-    return now.strftime("%Y.%m.%d-%H.%M.%S.") + str(now.microsecond // 1000)
 
 
 @AgentServer.custom_recognition("RedDotDetector")
@@ -639,7 +637,7 @@ class RedDotDetector(CustomRecognition):
 
             if "preset" in params:
                 return self._run_preset(context, argv, params)
-            return self._run_standalone(argv, params)
+            return self._run_standalone(context, argv, params)
 
         except Exception:
             tb = traceback.format_exc()
@@ -690,30 +688,21 @@ class RedDotDetector(CustomRecognition):
 
         caller_node = getattr(argv, "node_name", "") or preset_node
 
+        # 预设模式：整屏在本级手里，由本级做原生回显(命中/未命中都画，嵌套层不画)
+        echo_hsv, echo_area = self._preset_echo_params(context, preset_node)
+        self._emit_native_vision(context, caller_node, (rx, ry, rw, rh),
+                                 argv.image, echo_hsv, echo_area)
+
         if reco.hit:
             bx, by, bw, bh = reco.box
             adjusted = (bx + rx, by + ry, bw, bh)
             mfaalog.info(f"[RedDotDetector] [preset:{preset_node}] hit -> {adjusted}")
-            # 预设模式：整屏在本级手里，用嵌套返回的 conf/parts/dbg 画整屏
-            raw = getattr(reco, "raw_detail", None) or {}
-            label = (f"conf={raw.get('conf')} {raw.get('parts')}"
-                     if raw.get("conf") is not None else "HIT")
-            self._emit_vision(caller_node, (rx, ry, rw, rh), argv.image, adjusted,
-                              label, raw.get("dbg"), hit=True)
             return CustomRecognition.AnalyzeResult(
                 box=adjusted, detail={"result": "hit", "preset": preset_node})
 
         # 真未命中：阶段原因已由预设节点(独立模式)记进嵌套识别记录；这里附带透传其 raw_detail
         raw = getattr(reco, "raw_detail", None) or {}
         mfaalog.warning(f"[RedDotDetector] miss@preset | {argv.node_name} via {preset_node}")
-        # 整屏画框：best_box(裁剪局部) 加回 roi 偏移
-        st = raw.get("stat", {}) if isinstance(raw, dict) else {}
-        bb = st.get("best_box")
-        box_g = (bb[0] + rx, bb[1] + ry, bb[2], bb[3]) if bb else None
-        label = (f"conf={st.get('conf')} {st.get('parts')}"
-                 if st.get("conf") is not None else "miss")
-        self._emit_vision(caller_node, (rx, ry, rw, rh), argv.image, box_g,
-                          label, raw.get("dbg") if isinstance(raw, dict) else None, hit=False)
         return CustomRecognition.AnalyzeResult(box=None, detail={
             "result": "miss", "mode": "preset", "preset": preset_node,
             "roi": [rx, ry, rw, rh],
@@ -737,7 +726,8 @@ class RedDotDetector(CustomRecognition):
                 out[old] = params[new]
         return out
 
-    def _run_standalone(self, argv: CustomRecognition.AnalyzeArg, params: dict):
+    def _run_standalone(self, context: Context,
+                        argv: CustomRecognition.AnalyzeArg, params: dict):
         """独立模式：HSV 过滤 → blob 面积筛选 → 拓扑封闭取内部 → 置信度加权打分。"""
         params = self._normalize_params(params)
         hsv_ranges = params.get("hsv_ranges", _RED_RANGES_DEFAULT)
@@ -825,15 +815,15 @@ class RedDotDetector(CustomRecognition):
                                     "above_nz": chk.get("above_nz"), "has_below": chk.get("has_below")}}
                 dbg_text = self._compose_dbg(params, hit_stat, f"result: HIT box={list(result_box)}", min_conf)
                 print(f"[RedDotDetector] {node}\n{dbg_text}")
-                if caller is None:   # 非预设：本级持有整屏，直接画
-                    self._emit_vision(node, (rx, ry, rw, rh), argv.image, result_box,
-                                      f"conf={conf} {parts}", dbg_text, hit=True)
+                if caller is None:   # 非预设：本级持有整屏，直接做原生回显
+                    self._emit_native_vision(context, node, (rx, ry, rw, rh),
+                                             argv.image, hsv_ranges, area_min)
                 return CustomRecognition.AnalyzeResult(
                     box=result_box,
                     detail={"result": "hit", "阶段": "打分",
                             "打分": self._score_breakdown(parts, conf, min_conf),
                             "red_area": area, "box": list(result_box),
-                            "conf": conf, "parts": parts, "dbg": dbg_text})  # conf/parts/dbg 保留给 preset 画图
+                            "conf": conf, "parts": parts, "dbg": dbg_text})  # conf/parts/dbg 随识别记录进日志，供复盘
 
         # 5. 未命中：置信/投影/断层进 stat → detail；落盘失败图；统一出口
         if best is not None:
@@ -848,12 +838,10 @@ class RedDotDetector(CustomRecognition):
         stage, hint = self._diagnose(stat, area_min, area_max, min_conf)
         dbg_text = self._compose_dbg(params, stat, f"result: MISS ({stage}) {hint}", min_conf)
         self._dump_failure(node, key_roi, work_bgr, red_mask, best_mask)
-        # 非预设：本级持有整屏，直接画；预设：dbg/best_box 随 detail 上送，由 _run_preset 画整屏
+        # 非预设：本级持有整屏，直接做原生回显；预设模式由 _run_preset 在整屏上回显
         if caller is None:
-            box_g = (best_box_local[0] + rx, best_box_local[1] + ry,
-                     best_box_local[2], best_box_local[3]) if best_box_local else None
-            label = f"conf={stat.get('conf')} {stat.get('parts')}" if stat.get("conf") is not None else "miss"
-            self._emit_vision(node, (rx, ry, rw, rh), argv.image, box_g, label, dbg_text, hit=False)
+            self._emit_native_vision(context, node, (rx, ry, rw, rh),
+                                     argv.image, hsv_ranges, area_min)
         return self._miss("standalone", stage, hint, stat, params, dbg_text, min_conf)
 
     # ------------------------------------------------------------------
@@ -1054,29 +1042,51 @@ class RedDotDetector(CustomRecognition):
             return None
 
     # ------------------------------------------------------------------
-    # vision 调试图：整图画框 + 拼贴文字，落入 <log_dir>/vision（与框架原生图同栏）
+    # 原生回显：借内置 ColorMatch 生成框架原生 vision 图（带 reco_id）
     # ------------------------------------------------------------------
 
-    def _load_font(self, size: int = 14):
-        """优先等宽字体，找不到回退 PIL 内置位图字体（保证无字体依赖也能跑）。"""
-        for name in ("consola.ttf", "DejaVuSansMono.ttf", "arial.ttf"):
-            try:
-                return ImageFont.truetype(name, size)
-            except Exception:
-                continue
-        return ImageFont.load_default()
+    def _emit_native_vision(self, context: Context, node: str, roi_tuple,
+                            image: np.ndarray, hsv_ranges: list, area_min) -> None:
+        """
+        在整屏原图上跑一次内置 ColorMatch(method 40，同 hsv_ranges)，由框架原生画图：
+        绿框=ROI，红字 R:[box]=红色 blob 包围框(与本识别器返回的 box 是同一个红块)。
+        原生图带 reco_id 由框架落盘到 <log_dir>/vision，MaaLogAnalyzer / MaaLogs 直接显示。
+        受 save_draw 门控；回显命中与否不影响识别结果，仅为可视化。
+        """
+        if not _save_draw_enabled() or image is None:
+            return
+        try:
+            lowers = [r.get("lower") or r.get("lower_hsv") for r in hsv_ranges]
+            uppers = [r.get("upper") or r.get("upper_hsv") for r in hsv_ranges]
+            if not lowers or any(v is None for v in lowers + uppers):
+                return
+            echo = f"{node or 'RedDotDetector'}__RDDraw"
+            context.run_recognition(echo, image, pipeline_override={
+                echo: {
+                    "recognition": "ColorMatch",
+                    "roi": list(roi_tuple),
+                    "method": 40,   # HSV，与 hsv_ranges 同为 OpenCV 坐标系(H 0-180)
+                    "lower": lowers,
+                    "upper": uppers,
+                    "connected": True,
+                    "count": max(1, int(area_min)),
+                },
+            })
+        except Exception as e:
+            print(f"[RedDotDetector] 原生回显失败: {e}")
 
-    def _draw_text_block(self, draw, xy, text: str, font):
-        """多行文字带黑色描边，叠在任意背景上都清晰。"""
-        x, y = xy
-        for i, line in enumerate(text.split("\n")):
-            ly = y + i * 15
-            for ox, oy in ((-1, 0), (1, 0), (0, -1), (0, 1)):
-                draw.text((x + ox, ly + oy), line, fill=(0, 0, 0), font=font)
-            draw.text((x, ly), line, fill=(255, 255, 0), font=font)
+    def _preset_echo_params(self, context: Context, preset_node: str):
+        """从预设节点定义里取回显所需的 hsv_ranges / red_area 下限；取不到用默认。"""
+        try:
+            data = context.get_node_data(preset_node) or {}
+            p = self._normalize_params(data.get("custom_recognition_param") or {})
+            return (p.get("hsv_ranges", _RED_RANGES_DEFAULT),
+                    p.get("red_area", [30, 1200])[0])
+        except Exception:
+            return _RED_RANGES_DEFAULT, 30
 
     def _compose_dbg(self, params: dict, stat: dict, result_line: str, threshold=None) -> str:
-        """把所有调试量拼成一个字符串：print 与画到图上共用，加减参数只改这里。"""
+        """把所有调试量拼成一个字符串：print 与 detail 共用，加减参数只改这里。"""
         hr = params.get("hsv_ranges", _RED_RANGES_DEFAULT)
         lines = [
             result_line,
@@ -1096,42 +1106,6 @@ class RedDotDetector(CustomRecognition):
             if stat.get("proj") is not None:
                 lines.append(f"proj: {stat.get('proj')}")
         return "\n".join(lines)
-
-    def _emit_vision(self, node: str, roi_tuple, full_bgr: np.ndarray,
-                     box_global, label: str, dbg_text: str, hit: bool):
-        """在整张截图上画 ROI 框 + 命中/候选框 + 拼贴文字，存 jpg 入 vision；受 save_draw 门控。"""
-        if not _save_draw_enabled() or full_bgr is None:
-            return
-        try:
-            img = Image.fromarray(full_bgr[..., ::-1]).convert("RGB")
-            draw = ImageDraw.Draw(img)
-            font = self._load_font(14)
-            green, red, magenta = (0, 255, 0), (255, 40, 40), (255, 0, 255)
-
-            rx, ry, rw, rh = roi_tuple
-            if rw > 0 and rh > 0:
-                draw.rectangle([rx, ry, rx + rw - 1, ry + rh - 1], outline=green, width=1)
-                draw.text((rx, max(0, ry - 14)), f"ROI: [{rx}, {ry}, {rw}, {rh}]", fill=green, font=font)
-
-            if box_global is not None:
-                bx, by, bw, bh = box_global
-                draw.rectangle([bx, by, bx + bw - 1, by + bh - 1], outline=red, width=1)
-                draw.text((bx, max(0, by - 14)), label, fill=red, font=font)
-
-            if dbg_text:
-                self._draw_text_block(draw, (5, 5), dbg_text, font)
-
-            draw.text((5, img.height - 18),
-                      f"{node}  {'HIT' if hit else 'miss'}", fill=magenta, font=font)
-
-            vdir = os.path.join(_resolve_log_dir(), "vision")
-            os.makedirs(vdir, exist_ok=True)
-            safe = re.sub(r'[^A-Za-z0-9_.\-]', '_', node or "RedDotDetector")
-            path = os.path.abspath(os.path.join(vdir, f"{_vision_ts()}_{safe}.jpg"))
-            img.save(path, quality=85)
-            print(f"[RedDotDetector] vision draw -> {path}")
-        except Exception as e:
-            print(f"[RedDotDetector] vision draw 失败: {e}")
 
     def _dump_failure(self, node_name, roi_tuple, work_bgr, red_mask, inner_best):
         """失败常驻图：roi_crop + red_mask (+ inner)。固定名覆盖 + 时间节流防自循环刷屏。"""
