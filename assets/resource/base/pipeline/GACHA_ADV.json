@@ -209,7 +209,6 @@
     },
     "GachaADV_AREA2#_Enter": {
         "recognition": "ColorMatch",
-        "method": 40,
         "roi": [
             134,
             256,
@@ -744,7 +743,6 @@
     "GachaADV_Location2_NoPool_Clr": {
         "desc": "发现卡池位置全黑,为无卡池",
         "recognition": "ColorMatch",
-        "method": 40,
         "roi": [
             186,
             175,
@@ -771,7 +769,6 @@
     "GachaADV_Location3_NoPool_Clr": {
         "desc": "发现卡池位置全黑,为无卡池",
         "recognition": "ColorMatch",
-        "method": 40,
         "roi": [
             186,
             256,
@@ -798,7 +795,6 @@
     "GachaADV_Location4_NoPool_Clr": {
         "desc": "发现卡池位置全黑,为无卡池",
         "recognition": "ColorMatch",
-        "method": 40,
         "roi": [
             186,
             337,
@@ -825,7 +821,6 @@
     "GachaADV_Location5_NoPool_Clr": {
         "desc": "发现卡池位置全黑,为无卡池",
         "recognition": "ColorMatch",
-        "method": 40,
         "roi": [
             186,
             419,
