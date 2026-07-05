@@ -64,15 +64,34 @@
             "全部領取"
         ]
     },
-    "Activities_GetAllRe": {
-        "desc": "领取后'点击画面即可返回'提示。|[PC覆盖] 720提示中心(635,658)(native(952,987)),base roi[457,607,413,97]按安卓→[560,640,150,38](同通行证/邮件)。",
-        "recognition": "And",
-        "all_of": [
-            "Rec_Reward_Ocr"
+    "Activities_GetRoll": {
+        "desc": "点击右下抽卡",
+        "roi": [
+            991,
+            463,
+            88,
+            38
+        ],
+        "expected": [
+            "自动进行",
+            "自動進行"
         ]
     },
-    "Activities_GetBorn": {
-        "desc": "代币兑换活动"
+    "Activities_GetRoll_AutoOff": {
+        "roi": [
+            1003,
+            502,
+            12,
+            14
+        ]
+    },
+    "Activities_GetRoll_AutoOn": {
+        "roi": [
+            1002,
+            499,
+            58,
+            22
+        ]
     },
     "Activities_GetPinTu": {
         "desc": "拼图活动'全部解锁'(用代币一键解锁领奖)。|[PC覆盖] 720拼图'全部解锁'在box(957,487,64,24)中心(989,499)右下角,base roi[1002,514,120,49]按安卓→[950,485,75,28]。实机验证:有代币时点击全部解锁→弹REWARD多物品;旁边[820,499]'即刻刷新'勿点。",
@@ -102,10 +121,6 @@
     },
     "Activities_ResultBack": {
         "desc": "抽卡/活动结果页返回。|[PC覆盖] OCR'活动':base roi[313,139,334,441]→720[148,8,95,45];target返回箭头base[120,35]→(15,20)。",
-        "recognition": "And",
-        "all_of": [
-            "Activities_Index"
-        ],
         "target": [
             108,
             29,
@@ -115,10 +130,6 @@
     },
     "Activities_Slip": {
         "desc": "下滑左侧活动列表寻找活动。|[PC覆盖] OCR'活动'确认仍在活动页:base roi[165,12,347,606]→720[140,8,230,560];Swipe在左侧列表列上滑:base begin/end[210,300]->[210,100]→720 begin(260,400)->end(260,133)。实机验证swipe生效(fast duration1500;slow3000曾被当长按无效),滚出宾果/活动任务/拼图等下半屏活动。",
-        "recognition": "And",
-        "all_of": [
-            "Activities_Index"
-        ],
         "begin": [
             260,
             400,
@@ -149,10 +160,6 @@
     },
     "Activities_Fin": {
         "desc": "退出活动页返回主页。|[PC覆盖] OCR'活动'标题:base roi[170,10,124,60]→720[148,8,95,45];base target[120,35]点返回区→PC点左上返回箭头(15,20)(native(22,30),实机验证回主页)。",
-        "recognition": "And",
-        "all_of": [
-            "Activities_Index"
-        ],
         "target": [
             15,
             20,
