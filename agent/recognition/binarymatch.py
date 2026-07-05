@@ -329,10 +329,10 @@ class HSVShapeMatching(CustomRecognition):
 #             调用者节点名 + ROI 会透传给预设节点，用于失败截图命名（见可观测性）。
 #
 # [识别原理 —— 置信度加权模型 v2]（真假样本论证见 docs/RedDotDetector_打分模型.md）
-#   先做"筛选五步"，任一步不过即淘汰；筛到最后的封闭区(enclosed，被红包围的非红芯)
+#   先做"筛选六步"，任一步不过即淘汰；筛到最后的封闭区(enclosed，被红包围的非红芯)
 #   才进入"打分四项"，每项算 0~1，加权求和 ≥ min_confidence 即命中。
 #
-#   筛选五步：框选 roi → 红掩膜(HSV) → 连块 → 面积(red_area) → 取封闭内部区。
+#   筛选六步：框选 roi → 红掩膜(HSV) → 连块 → 面积(red_area) → 长宽比(flt_aspect) → 取封闭内部区。
 #
 #   打分四项（权重见模块常量 _SC_W_*；硬不变量 max(单项权重)=0.45 < 阈值0.55，
 #             故命中必须"竖长+偏白"两可靠项同时背书，单项满分越不过阈值）：
@@ -353,6 +353,9 @@ class HSVShapeMatching(CustomRecognition):
 # [参数说明]（HSV 坐标系：OpenCV 标准 H 0-180 / S,V 0-255，内部自动映射 Pillow）
 #   hsv_ranges     (list)  红色 HSV 范围 [{lower:[H,S,V], upper:[H,S,V]}, ...]，H 跨 0 拆两组 OR。
 #   red_area       (list)  红色 blob 面积范围 [min, max]，默认 [30, 1200]。
+#   flt_aspect     (list)  红块外接框 h/w 范围 [min, max]，默认 [0.6, 1.6](v3 形状闸门)。
+#                          真货实测紧聚 0.92~1.10 且抗模糊；横条(≈0.5)/实心柱(≈2.1)杂红在圈外。
+#                          仅新名无旧名；设 [0, 99] 等于禁用。
 #   min_confidence (float) 命中阈值(0-1)，默认 0.55(v2 量纲；真货约 0.63+，留 0.08 余量)；
 #                          必须 > 最大单项权重 0.45，否则单项就能越阈值，破坏"两项背书"。
 #                          大 ROI 泛找可调高到 0.58。
@@ -364,7 +367,7 @@ class HSVShapeMatching(CustomRecognition):
 #   detail 采用金字塔结构(命中/失败都有)，三层递进：
 #     第1层  result   = hit / miss
 #     第2层  阶段      = 筛选 / 打分
-#     第3层  · 阶段=筛选 → {卡在: 哪步, 数据: 五步计数}
+#     第3层  · 阶段=筛选 → {卡在: 哪步, 数据: 筛选计数}
 #            · 阶段=打分 → {总分, 阈值, 通过, 明细:[每项 值/权重/贡献]}
 #       「贡献」= 值×权重，调参时看这一列，一眼定位谁把分顶上去/谁拖了后腿。
 #     随 MAA 识别记录进入日志分析工具(MaaLogAnalyzer / MaaLogs)，图没了也能复盘。
@@ -395,6 +398,8 @@ class HSVShapeMatching(CustomRecognition):
 # [一句话调参口诀]（对照 detail：阶段→卡在/明细）
 #   筛选·红掩膜  → HSV 没框到红色：降低 S/V 下限 / 校正 roi
 #   筛选·面积    → 面积不在 red_area：多半 min 太大
+#   筛选·长宽比  → 红块 h/w 出圈(看 aspect_rej)：横条/竖柱杂红=正常拒；
+#                  连片真货被误杀→优先收紧 flt_red_hsv 拆连片，其次放宽 flt_aspect
 #   筛选·内部    → 红块内无封闭非红区(无感叹号轮廓)：roi 偏移 / 红圈破损 / 被模糊填满
 #   打分        → 看「明细」贡献列：竖长/偏白低=非感叹号(正常拒)；真货被拒才降 min_confidence
 #
@@ -563,6 +568,12 @@ _RED_RANGES_DEFAULT = [
     {"lower": [0,   130, 100], "upper": [12,  255, 255]},
     {"lower": [165, 130, 100], "upper": [180, 255, 255]},
 ]
+
+# 筛选·长宽比闸门(v3)：红块外接框 h/w 允许范围。真红点是圆/菱形，
+# 实测紧聚 [0.92, 1.10] 且极端模糊不漂移(抗模糊抗缩放)；两侧各留 ~3 倍余量，
+# 容中度连片/边缘裁切，同时杀掉横条(假1≈0.5)与实心柱(§9≈2.1)两类已知杂红。
+# 定标依据见 docs/RedDotDetector_打分模型.md §15。
+_FLT_ASPECT_DEFAULT = [0.6, 1.6]
 
 # ── 打分权重 sc_w_*（v2）─────────────────────────────────────────────
 # 设计依据见 docs/RedDotDetector_打分模型.md（真假样本论证）。核心两条：
@@ -750,10 +761,11 @@ class RedDotDetector(CustomRecognition):
 
     def _run_standalone(self, context: Context,
                         argv: CustomRecognition.AnalyzeArg, params: dict):
-        """独立模式：HSV 过滤 → blob 面积筛选 → 拓扑封闭取内部 → 置信度加权打分。"""
+        """独立模式：HSV 过滤 → blob 面积筛 → 长宽比闸 → 拓扑封闭取内部 → 置信度加权打分。"""
         params = self._normalize_params(params)
         hsv_ranges = params.get("hsv_ranges", _RED_RANGES_DEFAULT)
         area_min, area_max = params.get("red_area", [30, 1200])
+        asp_lo, asp_hi = params.get("flt_aspect", _FLT_ASPECT_DEFAULT)
         gap_ratio = params.get("gap_ratio", 0.35)      # 仅用于 detail 的 gap 标注
         min_conf = params.get("min_confidence", _SC_MIN_CONF)
 
@@ -784,7 +796,7 @@ class RedDotDetector(CustomRecognition):
         # 3. 连通域
         labeled, n_blobs = _label_blobs(red_mask)
         stat = {"red_px": int(red_mask.sum()), "n_blobs": int(n_blobs),
-                "area_pass": 0, "max_inner_px": 0, "scored": 0}
+                "area_pass": 0, "aspect_pass": 0, "max_inner_px": 0, "scored": 0}
         best, best_mask, best_box_local = None, None, None
 
         # 4. 逐 blob 检测
@@ -800,6 +812,17 @@ class RedDotDetector(CustomRecognition):
             bx0, bx1 = int(cols[0]), int(cols[-1])
             by0, by1 = int(rows[0]), int(rows[-1])
             bw, bh = bx1 - bx0 + 1, by1 - by0 + 1
+
+            # 筛选·长宽比：真红点 h/w≈1，横条/实心柱杂红在圈外。被拒 blob 的几何
+            # 记进 aspect_rej(最多3个)随 detail/语料下发，供定标复核连片真货是否被误杀。
+            aspect = round(bh / max(bw, 1), 2)
+            if not (asp_lo <= aspect <= asp_hi):
+                if len(stat.setdefault("aspect_rej", [])) < 3:
+                    stat["aspect_rej"].append(
+                        {"w": bw, "h": bh, "area": area, "aspect": aspect,
+                         "fill": round(area / max(bw * bh, 1), 2)})
+                continue
+            stat["aspect_pass"] += 1
 
             box_red = red_mask[by0:by1 + 1, bx0:bx1 + 1]
             box_hsv = hsv_np[by0:by1 + 1, bx0:bx1 + 1]
@@ -820,9 +843,8 @@ class RedDotDetector(CustomRecognition):
 
             chk = self._exclamation_info(enclosed, gap_ratio)       # 投影/断层(供 f_gap 与诊断)
             conf, parts = self._confidence(box_hsv, box_red, enclosed, chk)
-            # 红块几何：aspect(h/w)与 fill 抗模糊抗缩放，v3 形状闸门的定标观测量(先记录不闸门)
-            red_blob = {"w": bw, "h": bh, "area": area,
-                        "aspect": round(bh / max(bw, 1), 2),
+            # 红块几何：aspect 已过闸；fill 是 v3 下一维度的定标观测量(只记录不闸门)
+            red_blob = {"w": bw, "h": bh, "area": area, "aspect": aspect,
                         "fill": round(area / max(bw * bh, 1), 2)}
             if best is None or conf > best["conf"]:
                 best = {"conf": conf, "parts": parts, "red_blob": red_blob, **chk}
@@ -885,9 +907,10 @@ class RedDotDetector(CustomRecognition):
                            best_box_local[2], best_box_local[3]] if best_box_local else None),
                   "conf": stat.get("conf"), "parts": stat.get("parts"),
                   "red_blob": stat.get("red_blob"), "proj": stat.get("proj"),
-                  "gap": stat.get("gap"),
+                  "gap": stat.get("gap"), "aspect_rej": stat.get("aspect_rej"),
                   "filter_stat": {"red_px": stat["red_px"], "n_blobs": stat["n_blobs"],
                                   "area_pass": stat["area_pass"],
+                                  "aspect_pass": stat.get("aspect_pass"),
                                   "max_inner_px": stat["max_inner_px"], "scored": stat["scored"]},
                   "params": {"hsv_ranges": hsv_ranges,
                              "red_area": [area_min, area_max],
@@ -1037,6 +1060,10 @@ class RedDotDetector(CustomRecognition):
             return "red_mask", f"有红像素但未成连通域(red_px={stat['red_px']})，检查红色是否破碎"
         if stat["area_pass"] == 0:
             return "area", f"红色面积都不在 [{area_min},{area_max}]，调 red_area（多半是 min 太大）"
+        if stat.get("aspect_pass", 0) == 0:
+            return "aspect", (f"红块 h/w 都不在 flt_aspect 内(被拒 {stat.get('aspect_rej')})；"
+                              "横条/竖柱杂红属正常拒；若是连片真货被误杀，"
+                              "优先收紧 flt_red_hsv 拆开连片，其次放宽 flt_aspect")
         if stat["max_inner_px"] == 0:
             return "interior", "红块内无封闭非红区(无感叹号轮廓)：roi 偏移 / 红圈破损 / 被模糊填满"
         return "confidence", (f"最高置信 {stat.get('conf')} < min_confidence({min_conf})；"
@@ -1048,7 +1075,7 @@ class RedDotDetector(CustomRecognition):
         """
         统一失败出口（金字塔回调）：
           第1层 result=miss；第2层 阶段=筛选/打分；
-          阶段=筛选 → 给"卡在哪步 + 五步计数"；阶段=打分 → 给"总分/阈值 + 每项值/权重/贡献"。
+          阶段=筛选 → 给"卡在哪步 + 筛选计数"；阶段=打分 → 给"总分/阈值 + 每项值/权重/贡献"。
         stat/conf/parts 等保留，供 preset 上层画图与向后兼容。
         """
         if stage == "confidence":      # 走到了打分、但分不够
@@ -1061,8 +1088,8 @@ class RedDotDetector(CustomRecognition):
             detail = {
                 "result": "miss", "阶段": "筛选", "卡在": stage, "说明": hint, "mode": mode,
                 "数据": {"红像素": stat.get("red_px"), "连块数": stat.get("n_blobs"),
-                        "过面积": stat.get("area_pass"), "内部像素": stat.get("max_inner_px"),
-                        "打分数": stat.get("scored")},
+                        "过面积": stat.get("area_pass"), "过长宽比": stat.get("aspect_pass"),
+                        "内部像素": stat.get("max_inner_px"), "打分数": stat.get("scored")},
                 "stat": stat, "dbg": dbg_text,
             }
         mfaalog.warning(f"[RedDotDetector] miss@{stage} | {hint}")
@@ -1145,10 +1172,14 @@ class RedDotDetector(CustomRecognition):
         lines = [
             result_line,
             f"params: red_area={params.get('red_area', [30, 1200])} "
+            f"flt_aspect={params.get('flt_aspect', _FLT_ASPECT_DEFAULT)} "
             f"min_conf={params.get('min_confidence', _SC_MIN_CONF)} hsv_groups={len(hr)}",
             f"stat: red_px={stat.get('red_px')} n_blobs={stat.get('n_blobs')} "
-            f"area_pass={stat.get('area_pass')} inner_px={stat.get('max_inner_px')} scored={stat.get('scored')}",
+            f"area_pass={stat.get('area_pass')} aspect_pass={stat.get('aspect_pass')} "
+            f"inner_px={stat.get('max_inner_px')} scored={stat.get('scored')}",
         ]
+        if stat.get("aspect_rej"):
+            lines.append(f"aspect_rej: {stat['aspect_rej']}")
         if stat.get("red_blob"):
             rb = stat["red_blob"]
             lines.append(f"red_blob: {rb['w']}x{rb['h']} area={rb['area']} "
