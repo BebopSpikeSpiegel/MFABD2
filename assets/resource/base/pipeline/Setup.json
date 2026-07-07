@@ -858,30 +858,20 @@
     },
     "Setup_Main_Switch": {
         "max_hit": 1,
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "next": [
             "Setup_Main_Into_Pre"
         ]
     },
     "Setup_Main_Into_Pre": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "Click",
         "target": [
@@ -1505,30 +1495,20 @@
     },
     "Setup_Equip_Switch": {
         "max_hit": 1,
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "next": [
             "Setup_Equip_Into_Pre"
         ]
     },
     "Setup_Equip_Into_Pre": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "Click",
         "target": [
@@ -1936,15 +1916,10 @@
     },
     "Setup_SetSkill_Switch": {
         "max_hit": 1,
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "next": [
             "Setup_SetSkill_Per"
@@ -1952,15 +1927,10 @@
     },
     "Setup_SetSkill_Per": {
         "desc": "准备安放技能",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "next": [
             "Setup_SetSkill_OpenSklMenu"
@@ -2630,15 +2600,10 @@
         ]
     },
     "Setup_End": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "Custom",
         "custom_action": "MarkComplete",
