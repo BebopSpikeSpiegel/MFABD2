@@ -20,6 +20,33 @@ TARGET_HEIGHT = 720
 WINDOW_CLASS = "UnityWndClass"
 
 
+def _find_game_hwnd():
+    """枚举顶层窗口，返回首个类名匹配且可见的游戏窗口 hwnd（找不到返回 HWND(0)，falsy）。
+
+    仅 win32；供窗口调整/关闭等动作共享，避免各处各写一份 Unity 窗口枚举而走样。
+    """
+    import ctypes
+    import ctypes.wintypes
+
+    user32 = ctypes.windll.user32
+    found = ctypes.wintypes.HWND(0)
+
+    def enum_callback(hwnd, lparam):
+        nonlocal found
+        buf = ctypes.create_unicode_buffer(256)
+        user32.GetClassNameW(hwnd, buf, 256)
+        if buf.value == WINDOW_CLASS and user32.IsWindowVisible(hwnd):
+            found = hwnd
+            return False  # 停止枚举
+        return True
+
+    WNDENUMPROC = ctypes.WINFUNCTYPE(
+        ctypes.c_bool, ctypes.wintypes.HWND, ctypes.wintypes.LPARAM
+    )
+    user32.EnumWindows(WNDENUMPROC(enum_callback), 0)
+    return found
+
+
 def _find_and_resize_window() -> tuple[bool, str]:
     """
     查找游戏窗口并调整客户区到 1280x720。
@@ -36,27 +63,9 @@ def _find_and_resize_window() -> tuple[bool, str]:
 
         user32 = ctypes.windll.user32
 
-        # 枚举所有顶层窗口，找到类名匹配的游戏窗口
-        found_hwnd = ctypes.wintypes.HWND(0)
-
-        def enum_callback(hwnd, lparam):
-            nonlocal found_hwnd
-            buf = ctypes.create_unicode_buffer(256)
-            user32.GetClassNameW(hwnd, buf, 256)
-            if buf.value == WINDOW_CLASS:
-                # 确认窗口可见
-                if user32.IsWindowVisible(hwnd):
-                    found_hwnd = hwnd
-                    return False  # 停止枚举
-            return True
-
-        WNDENUMPROC = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.wintypes.HWND, ctypes.wintypes.LPARAM)
-        user32.EnumWindows(WNDENUMPROC(enum_callback), 0)
-
-        if not found_hwnd:
+        hwnd = _find_game_hwnd()
+        if not hwnd:
             return False, f"未找到类名为 '{WINDOW_CLASS}' 的游戏窗口，请先启动游戏"
-
-        hwnd = found_hwnd
 
         # 获取窗口标题用于日志
         title_buf = ctypes.create_unicode_buffer(256)
@@ -177,25 +186,7 @@ def _find_and_close_window() -> tuple[bool, str]:
             ctypes.wintypes.HWND, ctypes.POINTER(ctypes.wintypes.DWORD)
         ]
 
-        def _find_hwnd():
-            found = ctypes.wintypes.HWND(0)
-
-            def enum_callback(hwnd, lparam):
-                nonlocal found
-                buf = ctypes.create_unicode_buffer(256)
-                user32.GetClassNameW(hwnd, buf, 256)
-                if buf.value == WINDOW_CLASS and user32.IsWindowVisible(hwnd):
-                    found = hwnd
-                    return False  # 停止枚举
-                return True
-
-            WNDENUMPROC = ctypes.WINFUNCTYPE(
-                ctypes.c_bool, ctypes.wintypes.HWND, ctypes.wintypes.LPARAM
-            )
-            user32.EnumWindows(WNDENUMPROC(enum_callback), 0)
-            return found
-
-        hwnd = _find_hwnd()
+        hwnd = _find_game_hwnd()
         if not hwnd:
             return True, f"未找到 '{WINDOW_CLASS}' 游戏窗口，游戏可能已关闭，跳过"
 
@@ -203,12 +194,14 @@ def _find_and_close_window() -> tuple[bool, str]:
         user32.GetWindowTextW(hwnd, title_buf, 256)
         title = title_buf.value
 
-        # 1) 优雅关闭
+        # 1) 优雅关闭：发 WM_CLOSE 后轮询窗口是否消失（秒关早退，最长 2.5s，不做固定阻塞）
         WM_CLOSE = 0x0010
         user32.PostMessageW(hwnd, WM_CLOSE, 0, 0)
-        time.sleep(2.5)
-        if not _find_hwnd():
-            return True, f"窗口 '{title}' 已通过 WM_CLOSE 关闭"
+        deadline = time.time() + 2.5
+        while time.time() < deadline:
+            time.sleep(0.1)
+            if not _find_game_hwnd():
+                return True, f"窗口 '{title}' 已通过 WM_CLOSE 关闭"
 
         # 2) 强杀兜底
         pid = ctypes.wintypes.DWORD(0)
