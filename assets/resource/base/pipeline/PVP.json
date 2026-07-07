@@ -153,6 +153,7 @@
         ],
         "threshold": 0.8,
         "next": [
+            "PVP_Results",
             "PVP_AutoBattle",
             "[JumpBack]PVP_PerPetTask",
             "[JumpBack]PVP_PVPMes",
@@ -164,6 +165,18 @@
             "[JumpBack]PVP_Sandplay_NoFindSrena"
         ],
         "focus": "PM.PVP箱庭确认,(2/2)"
+    },
+    "PVP_Results": {
+        "desc": "pvp赛季正在结算中(按印象,缺乏实测)",
+        "recognition": "OCR",
+        "roi": [
+            308,
+            71,
+            210,
+            54
+        ],
+        "expected": "结算中",
+        "next": ["Global_BackToQC1"]
     },
     "PVP_InsandboxAndlocAbnormal": {
         "recognition": "TemplateMatch",
