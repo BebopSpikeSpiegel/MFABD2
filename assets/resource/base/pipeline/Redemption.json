@@ -1,49 +1,16 @@
 {
     "Redemption_HomePage": {
+        "anchor": {"QCPack": "Redemption_ToPack"},
         "next": [
-            "Redemption_Menu",
-            "[JumpBack]Global_QuickCart_MenuReset",
+            "Redemption_Mapck",
+            "[JumpBack]Redemption_Evil_Settlement",
+            "[JumpBack]Global_BackToQC_Gameplay_Anc",
+            "[JumpBack]Global_WaitingForLoading",
             "[JumpBack]Global_ToSandBox"
         ]
     },
-    "Redemption_Menu": {
-        "recognition": "OCR",
-        "roi": [
-            36,
-            527,
-            1104,
-            63
-        ],
-        "expected": [
-            "玩法游戏卡"
-        ],
-        "action": "Click",
-        "next": [
-            "Redemption_Menu_Cor",
-            "Redemption_Menu"
-        ],
-        "focus": "GO.快速卡带-菜单模式"
-    },
-    "Redemption_Menu_Cor": {
-        "recognition": "ColorMatch",
-        "roi": "Redemption_Menu",
-        "lower": [
-            203,
-            203,
-            202
-        ],
-        "upper": [
-            255,
-            255,
-            255
-        ],
-        "count": 200,
-        "next": [
-            "Redemption_ToPack"
-        ],
-        "focus": "GO.菜单模式-色核通过"
-    },
     "Redemption_ToPack": {
+        "desc": "点击箱庭卡带",
         "recognition": "TemplateMatch",
         "roi": [
             28,
@@ -62,43 +29,13 @@
             0,
             0
         ],
-        "post_delay": 4000,
-        "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Redemption_Mapck",
-            "Redemption_Evil_Settlement",
-            "Redemption_ToPack"
-        ]
-    },
-    "Redemption_MoreBook_Evil": {
-        "desc": "点击More本子",
-        "recognition": "OCR",
-        "roi": [
-            392,
-            469,
-            98,
-            40
-        ],
-        "expected": [
-            "挑战"
-        ],
-        "threshold": 0.9,
-        "action": "Click",
-        "target_offset": [
-            0,
-            -100,
-            0,
-            0
-        ],
-        "post_delay": 8000,
-        "next": [
-            "Redemption_Mapck",
-            "Redemption_Evil_Settlement",
-            "Redemption_MoreBook_Evil"
-        ],
-        "focus": "PM.More卡带"
+        "anchor": {"QCPack": ""},
+        "post_delay": 2000,
+        "timeout": 3000,
+        "next": ["Redemption_ToPack"]
     },
     "Redemption_Evil_Settlement": {
+        "desc": "赛季奖励消除",
         "recognition": "OCR",
         "roi": [
             817,
@@ -110,21 +47,42 @@
             "赛季奖励"
         ],
         "action": "Click",
-        "next": [
-            "Redemption_Mapck",
-            "Redemption_Evil_Settlement"
-        ]
+        "post_delay": 2500
     },
     "Redemption_Mapck": {
-        "recognition": "Or",
-        "any_of": [
-            "Rec_SandBox_Pin_Tpl",
-            "Rec_SandBox_Run_Tpl"
+        "desc": "箱庭地图pin确认",
+        "recognition": "And",
+        "all_of": [
+            "Rec_EvilCion",
+            "Rec_EvilCuff"
         ],
         "next": [
             "Redemption_Evil_Move"
         ],
         "focus": "RM.已复位到箱庭"
+    },
+    "Rec_EvilCion": {
+        "desc": "[识别]恶魔城代币",
+        "recognition": "TemplateMatch",
+        "roi": [
+            677,
+            17,
+            229,
+            51
+        ],
+        "template": ["Evil_Coin.png"],
+        "threshold": [0.75]
+    },
+    "Rec_EvilCuff": {
+        "desc": "[识别]恶魔城代币",
+        "recognition": "TemplateMatch",
+        "roi": [
+            33,
+            22,
+            202,
+            46
+        ],
+        "template": ["Evil_Buff.png"]
     },
     "Redemption_Evil_Move": {
         "roi": [
@@ -475,123 +433,5 @@
             "Global_ToHomePage"
         ],
         "focus": "G=1.页面非预期，点击返回按钮"
-    },
-    "Redemption_BackPVEPage": {
-        "desc": "找到图钉-点击返回主页",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
-        ],
-        "action": "Click",
-        "target": [
-            1186,
-            46
-        ],
-        "post_delay": 3000,
-        "next": [
-            "Redemption_BackHomePage2",
-            "Redemption_BackPVEPage"
-        ],
-        "focus": "PM.开始离开PVP卡带"
-    },
-    "Redemption_BackHomePage2": {
-        "desc": "识别左下抽抽乐-主页-点击选择章节",
-        "recognition": "OCR",
-        "roi": [
-            98,
-            656,
-            66,
-            32
-        ],
-        "expected": [
-            "抽抽乐"
-        ],
-        "action": "Click",
-        "target": [
-            1111,
-            650
-        ],
-        "post_delay": 2000,
-        "next": [
-            "Redemption_PVEBookSwipe",
-            "Redemption_BackHomePage2"
-        ]
-    },
-    "Redemption_PVEBookSwipe": {
-        "desc": "识别活动游戏卡-上划",
-        "recognition": "OCR",
-        "roi": [
-            118,
-            505,
-            95,
-            42
-        ],
-        "expected": [
-            "活动游戏卡"
-        ],
-        "action": "Swipe",
-        "begin": [
-            1400,
-            300
-        ],
-        "end": [
-            1400,
-            700
-        ],
-        "post_delay": 1000,
-        "next": [
-            "Redemption_TouchPVEBook",
-            "Redemption_PVEBookSwipe"
-        ]
-    },
-    "Redemption_TouchPVEBook": {
-        "desc": "点击PVE本子2",
-        "recognition": "TemplateMatch",
-        "roi": [
-            320,
-            349,
-            376,
-            213
-        ],
-        "template": [
-            "pve2.png"
-        ],
-        "action": "Click",
-        "target_offset": [
-            -20,
-            25,
-            0,
-            0
-        ],
-        "post_delay": 5000,
-        "next": [
-            "Redemption_FinBackMapPage",
-            "Redemption_TouchPVEBook"
-        ],
-        "focus": "PM.复位用卡带已找到"
-    },
-    "Redemption_FinBackMapPage": {
-        "desc": "识别右下图钉-章节主页",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
-        ],
-        "next": [
-            "Redemption_Evil_Redemption_End"
-        ],
-        "focus": "PM.PVP复位完成，结束~"
-    },
-    "Redemption_Evil_Redemption_End": {}
+    }
 }

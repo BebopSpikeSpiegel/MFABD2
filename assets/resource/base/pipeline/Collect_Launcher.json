@@ -153,16 +153,8 @@
     },
     "Collect_QuickCart_Menu": {
         "desc": "快速卡带已调出,等待后续",
-        "recognition": "OCR",
-        "roi": [
-            32,
-            506,
-            306,
-            125
-        ],
-        "expected": [
-            "最近"
-        ],
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset_Ocr"],
         "next": [
             "[JumpBack]Collect_FeatureSwitch_StoryPack",
             "[JumpBack]Collect_FeatureSwitch_CharacterPack",
@@ -568,16 +560,8 @@
         ]
     },
     "Collect_PackProbe_IsPresent": {
-        "recognition": "OCR",
-        "roi": [
-            32,
-            506,
-            306,
-            125
-        ],
-        "expected": [
-            "最近"
-        ],
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset_Ocr"],
         "timeout": 2000,
         "next": [
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
@@ -1235,16 +1219,8 @@
     },
     "Collect_Loc_OutToSwip_Hub_Enter_QuickCart_Menu": {
         "desc": "快速卡带已调出,等待后续",
-        "recognition": "OCR",
-        "roi": [
-            32,
-            506,
-            306,
-            125
-        ],
-        "expected": [
-            "最近"
-        ],
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset_Ocr"],
         "next": [
             "Collect_Loc_OutToSwip_Hub_Egress"
         ],

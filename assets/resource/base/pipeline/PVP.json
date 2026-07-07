@@ -1,88 +1,19 @@
 {
     "PVP_TaskStart": {
+        "anchor": {"QCPack": "PVP_PullUp_QuickCart_PVP"},
         "timeout": 5000,
         "next": [
             "PVP_Sandplay",
-            "PVP_PullUp_QuickCart",
             "[JumpBack]PVP_PerPetTask",
             "[JumpBack]PVP_PVPMes",
             "[JumpBack]PVP_PVPMes2",
             "[JumpBack]PVP_PerOperationsMain_Error",
-            "[JumpBack]Global_ToSandBox"
+            "[JumpBack]Global_ToSandBox",
+            "[JumpBack]Global_BackToQC_Gameplay_Anc"
         ],
         "on_error": [
             "PVP_WorkaroundIn_Start"
         ]
-    },
-    "PVP_PullUp_QuickCart": {
-        "recognition": "TemplateMatch",
-        "template": [
-            "QuickCartGeadai.png",
-            "UI_QuickPack_GE.png"
-        ],
-        "green_mask": true,
-        "action": "Click",
-        "post_delay": 1000,
-        "next": [
-            "PVP_PullUp_QuickCart_FastUI",
-            "PVP_PullUp_QuickCart"
-        ],
-        "focus": "PCM.进入快速卡带"
-    },
-    "PVP_PullUp_QuickCart_FastUI": {
-        "recognition": "OCR",
-        "roi": [
-            32,
-            506,
-            306,
-            125
-        ],
-        "expected": [
-            "最近"
-        ],
-        "next": [
-            "PVP_PullUp_QuickCart_MC_Sort"
-        ],
-        "focus": "PCM.确认快速卡带"
-    },
-    "PVP_PullUp_QuickCart_MC_Sort": {
-        "desc": "分组正则待适配",
-        "recognition": "OCR",
-        "roi": [
-            36,
-            527,
-            1104,
-            63
-        ],
-        "expected": [
-            "^(?=.*[玩法])(?=.*[游戏])(?=.*[卡]).{3,12}$"
-        ],
-        "action": "Click",
-        "post_delay": 2000,
-        "next": [
-            "PVP_PullUp_QuickCart_MC_Isenable",
-            "PVP_PullUp_QuickCart_MC_Sort"
-        ],
-        "focus": "PCM.快速卡带类选择-玩法"
-    },
-    "PVP_PullUp_QuickCart_MC_Isenable": {
-        "recognition": "ColorMatch",
-        "roi": "PVP_PullUp_QuickCart_MC_Sort",
-        "lower": [
-            167,
-            167,
-            165
-        ],
-        "upper": [
-            255,
-            255,
-            255
-        ],
-        "count": 500,
-        "next": [
-            "PVP_PullUp_QuickCart_PVP"
-        ],
-        "focus": "PCM.玩法游戏卡确认"
     },
     "PVP_PullUp_QuickCart_PVP": {
         "desc": "",
@@ -97,13 +28,10 @@
             "QuickCart_PVP.png"
         ],
         "action": "Click",
-        "post_delay": 3000,
-        "timeout": 50000,
-        "next": [
-            "PVP_PullUp_QuickCart_PVP",
-            "[JumpBack]Global_WaitingForLoading",
-            "PVP_HUB_Sandplay"
-        ],
+        "anchor": {"QCPack": ""},
+        "post_delay": 2000,
+        "timeout": 3000,
+        "next": ["PVP_PullUp_QuickCart_PVP"],
         "focus": "PCM.PVP玩法卡带-点击"
     },
     "PVP_HUB_Sandplay": {
@@ -117,7 +45,7 @@
         "focus": "PM.HUB(0/2)"
     },
     "PVP_Sandplay": {
-        "desc": "防止弹窗滞后,设置两个一样的节点.| 此处int为消除弹窗",
+        "desc": "[识别]pvp代币.防止弹窗滞后,设置两个一样的节点.| 此处int为消除弹窗",
         "recognition": "TemplateMatch",
         "roi": [
             612,
@@ -142,17 +70,8 @@
     },
     "PVP_Sandplay_Again": {
         "desc": "第二次已确认,1/除消除弹窗,2/还要进入舞台,3/复位异常位置",
-        "recognition": "TemplateMatch",
-        "roi": [
-            612,
-            29,
-            173,
-            32
-        ],
-        "template": [
-            "pvp_Medals.png"
-        ],
-        "threshold": 0.8,
+        "recognition": "Or",
+        "any_of": ["PVP_Sandplay"],
         "next": [
             "PVP_AutoBattle",
             "[JumpBack]PVP_PerPetTask",
@@ -850,16 +769,8 @@
     },
     "PVP_BackPVEPage": {
         "desc": "找到图钉-点击返回主页",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
-        ],
+        "recognition": "Or",
+        "any_of": ["PVP_Sandplay"],
         "next": [
             "Global_BackToQC1"
         ],

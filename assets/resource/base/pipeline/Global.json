@@ -1,6 +1,6 @@
 {
     "Global_Index": {
-        "desc": "依次为:回到主页面|回到箱庭|调出快速卡带菜单|回到快速卡带1(预设入口x2)|快速卡带任意门(类型入口x4,Anc出口QCPack)|回到传统卡带(预设入口x2+Anc入口)|点一次返回按钮|卡带读取界面循环等待",
+        "desc": "依次为:回到主页面|回到箱庭|调出快速卡带菜单|回到快速卡带1(预设入口x2)|快速卡带任意门(类型入口x5,Anc出口QCPack)|回到传统卡带(预设入口x2+Anc入口)|点一次返回按钮|卡带读取界面循环等待",
         "on_error": [
             "Global_ToHomePage",
             "Global_ToSandBox",
@@ -11,6 +11,7 @@
             "Global_BackToQC_Character_Anc",
             "Global_BackToQC_Event_Anc",
             "Global_BackToQC_Manager_Anc",
+            "Global_BackToQC_Gameplay_Anc",
             "Global_BackToPve_1#",
             "Global_BackToPve_2#",
             "Global_BackToPve_Anc",
@@ -75,7 +76,7 @@
         "focus": "GO.调出快速卡带"
     },
     "Global_QuickCart_MenuReset_Ocr": {
-        "desc": "调出快速卡带2/2,核对",
+        "desc": "[识别]快速卡带-最近OCR.调出快速卡带2/2,核对",
         "recognition": "OCR",
         "roi": [
             32,
@@ -160,6 +161,9 @@
     },
     "Global_ToSandBox": {
         "desc": "[通用复位]复位到主界面模块,开始,中继调用",
+        "recognition": "Or",
+        "any_of": ["Global_ToSandBox_Enter"],
+        "inverse": true,
         "timeout": 10000,
         "next": [
             "Global_ToSandBox_Enter",
@@ -420,46 +424,70 @@
     },
     "Global_BackToQC_Story_Anc": {
         "desc": "【快速卡带识别链-剧情页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset"],
+        "action": "Click",
+        "post_delay": 2500,
         "next": [
             "Global_BackToQC_SelectStory",
             "[JumpBack]Global_QuickCart_MenuReset",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "Global_BackToQC_Story_Anc"
         ],
         "focus": "GO.快速卡带复位开始"
     },
     "Global_BackToQC_Character_Anc": {
         "desc": "【快速卡带识别链-角色页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset"],
+        "action": "Click",
+        "post_delay": 1500,
         "next": [
             "Global_BackToQC_SelectCharacter",
             "[JumpBack]Global_QuickCart_MenuReset",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "Global_BackToQC_Character_Anc"
         ],
         "focus": "GO.快速卡带复位开始"
     },
     "Global_BackToQC_Event_Anc": {
         "desc": "【快速卡带识别链-活动页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset"],
+        "action": "Click",
+        "post_delay": 1500,
         "next": [
             "Global_BackToQC_SelectEvent",
             "[JumpBack]Global_QuickCart_MenuReset",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "Global_BackToQC_Event_Anc"
         ],
         "focus": "GO.快速卡带复位开始"
     },
     "Global_BackToQC_Manager_Anc": {
         "desc": "【快速卡带识别链-店长页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset"],
+        "action": "Click",
+        "post_delay": 1500,
         "next": [
             "Global_BackToQC_SelectManager",
             "[JumpBack]Global_QuickCart_MenuReset",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "Global_BackToQC_Manager_Anc"
         ],
         "focus": "GO.快速卡带复位开始"
     },
     "Global_BackToQC_Gameplay_Anc": {
         "desc": "【快速卡带识别链-玩法页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset"],
+        "action": "Click",
+        "post_delay": 1500,
         "next": [
             "Global_BackToQC_SelectGameplay",
-            "[JumpBack]Global_QuickCart_MenuReset",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "Global_BackToQC_Gameplay_Anc"
         ],
         "focus": "GO.快速卡带复位开始"
     },

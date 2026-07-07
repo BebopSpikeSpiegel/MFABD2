@@ -1044,16 +1044,8 @@
         "post_delay": 2000
     },
     "Collect_QuickCart_FastUI": {
-        "recognition": "OCR",
-        "roi": [
-            32,
-            506,
-            306,
-            125
-        ],
-        "expected": [
-            "最近"
-        ],
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset_Ocr"],
         "next": [
             "Collect_PackEnd_Ck"
         ],
