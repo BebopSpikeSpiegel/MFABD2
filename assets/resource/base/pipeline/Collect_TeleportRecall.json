@@ -523,7 +523,13 @@
             "战斗区"
         ],
         "action": "Click",
-        "post_delay": 2000,
+        "target_offset": [
+            10,
+            0,
+            0,
+            0
+        ],
+        "post_delay": 4000,
         "next": [
             "[JumpBack]Collect_IM_OnFoot_Moveing",
             "Collect_IM_OnFoot_NviMap_2_Move_End",
