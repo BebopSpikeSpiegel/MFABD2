@@ -73,6 +73,7 @@
         "recognition": "Or",
         "any_of": ["PVP_Sandplay"],
         "next": [
+            "PVP_Results",
             "PVP_AutoBattle",
             "[JumpBack]PVP_PerPetTask",
             "[JumpBack]PVP_PVPMes",
@@ -84,6 +85,18 @@
             "[JumpBack]PVP_Sandplay_NoFindSrena"
         ],
         "focus": "PM.PVP箱庭确认,(2/2)"
+    },
+    "PVP_Results": {
+        "desc": "pvp赛季正在结算中(按印象,缺乏实测)",
+        "recognition": "OCR",
+        "roi": [
+            308,
+            71,
+            210,
+            54
+        ],
+        "expected": "结算中",
+        "next": ["Global_BackToQC1"]
     },
     "PVP_InsandboxAndlocAbnormal": {
         "recognition": "TemplateMatch",
@@ -208,6 +221,7 @@
         "post_delay": 1000,
         "next": [
             "PVP_AutoBattle_SucCK",
+            "PVP_SeasonSettling",
             "PVP_AutoBattle"
         ],
         "focus": "PM.PVP.自动战斗-点击(关键节点)"
@@ -234,6 +248,25 @@
             "PVP_JustUseFree"
         ],
         "focus": "PM.PVP.自动战斗(关键节点)-菜单ck"
+    },
+    "PVP_SeasonSettling": {
+        "desc": "镜中之战赛季结算期间,自动战斗菜单被'可在赛季结算完成后确认'弹窗替代,PVP无法进行(奖励顺延至结算),优雅退出避免死循环",
+        "recognition": "OCR",
+        "roi": [
+            327,
+            165,
+            417,
+            156
+        ],
+        "expected": [
+            "结算完成后确认",
+            "结算完成后",
+            "赛季结算"
+        ],
+        "next": [
+            "Global_BackToQC1"
+        ],
+        "focus": "PB.[WRN]镜中之战赛季结算中,跳过PVP"
     },
     "PVP_JustUseFree": {
         "recognition": "ColorMatch",
