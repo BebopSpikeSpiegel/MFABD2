@@ -32,15 +32,10 @@
         "focus": "G=0.页面预期内，普通启动。M.箱庭地图run已确认"
     },
     "SemiAuto_HomePageHub1": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "post_delay": 2000,
         "next": [],
@@ -72,14 +67,10 @@
         ]
     },
     "SemiAuto_Evil_Move": {
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "LongPress",
         "target": [
@@ -263,15 +254,10 @@
         ]
     },
     "SemiAuto_LastNight_Move": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "LongPress",
         "target": [

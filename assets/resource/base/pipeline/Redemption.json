@@ -85,14 +85,10 @@
         "template": ["Evil_Buff.png"]
     },
     "Redemption_Evil_Move": {
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "LongPress",
         "target": [

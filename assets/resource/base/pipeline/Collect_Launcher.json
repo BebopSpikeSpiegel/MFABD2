@@ -84,15 +84,10 @@
     },
     "Collect_Sandplay": {
         "desc": "拉起成功,进入箱庭",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "Click",
         "target": [
@@ -1202,15 +1197,10 @@
     },
     "Collect_Loc_OutToSwip_Hub_Enter_Pin": {
         "desc": "[通用复位]复位到主界面模块,结束,中继调用",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "next": [
             "Collect_Loc_OutToSwip_Hub_Enter_QuickCart_Menu",
