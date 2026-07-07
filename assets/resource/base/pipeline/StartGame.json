@@ -741,7 +741,7 @@
         "recognition": "And",
         "all_of": ["Rec_Pack_GlupyDiner"],
         "next": [
-            "Global_BackToPve2#"
+            "Global_BackToPve_2#"
         ],
         "focus": "[WRN]SM.意料外卡带-格鲁菲餐厅"
     },
