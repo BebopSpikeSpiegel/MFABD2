@@ -259,7 +259,8 @@
         {
             "name": "[全局]结束游戏",
             "controller": [
-                "Adb"
+                "Adb",
+                "PC客户端"
             ],
             "entry": "Close_HomePage"
         },
