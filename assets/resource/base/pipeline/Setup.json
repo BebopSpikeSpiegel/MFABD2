@@ -693,37 +693,10 @@
         ]
     },
     "Setup_ResetPack_JumpBackUse": {
-        "desc": "类Anchor实现,偷取公共复位节点,注入修改路进,注意复位",
+        "desc": "单次调用复位,增加前置节点",
         "max_hit": 1,
-        "action": "Custom",
-        "custom_action": "PatchNode",
-        "custom_action_param": {
-            "node": "Global_BackToPve2#_TouchPVEBook",
-            "patch": {
-                "roi": [
-                    109,
-                    140,
-                    191,
-                    151
-                ],
-                "template": [
-                    "pve1.png"
-                ]
-            },
-            "origin": {
-                "roi": [
-                    385,
-                    143,
-                    117,
-                    69
-                ],
-                "template": [
-                    "pve2.png"
-                ]
-            }
-        },
         "next": [
-            "Global_BackToPve2#"
+            "Global_BackToPve_1#"
         ],
         "focus": "Set.py.卡带复位-主线1"
     },
@@ -869,7 +842,7 @@
         "custom_action": "RestoreBatch",
         "custom_action_param": {
             "nodes": [
-                "Global_BackToPve2#_TouchPVEBook",
+                "Global_BackToPve_TouchPVE2#Pack",
                 "Collect_OperationsMain_ToAreaMap",
                 "Collect_TargetMap1-2",
                 "Collect_ClickBackOnSecureMap"

@@ -18,100 +18,21 @@
             "Rec_HomePage_GA_Ocr",
             "Sub_HomePage_GA_Bright_Clr"
         ],
-        "action": "Click",
-        "target": [
-            1111,
-            650
-        ],
+        "anchor": {"BackToPack": "Arbitrage_Card5#_Goin"},
         "post_delay": 2000,
         "next": [
-            "Arbitrage_HomePageOldCardMenu_Ck&Top",
-            "Arbitrage_HomePageOldCardMenu_Goin"
+            "Arbitrage_Card5#_Goin",
+            "Global_BackToPve_Anc"
         ]
-    },
-    "Arbitrage_HomePageOldCardMenu_Ck&Top": {
-        "desc": "卡带界面复位拖动1，最上",
-        "recognition": "OCR",
-        "roi": [
-            165,
-            0,
-            227,
-            80
-        ],
-        "expected": [
-            "游戏卡珍藏集"
-        ],
-        "action": "Swipe",
-        "begin": [
-            70,
-            270
-        ],
-        "end": [
-            70,
-            640
-        ],
-        "duration": 500,
-        "anchor": "Oldpack_swip",
-        "post_delay": 1000,
-        "next": [
-            "Arbitrage_HomePageOldCardMenu_CheakReset",
-            "Arbitrage_HomePageOldCardMenu_ResetLift"
-        ]
-    },
-    "Arbitrage_HomePageOldCardMenu_ResetLift": {
-        "desc": "卡带界面复位拖动2，最左",
-        "max_hit": 30,
-        "recognition": "OCR",
-        "roi": [
-            103,
-            82,
-            207,
-            65
-        ],
-        "expected": [
-            "剧情游戏卡"
-        ],
-        "action": "Swipe",
-        "begin": [
-            145,
-            200
-        ],
-        "end": [
-            1200,
-            200
-        ],
-        "duration": 500,
-        "post_wait_freezes": 800,
-        "post_delay": 1000,
-        "next": [
-            "[Anchor]Oldpack_swip"
-        ]
-    },
-    "Arbitrage_HomePageOldCardMenu_CheakReset": {
-        "desc": "判定已复位到最左",
-        "recognition": "TemplateMatch",
-        "roi": [
-            108,
-            128,
-            696,
-            174
-        ],
-        "template": [
-            "pve2b.png"
-        ],
-        "next": [
-            "Arbitrage_Card5#_Goin"
-        ],
-        "focus": "CB.卡带已复位"
     },
     "Arbitrage_Card5#_Goin": {
         "desc": "点击PVE本子5",
         "recognition": "TemplateMatch",
         "roi": [
-            1029,
-            150,
-            181,
-            128
+            1005,
+            366,
+            182,
+            129
         ],
         "template": [
             "pve5.png"
@@ -124,6 +45,7 @@
             0,
             0
         ],
+        "anchor": {"BackToPack": ""},
         "post_delay": 3000,
         "next": [
             "Arbitrage_OperationsMain_Sandplay",
