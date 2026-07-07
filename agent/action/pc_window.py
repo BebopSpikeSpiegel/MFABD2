@@ -20,6 +20,33 @@ TARGET_HEIGHT = 720
 WINDOW_CLASS = "UnityWndClass"
 
 
+def _find_game_hwnd():
+    """枚举顶层窗口，返回首个类名匹配且可见的游戏窗口 hwnd（找不到返回 HWND(0)，falsy）。
+
+    仅 win32；供窗口调整/关闭等动作共享，避免各处各写一份 Unity 窗口枚举而走样。
+    """
+    import ctypes
+    import ctypes.wintypes
+
+    user32 = ctypes.windll.user32
+    found = ctypes.wintypes.HWND(0)
+
+    def enum_callback(hwnd, lparam):
+        nonlocal found
+        buf = ctypes.create_unicode_buffer(256)
+        user32.GetClassNameW(hwnd, buf, 256)
+        if buf.value == WINDOW_CLASS and user32.IsWindowVisible(hwnd):
+            found = hwnd
+            return False  # 停止枚举
+        return True
+
+    WNDENUMPROC = ctypes.WINFUNCTYPE(
+        ctypes.c_bool, ctypes.wintypes.HWND, ctypes.wintypes.LPARAM
+    )
+    user32.EnumWindows(WNDENUMPROC(enum_callback), 0)
+    return found
+
+
 def _find_and_resize_window() -> tuple[bool, str]:
     """
     查找游戏窗口并调整客户区到 1280x720。
@@ -36,27 +63,9 @@ def _find_and_resize_window() -> tuple[bool, str]:
 
         user32 = ctypes.windll.user32
 
-        # 枚举所有顶层窗口，找到类名匹配的游戏窗口
-        found_hwnd = ctypes.wintypes.HWND(0)
-
-        def enum_callback(hwnd, lparam):
-            nonlocal found_hwnd
-            buf = ctypes.create_unicode_buffer(256)
-            user32.GetClassNameW(hwnd, buf, 256)
-            if buf.value == WINDOW_CLASS:
-                # 确认窗口可见
-                if user32.IsWindowVisible(hwnd):
-                    found_hwnd = hwnd
-                    return False  # 停止枚举
-            return True
-
-        WNDENUMPROC = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.wintypes.HWND, ctypes.wintypes.LPARAM)
-        user32.EnumWindows(WNDENUMPROC(enum_callback), 0)
-
-        if not found_hwnd:
+        hwnd = _find_game_hwnd()
+        if not hwnd:
             return False, f"未找到类名为 '{WINDOW_CLASS}' 的游戏窗口，请先启动游戏"
-
-        hwnd = found_hwnd
 
         # 获取窗口标题用于日志
         title_buf = ctypes.create_unicode_buffer(256)
@@ -143,4 +152,103 @@ class PC_ResizeWindow(CustomAction):
             print(f"[PC_ResizeWindow] ✅ {message}")
         else:
             print(f"[PC_ResizeWindow] ❌ {message}")
+        return success
+
+
+def _find_and_close_window() -> tuple[bool, str]:
+    """
+    查找棕色尘埃2 PC客户端窗口并关闭。
+
+    ADB 的 StopApp 在 Win32 控制器无对应动作，这里用窗口/进程 API 替代：
+    优先 WM_CLOSE 优雅关闭，2.5s 未消失则按 PID 强杀（对齐 StopApp 硬关语义）。
+
+    Returns:
+        (success: bool, message: str)
+    """
+    if sys.platform != "win32":
+        return True, "非Windows平台，跳过关闭游戏"
+
+    try:
+        import ctypes
+        import ctypes.wintypes
+
+        user32 = ctypes.windll.user32
+        kernel32 = ctypes.windll.kernel32
+
+        # 显式声明返回/参数类型，避免 64 位下句柄被截断
+        kernel32.OpenProcess.restype = ctypes.wintypes.HANDLE
+        kernel32.OpenProcess.argtypes = [
+            ctypes.wintypes.DWORD, ctypes.wintypes.BOOL, ctypes.wintypes.DWORD
+        ]
+        kernel32.TerminateProcess.argtypes = [ctypes.wintypes.HANDLE, ctypes.wintypes.UINT]
+        kernel32.CloseHandle.argtypes = [ctypes.wintypes.HANDLE]
+        user32.GetWindowThreadProcessId.argtypes = [
+            ctypes.wintypes.HWND, ctypes.POINTER(ctypes.wintypes.DWORD)
+        ]
+
+        hwnd = _find_game_hwnd()
+        if not hwnd:
+            return True, f"未找到 '{WINDOW_CLASS}' 游戏窗口，游戏可能已关闭，跳过"
+
+        title_buf = ctypes.create_unicode_buffer(256)
+        user32.GetWindowTextW(hwnd, title_buf, 256)
+        title = title_buf.value
+
+        # 1) 优雅关闭：发 WM_CLOSE 后轮询窗口是否消失（秒关早退，最长 2.5s，不做固定阻塞）
+        WM_CLOSE = 0x0010
+        user32.PostMessageW(hwnd, WM_CLOSE, 0, 0)
+        deadline = time.time() + 2.5
+        while time.time() < deadline:
+            time.sleep(0.1)
+            if not _find_game_hwnd():
+                return True, f"窗口 '{title}' 已通过 WM_CLOSE 关闭"
+
+        # 2) 强杀兜底
+        pid = ctypes.wintypes.DWORD(0)
+        user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
+        if not pid.value:
+            return False, f"窗口 '{title}' 未响应 WM_CLOSE 且拿不到 PID，无法强关"
+
+        PROCESS_TERMINATE = 0x0001
+        h_proc = kernel32.OpenProcess(PROCESS_TERMINATE, False, pid.value)
+        if not h_proc:
+            err = ctypes.GetLastError()
+            return False, f"OpenProcess 失败(pid={pid.value}, err={err})"
+        try:
+            ok = kernel32.TerminateProcess(h_proc, 0)
+        finally:
+            kernel32.CloseHandle(h_proc)
+        if not ok:
+            err = ctypes.GetLastError()
+            return False, f"TerminateProcess 失败(pid={pid.value}, err={err})"
+
+        time.sleep(0.5)
+        return True, f"窗口 '{title}' 未响应 WM_CLOSE，已强制结束进程(pid={pid.value})"
+
+    except ImportError as e:
+        return False, f"缺少依赖: {e}"
+    except Exception as e:
+        return False, f"关闭游戏窗口时发生异常: {e}"
+
+
+@AgentServer.custom_action("PC_StopApp")
+class PC_StopApp(CustomAction):
+    """
+    关闭棕色尘埃2 PC客户端窗口（替代 ADB StopApp）。
+
+    pipeline 用法:
+        {
+            "action": "Custom",
+            "custom_action": "PC_StopApp"
+        }
+
+    优雅 WM_CLOSE 优先，2.5s 未关则按 PID 强杀；游戏已关时 no-op 成功。
+    """
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        success, message = _find_and_close_window()
+        if success:
+            print(f"[PC_StopApp] ✅ {message}")
+        else:
+            print(f"[PC_StopApp] ❌ {message}")
         return success
