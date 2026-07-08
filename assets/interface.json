@@ -260,7 +260,8 @@
         {
             "name": "[全局]结束游戏",
             "controller": [
-                "Adb"
+                "Adb",
+                "PC客户端"
             ],
             "entry": "Close_HomePage"
         },
@@ -398,6 +399,9 @@
                     "pipeline_override": {
                         "QuickHunt_AdventureRoute": {
                             "enabled": false
+                        },
+                        "QuickHunt_RiceRecheck_HuntingGrounds_Entry": {
+                            "enabled": true
                         }
                     }
                 }
@@ -600,6 +604,7 @@
                                 "[JumpBack]QuickHunt_OpenGui",
                                 "[JumpBack]QuickHunt_AdventureRoute",
                                 "[JumpBack]QuickHunt_HuntingGrounds",
+                                "[JumpBack]QuickHunt_RiceRecheck",
                                 "[JumpBack]QuickHunt_CrystalCave"
                             ]
                         }

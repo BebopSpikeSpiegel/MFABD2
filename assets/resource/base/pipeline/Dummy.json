@@ -92,7 +92,7 @@
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {
-            "hsv_ranges": [
+            "flt_red_hsv": [
                 {"lower": [
                         0,
                         140,
@@ -115,12 +115,12 @@
                     ]
                 }
             ],
-            "red_area": [
+            "flt_area": [
                 50,
                 1200
             ],
-            "min_confidence": 0.25,
-            "gap_ratio": 0.35
+            "sc_min_conf": 0.55,
+            "sc_gap_ratio": 0.35
         }
     },
     "Agt_RedDot_Preset_Panoram": {
@@ -128,7 +128,7 @@
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {
-            "hsv_ranges": [
+            "flt_red_hsv": [
                 {"lower": [
                         0,
                         140,
@@ -151,12 +151,12 @@
                     ]
                 }
             ],
-            "red_area": [
+            "flt_area": [
                 50,
                 450
             ],
-            "min_confidence": 0.5,
-            "gap_ratio": 0.35
+            "sc_min_conf": 0.58,
+            "sc_gap_ratio": 0.35
         }
     }
 }
