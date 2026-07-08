@@ -1,4 +1,13 @@
 {
+    "Global_BackPageHub_Once": {
+        "desc": "其他页面,返回按钮(一次性)。|[PC覆盖] 【2026-07-03实机】PC抽卡商店页(服装抽抽乐)左上返回箭头为暗色胶囊条细线'<'样式,base三张安卓模板实跑分仅0.14~0.25<阈0.7全miss→一键速抽后Global_ToHomePage回主页8s超时Exception,AREA2#装备池永远轮不到(装备免费抽漏抽根因)。从PC 720实帧裁BackBut_DarkCapsule_PC.png(36x32,自匹配0.0)追加进列表(Or语义,不影响其他页);base三张保留兼容其余页面。green_mask沿用(新模板无绿区不受影响)。",
+        "template": [
+            "BackButGe.png",
+            "BackButGe2.png",
+            "UI_qsback.png",
+            "BackBut_DarkCapsule_PC.png"
+        ]
+    },
     "Global_QuickCart_MenuReset": {
         "desc": "调出快速卡带1/2,操作",
         "template": [
