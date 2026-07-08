@@ -1,15 +1,10 @@
 {
     "Collect_Skill_Start": {
         "desc": "PVE点击技能队列开启（识别到3个中的2",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "post_delay": 1000,
         "next": [
@@ -19,14 +14,9 @@
         "focus": "CSB.技能组调用开始"
     },
     "Collect_Skill_Tap3": {
-        "roi": [
-            1174,
-            633,
-            58,
-            59
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin3_Tpl"
         ],
         "action": "Click",
         "target": [
@@ -91,7 +81,6 @@
         "expected": [
             "(?<!\\d)(?!0(?!\\d))\\d+"
         ],
-        "threshold": 0.6,
         "replace": [
             [
                 "i",
@@ -106,6 +95,7 @@
                 ""
             ]
         ],
+        "threshold": 0.6,
         "timeout": 4000,
         "next": [
             "Collect_Skill3_2_Nothing",
@@ -397,16 +387,10 @@
     },
     "Collect_Skill_TapReset": {
         "desc": "第一页技能点击现在已不需要，保留结构备用",
-        "roi": [
-            1049,
-            632,
-            58,
-            59
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl"
         ],
-        "template": [
-            "pin.png"
-        ],
-        "threshold": 0.9,
         "next": [
             "Collect_Skill_End",
             "Collect_Skill_TapReset"
