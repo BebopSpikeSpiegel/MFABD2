@@ -23,6 +23,50 @@
             "Global_ToHomePage_Crash"
         ]
     },
+    "Global_BackToPve_CardMenu_Tp1": {
+        "desc": "判断在传统卡带界面",
+        "roi": [
+            150,
+            4,
+            178,
+            64
+        ],
+        "expected": [
+            "游戏卡珍藏集",
+            "^遊戲卡.收藏集"
+        ]
+    },
+    "Global_BackToPve_CardMenu_Tp2": {
+        "desc": "传统卡带界面已上划到顶",
+        "roi": [
+            98,
+            81,
+            92,
+            30
+        ],
+        "expected": [
+            "店长游戏卡",
+            "店長遊戲卡"
+        ]
+    },
+    "Global_BackToPve_CardMenu_Tp3": {
+        "desc": "【传统卡带识别链-结束. 出口由锚点 'BackToPack' 决定，未设锚会停在此处】固定位置识别pack1#=传统卡带界面已左划到首部",
+        "roi": [
+            71,
+            290,
+            227,
+            165
+        ]
+    },
+    "Global_BackToPve_TouchPVE2#Pack": {
+        "desc": "【传统卡带识别链-预设出口.pve2#】",
+        "roi": [
+            264,
+            254,
+            377,
+            214
+        ]
+    },
     "Anc_SliderSwitch_YewOn_Clr": {
         "desc": "滑块识别,黄色,已enable",
         "lower": [

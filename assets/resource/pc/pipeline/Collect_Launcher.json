@@ -1,0 +1,63 @@
+{
+    "Collect_QuickCart_SelectType_StoryPack": {
+        "desc": "快速UI,点击剧情游戏卡",
+        "roi": [
+            15,
+            563,
+            1105,
+            49
+        ],
+        "expected": [
+            "剧情游戏卡",
+            "故事遊戲卡"
+        ]
+    },
+    "Collect_QuickCart_SelectType_CharacterPack": {
+        "roi": [
+            15,
+            563,
+            1105,
+            49
+        ],
+        "expected": [
+            "角色游戏卡",
+            "角色遊戲卡"
+        ]
+    },
+    "Collect_QuickCart_SelectType_EventPack": {
+        "roi": [
+            15,
+            563,
+            1105,
+            49
+        ],
+        "expected": [
+            "活动游戏卡",
+            "活動遊戲卡"
+        ]
+    },
+    "Collect_QuickCart_SelectType_ManagerPack": {
+        "roi": [
+            15,
+            563,
+            1105,
+            49
+        ],
+        "expected": [
+            "店长游戏卡",
+            "店長遊戲卡"
+        ]
+    },
+    "Collect_QuickCart_SelectType_GameplayPack": {
+        "roi": [
+            15,
+            563,
+            1105,
+            49
+        ],
+        "expected": [
+            "玩法游戏卡",
+            "内容遊戲卡"
+        ]
+    }
+}
