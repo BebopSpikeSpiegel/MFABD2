@@ -55,15 +55,10 @@
     },
     "Arbitrage_OperationsMain_Sandplay": {
         "desc": "中断：章节内主要操作开始。找到图钉，确认进入箱庭",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "anchor": "Arbitrage5",
         "post_delay": 1000,
