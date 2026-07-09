@@ -47,15 +47,34 @@
         "custom_recognition_param": {
             "hsv_ranges": [
                 {
-                    "lower": [0, 140, 120],
-                    "upper": [12, 255, 255]
+                    "lower": [
+                        0,
+                        140,
+                        120
+                    ],
+                    "upper": [
+                        12,
+                        255,
+                        255
+                    ]
                 },
                 {
-                    "lower": [165, 140, 120],
-                    "upper": [180, 255, 255]
+                    "lower": [
+                        165,
+                        140,
+                        120
+                    ],
+                    "upper": [
+                        180,
+                        255,
+                        255
+                    ]
                 }
             ],
-            "red_area": [50, 450],
+            "red_area": [
+                50,
+                450
+            ],
             "gap_ratio": 0.35,
             "min_confidence": 0.4
         },
@@ -144,7 +163,7 @@
         ]
     },
     "Activities_Slip": {
-        "desc": "下滑左侧活动列表寻找活动。|[PC覆盖] OCR'活动'确认仍在活动页:base roi[165,12,347,606]→720[140,8,230,560];Swipe在左侧列表列上滑:base begin/end[210,300]->[210,100]→720 begin(260,400)->end(260,133)。实机验证swipe生效(fast duration1500;slow3000曾被当长按无效),滚出宾果/活动任务/拼图等下半屏活动。",
+        "desc": "下滑左侧活动列表寻找活动。|[PC覆盖] OCR'活动'确认仍在活动页:base roi[165,12,347,606]→720[140,8,230,560];Swipe在左侧列表列上滑:base begin/end[210,300]->[210,100]→720 begin(260,400)->end(260,133)。实机验证swipe生效(fast duration1500;slow3000曾被当长按无效),滚出宾果/活动任务/拼图等下半屏活动。|[2026-07-10行为修订] base自环next无滑动预算,PC终止词失效当晚连滑53次(00:40起实录)。改三次计数链:下滑1/2/3(D1=本节点)每次滑后先找红点,连续三次无红点转上滑链U1-U3,连续上滑三次无红点收尾(节点身份即计数器,领到红点经Index回本节点=计数复位)。",
         "begin": [
             260,
             400,
@@ -158,10 +177,16 @@
                 1,
                 1
             ]
+        ],
+        "next": [
+            "Activities_FindActive",
+            "Activities_NoFindAndInEnd",
+            "Activities_GetAllRe",
+            "Activities_Slip_D2"
         ]
     },
     "Activities_NoFindAndInEnd": {
-        "desc": "拖动后无免费红点且识别到底部普池\\判定未完成",
+        "desc": "列表见底标记(底部'登录加成/登录活动'条目)。|[PC覆盖·2026-07-10实录修复] 上游6-28覆盖expected只留['登录活动','登入活動'],游戏当前版本底部条目实为'登录加成'(00:47实录OCR读到0.9974仍恒miss,param_.expected实锤)→终止条件失效,Slip连滑53次不停。补回简繁全集。命中后不再直接Fin,改走上滑链回扫列表上方漏领红点(见Slip_U1),终止交给'连续上滑三次无红点'。",
         "roi": [
             211,
             335,
@@ -169,8 +194,13 @@
             233
         ],
         "expected": [
+            "登录加成",
+            "登入加成",
             "登录活动",
             "登入活動"
+        ],
+        "next": [
+            "Activities_Slip_U1"
         ]
     },
     "Activities_Fin": {
@@ -181,5 +211,162 @@
             1,
             1
         ]
+    },
+    "Activities_Slip_D2": {
+        "desc": "下滑计数2/3。|[PC新增·2026-07-10] 滑后无红点无底标才会走到这里;找到红点由FindActive领取并经Index复位回Slip(D1)重新计数。",
+        "recognition": "And",
+        "all_of": [
+            "Activities_Index"
+        ],
+        "action": "Swipe",
+        "begin": [
+            260,
+            400,
+            1,
+            1
+        ],
+        "end": [
+            260,
+            133,
+            1,
+            1
+        ],
+        "end_hold": 1000,
+        "duration": 1000,
+        "next": [
+            "Activities_FindActive",
+            "Activities_NoFindAndInEnd",
+            "Activities_GetAllRe",
+            "Activities_Slip_D3"
+        ],
+        "on_error": [
+            "Activities_Fin"
+        ],
+        "focus": "GA.滑动寻找活动-下2"
+    },
+    "Activities_Slip_D3": {
+        "desc": "下滑计数3/3。|[PC新增·2026-07-10] 连续三次下滑无红点→调头进上滑链。",
+        "recognition": "And",
+        "all_of": [
+            "Activities_Index"
+        ],
+        "action": "Swipe",
+        "begin": [
+            260,
+            400,
+            1,
+            1
+        ],
+        "end": [
+            260,
+            133,
+            1,
+            1
+        ],
+        "end_hold": 1000,
+        "duration": 1000,
+        "next": [
+            "Activities_FindActive",
+            "Activities_NoFindAndInEnd",
+            "Activities_GetAllRe",
+            "Activities_Slip_U1"
+        ],
+        "on_error": [
+            "Activities_Fin"
+        ],
+        "focus": "GA.滑动寻找活动-下3"
+    },
+    "Activities_Slip_U1": {
+        "desc": "上滑计数1/3。|[PC新增·2026-07-10] 入口两个:下滑三连无果调头,或列表见底(NoFindAndInEnd)提前折返,回扫上方漏领红点。",
+        "recognition": "And",
+        "all_of": [
+            "Activities_Index"
+        ],
+        "action": "Swipe",
+        "begin": [
+            260,
+            133,
+            1,
+            1
+        ],
+        "end": [
+            260,
+            400,
+            1,
+            1
+        ],
+        "end_hold": 1000,
+        "duration": 1000,
+        "next": [
+            "Activities_FindActive",
+            "Activities_GetAllRe",
+            "Activities_Slip_U2"
+        ],
+        "on_error": [
+            "Activities_Fin"
+        ],
+        "focus": "GA.滑动寻找活动-上1"
+    },
+    "Activities_Slip_U2": {
+        "desc": "上滑计数2/3。|[PC新增·2026-07-10]",
+        "recognition": "And",
+        "all_of": [
+            "Activities_Index"
+        ],
+        "action": "Swipe",
+        "begin": [
+            260,
+            133,
+            1,
+            1
+        ],
+        "end": [
+            260,
+            400,
+            1,
+            1
+        ],
+        "end_hold": 1000,
+        "duration": 1000,
+        "next": [
+            "Activities_FindActive",
+            "Activities_GetAllRe",
+            "Activities_Slip_U3"
+        ],
+        "on_error": [
+            "Activities_Fin"
+        ],
+        "focus": "GA.滑动寻找活动-上2"
+    },
+    "Activities_Slip_U3": {
+        "desc": "上滑计数3/3。|[PC新增·2026-07-10] 连续上滑三次无红点=遍历完成,next耗尽走on_error→Fin收尾。timeout收短免空等。",
+        "recognition": "And",
+        "all_of": [
+            "Activities_Index"
+        ],
+        "action": "Swipe",
+        "begin": [
+            260,
+            133,
+            1,
+            1
+        ],
+        "end": [
+            260,
+            400,
+            1,
+            1
+        ],
+        "end_hold": 1000,
+        "duration": 1000,
+        "timeout": 6000,
+        "next": [
+            "Activities_FindActive",
+            "Activities_GetAllRe"
+        ],
+        "on_error": [
+            "Activities_Fin"
+        ],
+        "focus": "GA.滑动寻找活动-上3(收尾)"
     }
 }
