@@ -14,7 +14,8 @@
         "custom_action_param": {
             "tags": [
                 "LocPage_SmartSwip",
-                "Tab3_OnFoot"
+                "Tab3_OnFoot",
+                "NviMap_Sub_Err"
             ]
         },
         "anchor": {"Pack_Click": ""},
