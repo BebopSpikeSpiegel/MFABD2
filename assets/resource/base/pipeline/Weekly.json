@@ -542,15 +542,8 @@
         ]
     },
     "Weekly_VisitCabin_Like1Chg": {
-        "roi": [
-            946,
-            597,
-            263,
-            106
-        ],
-        "expected": [
-            "再次探查"
-        ],
+        "recognition": "Or",
+        "any_of": ["Weekly_VisitCabin_Like1"],
         "action": "Click",
         "target": [
             850,
