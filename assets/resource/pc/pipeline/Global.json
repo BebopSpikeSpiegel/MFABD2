@@ -14,7 +14,8 @@
             "QuickCartGeadai.png"
         ]
     },
-    "Global_BackToPve2#_CardMenu": {
+    "Global_BackToPve_CardMenu_Tp1": {
+        "desc": "判断在传统卡带界面",
         "roi": [
             150,
             4,
@@ -23,62 +24,38 @@
         ],
         "expected": [
             "游戏卡珍藏集",
-            "遊戲卡帶收藏"
+            "^遊戲卡.收藏集"
         ]
     },
-    "Global_BackToPve2#_PVEBookSwipe": {
-        "desc": "识别活动游戏卡-上划",
+    "Global_BackToPve_CardMenu_Tp2": {
+        "desc": "传统卡带界面已上划到顶",
         "roi": [
-            88,
-            536,
-            110,
-            44
+            98,
+            81,
+            92,
+            30
         ],
         "expected": [
-            "活动游戏卡",
-            "活動游戲卡"
+            "店长游戏卡",
+            "店長遊戲卡"
         ]
     },
-    "Global_BackToPve2#_PVEBookSwipe_Lift": {
-        "desc": "识别活动游戏卡-上划",
+    "Global_BackToPve_CardMenu_Tp3": {
+        "desc": "【传统卡带识别链-结束. 出口由锚点 'BackToPack' 决定，未设锚会停在此处】固定位置识别pack1#=传统卡带界面已左划到首部",
         "roi": [
-            95,
-            79,
-            106,
-            38
-        ],
-        "expected": [
-            "剧情游戏卡",
-            "故事游戲卡"
+            71,
+            290,
+            227,
+            165
         ]
     },
-    "Global_BackToPve2#_TouchPVEBook": {
-        "desc": "点击PVE本子2",
+    "Global_BackToPve_TouchPVE2#Pack": {
+        "desc": "【传统卡带识别链-预设出口.pve2#】",
         "roi": [
-            278,
-            112,
-            187,
-            108
-        ]
-    },
-    "Global_BackToQC1_Menu": {
-        "roi": [
-            155,
-            555,
-            174,
-            52
-        ],
-        "expected": [
-            "剧情游戏卡",
-            "故事游戲卡"
-        ]
-    },
-    "Global_BackToQC1_Menu_Cor": {
-        "roi": [
-            166,
-            566,
-            112,
-            34
+            264,
+            254,
+            377,
+            214
         ]
     },
     "Anc_SliderSwitch_YewOn_Clr": {
