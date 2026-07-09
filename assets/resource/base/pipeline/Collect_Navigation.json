@@ -4,21 +4,17 @@
     },
     "Collect_OperationsMain_Sandplay": {
         "desc": "中断：章节内主要操作开始。找到图钉，确认进入箱庭",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "Custom",
         "custom_action": "ResetTag",
         "custom_action_param": {
             "tags": [
-                "LocPage_SmartSwip"
+                "LocPage_SmartSwip",
+                "Tab3_OnFoot"
             ]
         },
         "anchor": {"Pack_Click": ""},
@@ -35,7 +31,8 @@
         ],
         "on_error": [
             "[JumpBack]Collect_Tab3",
-            "Global_ToSandBox",
+            "[JumpBack]Global_ToSandBox",
+            "Global_QuickCart_MenuReset",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],

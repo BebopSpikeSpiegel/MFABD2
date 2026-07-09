@@ -1,16 +1,24 @@
 {
     "Collect_Tab3": {
-        "desc": "传送阵寻回模块.技能&步行.",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
+        "desc": "传送阵寻回模块.技能&步行.JB退栈在复位后",
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "Custom",
+                "custom_recognition": "CheckTag",
+                "custom_recognition_param": {
+                    "tag": "Tab3_OnFoot",
+                    "max": 1
+                }
+            },
+            "Rec_SandBox_Pin_Tpl"
         ],
-        "template": [
-            "pin.png"
-        ],
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "Tab3_OnFoot",
+            "value": 1
+        },
         "next": [
             "Collect_Tab3_Ck",
             "[JumpBack]Collect_Tab3_Switch"
@@ -350,6 +358,7 @@
             34,
             38
         ],
+        "post_delay": 2500,
         "next": [
             "Collect_TeleporCircle_OnFoot_NviMap",
             "Collect_TeleporCircle_OnFoot_GoinNviMap"
