@@ -120,7 +120,16 @@
                 1200
             ],
             "sc_min_conf": 0.55,
-            "sc_gap_ratio": 0.35
+            "sc_gap_ratio": 0.35,
+            "flt_hsv_rescue": {
+                "mode": "shadow",
+                "max_delta_s": 48,
+                "max_delta_v": 64,
+                "max_states": 64,
+                "max_full_runs": 8,
+                "min_stable_states": 2,
+                "time_budget_ms": 40
+            }
         }
     },
     "Agt_RedDot_Preset_Panoram": {
@@ -156,7 +165,16 @@
                 450
             ],
             "sc_min_conf": 0.58,
-            "sc_gap_ratio": 0.35
+            "sc_gap_ratio": 0.35,
+            "flt_hsv_rescue": {
+                "mode": "shadow",
+                "max_delta_s": 48,
+                "max_delta_v": 64,
+                "max_states": 64,
+                "max_full_runs": 8,
+                "min_stable_states": 2,
+                "time_budget_ms": 40
+            }
         }
     }
 }

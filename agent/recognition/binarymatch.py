@@ -15,6 +15,15 @@ from maa.define import RectType
 
 from utils import mfaalog
 from .rdd_sampler import RddSampler
+from .rdd_hsv_rescue import (
+    build_topology_states,
+    is_strict_mask,
+    lineage_parent,
+    mask_digest,
+    normalize_rescue_config,
+    select_stable_winner,
+    strict_profile,
+)
 
 
 # ================================================================
@@ -361,6 +370,9 @@ class HSVShapeMatching(CustomRecognition):
 #                          大 ROI 泛找可调高到 0.58。
 #   gap_ratio      (float) 仅用于 detail 里 gap 的"是否成双段"标注，不再作命中门槛。
 #   preset         (str)   预设节点名（预设模式）。
+#   flt_hsv_rescue (object) 严格 HSV 拓扑救援。mode=off/shadow/active；仅 baseline
+#                          最终卡 aspect 时提高 S/V lower，严格子集经 lineage+跨档稳定
+#                          后才可命中。默认 off；预算/歧义/异常均 fail closed。
 #   注：旧的 inner_v_min / inner_s_max 已弃用(绝对亮度阈值在模糊下会掉崖)，若残留会被忽略。
 #
 # [可观测性 —— 金字塔回调 + vision 调试图]
@@ -399,7 +411,7 @@ class HSVShapeMatching(CustomRecognition):
 #   筛选·红掩膜  → HSV 没框到红色：降低 S/V 下限 / 校正 roi
 #   筛选·面积    → 面积不在 red_area：多半 min 太大
 #   筛选·长宽比  → 红块 h/w 出圈(看 aspect_rej)：横条/竖柱杂红=正常拒；
-#                  连片真货被误杀→优先收紧 flt_red_hsv 拆连片，其次放宽 flt_aspect
+#                  连片真货由 flt_hsv_rescue 严格 HSV 搜索拆开；不要放宽 flt_aspect
 #   筛选·内部    → 红块内无封闭非红区(无感叹号轮廓)：roi 偏移 / 红圈破损 / 被模糊填满
 #   打分        → 看「明细」贡献列：竖长/偏白低=非感叹号(正常拒)；真货被拒才降 min_confidence
 #
@@ -454,8 +466,8 @@ class HSVShapeMatching(CustomRecognition):
 # 文件名以"节点名+ROI"为 key，同检测点重复失败直接覆盖。
 #
 # 失败原因结构化写入 detail，通过 MaaLogs 工具可复盘（图没了也能看数据）：
-#   detail.stage           卡在哪个阶段（red_mask / area / interior / confidence）
-#   detail.hint            具体提示与修正方向
+#   detail.阶段 / 卡在     筛选(red_mask / area / aspect / interior)或打分
+#   detail.说明            具体提示与修正方向
 #   detail.stat.conf       最高候选置信分（confidence 阶段专用）
 #   detail.stat.parts      各分项得分 {gap, vert, white, cent}
 #   detail.stat.proj       垂直投影数组（按行的封闭区像素数，用于判断双段）
@@ -500,7 +512,14 @@ class HSVShapeMatching(CustomRecognition):
 # area_pass=0 → 所有 blob 被过滤，多半 min 太大。
 #
 # ────────────────────────────────────────────────────────────────
-# 阶段 4a  拓扑封闭取内部区（detail.stage = "interior"）
+# 阶段 4  红块 h/w 筛选（detail.卡在 = "aspect"）
+# ────────────────────────────────────────────────────────────────
+# 参数：flt_aspect [min,max]，默认 [0.6,1.6]。
+# 横条/竖柱正常拒绝；若所有面积候选均卡在此处，可由 flt_hsv_rescue 在严格子集、
+# lineage、跨档稳定与预算约束下尝试拆开连片。禁止直接放宽 flt_aspect。
+#
+# ────────────────────────────────────────────────────────────────
+# 阶段 5  拓扑封闭取内部区（detail.卡在 = "interior"）
 # ────────────────────────────────────────────────────────────────
 # 输出：rdd_*_inner.png  ← 黑=enclosed（被红色真正包围的非红像素）
 #
@@ -514,7 +533,7 @@ class HSVShapeMatching(CustomRecognition):
 #   · 极度模糊时红色"填满"感叹号缝隙，封闭区消失（物理边界，无法靠参数解决）
 #
 # ────────────────────────────────────────────────────────────────
-# 阶段 4b  置信度加权评分 v2（detail.阶段 = "打分"）
+# 阶段 6  置信度加权评分 v2（detail.阶段 = "打分"）
 # ────────────────────────────────────────────────────────────────
 # 参数：min_confidence（默认 0.55；必须 > 最大单项权重 0.45 → 命中需两项背书）
 # 数据：detail.打分 = {总分, 阈值, 通过, 明细:[每项 值/权重/贡献]}
@@ -558,6 +577,7 @@ class HSVShapeMatching(CustomRecognition):
 # ────────────────────────────────────────────────────────────────
 # 筛选·红掩膜(red_mask)  → red_mask 全白：降 hsv_ranges S/V 下限 / 校 roi
 # 筛选·面积(area)        → area_pass=0：降 red_area min（或升 max）
+# 筛选·长宽比(aspect)    → 连片真货仅走 flt_hsv_rescue；不要放宽 flt_aspect
 # 筛选·内部(interior)    → inner 全白：红圈破损或模糊填满，缩小 roi / 等清晰帧
 # 打分(confidence)       → 看明细贡献列：竖长/偏白低=非感叹号(拒对了)；真货被拒才降 min_confidence
 # 大 ROI 误判杂红         → 提高 min_confidence 到 0.58
@@ -720,21 +740,27 @@ class RedDotDetector(CustomRecognition):
             })
 
         caller_node = getattr(argv, "node_name", "") or preset_node
+        raw = getattr(reco, "raw_detail", None) or {}
 
         # 预设模式：整屏在本级手里，由本级做原生回显(命中/未命中都画，嵌套层不画)
         echo_hsv, echo_area = self._preset_echo_params(context, preset_node)
-        self._emit_native_vision(context, caller_node, (rx, ry, rw, rh),
-                                 argv.image, echo_hsv, echo_area)
+        effective_hsv = self._find_nested(raw, "effective_hsv_ranges") or echo_hsv
 
         if reco.hit:
             bx, by, bw, bh = reco.box
             adjusted = (bx + rx, by + ry, bw, bh)
+            self._emit_native_vision(
+                context, caller_node, (rx, ry, rw, rh), argv.image,
+                effective_hsv, echo_area, result_box=adjusted)
             mfaalog.info(f"[RedDotDetector] [preset:{preset_node}] hit -> {adjusted}")
             return CustomRecognition.AnalyzeResult(
-                box=adjusted, detail={"result": "hit", "preset": preset_node})
+                box=adjusted, detail={"result": "hit", "mode": "preset",
+                                      "preset": preset_node,
+                                      "preset_detail": raw})
 
         # 真未命中：阶段原因已由预设节点(独立模式)记进嵌套识别记录；这里附带透传其 raw_detail
-        raw = getattr(reco, "raw_detail", None) or {}
+        self._emit_native_vision(context, caller_node, (rx, ry, rw, rh),
+                                 argv.image, effective_hsv, echo_area)
         mfaalog.warning(f"[RedDotDetector] miss@preset | {argv.node_name} via {preset_node}")
         return CustomRecognition.AnalyzeResult(box=None, detail={
             "result": "miss", "mode": "preset", "preset": preset_node,
@@ -742,6 +768,23 @@ class RedDotDetector(CustomRecognition):
             "preset_detail": raw,
             "hint": "阶段原因见预设节点(独立模式)的 detail；失败截图见 debug/RedDotDetector/ 下以本节点名命名的 rdd_* 文件",
         })
+
+    @staticmethod
+    def _find_nested(value, key):
+        """在 Maa raw_detail 的不同包装层中取自定义 detail 字段。"""
+        if isinstance(value, dict):
+            if key in value:
+                return value[key]
+            for child in value.values():
+                found = RedDotDetector._find_nested(child, key)
+                if found is not None:
+                    return found
+        elif isinstance(value, list):
+            for child in value:
+                found = RedDotDetector._find_nested(child, key)
+                if found is not None:
+                    return found
+        return None
 
     # ------------------------------------------------------------------
     # 独立模式
@@ -755,7 +798,7 @@ class RedDotDetector(CustomRecognition):
     def _normalize_params(self, params: dict) -> dict:
         out = dict(params)
         for new, old in self._PARAM_ALIAS.items():
-            if new in params and old not in out:
+            if new in params:
                 out[old] = params[new]
         return out
 
@@ -768,6 +811,9 @@ class RedDotDetector(CustomRecognition):
         asp_lo, asp_hi = params.get("flt_aspect", _FLT_ASPECT_DEFAULT)
         gap_ratio = params.get("gap_ratio", 0.35)      # 仅用于 detail 的 gap 标注
         min_conf = params.get("min_confidence", _SC_MIN_CONF)
+        rescue_cfg, rescue_error = normalize_rescue_config(params.get("flt_hsv_rescue"))
+        if rescue_error and "flt_hsv_rescue" in params:
+            print(f"[RedDotDetector] HSV 救援配置无效，已关闭: {rescue_error}")
 
         # 1. 按 roi 裁剪
         roi = argv.roi
@@ -791,15 +837,81 @@ class RedDotDetector(CustomRecognition):
         # 2. HSV → 红色掩膜
         pil_img = Image.fromarray(work_bgr[..., ::-1])
         hsv_np = np.array(pil_img.convert("HSV"))
-        red_mask = _compute_hsv_mask(hsv_np, hsv_ranges)
+        baseline = self._detect_once(
+            hsv_np, hsv_ranges, area_min, area_max, asp_lo, asp_hi,
+            gap_ratio, min_conf, rx, ry,
+        )
+        if baseline["hit"]:
+            return self._finalize_hit(
+                context=context, argv=argv, node=node, key_roi=key_roi,
+                caller=caller, work_bgr=work_bgr, roi_tuple=(rx, ry, rw, rh),
+                params=params, area_range=(area_min, area_max),
+                aspect_range=(asp_lo, asp_hi), gap_ratio=gap_ratio,
+                min_conf=min_conf, outcome=baseline,
+                candidate=baseline["candidates"][0],
+                effective_hsv=hsv_ranges, rescue=None,
+            )
 
-        # 3. 连通域
-        labeled, n_blobs = _label_blobs(red_mask)
+        stage, hint = self._diagnose(baseline["stat"], area_min, area_max, min_conf)
+        rescue = None
+        if stage == "aspect" and rescue_cfg["mode"] != "off":
+            try:
+                rescue = self._run_hsv_rescue(
+                    hsv_np=hsv_np, baseline=baseline, hsv_ranges=hsv_ranges,
+                    area_range=(area_min, area_max), aspect_range=(asp_lo, asp_hi),
+                    gap_ratio=gap_ratio, min_conf=min_conf, rx=rx, ry=ry,
+                    config=rescue_cfg,
+                )
+            except Exception:
+                rescue = {
+                    "mode": rescue_cfg["mode"], "attempted": True,
+                    "trigger": "stage_aspect", "decision": "error",
+                    "stop_reason": "exception",
+                    "error": traceback.format_exc().strip().splitlines()[-1],
+                }
+                print(f"[RedDotDetector] HSV 救援异常，保持 baseline miss:\n"
+                      f"{traceback.format_exc()}")
+            winner = rescue.get("_winner")
+            if (winner is not None and rescue_cfg["mode"] == "active"
+                    and rescue.get("search_complete")
+                    and rescue.get("decision") == "stable_hit"):
+                return self._finalize_hit(
+                    context=context, argv=argv, node=node, key_roi=key_roi,
+                    caller=caller, work_bgr=work_bgr, roi_tuple=(rx, ry, rw, rh),
+                    params=params, area_range=(area_min, area_max),
+                    aspect_range=(asp_lo, asp_hi), gap_ratio=gap_ratio,
+                    min_conf=min_conf, outcome=winner["outcome"],
+                    candidate=winner["candidate"],
+                    effective_hsv=winner["profile"],
+                    rescue=self._public_rescue(rescue),
+                )
+
+        return self._finalize_miss(
+            context=context, argv=argv, node=node, key_roi=key_roi,
+            caller=caller, work_bgr=work_bgr, roi_tuple=(rx, ry, rw, rh),
+            params=params, hsv_ranges=hsv_ranges,
+            area_range=(area_min, area_max),
+            aspect_range=(asp_lo, asp_hi), min_conf=min_conf,
+            baseline=baseline, stage=stage, hint=hint,
+            rescue=self._public_rescue(rescue),
+        )
+
+    def _detect_once(self, hsv_np, hsv_ranges, area_min, area_max,
+                     asp_lo, asp_hi, gap_ratio, min_conf, rx, ry,
+                     red_mask=None, labeled=None, collect_all=False):
+        """无日志、采样、回显副作用的单轮检测核心。"""
+        red_mask = (_compute_hsv_mask(hsv_np, hsv_ranges)
+                    if red_mask is None else red_mask)
+        if labeled is None:
+            labeled, n_blobs = _label_blobs(red_mask)
+        else:
+            n_blobs = int(labeled.max()) if labeled.size else 0
+
         stat = {"red_px": int(red_mask.sum()), "n_blobs": int(n_blobs),
                 "area_pass": 0, "aspect_pass": 0, "max_inner_px": 0, "scored": 0}
         best, best_mask, best_box_local = None, None, None
+        candidates, eligible_parents = [], []
 
-        # 4. 逐 blob 检测
         for i in range(1, n_blobs + 1):
             blob = (labeled == i)
             area = int(np.sum(blob))
@@ -812,27 +924,26 @@ class RedDotDetector(CustomRecognition):
             bx0, bx1 = int(cols[0]), int(cols[-1])
             by0, by1 = int(rows[0]), int(rows[-1])
             bw, bh = bx1 - bx0 + 1, by1 - by0 + 1
-
-            # 筛选·长宽比：真红点 h/w≈1，横条/实心柱杂红在圈外。被拒 blob 的几何
-            # 记进 aspect_rej(最多3个)随 detail/语料下发，供定标复核连片真货是否被误杀。
             aspect = round(bh / max(bw, 1), 2)
+            geometry = {"label": i, "x": bx0, "y": by0, "w": bw, "h": bh,
+                        "area": area, "aspect": aspect,
+                        "fill": round(area / max(bw * bh, 1), 2)}
             if not (asp_lo <= aspect <= asp_hi):
+                eligible_parents.append(geometry)
                 if len(stat.setdefault("aspect_rej", [])) < 3:
                     stat["aspect_rej"].append(
-                        {"w": bw, "h": bh, "area": area, "aspect": aspect,
-                         "fill": round(area / max(bw * bh, 1), 2)})
+                        {k: geometry[k] for k in ("w", "h", "area", "aspect", "fill")})
                 continue
             stat["aspect_pass"] += 1
 
             box_red = red_mask[by0:by1 + 1, bx0:bx1 + 1]
             box_hsv = hsv_np[by0:by1 + 1, bx0:bx1 + 1]
-
-            # 拓扑封闭过滤：排除矩形四角能触达边框的背景，只留被红色真正包围的内部
-            # 不卡绝对亮度——白被模糊压暗也照取，由偏白"对比"在打分时衡量
             non_red_crop = ~box_red
             labeled_crop, _ = _label_blobs(non_red_crop)
-            border_labels = (set(labeled_crop[0, :].tolist()) | set(labeled_crop[-1, :].tolist())
-                             | set(labeled_crop[:, 0].tolist()) | set(labeled_crop[:, -1].tolist()))
+            border_labels = (set(labeled_crop[0, :].tolist())
+                             | set(labeled_crop[-1, :].tolist())
+                             | set(labeled_crop[:, 0].tolist())
+                             | set(labeled_crop[:, -1].tolist()))
             border_labels.discard(0)
             enclosed = non_red_crop & ~np.isin(labeled_crop, list(border_labels))
 
@@ -841,11 +952,9 @@ class RedDotDetector(CustomRecognition):
             if enc_px == 0:
                 continue
 
-            chk = self._exclamation_info(enclosed, gap_ratio)       # 投影/断层(供 f_gap 与诊断)
+            chk = self._exclamation_info(enclosed, gap_ratio)
             conf, parts = self._confidence(box_hsv, box_red, enclosed, chk)
-            # 红块几何：aspect 已过闸；fill 是 v3 下一维度的定标观测量(只记录不闸门)
-            red_blob = {"w": bw, "h": bh, "area": area, "aspect": aspect,
-                        "fill": round(area / max(bw * bh, 1), 2)}
+            red_blob = {k: geometry[k] for k in ("w", "h", "area", "aspect", "fill")}
             if best is None or conf > best["conf"]:
                 best = {"conf": conf, "parts": parts, "red_blob": red_blob, **chk}
                 best_mask = enclosed
@@ -853,73 +962,330 @@ class RedDotDetector(CustomRecognition):
 
             stat["scored"] += 1
             if conf >= min_conf:
-                result_box = (bx0 + rx, by0 + ry, bw, bh)
-                mfaalog.info(f"[RedDotDetector] hit | box={result_box} conf={conf} {parts}")
-                # 命中也画：误命中现场需要可视化复盘
-                hit_stat = {**stat, "conf": conf, "parts": parts, "red_blob": red_blob,
-                            "proj": chk.get("proj"),
-                            "gap": {"row": chk.get("gap_row"), "val": chk.get("gap_val"),
-                                    "peak": chk.get("peak"), "ratio": chk.get("ratio"),
-                                    "above_nz": chk.get("above_nz"), "has_below": chk.get("has_below")}}
-                dbg_text = self._compose_dbg(params, hit_stat, f"result: HIT box={list(result_box)}", min_conf)
-                print(f"[RedDotDetector] {node}\n{dbg_text}")
-                _SAMPLER.record(
-                    node=node, roi=key_roi, result="hit",
-                    images={"roi_crop": work_bgr, "red_mask": red_mask, "inner": enclosed},
-                    meta={"mode": "preset" if caller else "standalone",
-                          "box": list(result_box), "conf": conf, "parts": parts,
-                          "red_blob": red_blob, "proj": chk.get("proj"),
-                          "params": {"hsv_ranges": hsv_ranges,
-                                     "red_area": [area_min, area_max],
-                                     "min_conf": min_conf}})
-                if caller is None:   # 非预设：本级持有整屏，直接做原生回显
-                    self._emit_native_vision(context, node, (rx, ry, rw, rh),
-                                             argv.image, hsv_ranges, area_min)
-                return CustomRecognition.AnalyzeResult(
-                    box=result_box,
-                    detail={"result": "hit", "阶段": "打分",
-                            "打分": self._score_breakdown(parts, conf, min_conf),
-                            "red_area": area, "red_blob": red_blob, "box": list(result_box),
-                            "conf": conf, "parts": parts, "dbg": dbg_text})  # conf/parts/dbg 随识别记录进日志，供复盘
+                candidate = {
+                    "scan_index": i,
+                    "label": i,
+                    "box_local": (bx0, by0, bw, bh),
+                    "result_box": (bx0 + rx, by0 + ry, bw, bh),
+                    "blob_mask": blob,
+                    "inner": enclosed,
+                    "conf": conf,
+                    "parts": parts,
+                    "red_blob": red_blob,
+                    "chk": chk,
+                }
+                candidates.append(candidate)
+                if not collect_all:
+                    stat.update(self._candidate_stat(candidate))
+                    return {
+                        "hit": True, "candidates": candidates, "stat": stat,
+                        "red_mask": red_mask, "labeled": labeled,
+                        "eligible_parents": eligible_parents,
+                        "best_mask": enclosed, "best_box_local": candidate["box_local"],
+                    }
 
-        # 5. 未命中：置信/投影/断层进 stat → detail；落盘失败图；统一出口
         if best is not None:
             stat["conf"] = best["conf"]
             stat["parts"] = best["parts"]
             stat["red_blob"] = best["red_blob"]
             stat["proj"] = best["proj"]
-            stat["gap"] = {"row": best["gap_row"], "val": best["gap_val"], "peak": best["peak"],
-                           "ratio": best["ratio"], "above_nz": best["above_nz"],
+            stat["gap"] = {"row": best["gap_row"], "val": best["gap_val"],
+                           "peak": best["peak"], "ratio": best["ratio"],
+                           "above_nz": best["above_nz"],
                            "has_below": best["has_below"]}
             stat["best_box"] = list(best_box_local) if best_box_local else None
 
-        stage, hint = self._diagnose(stat, area_min, area_max, min_conf)
-        dbg_text = self._compose_dbg(params, stat, f"result: MISS ({stage}) {hint}", min_conf)
-        self._dump_failure(node, key_roi, work_bgr, red_mask, best_mask)
-        miss_imgs = {"roi_crop": work_bgr, "red_mask": red_mask}
-        if best_mask is not None:
-            miss_imgs["inner"] = best_mask
+        return {
+            "hit": bool(candidates), "candidates": candidates, "stat": stat,
+            "red_mask": red_mask, "labeled": labeled,
+            "eligible_parents": eligible_parents,
+            "best_mask": best_mask, "best_box_local": best_box_local,
+        }
+
+    @staticmethod
+    def _candidate_stat(candidate):
+        chk = candidate["chk"]
+        return {
+            "conf": candidate["conf"],
+            "parts": candidate["parts"],
+            "red_blob": candidate["red_blob"],
+            "proj": chk.get("proj"),
+            "gap": {"row": chk.get("gap_row"), "val": chk.get("gap_val"),
+                    "peak": chk.get("peak"), "ratio": chk.get("ratio"),
+                    "above_nz": chk.get("above_nz"),
+                    "has_below": chk.get("has_below")},
+        }
+
+    def _preview_rescue(self, labeled, baseline_labels, eligible_ids,
+                        area_min, area_max, asp_lo, asp_hi):
+        """只做 area/aspect/lineage，避免对无望 profile 完整打分。"""
+        feasible = []
+        n_blobs = int(labeled.max()) if labeled.size else 0
+        for i in range(1, n_blobs + 1):
+            blob = (labeled == i)
+            area = int(blob.sum())
+            if not (area_min <= area <= area_max):
+                continue
+            ys, xs = np.where(blob)
+            bw, bh = int(xs.max() - xs.min() + 1), int(ys.max() - ys.min() + 1)
+            aspect = round(bh / max(bw, 1), 2)
+            if not (asp_lo <= aspect <= asp_hi):
+                continue
+            parent_id = lineage_parent(blob, baseline_labels, eligible_ids)
+            if parent_id is not None:
+                feasible.append({"label": i, "parent_id": parent_id})
+        return feasible
+
+    def _run_hsv_rescue(self, *, hsv_np, baseline, hsv_ranges, area_range,
+                        aspect_range, gap_ratio, min_conf, rx, ry, config):
+        """受约束的严格 HSV 拓扑断点搜索；返回内部 winner 与可序列化轨迹。"""
+        started = time.perf_counter()
+        area_min, area_max = area_range
+        asp_lo, asp_hi = aspect_range
+        eligible_ids = [item["label"] for item in baseline["eligible_parents"]]
+        eligible_mask = np.isin(baseline["labeled"], eligible_ids)
+        states = build_topology_states(hsv_np, eligible_mask, hsv_ranges, config)
+        seen_masks, attempts, hit_records = set(), [], []
+        state_space_truncated = bool(getattr(states, "truncated", False))
+        full_runs = 0
+        stop_reason = "state_budget" if state_space_truncated else "states_exhausted"
+        search_complete = not state_space_truncated
+
+        for state in states:
+            elapsed_ms = (time.perf_counter() - started) * 1000
+            if elapsed_ms >= config["time_budget_ms"]:
+                stop_reason = "time_budget"
+                search_complete = False
+                break
+            profile = strict_profile(
+                hsv_ranges, state["delta_s"], state["delta_v"])
+            if profile is None:
+                continue
+            red_mask = _compute_hsv_mask(hsv_np, profile)
+            if (time.perf_counter() - started) * 1000 >= config["time_budget_ms"]:
+                stop_reason = "time_budget"
+                search_complete = False
+                break
+            if not is_strict_mask(red_mask, baseline["red_mask"]):
+                continue
+            digest = mask_digest(red_mask)
+            if digest in seen_masks:
+                continue
+            seen_masks.add(digest)
+            labeled, n_blobs = _label_blobs(red_mask)
+            if (time.perf_counter() - started) * 1000 >= config["time_budget_ms"]:
+                stop_reason = "time_budget"
+                search_complete = False
+                break
+            feasible = self._preview_rescue(
+                labeled, baseline["labeled"], eligible_ids,
+                area_min, area_max, asp_lo, asp_hi,
+            )
+            attempt = {
+                "state": dict(state), "red_px": int(red_mask.sum()),
+                "n_blobs": int(n_blobs), "feasible": len(feasible),
+                "full_run": False, "hits": [],
+            }
+            if not feasible:
+                attempts.append(attempt)
+                continue
+            if full_runs >= config["max_full_runs"]:
+                stop_reason = "full_run_budget"
+                search_complete = False
+                attempts.append(attempt)
+                break
+
+            outcome = self._detect_once(
+                hsv_np, profile, area_min, area_max, asp_lo, asp_hi,
+                gap_ratio, min_conf, rx, ry,
+                red_mask=red_mask, labeled=labeled, collect_all=True,
+            )
+            full_runs += 1
+            attempt["full_run"] = True
+            over_time = ((time.perf_counter() - started) * 1000
+                         >= config["time_budget_ms"])
+            for candidate in outcome["candidates"]:
+                parent_id = lineage_parent(
+                    candidate["blob_mask"], baseline["labeled"], eligible_ids)
+                if parent_id is None:
+                    continue
+                record = {
+                    "state": dict(state), "parent_id": parent_id,
+                    "box_local": candidate["box_local"],
+                    "scan_index": candidate["scan_index"],
+                    "candidate": candidate, "outcome": outcome,
+                    "profile": profile,
+                }
+                hit_records.append(record)
+                attempt["hits"].append({
+                    "parent_id": parent_id,
+                    "box": list(candidate["box_local"]),
+                    "conf": candidate["conf"],
+                })
+            attempts.append(attempt)
+            if over_time:
+                stop_reason = "time_budget"
+                search_complete = False
+                break
+
+        winner, decision, support = select_stable_winner(
+            hit_records, config["min_stable_states"])
+        if decision != "stable_hit":
+            stop_reason = decision if stop_reason == "states_exhausted" else stop_reason
+        elif stop_reason == "states_exhausted":
+            stop_reason = "stable_hit"
+
+        public = {
+            "mode": config["mode"],
+            "attempted": True,
+            "trigger": "stage_aspect",
+            "eligible_parents": baseline["eligible_parents"],
+            "states_generated": len(states),
+            "states_total": int(getattr(states, "total", len(states))),
+            "state_space_truncated": state_space_truncated,
+            "states_visited": len(attempts),
+            "full_runs": full_runs,
+            "attempts": attempts,
+            "stable_support": support,
+            "decision": decision,
+            "stop_reason": stop_reason,
+            "search_complete": search_complete,
+            "elapsed_ms": round((time.perf_counter() - started) * 1000, 2),
+            "_winner": winner if search_complete else None,
+        }
+        if winner is not None:
+            public["winner"] = {
+                "parent_id": winner["parent_id"],
+                "state": winner["state"],
+                "box": list(winner["box_local"]),
+                "conf": winner["candidate"]["conf"],
+                "profile": winner["profile"],
+            }
+        return public
+
+    @staticmethod
+    def _public_rescue(rescue):
+        if not rescue:
+            return None
+        return {k: v for k, v in rescue.items() if not k.startswith("_")}
+
+    def _finalize_hit(self, *, context, argv, node, key_roi, caller,
+                      work_bgr, roi_tuple, params, area_range, aspect_range,
+                      gap_ratio, min_conf, outcome, candidate,
+                      effective_hsv, rescue):
+        area_min, area_max = area_range
+        asp_lo, asp_hi = aspect_range
+        result_box = candidate["result_box"]
+        conf, parts = candidate["conf"], candidate["parts"]
+        red_blob, chk = candidate["red_blob"], candidate["chk"]
+        stat = {**outcome["stat"], **self._candidate_stat(candidate)}
+        effective_params = {**params, "hsv_ranges": effective_hsv,
+                            "red_area": [area_min, area_max],
+                            "flt_aspect": [asp_lo, asp_hi],
+                            "gap_ratio": gap_ratio,
+                            "min_confidence": min_conf}
+        dbg_text = self._compose_dbg(
+            effective_params, stat, f"result: HIT box={list(result_box)}", min_conf)
+        mfaalog.info(f"[RedDotDetector] hit | box={result_box} conf={conf} {parts}")
+        print(f"[RedDotDetector] {node}\n{dbg_text}")
+
+        configured_hsv = params.get("hsv_ranges", _RED_RANGES_DEFAULT)
+        meta = {
+            "mode": "preset" if caller else "standalone",
+            "box": list(result_box), "conf": conf, "parts": parts,
+            "red_blob": red_blob, "proj": chk.get("proj"),
+            "params": {"hsv_ranges": configured_hsv,
+                       "configured_hsv_ranges": configured_hsv,
+                       "effective_hsv_ranges": effective_hsv,
+                       "red_area": [area_min, area_max],
+                       "flt_aspect": [asp_lo, asp_hi],
+                       "gap_ratio": gap_ratio,
+                       "min_conf": min_conf,
+                       "flt_hsv_rescue": params.get("flt_hsv_rescue")},
+        }
+        if rescue:
+            meta["rescue"] = rescue
+        _SAMPLER.record(
+            node=node, roi=key_roi, result="hit",
+            images={"roi_crop": work_bgr, "red_mask": outcome["red_mask"],
+                    "inner": candidate["inner"]},
+            meta=meta,
+        )
+        if caller is None:
+            self._emit_native_vision(
+                context, node, roi_tuple, argv.image, effective_hsv, area_min,
+                result_box=result_box)
+
+        detail = {
+            "result": "hit", "阶段": "打分",
+            "mode": "preset" if caller else "standalone",
+            "打分": self._score_breakdown(parts, conf, min_conf),
+            "red_area": red_blob["area"], "red_blob": red_blob,
+            "box": list(result_box), "conf": conf, "parts": parts,
+            "effective_hsv_ranges": effective_hsv, "dbg": dbg_text,
+        }
+        if rescue:
+            detail["rescue"] = rescue
+        return CustomRecognition.AnalyzeResult(box=result_box, detail=detail)
+
+    def _finalize_miss(self, *, context, argv, node, key_roi, caller,
+                       work_bgr, roi_tuple, params, hsv_ranges, area_range,
+                       aspect_range, min_conf, baseline, stage, hint, rescue):
+        area_min, area_max = area_range
+        asp_lo, asp_hi = aspect_range
+        stat = baseline["stat"]
+        effective_params = {**params, "hsv_ranges": hsv_ranges,
+                            "red_area": [area_min, area_max],
+                            "flt_aspect": [asp_lo, asp_hi],
+                            "min_confidence": min_conf}
+        dbg_text = self._compose_dbg(
+            effective_params, stat, f"result: MISS ({stage}) {hint}", min_conf)
+        dump_info = self._dump_failure(
+            node, key_roi, work_bgr, baseline["red_mask"], baseline["best_mask"])
+        miss_imgs = {"roi_crop": work_bgr, "red_mask": baseline["red_mask"]}
+        if baseline["best_mask"] is not None:
+            miss_imgs["inner"] = baseline["best_mask"]
+        best_box_local = baseline["best_box_local"]
+        meta = {
+            "mode": "preset" if caller else "standalone",
+            "box": ([best_box_local[0] + roi_tuple[0],
+                     best_box_local[1] + roi_tuple[1],
+                     best_box_local[2], best_box_local[3]]
+                    if best_box_local else None),
+            "conf": stat.get("conf"), "parts": stat.get("parts"),
+            "red_blob": stat.get("red_blob"), "proj": stat.get("proj"),
+            "gap": stat.get("gap"), "aspect_rej": stat.get("aspect_rej"),
+            "filter_stat": {
+                "red_px": stat["red_px"], "n_blobs": stat["n_blobs"],
+                "area_pass": stat["area_pass"],
+                "aspect_pass": stat.get("aspect_pass"),
+                "max_inner_px": stat["max_inner_px"], "scored": stat["scored"],
+            },
+            "params": {"hsv_ranges": hsv_ranges,
+                       "configured_hsv_ranges": hsv_ranges,
+                       "effective_hsv_ranges": hsv_ranges,
+                       "red_area": [area_min, area_max],
+                       "flt_aspect": [asp_lo, asp_hi],
+                       "gap_ratio": params.get("gap_ratio", 0.35),
+                       "min_conf": min_conf,
+                       "flt_hsv_rescue": params.get("flt_hsv_rescue")},
+            "failure_dump": dump_info,
+        }
+        if rescue:
+            meta["rescue"] = rescue
         _SAMPLER.record(
             node=node, roi=key_roi, result="miss", stage=stage,
-            images=miss_imgs,
-            meta={"mode": "preset" if caller else "standalone",
-                  "box": ([best_box_local[0] + rx, best_box_local[1] + ry,
-                           best_box_local[2], best_box_local[3]] if best_box_local else None),
-                  "conf": stat.get("conf"), "parts": stat.get("parts"),
-                  "red_blob": stat.get("red_blob"), "proj": stat.get("proj"),
-                  "gap": stat.get("gap"), "aspect_rej": stat.get("aspect_rej"),
-                  "filter_stat": {"red_px": stat["red_px"], "n_blobs": stat["n_blobs"],
-                                  "area_pass": stat["area_pass"],
-                                  "aspect_pass": stat.get("aspect_pass"),
-                                  "max_inner_px": stat["max_inner_px"], "scored": stat["scored"]},
-                  "params": {"hsv_ranges": hsv_ranges,
-                             "red_area": [area_min, area_max],
-                             "min_conf": min_conf}})
-        # 非预设：本级持有整屏，直接做原生回显；预设模式由 _run_preset 在整屏上回显
+            images=miss_imgs, meta=meta,
+        )
         if caller is None:
-            self._emit_native_vision(context, node, (rx, ry, rw, rh),
-                                     argv.image, hsv_ranges, area_min)
-        return self._miss("standalone", stage, hint, stat, params, dbg_text, min_conf)
+            self._emit_native_vision(
+                context, node, roi_tuple, argv.image, hsv_ranges, area_min)
+        extra = {"failure_dump": dump_info}
+        if rescue:
+            extra["rescue"] = rescue
+        return self._miss(
+            "preset" if caller else "standalone", stage, hint, stat, effective_params,
+            dbg_text, min_conf, extra=extra)
 
     # ------------------------------------------------------------------
     # 感叹号结构检测：返回投影 + 断层诊断信息
@@ -1063,7 +1429,7 @@ class RedDotDetector(CustomRecognition):
         if stat.get("aspect_pass", 0) == 0:
             return "aspect", (f"红块 h/w 都不在 flt_aspect 内(被拒 {stat.get('aspect_rej')})；"
                               "横条/竖柱杂红属正常拒；若是连片真货被误杀，"
-                              "优先收紧 flt_red_hsv 拆开连片，其次放宽 flt_aspect")
+                              "由 flt_hsv_rescue 严格 HSV 搜索拆开连片；不要放宽 flt_aspect")
         if stat["max_inner_px"] == 0:
             return "interior", "红块内无封闭非红区(无感叹号轮廓)：roi 偏移 / 红圈破损 / 被模糊填满"
         return "confidence", (f"最高置信 {stat.get('conf')} < min_confidence({min_conf})；"
@@ -1071,7 +1437,7 @@ class RedDotDetector(CustomRecognition):
                               f"或检查偏白/竖向是否被模糊吃掉")
 
     def _miss(self, mode: str, stage: str, hint: str, stat: dict, params: dict,
-              dbg_text: str = None, min_conf=None):
+              dbg_text: str = None, min_conf=None, extra: dict = None):
         """
         统一失败出口（金字塔回调）：
           第1层 result=miss；第2层 阶段=筛选/打分；
@@ -1092,6 +1458,8 @@ class RedDotDetector(CustomRecognition):
                         "内部像素": stat.get("max_inner_px"), "打分数": stat.get("scored")},
                 "stat": stat, "dbg": dbg_text,
             }
+        if extra:
+            detail.update(extra)
         mfaalog.warning(f"[RedDotDetector] miss@{stage} | {hint}")
         print(f"[RedDotDetector] miss\n{dbg_text}" if dbg_text else f"[RedDotDetector] miss stat={stat}")
         return CustomRecognition.AnalyzeResult(box=None, detail=detail)
@@ -1127,7 +1495,8 @@ class RedDotDetector(CustomRecognition):
     # ------------------------------------------------------------------
 
     def _emit_native_vision(self, context: Context, node: str, roi_tuple,
-                            image: np.ndarray, hsv_ranges: list, area_min) -> None:
+                            image: np.ndarray, hsv_ranges: list, area_min,
+                            result_box=None) -> None:
         """
         在整屏原图上跑一次内置 ColorMatch(method 40，同 hsv_ranges)，由框架原生画图：
         绿框=ROI，红字 R:[box]=红色 blob 包围框(与本识别器返回的 box 是同一个红块)。
@@ -1145,7 +1514,8 @@ class RedDotDetector(CustomRecognition):
             context.run_recognition(echo, image, pipeline_override={
                 echo: {
                     "recognition": "ColorMatch",
-                    "roi": list(roi_tuple),
+                    # 命中时限制到实际返回框，避免大 ROI 内 ColorMatch 画出另一个更大红块。
+                    "roi": list(result_box if result_box is not None else roi_tuple),
                     "method": 40,   # HSV，与 hsv_ranges 同为 OpenCV 坐标系(H 0-180)
                     "lower": lowers,
                     "upper": uppers,
@@ -1204,7 +1574,7 @@ class RedDotDetector(CustomRecognition):
             last_map = self._last_dump = {}
         now = time.time()
         if now - last_map.get(key, 0.0) < _DUMP_MIN_INTERVAL:
-            return
+            return {"status": "throttled", "files": []}
         last_map[key] = now
 
         saved = []
@@ -1218,3 +1588,5 @@ class RedDotDetector(CustomRecognition):
                 saved.append(p)
         if saved:
             print(f"[RedDotDetector] 失败截图 -> {saved}")  # 仅入 txt 日志，不上 UI
+            return {"status": "saved", "files": saved}
+        return {"status": "failed", "files": []}
