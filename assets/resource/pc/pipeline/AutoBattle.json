@@ -1,9 +1,10 @@
 {
     "AutoBattle_Egress_TurnBack_SkipTalk": {
-        "desc": "场景转换/抽卡展示跳过按钮。|[PC覆盖·2026-07-03实机] PC服装池一键抽后有逐件展示页,右上'>>|'跳过按钮(720约(1169,28)-(1194,48)),base安卓模板Chaga_ProductNext实跑仅0.403<0.7恒miss→Gacha_Quick_Skip永不点跳过→抽后链路(Briefing/Quick_End)全断→Global_ToHomePage真空2分钟(19:46:45~19:48:33实录)→GachaADV_AREA2#装备池被跳过=全量跑漏抽装备根因。此前#333验证时角色池当日已抽过、未走展示页故未暴露。修:从MFA on_error帧(2026.07.03-19.46.24)裁Chaga_ProductNext_PC.png(36x30,图标笔画外绿蒙版背景无关化,自匹配1.000,次高0.456为旁边重播钮,区分充分),追加进template列表(Or语义,base安卓模板保留);战斗场景同款跳过按钮同受益。",
+        "desc": "场景转换/抽卡展示跳过按钮。|[PC覆盖·2026-07-03实机,2026-07-09补green_mask] PC服装池一键抽后有逐件展示页,右上'>>|'跳过按钮(720约(1169,28)-(1194,48)),base安卓模板在PC恒miss→Gacha_Quick_Skip永不点跳过→抽后链路全断→装备池被跳过。修:从MFA on_error帧裁Chaga_ProductNext_PC.png(36x30,图标笔画外涂纯绿背景无关化)追加进template(Or语义)。⚠绿蒙版模板必须配green_mask:true——#333首版漏了,无mask时绿底被当真像素参与CCOEFF,匹配分随展示页背景摇摆(暗背景侥幸0.7+,亮白背景实测0.362,2026-07-09复发实锤;带mask同帧1.000)。base安卓模板无绿像素,green_mask对其无副作用。",
         "template": [
             "Chaga_ProductNext.png",
             "Chaga_ProductNext_PC.png"
-        ]
+        ],
+        "green_mask": true
     }
 }
