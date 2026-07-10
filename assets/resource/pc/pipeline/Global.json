@@ -23,6 +23,27 @@
             "Global_ToHomePage_Crash"
         ]
     },
+    "Global_ToHomePage_Crash": {
+        "desc": "[PC新增] 餐馆场景退出:OCR'格鲁菲餐厅'标题(roi同pc Daily_Busin_Entered已校准)命中则点右上Home按钮(720实测中心(1197,39))回箱庭,后续HomeButton分支接手回主页.",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1135,
+            5,
+            133,
+            82
+        ],
+        "template": [
+            "MainHomeRIceGE.png"
+        ],
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage_HomeButton",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G=1.餐馆场景,点Home退出"
+    },
     "Global_BackToPve_CardMenu_Tp1": {
         "desc": "判断在传统卡带界面",
         "roi": [
