@@ -188,19 +188,6 @@
             "threshold": 2.0
         }
     },
-    "Activities_NoFindAndInEnd": {
-        "desc": "拖动后无免费红点且识别到底部普池\\判定未完成",
-        "roi": [
-            211,
-            335,
-            149,
-            233
-        ],
-        "expected": [
-            "登录活动",
-            "登入活動"
-        ]
-    },
     "Activities_Fin": {
         "desc": "退出活动页返回主页。|[PC覆盖] OCR'活动'标题:base roi[170,10,124,60]→720[148,8,95,45];base target[120,35]点返回区→PC点左上返回箭头(15,20)(native(22,30),实机验证回主页)。",
         "target": [
