@@ -116,8 +116,7 @@
             "Activities_Roulette",
             "Activities_Roulette_Pay_CkIn",
             "Activities_FreeClothing",
-            "Activities_GetAll",
-            "Activities_NoFindAndInEnd"
+            "Activities_GetAll"
         ],
         "on_error": [
             "Activities_Slip"
@@ -481,8 +480,8 @@
                 300
             ],
             "detect_roi": [
-                140,
-                522,
+                138,
+                153,
                 145,
                 52
             ],
@@ -499,7 +498,6 @@
         },
         "next": [
             "Activities_FindActive",
-            "Activities_NoFindAndInEnd",
             "Activities_GetAllRe",
             "Activities_Slip"
         ],
@@ -507,30 +505,6 @@
             "Activities_Fin"
         ],
         "focus": "GA.滑动寻找活动"
-    },
-    "Activities_NoFindAndInEnd": {
-        "desc": "拖动后无免费红点且识别到底部普池\\判定未完成",
-        "recognition": "OCR",
-        "roi": [
-            125,
-            335,
-            176,
-            281
-        ],
-        "expected": [
-            "登录加成",
-            "登录活动"
-        ],
-        "target_offset": [
-            -50,
-            50,
-            0,
-            0
-        ],
-        "next": [
-            "Activities_Fin"
-        ],
-        "focus": "GA.活动列表见底"
     },
     "Activities_Fin": {
         "desc": "返回首页",
