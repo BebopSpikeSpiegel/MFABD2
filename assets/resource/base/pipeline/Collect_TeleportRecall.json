@@ -946,6 +946,7 @@
         "template": [
             "Nvimap_Butt_right.png"
         ],
+        "timeout": 5000,
         "next": [
             "Collect_TeleporCircle_OnFoot_TPIco",
             "Collect_TeleporCircle_OnFoot_NviMap_GoHotel",
@@ -964,6 +965,7 @@
         "template": [
             "Nvimap_Butt_right.png"
         ],
+        "timeout": 5000,
         "next": [
             "Collect_TeleporCircle_OnFoot_TPIco",
             "Collect_TeleporCircle_OnFoot_NviMap_IsSafeArea_NotHotel",
