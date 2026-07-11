@@ -125,21 +125,6 @@
             499,
             58,
             22
-        ],
-        "method": 40,
-        "lower": [
-            [
-                10,
-                90,
-                200
-            ]
-        ],
-        "upper": [
-            [
-                35,
-                150,
-                250
-            ]
         ]
     },
     "Activities_GetPinTu": {
@@ -179,8 +164,6 @@
     },
     "Activities_Slip": {
         "desc": "下滑左侧活动列表寻找活动。|[PC覆盖] OCR'活动'确认仍在活动页:base roi[165,12,347,606]→720[140,8,230,560];Swipe在左侧列表列上滑:base begin/end[210,300]->[210,100]→720 begin(260,400)->end(260,133)。实机验证swipe生效(fast duration1500;slow3000曾被当长按无效),滚出宾果/活动任务/拼图等下半屏活动。",
-        "action": "Custom",
-        "custom_action": "SmartSwipe",
         "custom_action_param": {
             "action": "Swipe",
             "begin": [
