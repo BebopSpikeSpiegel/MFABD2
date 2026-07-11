@@ -296,5 +296,9 @@
     },
     "Rec_「Global_WaitingForLoading」_05": {
         "desc": "[识别]转场等待03,大色块-黑"
+    },
+    "Global_BackToQC_GameplayCor": {
+        "desc": "玩法页签色核。|[PC覆盖·2026-07-11实录] base count:500在PC够不到(高亮白像素实测397,box[626,578,65,12])→SelectGameplay反复点tab死循环(19:42起3分钟实录);同病先例:PVP MC_Isenable高亮372~423(#355)。count降300留余量,非高亮灰字远低于此不误判。⚠姊妹节点EventCor同为count:500,PC若走活动页签复位链疑同病,暂无实测数据未动。",
+        "count": 300
     }
 }
