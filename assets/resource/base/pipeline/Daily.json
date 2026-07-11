@@ -270,17 +270,8 @@
     },
     "Daily_GetBusinRewardBack": {
         "desc": "点击领取全部返回",
-        "recognition": "OCR",
-        "roi": [
-            559,
-            630,
-            151,
-            35
-        ],
-        "expected": [
-            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-        ],
-        "only_rec": true,
+        "recognition": "Or",
+        "any_of": ["Rec_Reward_Ocr"],
         "action": "Click",
         "target": [
             1,
