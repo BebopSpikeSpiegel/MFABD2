@@ -38,27 +38,46 @@
     },
     "Activities_FindActive": {
         "desc": "左侧列表竖条扫描红点选可领活动。|[PC覆盖] 红点在活动卡片右上角(x同列~335-350)。【2026-07-03实机定案】PC 720列表小红点仅12×11px,感叹号断层被抗锯齿糊平→检测器gap分项恒0,无gap置信上限0.55(权重gap0.45/vert0.35/white0.15/cent0.05),实测conf 0.442<Panoram预设阈0.5永远miss(log stage=confidence实锤,内布利斯Pickup红点漏检)。preset模式不支持参数覆盖→改独立模式(参数照抄Panoram)+min_confidence降0.4(仍高于精准roi默认0.25,靠enclosed拓扑+vert防杂红)。roi左扩补回被切2px(红点box x335起,原x337切左缘),y按实测列表可视区(卡片y95~600)扩[330,100,30,460](原y173-527首尾卡红点会漏)。点红点后左下偏选卡片主体target_offset[-85,30]。",
+        "custom_recognition_param": {
+            "gap_ratio": 0.35,
+            "hsv_ranges": [
+                {
+                    "lower": [
+                        0,
+                        140,
+                        120
+                    ],
+                    "upper": [
+                        12,
+                        255,
+                        255
+                    ]
+                },
+                {
+                    "lower": [
+                        165,
+                        140,
+                        120
+                    ],
+                    "upper": [
+                        180,
+                        255,
+                        255
+                    ]
+                }
+            ],
+            "min_confidence": 0.4,
+            "red_area": [
+                50,
+                450
+            ]
+        },
         "roi": [
             330,
             100,
             30,
             460
         ],
-        "custom_recognition_param": {
-            "hsv_ranges": [
-                {
-                    "lower": [0, 140, 120],
-                    "upper": [12, 255, 255]
-                },
-                {
-                    "lower": [165, 140, 120],
-                    "upper": [180, 255, 255]
-                }
-            ],
-            "red_area": [50, 450],
-            "gap_ratio": 0.35,
-            "min_confidence": 0.4
-        },
         "target_offset": [
             -85,
             30,
@@ -106,6 +125,21 @@
             499,
             58,
             22
+        ],
+        "method": 40,
+        "lower": [
+            [
+                10,
+                90,
+                200
+            ]
+        ],
+        "upper": [
+            [
+                35,
+                150,
+                250
+            ]
         ]
     },
     "Activities_GetPinTu": {
@@ -145,20 +179,31 @@
     },
     "Activities_Slip": {
         "desc": "下滑左侧活动列表寻找活动。|[PC覆盖] OCR'活动'确认仍在活动页:base roi[165,12,347,606]→720[140,8,230,560];Swipe在左侧列表列上滑:base begin/end[210,300]->[210,100]→720 begin(260,400)->end(260,133)。实机验证swipe生效(fast duration1500;slow3000曾被当长按无效),滚出宾果/活动任务/拼图等下半屏活动。",
-        "begin": [
-            260,
-            400,
-            1,
-            1
-        ],
-        "end": [
-            [
+        "action": "Custom",
+        "custom_action": "SmartSwipe",
+        "custom_action_param": {
+            "action": "Swipe",
+            "begin": [
                 260,
-                133,
-                1,
-                1
-            ]
-        ]
+                400
+            ],
+            "detect_roi": [
+                217,
+                490,
+                129,
+                53
+            ],
+            "duration": 1000,
+            "end": [
+                260,
+                133
+            ],
+            "end_hold": 1000,
+            "proxy_node": "Custom_Proxy_Swipe",
+            "retry_times": 1,
+            "settle_delay": 1000,
+            "threshold": 2.0
+        }
     },
     "Activities_NoFindAndInEnd": {
         "desc": "拖动后无免费红点且识别到底部普池\\判定未完成",
