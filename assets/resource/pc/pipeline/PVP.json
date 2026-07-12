@@ -1,42 +1,67 @@
 {
-    "PVP_Sandplay": {
-        "desc": "确认在竞技场沙盒(认顶栏奖牌图标)。|[PC覆盖·2026-07-09] base pvp_Medals.png(安卓25x25)在PC 720实测0.72~0.75<阈0.8恒miss→Sandplay认不到→AutoBattle永远轮不到(MFA实录:进场后Sandplay连败23次空转,一场没打)。从maa-mcp今日沙盒帧(INTER_AREA降720)裁pvp_Medals_PC.png(26x26金徽章),三帧交叉验0.915/0.938/0.932全过0.8、roi内唯一命中。追加进template(Or语义,base保留),阈沿base 0.8。",
-        "template": [
-            "pvp_Medals.png",
-            "pvp_Medals_PC.png"
-        ]
-    },
-    "PVP_Sandplay_Again": {
-        "desc": "战斗间隙复认竞技场沙盒。|[PC覆盖·2026-07-09] 同PVP_Sandplay,模板列表追加PC版pvp_Medals_PC.png。",
-        "template": [
-            "pvp_Medals.png",
-            "pvp_Medals_PC.png"
-        ]
-    },
-    "PVP_PullUp_QuickCart_MC_Sort": {
-        "desc": "玩法游戏卡分类tab。|[PC覆盖·2026-07-08 MFA on_error帧校准] PC快速卡带同安卓底部紧凑面板,'玩法游戏卡'tab实测720中心(658,584)、字y~574-594;base #341新roi[36,527,1104,63]下缘y590仍切字底~4px,此处罩全tab更稳。保留base点击+MC_Isenable高亮判定+PVP次序。",
-        "roi": [
-            545,
-            540,
-            160,
-            62
-        ]
-    },
-    "PVP_PullUp_QuickCart_MC_Isenable": {
-        "desc": "玩法游戏卡tab高亮确认。|[PC覆盖·2026-07-08 MFA实测] roi同步MC_Sort罩紧凑面板tab;⚠base count:500在PC够不到→恒failed致MC_Sort反复点tab死循环(MFA实测高亮白字命中372~423),count降300(留余量,非高亮灰字远低于此不误判)。",
-        "roi": [
-            545,
-            540,
-            160,
-            62
-        ],
-        "count": 300
-    },
     "PVP_PullUp_QuickCart_PVP": {
         "desc": "点PVP玩法卡带=MIRROR WARS(镜中之战/普通竞技场,紧凑面板玩法行最左)。|[PC覆盖·2026-07-08 MFA on_error帧] base QuickCart_PVP.png(安卓紧凑缩略图62x39)在PC紧凑面板MIRROR WARS仅0.457<0.7→新裁QuickCart_PVP_PC.png(78x42,从MFA on_error紧凑面板帧,自匹配1.0/Golden Colosseum仅0.33/余卡≤0.39,阈0.7唯一命中不误配黄金竞技场).roi沿用base紧凑行[51,582,873,133],模板自身区分.",
         "template": [
             "QuickCart_PVP.png",
             "QuickCart_PVP_PC.png"
+        ]
+    },
+    "PVP_Sandplay": {
+        "desc": "确认在竞技场沙盒(认顶栏奖牌图标)。|[PC覆盖·2026-07-09] base pvp_Medals.png(安卓25x25)在PC 720实测0.72~0.75<阈0.8恒miss→Sandplay认不到→AutoBattle永远轮不到(MFA实录:进场后Sandplay连败23次空转,一场没打)。从maa-mcp今日沙盒帧(INTER_AREA降720)裁pvp_Medals_PC.png(26x26金徽章),三帧交叉验0.915/0.938/0.932全过0.8、roi内唯一命中。追加进template(Or语义,base保留),阈沿base 0.8。",
+        "roi": [
+            612,
+            18,
+            173,
+            43
+        ],
+        "template": [
+            "pvp_Medals.png",
+            "pvp_Medals_PC.png"
+        ],
+        "threshold": [
+            0.7
+        ]
+    },
+    "PVP_Results": {
+        "desc": "pvp赛季正在结算中(按印象,缺乏实测)",
+        "roi": [
+            255,
+            55,
+            167,
+            48
+        ],
+        "expected": [
+            "结算中",
+            "結算"
+        ]
+    },
+    "PVP_PVPMes": {
+        "desc": "防守分结算，点击确认",
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "PVP_Errmsg1#_Clear": {
+        "desc": "以防万一,PVP防守分误点",
+        "roi": [
+            217,
+            175,
+            104,
+            39
+        ],
+        "expected": [
+            "战场角色设置",
+            "場域角色設定"
+        ]
+    },
+    "PVP_PVPStart": {
+        "desc": "进入PVP舞台",
+        "roi": [
+            190,
+            238,
+            900,
+            420
         ]
     },
     "PVP_JustUseFree": {
@@ -46,15 +71,6 @@
             260,
             44,
             34
-        ]
-    },
-    "PVP_Multiplier_Verify": {
-        "desc": "确认倍数=40。|[PC覆盖·2026-07-09配置弹窗帧实测] '40倍'蓝字在720约(830-873,223-243),base roi[844,186,96,36](y186-222)偏上漏读→会误走Adjust调倍数流程.roi下移罩实测位置.",
-        "roi": [
-            815,
-            212,
-            120,
-            42
         ]
     },
     "PVP_AutoBattleMAX": {
@@ -87,6 +103,60 @@
             12
         ]
     },
+    "PVP_AutoBattleMAX_CK": {
+        "roi": [
+            805,
+            473,
+            32,
+            43
+        ],
+        "method": 40,
+        "lower": [
+            [
+                0,
+                0,
+                174
+            ]
+        ],
+        "upper": [
+            [
+                40,
+                24,
+                255
+            ]
+        ],
+        "count": 300
+    },
+    "PVP_Multiplier_Verify": {
+        "desc": "确认倍数=40。|[PC覆盖·2026-07-09配置弹窗帧实测] '40倍'蓝字在720约(830-873,223-243),base roi[844,186,96,36](y186-222)偏上漏读→会误走Adjust调倍数流程.roi下移罩实测位置.",
+        "roi": [
+            815,
+            212,
+            120,
+            42
+        ]
+    },
+    "PVP_Multiplier_Adjust_Gomenu": {
+        "target": [
+            855,
+            228,
+            11,
+            11
+        ]
+    },
+    "PVP_Multiplier_Adjust_Set": {
+        "desc": "默认max倍",
+        "expected": [
+            "^(?=.*[设置])(?=.*[鲜血鸡尾酒])(?=.*[消耗量]).{4,12}$",
+            "^(?=.*[血之雞尾酒])(?=.*[消耗量])(?=.*[設定]).{6,12}$"
+        ]
+    },
+    "PVP_Multiplier_Adjust_Enter": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
     "PVP_AutoBattleStart": {
         "desc": "点'40倍战斗开始'按钮。|[PC覆盖·2026-07-09卡帧实测] 按钮'40倍战斗开始🍷40'在720 (600-793,525-559),base roi[614,552,180,55](y552-607)只与按钮交叠~7px基本错过。roi修为罩全按钮,OCR命中'战斗开始'点字即点按钮.",
         "roi": [
@@ -94,21 +164,145 @@
             515,
             200,
             52
+        ],
+        "expected": [
+            "战斗开始",
+            "開始戰鬥"
         ]
     },
-    "PVP_AutoBattle": {
-        "desc": "识别并点'自动战斗'进配置弹窗。|[PC覆盖·2026-07-08实机观察·待MFA验] PC宽布局把'自动战斗'按钮推到右下角(720实测中心~(1013,665),base roi[918,622]中心961偏左~55px漏点).roi/target右移;后续配置弹窗/结算/离开居中或右缘对齐,base可用.(此屏本次MFA未跑到,坐标取自手动探路,待MFA验)",
+    "PVP_AutoBattle_Battling": {
+        "desc": "识别战斗中",
         "roi": [
-            970,
-            632,
-            96,
-            64
+            44,
+            591,
+            204,
+            70
         ],
-        "target": [
-            1013,
-            650,
-            14,
-            8
+        "expected": [
+            "正在进行",
+            "之中進行"
+        ]
+    },
+    "PVP_BattleResult": {
+        "desc": "反复战斗结果",
+        "roi": [
+            542,
+            187,
+            202,
+            79
+        ],
+        "expected": [
+            "反复战斗结果",
+            "重複戰鬥結果"
+        ]
+    },
+    "PVP_BattleWaitingLoad": {
+        "desc": "匹配PVP对手画面,等待...",
+        "roi": [
+            1076,
+            21,
+            112,
+            31
+        ]
+    },
+    "PVP_BattleLeave": {
+        "desc": "识别离开",
+        "roi": [
+            1095,
+            655,
+            97,
+            44
+        ],
+        "expected": [
+            "离开",
+            "離開"
+        ]
+    },
+    "PVP_BattleFaildLeave": {
+        "desc": "识别离开",
+        "roi": [
+            676,
+            635,
+            73,
+            55
+        ],
+        "expected": [
+            "离开",
+            "離開"
+        ]
+    },
+    "PVP_PVPMes_Back": {
+        "desc": "升降级点击确认",
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "PVP_AutoBattle_APShortage": {
+        "desc": "出现Ap不足(弹窗标题)应对一套,入口",
+        "roi": [
+            540,
+            225,
+            191,
+            66
+        ]
+    },
+    "PVP_AutoBattle_APShortage_Depleted": {
+        "desc": "此时AP为零,结束",
+        "roi": [
+            1072,
+            25,
+            120,
+            27
+        ],
+        "replace": [
+            [
+                "o",
+                "0"
+            ],
+            [
+                "O",
+                "0"
+            ],
+            [
+                "\\+.*$",
+                ""
+            ]
+        ]
+    },
+    "PVP_AutoBattle_APShortage_Remaining": {
+        "desc": "还有残余AP但是不够刷满目标倍数,改到1刷完",
+        "roi": [
+            1072,
+            25,
+            120,
+            27
+        ],
+        "replace": [
+            [
+                "o",
+                "0"
+            ],
+            [
+                "O",
+                "0"
+            ],
+            [
+                "\\+.*$",
+                ""
+            ]
+        ]
+    },
+    "PVP_PerOperationsMain_Error_Processing": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "PVP_Sandplay_NoFindSrena": {
+        "desc": "如果1不是结算页面,2找不到舞台物件.尝试点击箱庭内其他特征物变换位置",
+        "threshold": [
+            0.6
         ]
     }
 }
