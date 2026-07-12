@@ -121,7 +121,8 @@
             "name": "[执行]竞技场",
             "entry": "PVP_TaskStart",
             "controller": [
-                "Adb"
+                "Adb",
+                "PC客户端"
             ],
             "default_check": true,
             "option": [
