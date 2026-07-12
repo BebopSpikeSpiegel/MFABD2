@@ -128,16 +128,8 @@
     },
     "PVP_PVPMes2": {
         "desc": "防守分结算，点击画面返回",
-        "recognition": "OCR",
-        "roi": [
-            437,
-            574,
-            528,
-            134
-        ],
-        "expected": [
-            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-        ],
+        "recognition": "Or",
+        "any_of": ["Rec_Reward_Ocr"],
         "action": "Click",
         "target": [
             1,
@@ -184,16 +176,8 @@
     },
     "PVP_PerPetTask": {
         "desc": "宠物派遣。初始位置就在pvp图防错",
-        "recognition": "TemplateMatch",
-        "roi": [
-            866,
-            550,
-            28,
-            28
-        ],
-        "template": [
-            "PetTask.png"
-        ],
+        "recognition": "Or",
+        "any_of": ["StartGame_PerPetTask"],
         "action": "Click",
         "post_delay": 5000,
         "focus": "PM.宠物派遣"
@@ -204,7 +188,7 @@
         "roi": [
             918,
             622,
-            87,
+            88,
             71
         ],
         "expected": [
@@ -237,12 +221,6 @@
         ],
         "expected": [
             "鲜血鸡尾酒"
-        ],
-        "target_offset": [
-            -5,
-            -45,
-            0,
-            0
         ],
         "next": [
             "PVP_JustUseFree"

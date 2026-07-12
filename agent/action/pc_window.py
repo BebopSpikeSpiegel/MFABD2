@@ -18,10 +18,14 @@ TARGET_HEIGHT = 720
 
 # 游戏窗口类名（Win32 controller 里配置的 class_regex）
 WINDOW_CLASS = "UnityWndClass"
+# 游戏窗口标题子串。UnityWndClass 是所有 Unity 游戏共用的类名，
+# 只按类名匹配会误抓同时在跑的其他 Unity 游戏（实测抓到过 Steam 游戏，
+# resize 顶不动 4K 全屏窗口而误报"游戏锁定分辨率"；StopApp 则会误杀）。
+WINDOW_TITLE = "BrownDust"
 
 
 def _find_game_hwnd():
-    """枚举顶层窗口，返回首个类名匹配且可见的游戏窗口 hwnd（找不到返回 HWND(0)，falsy）。
+    """枚举顶层窗口，返回首个 类名+标题 都匹配且可见的游戏窗口 hwnd（找不到返回 HWND(0)，falsy）。
 
     仅 win32；供窗口调整/关闭等动作共享，避免各处各写一份 Unity 窗口枚举而走样。
     """
@@ -36,8 +40,11 @@ def _find_game_hwnd():
         buf = ctypes.create_unicode_buffer(256)
         user32.GetClassNameW(hwnd, buf, 256)
         if buf.value == WINDOW_CLASS and user32.IsWindowVisible(hwnd):
-            found = hwnd
-            return False  # 停止枚举
+            title_buf = ctypes.create_unicode_buffer(256)
+            user32.GetWindowTextW(hwnd, title_buf, 256)
+            if WINDOW_TITLE in title_buf.value:
+                found = hwnd
+                return False  # 停止枚举
         return True
 
     WNDENUMPROC = ctypes.WINFUNCTYPE(
@@ -65,7 +72,7 @@ def _find_and_resize_window() -> tuple[bool, str]:
 
         hwnd = _find_game_hwnd()
         if not hwnd:
-            return False, f"未找到类名为 '{WINDOW_CLASS}' 的游戏窗口，请先启动游戏"
+            return False, f"未找到 '{WINDOW_CLASS}'+标题含'{WINDOW_TITLE}' 的游戏窗口，请先启动游戏"
 
         # 获取窗口标题用于日志
         title_buf = ctypes.create_unicode_buffer(256)
@@ -188,7 +195,7 @@ def _find_and_close_window() -> tuple[bool, str]:
 
         hwnd = _find_game_hwnd()
         if not hwnd:
-            return True, f"未找到 '{WINDOW_CLASS}' 游戏窗口，游戏可能已关闭，跳过"
+            return True, f"未找到 '{WINDOW_CLASS}'+标题含'{WINDOW_TITLE}' 游戏窗口，游戏可能已关闭，跳过"
 
         title_buf = ctypes.create_unicode_buffer(256)
         user32.GetWindowTextW(hwnd, title_buf, 256)

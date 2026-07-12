@@ -1,16 +1,24 @@
 {
     "Collect_Tab3": {
-        "desc": "传送阵寻回模块.技能&步行.",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
+        "desc": "传送阵寻回模块.技能&步行.JB退栈在复位后",
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "Custom",
+                "custom_recognition": "CheckTag",
+                "custom_recognition_param": {
+                    "tag": "Tab3_OnFoot",
+                    "max": 1
+                }
+            },
+            "Rec_SandBox_Pin_Tpl"
         ],
-        "template": [
-            "pin.png"
-        ],
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "Tab3_OnFoot",
+            "value": 1
+        },
         "next": [
             "Collect_Tab3_Ck",
             "[JumpBack]Collect_Tab3_Switch"
@@ -350,6 +358,7 @@
             34,
             38
         ],
+        "post_delay": 2500,
         "next": [
             "Collect_TeleporCircle_OnFoot_NviMap",
             "Collect_TeleporCircle_OnFoot_GoinNviMap"
@@ -511,7 +520,7 @@
         ]
     },
     "Collect_IM_OnFoot_NviMap_E01_A2_Move_Sub": {
-        "max_hit": 5,
+        "desc": "区域图.图标子菜单",
         "recognition": "OCR",
         "roi": [
             121,
@@ -530,14 +539,41 @@
             0
         ],
         "post_delay": 4000,
+        "timeout": 8000,
         "next": [
             "[JumpBack]Collect_IM_OnFoot_Moveing",
             "Collect_IM_OnFoot_NviMap_2_Move_End",
             "[JumpBack]Collect_IM_Move_MGS",
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_IM_OnFoot_NviMap_E01_A2_Move_Sub"
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "on_error": [
+            "Collect_IM_OnFoot_NviMap_Sub_Err",
+            "Global_Null"
         ],
         "focus": "小地图图标子菜单"
+    },
+    "Collect_IM_OnFoot_NviMap_Sub_Err": {
+        "recognition": "Custom",
+        "custom_recognition": "CheckTag",
+        "custom_recognition_param": {
+            "tag": "NviMap_Sub_Err",
+            "max": 5
+        },
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "NviMap_Sub_Err",
+            "value": 1
+        },
+        "next": [
+            "Collect_IM_OnFoot_NviMap_Sub_Err_Out",
+            "[JumpBack]Global_ToSandBox"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_Sub_Err_Out": {
+        "recognition": "Or",
+        "any_of": ["Global_ToSandBox_Enter"],
+        "next": ["Collect_TeleporCircle_OnFoot_Start"]
     },
     "Collect_IM_OnFoot_NviMap_E01_B2_Move": {
         "max_hit": 5,
@@ -558,6 +594,7 @@
         ]
     },
     "Collect_IM_OnFoot_Moveing": {
+        "desc": "自动移动中",
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Moveing_Tpl",
@@ -825,7 +862,6 @@
         ]
     },
     "Collect_IM_OnFoot_NviMap_E03_A2_Move_Sub": {
-        "max_hit": 5,
         "recognition": "OCR",
         "roi": [
             347,
@@ -848,8 +884,11 @@
             "[JumpBack]Collect_IM_OnFoot_Moveing",
             "Collect_IM_OnFoot_NviMap_2_Move_End",
             "[JumpBack]Collect_IM_Move_MGS",
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_IM_OnFoot_NviMap_E03_A2_Move_Sub"
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "on_error": [
+            "Collect_IM_OnFoot_NviMap_Sub_Err",
+            "Global_Null"
         ],
         "focus": "小地图图标子菜单"
     },
@@ -907,6 +946,7 @@
         "template": [
             "Nvimap_Butt_right.png"
         ],
+        "timeout": 5000,
         "next": [
             "Collect_TeleporCircle_OnFoot_TPIco",
             "Collect_TeleporCircle_OnFoot_NviMap_GoHotel",
@@ -925,6 +965,7 @@
         "template": [
             "Nvimap_Butt_right.png"
         ],
+        "timeout": 5000,
         "next": [
             "Collect_TeleporCircle_OnFoot_TPIco",
             "Collect_TeleporCircle_OnFoot_NviMap_IsSafeArea_NotHotel",
