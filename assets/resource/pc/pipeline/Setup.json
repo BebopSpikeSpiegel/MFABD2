@@ -1,102 +1,102 @@
 {
     "Rec_<Setup_SkillScan_Skill1>_Tpl": {
+        "desc": "[识别]探查技能存在",
         "roi": [
             1017,
             629,
             67,
             68
-        ],
-        "desc": "[识别]探查技能存在"
+        ]
     },
     "Setup_SkillScan_Skill1_Bin": {
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别",
         "roi": [
             1017,
             629,
             67,
             68
-        ],
-        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+        ]
     },
     "Rec_<Setup_SkillScan_Skill2>_Tpl": {
+        "desc": "[识别]'吸取'技能存在",
         "roi": [
             987,
             555,
             67,
             69
-        ],
-        "desc": "[识别]'吸取'技能存在"
+        ]
     },
     "Setup_SkillScan_Skill2_Bin": {
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别",
         "roi": [
             987,
             555,
             67,
             69
-        ],
-        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+        ]
     },
     "Rec_<Setup_SkillScan_Skill3>_Tpl": {
+        "desc": "[识别]'召集'技能存在",
         "roi": [
             1018,
             491,
             67,
             64
-        ],
-        "desc": "[识别]'召集'技能存在"
+        ]
     },
     "Setup_SkillScan_Skill3_Bin": {
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别",
         "roi": [
             1018,
             491,
             67,
             64
-        ],
-        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+        ]
     },
     "Rec_<Setup_SkillScan_Skill5>_Tpl": {
+        "desc": "[识别]'锻造'技能存在",
         "roi": [
             1163,
             494,
             65,
             64
-        ],
-        "desc": "[识别]'锻造'技能存在"
+        ]
     },
     "Setup_SkillScan_Skill5_Bin": {
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别",
         "roi": [
             1163,
             494,
             65,
             64
-        ],
-        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+        ]
     },
     "Setup_SkillScan_Skill4_Bin": {
+        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别",
         "roi": [
             1091,
             459,
             64,
             65
-        ],
-        "desc": "【不要删不要改后挪用】custom需要调用此节点的识别"
+        ]
     },
     "Setup_EquipUp_MJ": {
         "all_of": [
             {
                 "sub_name": "Clr",
                 "recognition": "ColorMatch",
+                "roi": [
+                    1167,
+                    433,
+                    11,
+                    18
+                ],
                 "lower": [
                     [
                         0,
                         0,
                         0
                     ]
-                ],
-                "roi": [
-                    1167,
-                    433,
-                    11,
-                    18
                 ],
                 "upper": [
                     [
@@ -114,18 +114,18 @@
             {
                 "sub_name": "Clr",
                 "recognition": "ColorMatch",
+                "roi": [
+                    865,
+                    487,
+                    17,
+                    14
+                ],
                 "lower": [
                     [
                         0,
                         0,
                         0
                     ]
-                ],
-                "roi": [
-                    865,
-                    487,
-                    17,
-                    14
                 ],
                 "upper": [
                     [
@@ -143,18 +143,18 @@
             {
                 "sub_name": "Clr",
                 "recognition": "ColorMatch",
+                "roi": [
+                    1038,
+                    484,
+                    18,
+                    17
+                ],
                 "lower": [
                     [
                         0,
                         0,
                         0
                     ]
-                ],
-                "roi": [
-                    1038,
-                    484,
-                    18,
-                    17
                 ],
                 "upper": [
                     [
@@ -172,18 +172,18 @@
             {
                 "sub_name": "Clr",
                 "recognition": "ColorMatch",
+                "roi": [
+                    866,
+                    519,
+                    18,
+                    17
+                ],
                 "lower": [
                     [
                         0,
                         0,
                         0
                     ]
-                ],
-                "roi": [
-                    866,
-                    519,
-                    18,
-                    17
                 ],
                 "upper": [
                     [
@@ -201,18 +201,18 @@
             {
                 "sub_name": "Clr",
                 "recognition": "ColorMatch",
+                "roi": [
+                    1051,
+                    519,
+                    18,
+                    17
+                ],
                 "lower": [
                     [
                         0,
                         0,
                         0
                     ]
-                ],
-                "roi": [
-                    1051,
-                    519,
-                    18,
-                    17
                 ],
                 "upper": [
                     [

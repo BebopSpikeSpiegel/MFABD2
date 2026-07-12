@@ -116,8 +116,7 @@
             "Activities_Roulette",
             "Activities_Roulette_Pay_CkIn",
             "Activities_FreeClothing",
-            "Activities_GetAll",
-            "Activities_NoFindAndInEnd"
+            "Activities_GetAll"
         ],
         "on_error": [
             "Activities_Slip"
@@ -218,15 +217,20 @@
             104,
             47
         ],
+        "method": 40,
         "lower": [
-            223,
-            195,
-            120
+            [
+                10,
+                90,
+                200
+            ]
         ],
         "upper": [
-            223,
-            195,
-            120
+            [
+                35,
+                150,
+                250
+            ]
         ],
         "post_delay": 15000,
         "next": [
@@ -467,20 +471,33 @@
         "desc": "下滑寻找免费抽卡",
         "recognition": "And",
         "all_of": ["Activities_Index"],
-        "action": "Swipe",
-        "begin": [
-            210,
-            300
-        ],
-        "end": [
-            210,
-            100
-        ],
-        "end_hold": 1000,
-        "duration": 1000,
+        "action": "Custom",
+        "custom_action": "SmartSwipe",
+        "custom_action_param": {
+            "action": "Swipe",
+            "begin": [
+                210,
+                300
+            ],
+            "detect_roi": [
+                138,
+                153,
+                145,
+                52
+            ],
+            "duration": 1000,
+            "end": [
+                210,
+                100
+            ],
+            "end_hold": 1000,
+            "proxy_node": "Custom_Proxy_Swipe",
+            "retry_times": 1,
+            "settle_delay": 1000,
+            "threshold": 2.0
+        },
         "next": [
             "Activities_FindActive",
-            "Activities_NoFindAndInEnd",
             "Activities_GetAllRe",
             "Activities_Slip"
         ],
@@ -488,30 +505,6 @@
             "Activities_Fin"
         ],
         "focus": "GA.滑动寻找活动"
-    },
-    "Activities_NoFindAndInEnd": {
-        "desc": "拖动后无免费红点且识别到底部普池\\判定未完成",
-        "recognition": "OCR",
-        "roi": [
-            125,
-            335,
-            176,
-            281
-        ],
-        "expected": [
-            "登录加成",
-            "登录活动"
-        ],
-        "target_offset": [
-            -50,
-            50,
-            0,
-            0
-        ],
-        "next": [
-            "Activities_Fin"
-        ],
-        "focus": "GA.活动列表见底"
     },
     "Activities_Fin": {
         "desc": "返回首页",

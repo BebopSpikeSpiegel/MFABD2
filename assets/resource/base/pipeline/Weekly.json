@@ -243,15 +243,10 @@
         "focus": "PM.More卡带"
     },
     "Weekly_LastNight_Move": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "LongPress",
         "target": [
@@ -345,16 +340,10 @@
         ]
     },
     "Weekly_LastNight_Pin": {
-        "desc": "",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "next": [
             "Weekly_LastNight_End"
@@ -553,15 +542,8 @@
         ]
     },
     "Weekly_VisitCabin_Like1Chg": {
-        "roi": [
-            946,
-            597,
-            263,
-            106
-        ],
-        "expected": [
-            "再次探查"
-        ],
+        "recognition": "Or",
+        "any_of": ["Weekly_VisitCabin_Like1"],
         "action": "Click",
         "target": [
             850,

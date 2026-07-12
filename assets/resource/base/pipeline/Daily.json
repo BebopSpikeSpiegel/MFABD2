@@ -179,7 +179,7 @@
         "action": "Click",
         "target_offset": [
             0,
-            -5,
+            -20,
             0,
             0
         ],
@@ -270,17 +270,8 @@
     },
     "Daily_GetBusinRewardBack": {
         "desc": "点击领取全部返回",
-        "recognition": "OCR",
-        "roi": [
-            559,
-            630,
-            151,
-            35
-        ],
-        "expected": [
-            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-        ],
-        "only_rec": true,
+        "recognition": "Or",
+        "any_of": ["Rec_Reward_Ocr"],
         "action": "Click",
         "target": [
             1,
@@ -758,77 +749,13 @@
     },
     "Daily_Square_Hub": {
         "max_hit": 1,
+        "anchor": {"QCPack": "Daily_Square_ToSquare"},
         "next": [
-            "Daily_Square_Str",
-            "Daily_Square_Hub_Post",
-            "[JumpBack]Global_ToSandBox"
+            "Daily_FantasiaSquare",
+            "[JumpBack]Global_BackToQC_Gameplay_Anc",
+            "[JumpBack]Global_ToSandBox",
+            "[JumpBack]Global_WaitingForLoading"
         ]
-    },
-    "Daily_Square_Hub_Post": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
-        ],
-        "next": [
-            "Daily_Square_Str"
-        ],
-        "focus": "GOM.广场打卡组件"
-    },
-    "Daily_Square_Str": {
-        "recognition": "Or",
-        "any_of": [
-            "Global_BackToQC1"
-        ],
-        "action": "Click",
-        "post_delay": 2000,
-        "next": [
-            "Daily_Square_Menu",
-            "Daily_Square_Str"
-        ],
-        "focus": "RM.快速卡带"
-    },
-    "Daily_Square_Menu": {
-        "recognition": "OCR",
-        "roi": [
-            36,
-            527,
-            1104,
-            63
-        ],
-        "expected": [
-            "玩法游戏卡"
-        ],
-        "action": "Click",
-        "next": [
-            "Daily_Square_Menu_Cor",
-            "Daily_Square_Menu"
-        ],
-        "focus": "GO.快速卡带-菜单模式"
-    },
-    "Daily_Square_Menu_Cor": {
-        "recognition": "ColorMatch",
-        "roi": "Daily_Square_Menu",
-        "lower": [
-            202,
-            202,
-            201
-        ],
-        "upper": [
-            255,
-            255,
-            255
-        ],
-        "count": 200,
-        "next": [
-            "Daily_Square_ToSquare"
-        ],
-        "focus": "GO.菜单模式-色核通过"
     },
     "Daily_Square_ToSquare": {
         "recognition": "TemplateMatch",
@@ -849,12 +776,9 @@
             0,
             0
         ],
-        "post_delay": 4000,
-        "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Daily_FantasiaSquare",
-            "Daily_Square_ToSquare"
-        ]
+        "post_delay": 2000,
+        "timeout": 3000,
+        "next": ["Daily_Square_ToSquare"]
     },
     "Daily_FantasiaSquare": {
         "desc": "输入聊天内容（最多50字）",

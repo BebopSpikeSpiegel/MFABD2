@@ -9,8 +9,10 @@
     },
     "Equip_Skill_Tap3": {
         "desc": "第3页技能点击",
-        "recognition": "And",
-        "all_of": ["Rec_SandBox_Pin3_Tpl"],
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin3_Tpl"
+        ],
         "action": "Click",
         "post_delay": 800,
         "next": [
@@ -471,7 +473,6 @@
             "Equip_Refine_filter"
         ]
     },
-
     "Equip_Refine_filter": {
         "desc": "点击左上筛选",
         "recognition": "TemplateMatch",

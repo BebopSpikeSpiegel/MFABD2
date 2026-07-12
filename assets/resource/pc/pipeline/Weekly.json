@@ -1,0 +1,42 @@
+{
+    "Weekly_VisitCabin_TabChg": {
+        "target": [
+            116,
+            165,
+            2,
+            2
+        ]
+    },
+    "Weekly_VisitCabin_ModChg": {
+        "expected": [
+            "参观",
+            "觀看"
+        ],
+        "target": [
+            188,
+            144,
+            4,
+            4
+        ]
+    },
+    "Weekly_VisitCabin_Like1": {
+        "expected": [
+            "再次探查",
+            "重新探索"
+        ],
+        "target": [
+            1166,
+            79,
+            3,
+            3
+        ]
+    },
+    "Weekly_VisitCabin_Like1Chg": {
+        "target": [
+            814,
+            666,
+            3,
+            3
+        ]
+    }
+}

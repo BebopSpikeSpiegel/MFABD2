@@ -14,7 +14,17 @@
             "QuickCartGeadai.png"
         ]
     },
-    "Global_BackToPve2#_CardMenu": {
+    "Global_ToHomePage": {
+        "desc": "[PC覆盖·2026-07-03] 通用复位加第四分支修'餐馆场景启动任务逻辑真空':base三分支Enter(要主页)/HomeButton(要箱庭)/Reset(要左上返回箭头)在餐馆3D场景全miss→8s超时→on_error全miss→Global_Null_Exception循环(实测22次,逼近35次Panic阈值).追加BusinExit_PC(识别'格鲁菲餐厅'标题→点右上Home)兜住.next数组整替换,on_error继承base.",
+        "next": [
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage_HomeButton",
+            "Global_ToHomePage_Reset",
+            "Global_ToHomePage_Crash"
+        ]
+    },
+    "Global_BackToPve_CardMenu_Tp1": {
+        "desc": "判断在传统卡带界面",
         "roi": [
             150,
             4,
@@ -23,62 +33,38 @@
         ],
         "expected": [
             "游戏卡珍藏集",
-            "遊戲卡帶收藏"
+            "^遊戲卡.收藏集"
         ]
     },
-    "Global_BackToPve2#_PVEBookSwipe": {
-        "desc": "识别活动游戏卡-上划",
+    "Global_BackToPve_CardMenu_Tp2": {
+        "desc": "传统卡带界面已上划到顶",
         "roi": [
-            88,
-            536,
-            110,
-            44
+            98,
+            81,
+            92,
+            30
         ],
         "expected": [
-            "活动游戏卡",
-            "活動游戲卡"
+            "店长游戏卡",
+            "店長遊戲卡"
         ]
     },
-    "Global_BackToPve2#_PVEBookSwipe_Lift": {
-        "desc": "识别活动游戏卡-上划",
+    "Global_BackToPve_CardMenu_Tp3": {
+        "desc": "【传统卡带识别链-结束. 出口由锚点 'BackToPack' 决定，未设锚会停在此处】固定位置识别pack1#=传统卡带界面已左划到首部",
         "roi": [
-            95,
-            79,
-            106,
-            38
-        ],
-        "expected": [
-            "剧情游戏卡",
-            "故事游戲卡"
+            71,
+            290,
+            227,
+            165
         ]
     },
-    "Global_BackToPve2#_TouchPVEBook": {
-        "desc": "点击PVE本子2",
+    "Global_BackToPve_TouchPVE2#Pack": {
+        "desc": "【传统卡带识别链-预设出口.pve2#】",
         "roi": [
-            278,
-            112,
-            187,
-            108
-        ]
-    },
-    "Global_BackToQC1_Menu": {
-        "roi": [
-            155,
-            555,
-            174,
-            52
-        ],
-        "expected": [
-            "剧情游戏卡",
-            "故事游戲卡"
-        ]
-    },
-    "Global_BackToQC1_Menu_Cor": {
-        "roi": [
-            166,
-            566,
-            112,
-            34
+            264,
+            254,
+            377,
+            214
         ]
     },
     "Anc_SliderSwitch_YewOn_Clr": {
@@ -140,27 +126,27 @@
         "only_rec": false
     },
     "Rec_HomePage_GA_Ocr": {
-        "desc": "[识别]主页,抽卡文字。[PC覆盖]720实测'抽抽乐'文字在x87~128 y673~686;旧覆盖[75,662,67,33]顶部框进头像黄圈致OCR误读为'一'→主页判定恒false→Global_ToHomePage无限点返回乱飞。收紧到[83,668,60,26]罩字、避头像/邻字",
+        "desc": "[识别]主页,抽卡文字。[PC覆盖]MFA实测(720空间):头像黄圈底~y654,'抽抽乐'文字y659~683/x98~156;533bcf4加only_rec(仅识别提速)要求roi紧贴字,而bf4769f收紧[83,668,60,26]又裁字顶~9px→读'抽乐'→精确匹配恒false→Global_ToHomePage(inverse)误判离家点走bot→死循环。改:roi[79,660,82,30]避黄圈罩全字+expected'抽抽?乐'容裁字;并关only_rec(放宽roi与仅识别冲突会读空,回退检测模式,检测自行定位字框,仅+~12ms)",
         "roi": [
-            83,
-            668,
-            60,
-            26
+            79,
+            660,
+            82,
+            30
         ],
         "expected": [
-            "抽抽乐",
-            "抽抽樂"
-        ],
-        "only_rec": true
+            "抽抽?乐",
+            "抽抽?樂"
+        ]
     },
     "Rec_HomePage_GA_Clr": {
-        "desc": "[识别]主页,抽卡文字背后颜色.roi硬编码。[PC覆盖]同步GA_Ocr新框[83,668,60,26]",
+        "desc": "[识别]主页,抽卡文字背后颜色.roi硬编码。[PC覆盖]同步GA_Ocr新框[79,660,82,30];PC 720'抽抽乐'白字像素实测149,base count:150差1像素恒失败拖垮And→降count到100留余量。安全:And里GA_Ocr(抽抽乐)才是主闸,非主页读不到,GA_Clr松不会误判",
         "roi": [
-            83,
-            668,
-            60,
-            26
-        ]
+            79,
+            660,
+            82,
+            30
+        ],
+        "count": 100
     },
     "Rec_SandBox_Pin_Tpl": {
         "desc": "[识别]箱庭,pin按钮的UI",
@@ -237,6 +223,75 @@
         "expected": [
             "格鲁菲餐厅",
             "格魯菲餐廳"
+        ]
+    },
+    "Global_ToHomePage_Crash": {
+        "desc": "[PC新增] 餐馆场景退出:OCR'格鲁菲餐厅'标题(roi同pc Daily_Busin_Entered已校准)命中则点右上Home按钮(720实测中心(1197,39))回箱庭,后续HomeButton分支接手回主页.",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1135,
+            5,
+            133,
+            82
+        ],
+        "template": [
+            "MainHomeRIceGE.png"
+        ],
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "Global_ToHomePage_Enter",
+            "Global_ToHomePage_HomeButton",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G=1.餐馆场景,点Home退出"
+    },
+    "Global_BackToPve2#_CardMenu": {
+        "recognition": "DirectHit",
+        "roi": [
+            150,
+            4,
+            178,
+            64
+        ]
+    },
+    "Global_BackToPve2#_PVEBookSwipe": {
+        "desc": "识别活动游戏卡→下拖回滚。|[PC覆盖·2026-07-03] 珍藏集记忆上次滚动位,重进仍停深处;base竖划begin/end x=30在PC新布局落在列表外死区:19:38实录连划5轮识别box恒(103,549)页面纹丝不动→卡带复位滚动态自救失效。拖拽点移进货架区x150,方向长度沿用base(下拖=回滚向上)。roi不变(活动游戏卡标签仍命中)。",
+        "recognition": "DirectHit",
+        "roi": [
+            88,
+            536,
+            110,
+            44
+        ]
+    },
+    "Global_BackToPve2#_PVEBookSwipe_Lift": {
+        "desc": "剧情行横向复位swipe。|[PC覆盖·2026-07-03版本更新重校] 珍藏集顶部新增'店长游戏卡 1/1'区,把'剧情游戏卡'标签从y~95挤到y~272、剧情卡行挤到y315-430;旧roi[95,79,106,38]读到'店长游戏卡'恒miss。roi→[95,262,120,40];base横swipe y215在新布局是空货架,begin/end下移到剧情行y370。",
+        "recognition": "DirectHit",
+        "roi": [
+            95,
+            262,
+            120,
+            40
+        ]
+    },
+    "Global_BackToPve2#_TouchPVEBook": {
+        "desc": "点击PVE本子2(剧情PACK2卡)。|[PC覆盖·2026-07-03版本更新重校] 新布局剧情卡行y315-430,pve2.png实测命中(339,323)分0.882;旧roi[278,112,187,108]在新布局罩着店长区旁空货架(实测0.365),滚动态下别的卡漂进roi误匹配→点卡缝无效→无max_hit死循环(卡带复位永动,2026-07-03实录)。roi→[280,295,200,130]。实机验证:点击卡身(353,362)成功插卡进加载。",
+        "recognition": "DirectHit",
+        "roi": [
+            280,
+            295,
+            200,
+            130
+        ]
+    },
+    "Global_BackToQC1_Menu_Cor": {
+        "recognition": "DirectHit",
+        "roi": [
+            166,
+            566,
+            112,
+            34
         ]
     },
     "Rec_「Global_WaitingForLoading」_05": {
