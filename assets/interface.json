@@ -11,6 +11,7 @@
             "type": "Win32",
             "win32": {
                 "class_regex": "UnityWndClass",
+                "window_regex": "BrownDust II",
                 "screencap": "FramePool",
                 "mouse": "PostMessageWithWindowPos",
                 "keyboard": "PostMessageWithWindowPos"
