@@ -286,6 +286,7 @@
         ],
         "action": "Click",
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Fishing_InMap_TalkSkip_Ck"
         ],

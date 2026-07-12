@@ -6,6 +6,7 @@
             "[JumpBack]Daily_Union_Hub",
             "[JumpBack]Daily_VisitCabin_Hub",
             "[JumpBack]Daily_Busin_Hub",
+            "[JumpBack]Daily_Intimacy_HUB",
             "[JumpBack]Daily_Square_Hub",
             "Global_Hub_End"
         ]
@@ -958,5 +959,240 @@
         "next": [
             "Global_ToHomePage"
         ]
+    },
+    "Daily_Intimacy_HUB": {
+        "desc": "亲密度",
+        "max_hit": 1,
+        "next": [
+            "Daily_Intimacy_Ready",
+            "[JumpBack]Global_ToHomePage"
+        ]
+    },
+    "Daily_Intimacy_Ready": {
+        "desc": "在主菜单,准备",
+        "recognition": "Or",
+        "any_of": ["Global_ToHomePage_Enter"],
+        "timeout": 3000,
+        "next": ["Daily_Intimacy_Intnet"]
+    },
+    "Daily_Intimacy_Intnet": {
+        "recognition": "And",
+        "all_of": [
+            "Rec_Intimacy_Tpl"
+        ],
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "Daily_Intimacy_Enter",
+            "[JumpBack]Fishing_InMap_TalkSkip",
+            "[JumpBack]Global_WaitingForLoading"
+        ]
+    },
+    "Sub_Intimacy_Ctm": {
+        "desc": "[检测]主页亲密度存在红点",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {"preset": "Agt_RedDot_Preset"},
+        "roi": [
+            297,
+            174,
+            22,
+            25
+        ]
+    },
+    "Rec_Intimacy_Tpl": {
+        "desc": "[识别]亲密度 图标",
+        "recognition": "TemplateMatch",
+        "roi": [
+            251,
+            171,
+            78,
+            167
+        ],
+        "template": ["Intimacy_Intnet.png"]
+    },
+    "Daily_Intimacy_Enter": {
+        "recognition": "OCR",
+        "roi": [
+            220,
+            23,
+            91,
+            34
+        ],
+        "expected": "亲密度",
+        "next": [
+            "Daily_Intimacy_RedHeart",
+            "Daily_Intimacy_TalkClear"
+        ],
+        "focus": "亲密度主页"
+    },
+    "Daily_Intimacy_TalkClear": {
+        "recognition": "OCR",
+        "roi": [
+            638,
+            353,
+            81,
+            43
+        ],
+        "expected": "贝拉",
+        "focus": "[WRN]需要消除亲密度教程"
+    },
+    "Daily_Intimacy_RedHeart": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            101,
+            237,
+            1071,
+            309
+        ],
+        "template": "Intimacy_Redheart.png",
+        "action": "Click",
+        "target_offset": [
+            5,
+            -15,
+            0,
+            0
+        ],
+        "next": [
+            "Daily_Intimacy_CatalogCard",
+            "Daily_Intimacy_RedHeart"
+        ]
+    },
+    "Daily_Intimacy_CatalogCard": {
+        "desc": "在亲密度目录卡中",
+        "recognition": "OCR",
+        "roi": [
+            218,
+            62,
+            95,
+            27
+        ],
+        "expected": "亲密度增益",
+        "only_rec": true,
+        "next": [
+            "[JumpBack]Daily_Intimacy_Set_FirstPerson",
+            "Daily_Intimacy_Exhausted",
+            "[JumpBack]Daily_Intimacy_Up",
+            "[JumpBack]Daily_Intimacy_Turn_NextPerson"
+        ]
+    },
+    "Daily_Intimacy_Set_FirstPerson": {
+        "desc": "设定第一位人员左边",
+        "max_hit": 1,
+        "recognition": "ColorMatch",
+        "roi": [
+            124,
+            186,
+            11,
+            10
+        ],
+        "lower": [
+            0,
+            0,
+            0
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "anchor": "SetBox"
+    },
+    "Daily_Intimacy_Up": {
+        "desc": "可以谈心的对象 开始谈心",
+        "recognition": "OCR",
+        "roi": [
+            971,
+            632,
+            55,
+            34
+        ],
+        "expected": "(\\d+)\\s*[/:：|\\-~]\\s*\\1(?!\\d)",
+        "action": "Click",
+        "target_offset": [
+            -10,
+            0,
+            0,
+            0
+        ],
+        "post_delay": 1000,
+        "next": [
+            "Daily_Intimacy_Up_MSG",
+            "Daily_Intimacy_Up"
+        ]
+    },
+    "Daily_Intimacy_Up_MSG": {
+        "recognition": "OCR",
+        "roi": [
+            662,
+            405,
+            118,
+            118
+        ],
+        "expected": "确认",
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Daily_Intimacy_Talk_Enter",
+            "Daily_Intimacy_Up_MSG"
+        ]
+    },
+    "Daily_Intimacy_Talk_Enter": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            823,
+            2,
+            394,
+            86
+        ],
+        "template": ["Talk_Status.png"],
+        "next": [
+            "Daily_Intimacy_Talk_Out",
+            "[JumpBack]Fishing_InMap_TalkSkip",
+            "[JumpBack]Daily_Intimacy_TalkBox"
+        ]
+    },
+    "Daily_Intimacy_TalkBox": {
+        "recognition": "OCR",
+        "roi": [
+            380,
+            194,
+            522,
+            321
+        ],
+        "expected": ["^.{2,}$"],
+        "action": "Click",
+        "post_delay": 1500
+    },
+    "Daily_Intimacy_Talk_Out": {
+        "recognition": "Or",
+        "any_of": ["Daily_Intimacy_CatalogCard"],
+        "focus": "一轮谈心结束"
+    },
+    "Daily_Intimacy_Turn_NextPerson": {
+        "desc": "下一位谈心对象",
+        "max_hit": 5,
+        "action": "Click",
+        "target": "[Anchor]SetBox",
+        "target_offset": [
+            0,
+            86,
+            0,
+            0
+        ],
+        "anchor": "SetBox",
+        "post_delay": 3000
+    },
+    "Daily_Intimacy_Exhausted": {
+        "recognition": "OCR",
+        "roi": [
+            1029,
+            30,
+            24,
+            28
+        ],
+        "expected": "0",
+        "next": ["Global_ToHomePage"],
+        "focus": "谈心次数已耗尽"
     }
 }
