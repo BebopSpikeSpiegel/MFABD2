@@ -196,5 +196,160 @@
             1,
             1
         ]
+    },
+    "Activities_Slip_D2": {
+        "desc": "下滑计数2/3。|[PC新增·2026-07-10] 滑后无红点无底标才会走到这里;找到红点由FindActive领取并经Index复位回Slip(D1)重新计数。",
+        "recognition": "And",
+        "all_of": [
+            "Activities_Index"
+        ],
+        "action": "Swipe",
+        "begin": [
+            260,
+            400,
+            1,
+            1
+        ],
+        "end": [
+            260,
+            133,
+            1,
+            1
+        ],
+        "end_hold": 1000,
+        "duration": 1000,
+        "next": [
+            "Activities_FindActive",
+            "Activities_GetAllRe",
+            "Activities_Slip_D3"
+        ],
+        "on_error": [
+            "Activities_Fin"
+        ],
+        "focus": "GA.滑动寻找活动-下2"
+    },
+    "Activities_Slip_D3": {
+        "desc": "下滑计数3/3。|[PC新增·2026-07-10] 连续三次下滑无红点→调头进上滑链。",
+        "recognition": "And",
+        "all_of": [
+            "Activities_Index"
+        ],
+        "action": "Swipe",
+        "begin": [
+            260,
+            400,
+            1,
+            1
+        ],
+        "end": [
+            260,
+            133,
+            1,
+            1
+        ],
+        "end_hold": 1000,
+        "duration": 1000,
+        "next": [
+            "Activities_FindActive",
+            "Activities_GetAllRe",
+            "Activities_Slip_U1"
+        ],
+        "on_error": [
+            "Activities_Fin"
+        ],
+        "focus": "GA.滑动寻找活动-下3"
+    },
+    "Activities_Slip_U1": {
+        "desc": "上滑计数1/3。|[PC新增·2026-07-10] 入口两个:下滑三连无果调头,或列表见底(NoFindAndInEnd)提前折返,回扫上方漏领红点。|[2026-07-11帧校准]U滑起点原(260,133)在列表容器上方背景处,拖拽抓不住列表致上滑空转;实测列表y≈168-545,起终点收进容器内(200→467,行程267px与下滑对称)。",
+        "recognition": "And",
+        "all_of": [
+            "Activities_Index"
+        ],
+        "action": "Swipe",
+        "begin": [
+            260,
+            200,
+            1,
+            1
+        ],
+        "end": [
+            260,
+            467,
+            1,
+            1
+        ],
+        "end_hold": 1000,
+        "duration": 1000,
+        "next": [
+            "Activities_FindActive",
+            "Activities_GetAllRe",
+            "Activities_Slip_U2"
+        ],
+        "on_error": [
+            "Activities_Fin"
+        ],
+        "focus": "GA.滑动寻找活动-上1"
+    },
+    "Activities_Slip_U2": {
+        "desc": "上滑计数2/3。|[PC新增·2026-07-10]|[2026-07-11帧校准]U滑起点原(260,133)在列表容器上方背景处,拖拽抓不住列表致上滑空转;实测列表y≈168-545,起终点收进容器内(200→467,行程267px与下滑对称)。",
+        "recognition": "And",
+        "all_of": [
+            "Activities_Index"
+        ],
+        "action": "Swipe",
+        "begin": [
+            260,
+            200,
+            1,
+            1
+        ],
+        "end": [
+            260,
+            467,
+            1,
+            1
+        ],
+        "end_hold": 1000,
+        "duration": 1000,
+        "next": [
+            "Activities_FindActive",
+            "Activities_GetAllRe",
+            "Activities_Slip_U3"
+        ],
+        "on_error": [
+            "Activities_Fin"
+        ],
+        "focus": "GA.滑动寻找活动-上2"
+    },
+    "Activities_Slip_U3": {
+        "desc": "上滑计数3/3。|[PC新增·2026-07-10] 连续上滑三次无红点=遍历完成,next耗尽走on_error→Fin收尾。timeout收短免空等。|[2026-07-11帧校准]U滑起点原(260,133)在列表容器上方背景处,拖拽抓不住列表致上滑空转;实测列表y≈168-545,起终点收进容器内(200→467,行程267px与下滑对称)。",
+        "recognition": "And",
+        "all_of": [
+            "Activities_Index"
+        ],
+        "action": "Swipe",
+        "begin": [
+            260,
+            200,
+            1,
+            1
+        ],
+        "end": [
+            260,
+            467,
+            1,
+            1
+        ],
+        "end_hold": 1000,
+        "duration": 1000,
+        "timeout": 6000,
+        "next": [
+            "Activities_FindActive",
+            "Activities_GetAllRe"
+        ],
+        "on_error": [
+            "Activities_Fin"
+        ],
+        "focus": "GA.滑动寻找活动-上3(收尾)"
     }
 }
