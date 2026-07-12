@@ -84,15 +84,10 @@
     },
     "Collect_Sandplay": {
         "desc": "拉起成功,进入箱庭",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "Click",
         "target": [
@@ -153,16 +148,8 @@
     },
     "Collect_QuickCart_Menu": {
         "desc": "快速卡带已调出,等待后续",
-        "recognition": "OCR",
-        "roi": [
-            32,
-            506,
-            306,
-            125
-        ],
-        "expected": [
-            "最近"
-        ],
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset_Ocr"],
         "next": [
             "[JumpBack]Collect_FeatureSwitch_StoryPack",
             "[JumpBack]Collect_FeatureSwitch_CharacterPack",
@@ -358,6 +345,25 @@
         ],
         "focus": "CM.L.店长游戏卡带集"
     },
+    "Collect_QuickCart_SelectType_GameplayPack": {
+        "recognition": "OCR",
+        "roi": [
+            36,
+            527,
+            1104,
+            63
+        ],
+        "expected": [
+            "玩法游戏卡"
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "Collect_QuickCart_GameplayPack_OcrCheck",
+            "Collect_QuickCart_SelectType_GameplayPack"
+        ],
+        "focus": "CM.L.玩法游戏卡带集"
+    },
     "Collect_QuickCart_StoryPack_OcrCheck": {
         "desc": "当前节点链层数标记：2。初次调取卡带菜单完毕，开始初次点击卡带.先复位再to1,to1没判定的!不可直接IsPresent,防止用户行为干扰",
         "recognition": "ColorMatch",
@@ -467,6 +473,33 @@
         ],
         "focus": "CM.L.店长-卡带调取完毕"
     },
+    "Collect_QuickCart_GameplayPack_OcrCheck": {
+        "recognition": "ColorMatch",
+        "roi": "Collect_QuickCart_SelectType_GameplayPack",
+        "lower": [
+            167,
+            167,
+            165
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 500,
+        "action": "Custom",
+        "custom_action": "RestoreNode",
+        "custom_action_param": {
+            "node": "Collect_LocatePackFrame_Smart_Swip"
+        },
+        "anchor": {
+            "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
+        },
+        "next": [
+            "Collect_FirstBootPack"
+        ],
+        "focus": "CM.L.玩法-卡带调取完毕"
+    },
     "Collect_FirstBootPack": {
         "next": [
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
@@ -522,16 +555,8 @@
         ]
     },
     "Collect_PackProbe_IsPresent": {
-        "recognition": "OCR",
-        "roi": [
-            32,
-            506,
-            306,
-            125
-        ],
-        "expected": [
-            "最近"
-        ],
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset_Ocr"],
         "timeout": 2000,
         "next": [
             "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
@@ -1172,15 +1197,10 @@
     },
     "Collect_Loc_OutToSwip_Hub_Enter_Pin": {
         "desc": "[通用复位]复位到主界面模块,结束,中继调用",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "next": [
             "Collect_Loc_OutToSwip_Hub_Enter_QuickCart_Menu",
@@ -1189,16 +1209,8 @@
     },
     "Collect_Loc_OutToSwip_Hub_Enter_QuickCart_Menu": {
         "desc": "快速卡带已调出,等待后续",
-        "recognition": "OCR",
-        "roi": [
-            32,
-            506,
-            306,
-            125
-        ],
-        "expected": [
-            "最近"
-        ],
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset_Ocr"],
         "next": [
             "Collect_Loc_OutToSwip_Hub_Egress"
         ],

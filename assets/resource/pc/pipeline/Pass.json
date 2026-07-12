@@ -91,13 +91,6 @@
             "全部獲得"
         ]
     },
-    "Pass_GetAllBack": {
-        "desc": "领取后'点击画面即可返回'提示。|[PC覆盖] 720实测提示在box(577,648,115,20)中心(635,658),base roi[556,628,148,36]下沿偏上→[560,640,150,38]确保罩住。",
-        "recognition": "And",
-        "all_of": [
-            "Rec_Reward_Ocr"
-        ]
-    },
     "Pass_Back": {
         "desc": "刷完返回主页(OCR确认'通行证'后点返回箭头)。|[PC覆盖] roi同标题[150,12,115,45];base无target=点标题文字未必返回,PC实测点左上返回箭头(15,20)(native(22,30))可靠返回→加target。",
         "recognition": "And",
@@ -109,10 +102,6 @@
             20,
             1,
             1
-        ],
-        "next": [
-            "Global_ToHomePage",
-            "Global_ToHomePage_Enter"
         ]
     }
 }

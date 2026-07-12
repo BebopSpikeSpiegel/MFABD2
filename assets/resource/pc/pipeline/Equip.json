@@ -1,80 +1,81 @@
 {
     "Equip_Skill3_5_Nothing": {
+        "desc": "PVE点击技能2（栏位4。栏位5留空，摸鱼）",
         "roi": [
             1164,
             496,
             69,
             60
-        ],
-        "desc": "PVE点击技能2（栏位4。栏位5留空，摸鱼）"
+        ]
     },
     "Equip_Skill3_5": {
-        "green_mask": true,
+        "desc": "PVE点击技能4",
         "roi": [
             1164,
             496,
             69,
             60
         ],
+        "green_mask": true,
         "target": [
             1193,
             521,
             5,
             5
-        ],
-        "desc": "PVE点击技能4"
+        ]
     },
     "Equip_EquipMakeGui": {
-        "expected": [
-            "立刻前往装备",
-            "立即前往装備"
-        ],
+        "desc": "确认制作装备界面",
         "roi": [
             1054,
             652,
             129,
             38
         ],
+        "expected": [
+            "立刻前往装备",
+            "立即前往装備"
+        ],
         "target": [
             836,
             22,
             21,
             21
-        ],
-        "desc": "确认制作装备界面"
+        ]
     },
     "Equip_EquipSelect": {
+        "desc": "点击筛选武器",
         "roi": [
             473,
             414,
             355,
             120
-        ],
-        "desc": "点击筛选武器"
+        ]
     },
     "Equip_EquipMake": {
-        "expected": [
-            "制作",
-            "製作"
-        ],
+        "desc": "制作装备界面，点击制作",
         "roi": [
             894,
             636,
             150,
             71
         ],
-        "desc": "制作装备界面，点击制作"
+        "expected": [
+            "制作",
+            "製作"
+        ]
     },
     "Equip_EquipMakeClose": {
+        "desc": "制作完成，点击X",
         "roi": [
             934,
             201,
             26,
             28
-        ],
-        "desc": "制作完成，点击X"
+        ]
     },
     "Equip_EquipMakeBack": {
+        "desc": "制作装备界面，左上返回",
         "recognition": "And",
         "all_of": [
             "Equip_EquipMake"
@@ -84,30 +85,30 @@
             21,
             14,
             16
-        ],
-        "desc": "制作装备界面，左上返回"
+        ]
     },
     "Equip_ToEquipGui": {
+        "desc": "前往装备界面",
         "recognition": "And",
         "all_of": [
             "Equip_EquipMakeGui"
-        ],
-        "desc": "前往装备界面"
+        ]
     },
     "Equip_EquipGui": {
-        "expected": [
-            "键强化",
-            "鍵強化"
-        ],
+        "desc": "寻找一键强化并点击",
         "roi": [
             955,
             656,
             79,
             27
         ],
-        "desc": "寻找一键强化并点击"
+        "expected": [
+            "键强化",
+            "鍵強化"
+        ]
     },
     "Equip_EquipUp": {
+        "desc": "寻找一键强化...",
         "roi": [
             1061,
             653,
@@ -116,10 +117,15 @@
         ],
         "template": [
             "Equip_more.png"
-        ],
-        "desc": "寻找一键强化..."
+        ]
     },
     "Equip_EquipUp_CK": {
+        "roi": [
+            741,
+            351,
+            64,
+            57
+        ],
         "expected": [
             "级别",
             "等级"
@@ -129,15 +135,10 @@
                 "級",
                 "级"
             ]
-        ],
-        "roi": [
-            741,
-            351,
-            64,
-            57
         ]
     },
     "Equip_EquipUpSelectN": {
+        "desc": "点击N",
         "roi": [
             856,
             352,
@@ -146,26 +147,25 @@
         ],
         "template": [
             "Equip_N.png"
-        ],
-        "desc": "点击N"
+        ]
     },
     "Equip_EquipUpSelectN_Confirm": {
+        "desc": "色核N",
         "roi": [
             856,
             352,
             106,
             57
-        ],
-        "desc": "色核N"
+        ]
     },
     "Equip_EquipUpSelect": {
+        "desc": "点击对号",
         "roi": [
             1175,
             661,
             23,
             18
-        ],
-        "desc": "点击对号"
+        ]
     },
     "Equip_EquipUp_EnterLV": {
         "roi": [
@@ -200,18 +200,18 @@
         ]
     },
     "Equip_Processing": {
-        "expected": [
-            "进行中",
-            "進行中",
-            "\\d+/\\d+"
-        ],
+        "desc": "等待作业装备 */* .匹配数字的*/*",
         "roi": [
             564,
             298,
             147,
             169
         ],
-        "desc": "等待作业装备 */* .匹配数字的*/*"
+        "expected": [
+            "进行中",
+            "進行中",
+            "\\d+/\\d+"
+        ]
     },
     "Equip_EquipUpSelect_Err": {
         "expected": [
@@ -220,38 +220,39 @@
         ]
     },
     "Equip_EquipUp_Action": {
+        "desc": "确认强化",
         "roi": [
             653,
             490,
             96,
             128
-        ],
-        "desc": "确认强化"
+        ]
     },
     "Equip_EquipUpResult": {
-        "expected": [
-            "确认",
-            "確認"
-        ],
+        "desc": "强化结果收取|然后(如果有,返回装备满溢锚点) or 去精炼",
         "roi": [
             575,
             491,
             133,
             88
         ],
-        "desc": "强化结果收取|然后(如果有,返回装备满溢锚点) or 去精炼"
+        "expected": [
+            "确认",
+            "確認"
+        ]
     },
     "Equip_Refine_filter": {
-        "green_mask": true,
+        "desc": "点击左上筛选",
         "roi": [
             1125,
             51,
             33,
             32
         ],
-        "desc": "点击左上筛选"
+        "green_mask": true
     },
     "Equip_filter_SubMenu": {
+        "desc": "筛选,二级菜单,已确认",
         "expected": [
             "装备筛选",
             "裝備筛選"
@@ -261,16 +262,16 @@
                 "篩",
                 "筛"
             ]
-        ],
-        "desc": "筛选,二级菜单,已确认"
+        ]
     },
     "Equip_filterSR": {
+        "desc": "点击筛选SR",
         "threshold": [
             0.7
-        ],
-        "desc": "点击筛选SR"
+        ]
     },
     "Equip_filterUR": {
+        "desc": "点击筛选UR",
         "roi": [
             559,
             388,
@@ -279,8 +280,7 @@
         ],
         "threshold": [
             0.7
-        ],
-        "desc": "点击筛选UR"
+        ]
     },
     "Equip_SRColorCk": {
         "roi": [
@@ -347,17 +347,17 @@
         ]
     },
     "Equip_filterON": {
-        "expected": [
-            "确认",
-            "確認"
-        ],
+        "desc": "应用筛选,点击确认",
         "roi": [
             872,
             523,
             95,
             36
         ],
-        "desc": "应用筛选,点击确认"
+        "expected": [
+            "确认",
+            "確認"
+        ]
     },
     "Equip_Sequen_Menu": {
         "roi": [
@@ -392,6 +392,12 @@
         ]
     },
     "Equip_Sequen_MenuFind": {
+        "roi": [
+            904,
+            174,
+            294,
+            117
+        ],
         "expected": [
             "自定义标记",
             "自訂標記",
@@ -402,12 +408,6 @@
                 "訂",
                 "订"
             ]
-        ],
-        "roi": [
-            904,
-            174,
-            294,
-            117
         ]
     },
     "Equip_Sequen_CKAndExt": {
@@ -419,76 +419,76 @@
         ]
     },
     "Equip_FindRefining": {
+        "desc": "点击第一个装备",
         "target": [
             513,
             131,
             10,
             10
-        ],
-        "desc": "点击第一个装备"
+        ]
     },
     "Equip_Refining_Menu=24": {
+        "desc": "识别精炼二级菜单的等级.经过测试Roi的x轴已错开,不会匹配到一级装备平铺列表等级",
         "roi": [
             920,
             419,
             24,
             18
-        ],
-        "desc": "识别精炼二级菜单的等级.经过测试Roi的x轴已错开,不会匹配到一级装备平铺列表等级"
+        ]
     },
     "Equip_filter_SubMenu_Mamono": {
+        "desc": "防止魔兽装备捣乱",
         "roi": [
             443,
             313,
             55,
             32
-        ],
-        "desc": "防止魔兽装备捣乱"
+        ]
     },
     "Rec_<Equip_Overdrive_RefLvMax_Second_Clr>_Clr_01": {
+        "desc": "装备筛选sub,分类:'专用'",
         "roi": [
             341,
             312,
             54,
             32
-        ],
-        "desc": "装备筛选sub,分类:'专用'"
+        ]
     },
     "Rec_<Equip_Overdrive_RefLvMax_Second_Clr>_Clr_02": {
+        "desc": "装备筛选sub,分类:'制作'",
         "roi": [
             544,
             315,
             66,
             27
-        ],
-        "desc": "装备筛选sub,分类:'制作'"
+        ]
     },
     "Equip_Overdrive_RefLvMax_OCR": {
-        "expected": [
-            "专\\S*",
-            "\\S*用",
-            "制作",
-            "製作"
-        ],
         "roi": [
             324,
             309,
             293,
             38
+        ],
+        "expected": [
+            "专\\S*",
+            "\\S*用",
+            "制作",
+            "製作"
         ]
     },
     "Equip_Refining": {
-        "expected": [
-            "精炼",
-            "煉製"
-        ],
+        "desc": "点击精炼",
         "roi": [
             880,
             477,
             58,
             27
         ],
-        "desc": "点击精炼"
+        "expected": [
+            "精炼",
+            "煉製"
+        ]
     },
     "Equip_Overdrive_RefLvMax": {
         "expected": [
@@ -497,55 +497,55 @@
         ]
     },
     "Equip_TouchRefining": {
-        "expected": [
-            "精炼",
-            "煉製"
-        ],
+        "desc": "精炼界面，点击精炼2",
         "roi": [
             997,
             654,
             138,
             38
         ],
-        "desc": "精炼界面，点击精炼2"
+        "expected": [
+            "精炼",
+            "煉製"
+        ]
     },
     "Rec_<Equip_Backpack_Full>_Ocr_01": {
+        "desc": "箱庭右上显示背包满",
         "roi": [
             1112,
             11,
             33,
             16
-        ],
-        "desc": "箱庭右上显示背包满"
+        ]
     },
     "Rec_<Equip_Backpack_Full>_Ocr_02": {
+        "desc": "主页左下显示背包满",
         "roi": [
             226,
             621,
             41,
             22
-        ],
-        "desc": "主页左下显示背包满"
+        ]
     },
     "Equip_Backpack_Full_Enter": {
-        "green_mask": true,
         "roi": [
             75,
             60,
             85,
             296
-        ]
+        ],
+        "green_mask": true
     },
     "Equip_Backpack_Equip_Enter": {
-        "expected": [
-            "装备",
-            "裝備"
-        ],
         "roi": [
             186,
             15,
             51,
             36
+        ],
+        "expected": [
+            "装备",
+            "裝備"
         ]
     }
 }
