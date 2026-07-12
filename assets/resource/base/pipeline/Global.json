@@ -101,6 +101,7 @@
         "next": [
             "Global_ToHomePage_Enter",
             "Global_ToHomePage_HomeButton",
+            "[JumpBack]StartGame_7dAD_Check",
             "Global_ToHomePage_Reset"
         ],
         "on_error": [
