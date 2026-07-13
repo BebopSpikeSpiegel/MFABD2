@@ -220,8 +220,8 @@
         ],
         "post_delay": 1000,
         "next": [
-            "PVP_AutoBattle_SucCK",
             "PVP_SeasonSettling",
+            "PVP_AutoBattle_SucCK",
             "PVP_AutoBattle"
         ],
         "focus": "PM.PVP.自动战斗-点击(关键节点)"
@@ -253,18 +253,21 @@
         "desc": "镜中之战赛季结算期间,自动战斗菜单被'可在赛季结算完成后确认'弹窗替代,PVP无法进行(奖励顺延至结算),优雅退出避免死循环",
         "recognition": "OCR",
         "roi": [
-            327,
-            165,
-            417,
-            156
+            113,
+            9,
+            856,
+            503
         ],
         "expected": [
             "结算完成后确认",
             "结算完成后",
-            "赛季结算"
+            "赛季结算",
+            "结算中",
+            "当前并非赛季"
         ],
         "next": [
-            "Global_BackToQC1"
+            "Global_BackToQC1",
+            "[JumpBack]Global_ToSandBox"
         ],
         "focus": "PB.[WRN]镜中之战赛季结算中,跳过PVP"
     },
@@ -400,6 +403,7 @@
         ],
         "count": 500,
         "next": [
+            "PVP_SeasonSettling",
             "PVP_AutoBattleStart"
         ],
         "focus": "PM.MAX确认"
