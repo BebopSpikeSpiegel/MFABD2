@@ -387,7 +387,7 @@
         ]
     },
     "Daily_FantasiaSquare": {
-        "desc": "确认已进入梦幻广场(TemplateMatch Mirror_FantasiaSquare_Ico)。|[PC覆盖·2026-06-30修] ①上一版roi[560,860,780,120]误用1080坐标→y860掉出720帧外→确认恒失败、整条许愿不跑。改roi[640,628,120,72]罩住地面mirror图标(MFA实帧稳定命中box[665,646])。②MFA实帧维护者PC模板仅0.647<默认0.7阈值→闸门仍关,而真位置峰值0.647、异位置仅0.47→降threshold到0.55(高于误匹配地板、低于真峰,选择性安全),不动维护者模板。FantasiaSquare是总闸,过后才接DailyIco(点'移动至女神像'日常自动寻路)→Daily_Pray许愿。",
+        "desc": "确认已进入梦幻广场(TemplateMatch Mirror_FantasiaSquare_Ico)。|[PC覆盖·2026-06-30修] ①上一版roi[560,860,780,120]误用1080坐标→y860掉出720帧外→确认恒失败、整条许愿不跑。改roi[640,628,120,72]罩住地面mirror图标(MFA实帧稳定命中box[665,646])。②MFA实帧维护者PC模板仅0.647<默认0.7阈值→闸门仍关,而真位置峰值0.647、异位置仅0.47→降threshold到0.55(高于误匹配地板、低于真峰,选择性安全),不动维护者模板。FantasiaSquare是总闸,过后才接DailyIco(点'移动至女神像'日常自动寻路)→Daily_Pray许愿。|[2026-07-13追加] 广场日夜/状态变化下镜面按钮渲染漂移,维护者模板MFA帧实测0.647(6月)→0.510(今晚)<0.55闸死→ToSquare反复重进死循环。从今晚MFA on_error帧重裁PC2版(40x40),其余广场MFA帧1.000x3、负样本≤0.26,追加进template(Or语义)。",
         "roi": [
             640,
             628,
@@ -396,10 +396,14 @@
         ],
         "threshold": [
             0.55
+        ],
+        "template": [
+            "Mirror_FantasiaSquare_Ico.png",
+            "Mirror_FantasiaSquare_Ico_PC2.png"
         ]
     },
     "Daily_DailyIco_1": {
-        "desc": "梦幻广场每日奖励绿勾图标(TemplateMatch Square_DailyIco)。|[PC覆盖] PC实测'每日奖励'绿勾在右上任务列表,720绿勾约[1025,128,30,30](native(1555,205));base roi[968,76,56,256]按安卓→[1015,120,60,45]。模板Square_DailyIco已按720重裁(20x20绿圆白勾,待MFA验)。target_offset继承base[3,0]。",
+        "desc": "梦幻广场每日奖励绿勾(TemplateMatch Square_DailyIco)。|[PC覆盖·2026-07-13实机重裁] 旧20x20重裁版(标'待MFA验')实测0.31~0.55恒miss→寻路触发器哑火,人不在女神像旁时祈愿死循环(07-13 00:27实录,用户手点介入)。从实机720帧重裁16x16(圆外r>7.5绿蒙版,列表底为草地绿故必须蒙版),实测命中1.000唯一、任务完成态帧0.622/营地帧0.335不误报。roi[1015,120,60,45]经实机帧核验正确(绿勾中心720(1041,144))。target_offset继承base[3,0]。",
         "roi": [
             1015,
             120,
