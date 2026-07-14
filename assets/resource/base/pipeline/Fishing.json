@@ -274,6 +274,7 @@
         ]
     },
     "Fishing_InMap_TalkSkip": {
+        "desc": "点击对话快进",
         "recognition": "TemplateMatch",
         "roi": [
             1005,

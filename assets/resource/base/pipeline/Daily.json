@@ -1053,6 +1053,7 @@
             0,
             0
         ],
+        "post_delay": 3000,
         "next": [
             "Daily_Intimacy_CatalogCard",
             "Daily_Intimacy_RedHeart"
@@ -1096,18 +1097,21 @@
             255,
             255
         ],
-        "anchor": "SetBox"
+        "action": "Click",
+        "anchor": "SetBox",
+        "post_delay": 1000
     },
     "Daily_Intimacy_Up": {
         "desc": "可以谈心的对象 开始谈心",
         "recognition": "OCR",
         "roi": [
-            971,
-            632,
-            55,
-            34
+            986,
+            637,
+            31,
+            24
         ],
         "expected": "(\\d+)\\s*[/:：|\\-~]\\s*\\1(?!\\d)",
+        "only_rec": true,
         "action": "Click",
         "target_offset": [
             -10,
@@ -1148,9 +1152,25 @@
         "template": ["Talk_Status.png"],
         "next": [
             "Daily_Intimacy_Talk_Out",
-            "[JumpBack]Fishing_InMap_TalkSkip",
+            "[JumpBack]Daily_Intimacy_TalkSkip",
+            "[JumpBack]Daily_Intimacy_TalkSkip_Ck",
             "[JumpBack]Daily_Intimacy_TalkBox"
         ]
+    },
+    "Daily_Intimacy_TalkSkip": {
+        "desc": "点击对话快进",
+        "recognition": "Or",
+        "any_of": ["Fishing_InMap_TalkSkip"],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 10000
+    },
+    "Daily_Intimacy_TalkSkip_Ck": {
+        "desc": "对话快进可能出现的确认框",
+        "recognition": "Or",
+        "any_of": ["Fishing_InMap_TalkSkip_Ck"],
+        "action": "Click",
+        "post_delay": 2000
     },
     "Daily_Intimacy_TalkBox": {
         "recognition": "OCR",
@@ -1171,15 +1191,27 @@
     },
     "Daily_Intimacy_Turn_NextPerson": {
         "desc": "下一位谈心对象",
-        "max_hit": 5,
-        "action": "Click",
-        "target": "[Anchor]SetBox",
-        "target_offset": [
+        "max_hit": 6,
+        "recognition": "ColorMatch",
+        "roi": "[Anchor]SetBox",
+        "roi_offset": [
             0,
             86,
             0,
             0
         ],
+        "lower": [
+            0,
+            0,
+            0
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "action": "Click",
+        "target": "[Anchor]SetBox",
         "anchor": "SetBox",
         "post_delay": 3000
     },
