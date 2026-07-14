@@ -110,6 +110,7 @@
             "[JumpBack]PVP_PerOperationsMain_Error",
             "[JumpBack]Global_ERR_AtFish",
             "[JumpBack]Dummy_Err_GetProductsFail",
+            "[JumpBack]Global_ToHomePage_Crash",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ]
@@ -150,6 +151,22 @@
             "[JumpBack]Global_BackPageHub_Once"
         ],
         "focus": "G=1.页面非预期，点击返回按钮"
+    },
+    "Global_ToHomePage_Crash": {
+        "desc": "返回菜单兜底策略,直接点主页图标",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1135,
+            5,
+            133,
+            82
+        ],
+        "template": [
+            "MainHomeRIceGE.png"
+        ],
+        "action": "Click",
+        "post_delay": 3000,
+        "focus": "G=1.点Home退出"
     },
     "Global_ToHomePage_Enter": {
         "desc": "[通用复位]复位到主界面模块,结束,中继调用",
