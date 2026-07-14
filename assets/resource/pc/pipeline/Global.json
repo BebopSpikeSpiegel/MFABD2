@@ -19,8 +19,7 @@
         "next": [
             "Global_ToHomePage_Enter",
             "Global_ToHomePage_HomeButton",
-            "Global_ToHomePage_Reset",
-            "Global_ToHomePage_Crash"
+            "Global_ToHomePage_Reset"
         ]
     },
     "Global_BackToPve_CardMenu_Tp1": {
