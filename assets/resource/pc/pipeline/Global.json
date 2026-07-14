@@ -1,11 +1,12 @@
 {
     "Global_BackPageHub_Once": {
-        "desc": "其他页面,返回按钮(一次性)。|[PC覆盖] 【2026-07-03实机】PC抽卡商店页(服装抽抽乐)左上返回箭头为暗色胶囊条细线'<'样式,base三张安卓模板实跑分仅0.14~0.25<阈0.7全miss→一键速抽后Global_ToHomePage回主页8s超时Exception,AREA2#装备池永远轮不到(装备免费抽漏抽根因)。从PC 720实帧裁BackBut_DarkCapsule_PC.png(36x32,自匹配0.0)追加进列表(Or语义,不影响其他页);base三张保留兼容其余页面。green_mask沿用(新模板无绿区不受影响)。",
+        "desc": "其他页面,返回按钮(一次性)。|[PC覆盖] 【2026-07-03实机】PC抽卡商店页(服装抽抽乐)左上返回箭头为暗色胶囊条细线'<'样式,base三张安卓模板实跑分仅0.14~0.25<阈0.7全miss→一键速抽后Global_ToHomePage回主页8s超时Exception,AREA2#装备池永远轮不到(装备免费抽漏抽根因)。从PC 720实帧裁BackBut_DarkCapsule_PC.png(36x32,自匹配0.0)追加进列表(Or语义,不影响其他页);base三张保留兼容其余页面。green_mask沿用(新模板无绿区不受影响)。|【2026-07-14实录】复发变体:PC点击后鼠标光标停驻在按钮正中,Win32截图带光标→模板区被光标箭头污染,干净模板0.98骤降0.654~0.686<0.7连miss(08:56:52~08:57:00逐秒实测)→回家链再死→装备池再漏。从当日on_error帧(08.57.00.307)裁同框'按钮+停驻光标'态BackBut_DarkCapsule_PC2.png(36x32,污染帧自匹配1.0)再追加;光标由点击落点决定,位置确定性强。",
         "template": [
             "BackButGe.png",
             "BackButGe2.png",
             "UI_qsback.png",
-            "BackBut_DarkCapsule_PC.png"
+            "BackBut_DarkCapsule_PC.png",
+            "BackBut_DarkCapsule_PC2.png"
         ]
     },
     "Global_QuickCart_MenuReset": {
