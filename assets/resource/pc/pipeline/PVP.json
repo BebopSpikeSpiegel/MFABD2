@@ -22,6 +22,22 @@
             0.7
         ]
     },
+    "PVP_Sandplay_Again": {
+        "desc": "第二次已确认,1/除消除弹窗,2/还要进入舞台,3/复位异常位置",
+        "next": [
+            "PVP_Results",
+            "PVP_AutoBattle",
+            "[JumpBack]PVP_PerPetTask",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]PVP_Errmsg1#_Clear",
+            "[JumpBack]PVP_Errmsg2#_Clear",
+            "[JumpBack]PVP_PerOperationsMain_Error",
+            "[JumpBack]PVP_InsandboxAndlocAbnormal",
+            "[JumpBack]PVP_PVPStart",
+            "[JumpBack]PVP_Sandplay_NoFindSrena"
+        ]
+    },
     "PVP_Results": {
         "desc": "pvp赛季正在结算中(按印象,缺乏实测)",
         "roi": [
@@ -35,32 +51,15 @@
             "結算"
         ]
     },
+    "PVP_InsandboxAndlocAbnormal": {
+        "desc": "位置异常复位(点红⚔位置标记回擂台)。|[PC覆盖·2026-07-13实录·禁用] PC上角色站在擂台旁时该⚔标记同样可见(pvplocreset实测0.84~0.94两轮开局均误命中)→每轮误判'位置异常',点击+offset(0,100)落在围观NPC上(等同进阵型设置)→自己把位置破坏→NoFindSrena游走不收敛(21:38/21:48两轮实录)。正常站位下PVPStart擂台识别0.991直接可用,此防错节点PC上弊大于利,禁用;真异常兜底仍有NoFindSrena。",
+        "enabled": false
+    },
     "PVP_PVPMes": {
         "desc": "防守分结算，点击确认",
         "expected": [
             "确认",
             "確認"
-        ]
-    },
-    "PVP_Errmsg1#_Clear": {
-        "desc": "误进阵形/角色设置界面的逃生门(认左上标题,点返回箭头)。|[PC覆盖·2026-07-13实录] 误点观众小人会进'防御阵形'界面,该界面内竞技场全链识别死锁,唯一出口=左上返回(用户实证)。base认安卓文案'战场角色设置'roi[134,143]与PC不符;PC实测标题'防御阵形/攻击阵形'在720(87-170,30-47),返回箭头(77,38)。expected兼容新旧文案,target改点箭头实位(base[1,1]角点在PC点不到按钮)。",
-        "roi": [
-            70,
-            20,
-            170,
-            40
-        ],
-        "expected": [
-            "防御阵形",
-            "攻击阵形",
-            "阵形设置",
-            "战场角色设置"
-        ],
-        "target": [
-            70,
-            30,
-            16,
-            16
         ]
     },
     "PVP_PVPStart": {
@@ -77,6 +76,31 @@
             -30,
             0,
             0
+        ]
+    },
+    "PVP_PerPetTask": {
+        "desc": "宠物派遣防错(PVP箱庭内)。|[PC覆盖·2026-07-13实录·禁用] 镜中之战箱庭内NPC对话'!'泡与派遣泡同款米色样式,PC重裁泡模板0.971误命中NPC泡→点击把角色带离擂台区→PVPstage识别掉到0.5x→NoFindSrena(阈0.6)地标游走2分半不收敛(21:30实录)。PC派遣由StartGame侧在剧情箱庭领取(当日实证已领),此防错节点在PC弊大于利,禁用。",
+        "enabled": false
+    },
+    "PVP_AutoBattle": {
+        "desc": "预备屏点'自动战斗'(齿轮图标,BATTLE左侧)。|[PC覆盖·2026-07-13破案] #355原有此覆盖但上游收编重构时被丢→回退base roi[918,622,88,71],其右缘x1006把'自动战斗'切成'自动'(22:00实录OCR读数),OCR恒miss→轮到NoFind(阈0.6)点中棋盘小人→误开阵形死循环。补回七月实机校准值:roi[970,632,96,64]罩全文字(实测987-1035,669-681),target点图标(base固定target[953,631]在PC落在'切换画面'上,同样必须覆盖)。",
+        "roi": [
+            970,
+            632,
+            96,
+            64
+        ],
+        "target": [
+            1006,
+            645,
+            14,
+            14
+        ],
+        "next": [
+            "PVP_SeasonSettling",
+            "PVP_AutoBattle_SucCK",
+            "PVP_AutoBattle",
+            "[JumpBack]PVP_Errmsg2#_Clear"
         ]
     },
     "PVP_SeasonSettling": {
@@ -330,27 +354,29 @@
         "desc": "找不到舞台时点地标换位。|[PC覆盖·2026-07-13实录·禁用] pc阈0.6下七个地标模板在满屏观众NPC场景大面积误匹(0.60~0.63),点中小人即误开阵型设置,且转场加载期点击落点竞速二次破坏(21:38/21:48/22:00三轮实录游走不收敛)。PC上位置破坏源(PerPetTask/locreset/PVPStart高位点击)已逐一禁用/修正,正常链路不再需要游走;真找不到台宁可走on_error干净收尾,不做0.6阈瞎点。",
         "enabled": false
     },
-    "PVP_PerPetTask": {
-        "desc": "宠物派遣防错(PVP箱庭内)。|[PC覆盖·2026-07-13实录·禁用] 镜中之战箱庭内NPC对话'!'泡与派遣泡同款米色样式,PC重裁泡模板0.971误命中NPC泡→点击把角色带离擂台区→PVPstage识别掉到0.5x→NoFindSrena(阈0.6)地标游走2分半不收敛(21:30实录)。PC派遣由StartGame侧在剧情箱庭领取(当日实证已领),此防错节点在PC弊大于利,禁用。",
-        "enabled": false
-    },
-    "PVP_InsandboxAndlocAbnormal": {
-        "desc": "位置异常复位(点红⚔位置标记回擂台)。|[PC覆盖·2026-07-13实录·禁用] PC上角色站在擂台旁时该⚔标记同样可见(pvplocreset实测0.84~0.94两轮开局均误命中)→每轮误判'位置异常',点击+offset(0,100)落在围观NPC上(等同进阵型设置)→自己把位置破坏→NoFindSrena游走不收敛(21:38/21:48两轮实录)。正常站位下PVPStart擂台识别0.991直接可用,此防错节点PC上弊大于利,禁用;真异常兜底仍有NoFindSrena。",
-        "enabled": false
-    },
-    "PVP_AutoBattle": {
-        "desc": "预备屏点'自动战斗'(齿轮图标,BATTLE左侧)。|[PC覆盖·2026-07-13破案] #355原有此覆盖但上游收编重构时被丢→回退base roi[918,622,88,71],其右缘x1006把'自动战斗'切成'自动'(22:00实录OCR读数),OCR恒miss→轮到NoFind(阈0.6)点中棋盘小人→误开阵形死循环。补回七月实机校准值:roi[970,632,96,64]罩全文字(实测987-1035,669-681),target点图标(base固定target[953,631]在PC落在'切换画面'上,同样必须覆盖)。",
+    "PVP_Errmsg2#_Clear": {
+        "desc": "误进阵形界面的逃生门(认左上标题,点返回箭头)。|[PC覆盖·2026-07-13实录] 误点观众小人会进'防御阵形'界面,该界面内竞技场全链识别死锁,唯一出口=左上返回(用户实证)。base认安卓文案'战场角色设置'roi[134,143]与PC不符;PC实测标题'防御阵形/攻击阵形'在720(87-170,30-47),返回箭头(77,38)。expected兼容新旧文案,target改点箭头实位(base[1,1]角点在PC点不到按钮)。",
+        "recognition": "OCR",
         "roi": [
-            970,
-            632,
-            96,
-            64
+            70,
+            20,
+            170,
+            40
         ],
+        "expected": [
+            "防御阵形",
+            "防禦陣形",
+            "攻击阵形",
+            "攻擊陣形",
+            "阵形设置"
+        ],
+        "action": "Click",
         "target": [
-            1006,
-            645,
-            14,
-            14
-        ]
+            70,
+            30,
+            16,
+            16
+        ],
+        "post_delay": 2000
     }
 }
