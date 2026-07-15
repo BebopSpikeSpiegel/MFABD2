@@ -23,6 +23,7 @@
         "focus": "公共复用节点目录。开发整理用，别真引用此节点"
     },
     "Global_HomeButton_Once": {
+        "desc": "点击一次主页面图标",
         "recognition": "TemplateMatch",
         "roi": [
             1132,
@@ -110,7 +111,7 @@
             "[JumpBack]PVP_PerOperationsMain_Error",
             "[JumpBack]Global_ERR_AtFish",
             "[JumpBack]Dummy_Err_GetProductsFail",
-            "[JumpBack]Global_BackPageHub_Once",
+            "[JumpBack]Global_HomeButton_Once",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ]
@@ -430,13 +431,16 @@
         "focus": "GO.快速卡带-复位到QC1"
     },
     "Global_BackToQC1_Menu": {
-        "desc": "【快速卡带识别链-预设入口.菜单已起→QC1】守卫:剧情页签可见.不点击,交给走位链",
+        "desc": "【快速卡带识别链-预设入口.菜单已起→QC1】(不规范/少用)守卫:剧情页签可见.不点击,交给走位链",
         "recognition": "Or",
         "any_of": ["Collect_QuickCart_SelectType_StoryPack"],
         "anchor": {
             "QCPack": "Global_BackToQC_TouchQC1Pack"
         },
         "next": [
+            "Global_BackToQC_SelectStory",
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_WaitingForLoading",
             "Global_BackToQC_Story_Anc"
         ],
         "focus": "GO.快速卡带离开-菜单模式"
