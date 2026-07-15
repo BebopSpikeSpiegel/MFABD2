@@ -534,6 +534,12 @@
         ],
         "focus": "Arb.PC.料理:找到'料理'技能,进烹饪菜单"
     },
+    "Arbitrage_Favorit_Buy_SubMenu_Closure": {
+        "desc": "购买收尾:识别售罄标确认买完。|[PC覆盖·2026-07-15] 售罄小红标仅20x10px,安卓OCR惯读'售馨'(base将错就错),PC OCR实读'售款'0.654(42轮评估两日复现:07-14 09:30/07-15 11:27)→恒miss→BuyAction点击后36s超时1219真空。实购本身成功(帧证藏红花挂售罄标+金币正常扣款),只差收尾。expected放宽正则'售.'通吃两家误读及后续漂移。",
+        "expected": [
+            "售."
+        ]
+    },
     "Arbitrage_Cooking_Weekly": {
         "desc": "料理模块周次入口。|[PC覆盖] focus输出至MFA侧。",
         "focus": "Arb.料理模块启动"
