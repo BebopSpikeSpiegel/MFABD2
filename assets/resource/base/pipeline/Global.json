@@ -364,8 +364,8 @@
         "any_of": ["Global_BackToPve_CardMenu_Tp3"],
         "action": "Click",
         "target_offset": [
-            -20,
-            25,
+            -45,
+            30,
             0,
             0
         ],
@@ -392,8 +392,8 @@
         ],
         "action": "Click",
         "target_offset": [
-            -20,
-            25,
+            -45,
+            30,
             0,
             0
         ],
@@ -420,7 +420,6 @@
         "max_hit": 50,
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
-        "action": "Click",
         "anchor": {
             "QCPack": "Global_BackToQC_TouchQC1Pack"
         },

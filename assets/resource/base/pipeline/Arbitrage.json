@@ -40,8 +40,8 @@
         "threshold": 0.95,
         "action": "Click",
         "target_offset": [
-            -20,
-            25,
+            -45,
+            30,
             0,
             0
         ],
