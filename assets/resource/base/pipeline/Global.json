@@ -76,6 +76,23 @@
         ],
         "focus": "GO.调出快速卡带"
     },
+    "Global_QuickCart_MenuReset_2P": {
+        "desc": "调出快速卡带1/2,操作",
+        "recognition": "TemplateMatch",
+        "template": [
+            "QuickCartGeadai.png",
+            "UI_QuickPack_GE.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "anchor": {"QC_CallMenu_Out": "Global_QuickCart_SwipTo_2P"},
+        "post_delay": 1000,
+        "next": [
+            "Global_QuickCart_MenuReset_Ocr",
+            "Global_QuickCart_MenuReset"
+        ],
+        "focus": "GO.调出快速卡带-Page2"
+    },
     "Global_QuickCart_MenuReset_Ocr": {
         "desc": "[识别]快速卡带-最近OCR.调出快速卡带2/2,核对",
         "recognition": "OCR",
@@ -88,7 +105,34 @@
         "expected": [
             "最近"
         ],
+        "next": ["[Anchor]QC_CallMenu_Out"],
         "focus": "GO.快速卡带调出成功"
+    },
+    "Global_QuickCart_SwipTo_2P": {
+        "desc": "QC滑动到第二页,同时复位锚点",
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset_Ocr"],
+        "action": "Swipe",
+        "begin": [
+            905,
+            554
+        ],
+        "end": [
+            50,
+            554
+        ],
+        "end_hold": 500,
+        "duration": 600,
+        "anchor": {"QC_CallMenu_Out": ""},
+        "timeout": 5000,
+        "next": [
+            "Global_QuickCart_SwipTo_2P_Enter",
+            "Global_QuickCart_SwipTo_2P"
+        ]
+    },
+    "Global_QuickCart_SwipTo_2P_Enter": {
+        "recognition": "Or",
+        "any_of": ["Collect_QuickCart_SelectType_EventPack"]
     },
     "Global_ToHomePage": {
         "desc": "[通用复位]复位到主界面模块,开始,中继调用",
