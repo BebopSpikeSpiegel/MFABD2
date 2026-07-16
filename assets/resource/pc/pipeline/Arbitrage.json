@@ -837,7 +837,7 @@
         ]
     },
     "Arbitrage_Cooking_SubMenu": {
-        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。",
+        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。|[07-16二修·MAX档新边界] MAX量产把材料打穿后'料理'按钮置灰(实录:杏仁1050个/蜂蜜0),正常态模板仅0.497→Starus反转永真'动画中'死循环(19:09实录,无限不退出)。补置灰态UI_cooking_submenu_PC2(mcp 1080帧INTER_AREA降720裁取,MIN/MAX条标定0.952/零偏移;灰-常相似0.42不混淆)。语义:灰=制作结束→ReBack命中退出,Starus三态全无才算动画,SubMenu/SubIn照常。",
         "roi": [
             700,
             635,
@@ -846,11 +846,12 @@
         ],
         "template": [
             "UI_cooking_submenu.png",
-            "UI_cooking_submenu_PC.png"
+            "UI_cooking_submenu_PC.png",
+            "UI_cooking_submenu_PC2.png"
         ]
     },
     "Arbitrage_Cooking_Menu_Reset_SubIn": {
-        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。",
+        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。|[07-16二修·MAX档新边界] MAX量产把材料打穿后'料理'按钮置灰(实录:杏仁1050个/蜂蜜0),正常态模板仅0.497→Starus反转永真'动画中'死循环(19:09实录,无限不退出)。补置灰态UI_cooking_submenu_PC2(mcp 1080帧INTER_AREA降720裁取,MIN/MAX条标定0.952/零偏移;灰-常相似0.42不混淆)。语义:灰=制作结束→ReBack命中退出,Starus三态全无才算动画,SubMenu/SubIn照常。",
         "roi": [
             700,
             635,
@@ -859,11 +860,12 @@
         ],
         "template": [
             "UI_cooking_submenu.png",
-            "UI_cooking_submenu_PC.png"
+            "UI_cooking_submenu_PC.png",
+            "UI_cooking_submenu_PC2.png"
         ]
     },
     "Arbitrage_Cooking_Doing_Starus": {
-        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。",
+        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。|[07-16二修·MAX档新边界] MAX量产把材料打穿后'料理'按钮置灰(实录:杏仁1050个/蜂蜜0),正常态模板仅0.497→Starus反转永真'动画中'死循环(19:09实录,无限不退出)。补置灰态UI_cooking_submenu_PC2(mcp 1080帧INTER_AREA降720裁取,MIN/MAX条标定0.952/零偏移;灰-常相似0.42不混淆)。语义:灰=制作结束→ReBack命中退出,Starus三态全无才算动画,SubMenu/SubIn照常。",
         "roi": [
             700,
             635,
@@ -872,11 +874,12 @@
         ],
         "template": [
             "UI_cooking_submenu.png",
-            "UI_cooking_submenu_PC.png"
+            "UI_cooking_submenu_PC.png",
+            "UI_cooking_submenu_PC2.png"
         ]
     },
     "Arbitrage_Cooking_Doing_ReBack": {
-        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。",
+        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。|[07-16二修·MAX档新边界] MAX量产把材料打穿后'料理'按钮置灰(实录:杏仁1050个/蜂蜜0),正常态模板仅0.497→Starus反转永真'动画中'死循环(19:09实录,无限不退出)。补置灰态UI_cooking_submenu_PC2(mcp 1080帧INTER_AREA降720裁取,MIN/MAX条标定0.952/零偏移;灰-常相似0.42不混淆)。语义:灰=制作结束→ReBack命中退出,Starus三态全无才算动画,SubMenu/SubIn照常。",
         "roi": [
             700,
             635,
@@ -885,7 +888,8 @@
         ],
         "template": [
             "UI_cooking_submenu.png",
-            "UI_cooking_submenu_PC.png"
+            "UI_cooking_submenu_PC.png",
+            "UI_cooking_submenu_PC2.png"
         ]
     }
 }
