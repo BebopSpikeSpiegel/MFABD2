@@ -564,5 +564,276 @@
             1,
             1
         ]
+    },
+    "Arbitrage_Cooking_B8": {
+        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    480,
+                    80,
+                    690,
+                    510
+                ],
+                "template": [
+                    "Shop/cook_Sparkling Griddle Shrimp.png",
+                    "Shop/cook_Sparkling Griddle Shrimp_PC.png"
+                ]
+            },
+            "Sub_<Arbitrage_Cooking>_Clr"
+        ]
+    },
+    "Arbitrage_Cooking_B9": {
+        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    480,
+                    80,
+                    690,
+                    510
+                ],
+                "template": [
+                    "Shop/cook_Transparent Salad.png",
+                    "Shop/cook_Transparent Salad_PC.png"
+                ]
+            },
+            "Sub_<Arbitrage_Cooking>_Clr"
+        ]
+    },
+    "Arbitrage_Cooking_B10": {
+        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    480,
+                    80,
+                    690,
+                    510
+                ],
+                "template": [
+                    "Shop/cook_Hellfire Gimbap.png",
+                    "Shop/cook_Hellfire Gimbap_PC.png"
+                ]
+            },
+            "Sub_<Arbitrage_Cooking>_Clr"
+        ]
+    },
+    "Arbitrage_Cooking_B6": {
+        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    480,
+                    80,
+                    690,
+                    510
+                ],
+                "template": [
+                    "Shop/cook_Lugas Ginseng Skewer.png",
+                    "Shop/cook_Lugas Ginseng Skewer_PC.png"
+                ]
+            },
+            "Sub_<Arbitrage_Cooking>_Clr"
+        ]
+    },
+    "Arbitrage_Cooking_B7": {
+        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    480,
+                    80,
+                    690,
+                    510
+                ],
+                "template": [
+                    "Shop/cook_Coal Cookies.png",
+                    "Shop/cook_Coal Cookies_PC.png"
+                ]
+            },
+            "Sub_<Arbitrage_Cooking>_Clr"
+        ]
+    },
+    "Arbitrage_Cooking_A1": {
+        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    480,
+                    80,
+                    690,
+                    510
+                ],
+                "template": [
+                    "Shop/cook_Honey Baked Apple.png",
+                    "Shop/cook_Honey Baked Apple_PC.png"
+                ]
+            },
+            "Sub_<Arbitrage_Cooking>_Clr"
+        ]
+    },
+    "Arbitrage_Cooking_A2": {
+        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    480,
+                    80,
+                    690,
+                    510
+                ],
+                "template": [
+                    "Shop/cook_Honey Butter Almonds.png",
+                    "Shop/cook_Honey Butter Almonds_PC.png"
+                ]
+            },
+            "Sub_<Arbitrage_Cooking>_Clr"
+        ]
+    },
+    "Arbitrage_Cooking_A3": {
+        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    480,
+                    80,
+                    690,
+                    510
+                ],
+                "template": [
+                    "Shop/cook_Mayo Triangle Rice Ball.png",
+                    "Shop/cook_Mayo Triangle Rice Ball_PC.png"
+                ]
+            },
+            "Sub_<Arbitrage_Cooking>_Clr"
+        ]
+    },
+    "Arbitrage_Cooking_A4": {
+        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    480,
+                    80,
+                    690,
+                    510
+                ],
+                "template": [
+                    "Shop/cook_Caviar Omurice.png",
+                    "Shop/cook_Caviar Omurice_PC.png"
+                ]
+            },
+            "Sub_<Arbitrage_Cooking>_Clr"
+        ]
+    },
+    "Arbitrage_Cooking_A5": {
+        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    480,
+                    80,
+                    690,
+                    510
+                ],
+                "template": [
+                    "Shop/cook_Fried Salmon Bento.png",
+                    "Shop/cook_Fried Salmon Bento_PC.png"
+                ]
+            },
+            "Sub_<Arbitrage_Cooking>_Clr"
+        ]
+    },
+    "Arbitrage_Cooking_A6": {
+        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    480,
+                    80,
+                    690,
+                    510
+                ],
+                "template": [
+                    "Shop/cook_Sangria.png",
+                    "Shop/cook_Sangria_PC.png"
+                ]
+            },
+            "Sub_<Arbitrage_Cooking>_Clr"
+        ]
+    },
+    "Arbitrage_Cooking_MenuEnter": {
+        "desc": "确认进了料理菜单。|[PC覆盖·2026-07-16帧校准] PC标题'料理·传说'实测x158-274/y23-44,base roi[221,7,96,65]只罩到尾巴(读'理传说'碎片)→timeout:1单发必miss→料理链在点入菜单后无声死亡(07-14 01:33/07-15 11:25两帧尸检)。roi改[160,8,130,50]。",
+        "roi": [
+            160,
+            8,
+            130,
+            50
+        ]
+    },
+    "Arbitrage_Cooking_Menu_ReBack": {
+        "desc": "|[PC覆盖·2026-07-16帧校准] '所需材料'标签PC实测x491-543/y55-72,base roi[566,46,116,56]整体偏右漏读。roi改[470,45,140,45]。",
+        "roi": [
+            470,
+            45,
+            140,
+            45
+        ]
+    },
+    "Arbitrage_Cooking_Menu_Reset_SubOut": {
+        "desc": "|[PC覆盖·2026-07-16帧校准] '所需材料'标签PC实测x491-543/y55-72,base roi[566,46,116,56]整体偏右漏读。roi改[470,45,140,45]。",
+        "roi": [
+            470,
+            45,
+            140,
+            45
+        ]
+    },
+    "Arbitrage_Cooking_Menu_Reset": {
+        "desc": "页内复位:随机点菜品进子菜单再退。|[PC覆盖·2026-07-16] base target[606,118,271,267]按安卓格位;PC菜格左移,且帧证下部行存在置灰卡(点击无响应风险),target收进PC上两行有色区[520,110,250,150]。",
+        "target": [
+            520,
+            110,
+            250,
+            150
+        ]
+    },
+    "Arbitrage_Cooking_Swip_Page2": {
+        "desc": "翻到第2页。|[PC覆盖·2026-07-16] base begin[887,669]在PC菜格(y80-580)下方空区=拖拽死区病第4例,滑动必空拖。起止点收进菜格内。",
+        "begin": [
+            820,
+            550,
+            1,
+            1
+        ],
+        "end": [
+            820,
+            90,
+            1,
+            1
+        ]
     }
 }
