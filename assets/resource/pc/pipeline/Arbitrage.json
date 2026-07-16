@@ -1,6 +1,6 @@
 {
     "Arbitrage_Card5#_Goin": {
-        "desc": "点击PVE本子5=珍藏集剧情PACK5卡(TemplateMatch门卫)。|[PC覆盖·2026-07-13二修] 一修DirectHit踩坑:本节点在HomePageOldCardMenu_Goin的next里兼任门卫(模板命中=菜单已开)与点击者,DirectHit拆门后在主页直接'成功'乱点空白、永不走BackToPve_Anc开菜单(23:19实录)。二修恢复门卫:从MFA帧裁PACK5卡面pve5_PC.png(100x80,自匹1.000/集内次高0.389/负样本≤0.365),追加template;roi罩PACK5位[830,280,190,170];阈0.95→0.7(base安卓书模板0.48不achievable,PC卡面模板0.7充分区分);点击=命中框+base offset落卡身。",
+        "desc": "点击PVE本子5=珍藏集剧情PACK5卡(TemplateMatch门卫)。|[PC覆盖·2026-07-13二修] 一修DirectHit踩坑:本节点在HomePageOldCardMenu_Goin的next里兼任门卫(模板命中=菜单已开)与点击者,DirectHit拆门后在主页直接'成功'乱点空白、永不走BackToPve_Anc开菜单(23:19实录)。二修恢复门卫:从MFA帧裁PACK5卡面pve5_PC.png(100x80,自匹1.000/集内次高0.389/负样本≤0.365),追加template;roi罩PACK5位[830,280,190,170];阈0.95→0.7(base安卓书模板0.48不achievable,PC卡面模板0.7充分区分);点击=命中框+base offset落卡身。|[07-16实录] 上游a02a7be为图钉模板把base偏移调至(-45,30),PC卡面模板继承后偏移框左伸出卡缘45px,随机取点落卡外(实测点(839,386)<卡左缘871)→插卡点空/误插邻卡→流程漂进未适配传送阵分支死循环。pc显式偏移[20,15,-40,-30]=收缩到卡面内区,与base图钉语义解耦。",
         "roi": [
             830,
             280,
@@ -12,7 +12,13 @@
             "pve5_PC.png"
         ],
         "threshold": 0.7,
-        "focus": "Arb.PC.插入PACK5卡带进箱庭"
+        "focus": "Arb.PC.插入PACK5卡带进箱庭",
+        "target_offset": [
+            20,
+            15,
+            -40,
+            -30
+        ]
     },
     "Collect_OperationsMain_ToAreaMap": {
         "desc": "判断在区域地图(移动魔法阵)界面。|[PC覆盖·2026-07-13实录] base roi[183,11,249,53]左缘正好切'移'字左边条,OCR以0.989读成'多动魔法阵'→expected恒miss→传送阵界面死等(23:24实录)。roi左扩[150,11,280,53]罩全标题。注:节点属Collect_Navigation,跑商链途经,覆盖暂置pc/Arbitrage.json(节点命名空间全局合并)。",
