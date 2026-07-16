@@ -835,5 +835,57 @@
             1,
             1
         ]
+    },
+    "Arbitrage_Cooking_SubMenu": {
+        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。",
+        "roi": [
+            700,
+            635,
+            340,
+            70
+        ],
+        "template": [
+            "UI_cooking_submenu.png",
+            "UI_cooking_submenu_PC.png"
+        ]
+    },
+    "Arbitrage_Cooking_Menu_Reset_SubIn": {
+        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。",
+        "roi": [
+            700,
+            635,
+            340,
+            70
+        ],
+        "template": [
+            "UI_cooking_submenu.png",
+            "UI_cooking_submenu_PC.png"
+        ]
+    },
+    "Arbitrage_Cooking_Doing_Starus": {
+        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。",
+        "roi": [
+            700,
+            635,
+            340,
+            70
+        ],
+        "template": [
+            "UI_cooking_submenu.png",
+            "UI_cooking_submenu_PC.png"
+        ]
+    },
+    "Arbitrage_Cooking_Doing_ReBack": {
+        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。",
+        "roi": [
+            700,
+            635,
+            340,
+            70
+        ],
+        "template": [
+            "UI_cooking_submenu.png",
+            "UI_cooking_submenu_PC.png"
+        ]
     }
 }
