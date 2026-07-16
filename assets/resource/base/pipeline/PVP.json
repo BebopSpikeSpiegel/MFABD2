@@ -73,6 +73,7 @@
         "recognition": "Or",
         "any_of": ["PVP_Sandplay"],
         "next": [
+            "PVP_Drill_Enter",
             "PVP_Results",
             "[JumpBack]PVP_PerPetTask",
             "[JumpBack]PVP_PVPMes",
