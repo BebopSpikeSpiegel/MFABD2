@@ -232,7 +232,8 @@
         "next": [
             "Global_BackToPve_ToCardMenu",
             "[JumpBack]Global_HomeButton_Once",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]StartGame_7dAD_Check"
         ],
         "focus": "G.复位卡带开始.预设1#"
     },
@@ -244,7 +245,8 @@
         "next": [
             "Global_BackToPve_ToCardMenu",
             "[JumpBack]Global_HomeButton_Once",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]StartGame_7dAD_Check"
         ],
         "focus": "G.复位卡带开始.预设2#"
     },
