@@ -957,7 +957,8 @@
         "next": [
             "Daily_Intimacy_Ready",
             "[JumpBack]Global_ToHomePage"
-        ]
+        ],
+        "focus": "亲密度谈心开始"
     },
     "Daily_Intimacy_Ready": {
         "desc": "在主菜单,准备",
@@ -977,7 +978,8 @@
             "Daily_Intimacy_Enter",
             "[JumpBack]Fishing_InMap_TalkSkip",
             "[JumpBack]Global_WaitingForLoading"
-        ]
+        ],
+        "focus": "主界面点击图标"
     },
     "Sub_Intimacy_Ctm": {
         "desc": "[检测]主页亲密度存在红点",
@@ -1026,6 +1028,13 @@
             43
         ],
         "expected": "贝拉",
+        "action": "Click",
+        "target": [
+            1,
+            1
+        ],
+        "repeat": 10,
+        "repeat_delay": 500,
         "focus": "[WRN]需要消除亲密度教程"
     },
     "Daily_Intimacy_RedHeart": {
@@ -1066,7 +1075,8 @@
             "Daily_Intimacy_Exhausted",
             "[JumpBack]Daily_Intimacy_Up",
             "[JumpBack]Daily_Intimacy_Turn_NextPerson"
-        ]
+        ],
+        "focus": "亲密度目录"
     },
     "Daily_Intimacy_Set_FirstPerson": {
         "desc": "设定第一位人员左边",
@@ -1114,7 +1124,8 @@
         "next": [
             "Daily_Intimacy_Up_MSG",
             "Daily_Intimacy_Up"
-        ]
+        ],
+        "focus": "可以谈心-开始"
     },
     "Daily_Intimacy_Up_MSG": {
         "recognition": "OCR",
@@ -1204,7 +1215,8 @@
         "action": "Click",
         "target": "[Anchor]SetBox",
         "anchor": "SetBox",
-        "post_delay": 3000
+        "post_delay": 3000,
+        "focus": "下一位谈心对象"
     },
     "Daily_Intimacy_Exhausted": {
         "recognition": "OCR",
@@ -1214,7 +1226,7 @@
             24,
             28
         ],
-        "expected": "0",
+        "expected": "^0",
         "next": ["Global_ToHomePage"],
         "focus": "谈心次数已耗尽"
     }
