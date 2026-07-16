@@ -1,9 +1,10 @@
 {
     "PVP_PullUp_QuickCart_PVP": {
-        "desc": "点PVP玩法卡带=MIRROR WARS(镜中之战/普通竞技场,紧凑面板玩法行最左)。|[PC覆盖·2026-07-08 MFA on_error帧] base QuickCart_PVP.png(安卓紧凑缩略图62x39)在PC紧凑面板MIRROR WARS仅0.457<0.7→新裁QuickCart_PVP_PC.png(78x42,从MFA on_error紧凑面板帧,自匹配1.0/Golden Colosseum仅0.33/余卡≤0.39,阈0.7唯一命中不误配黄金竞技场).roi沿用base紧凑行[51,582,873,133],模板自身区分.",
+        "desc": "点PVP玩法卡带=MIRROR WARS(镜中之战/普通竞技场,紧凑面板玩法行最左)。|[PC覆盖·2026-07-08 MFA on_error帧] base QuickCart_PVP.png(安卓紧凑缩略图62x39)在PC紧凑面板MIRROR WARS仅0.457<0.7→新裁QuickCart_PVP_PC.png(78x42,从MFA on_error紧凑面板帧,自匹配1.0/Golden Colosseum仅0.33/余卡≤0.39,阈0.7唯一命中不误配黄金竞技场).roi沿用base紧凑行[51,582,873,133],模板自身区分.|[07-16实录] 维护开新赛季后卡面盖'SEASON.151~日期'条,PC旧模板0.533崩→竞技场卡带认不到。新裁PC2只取上半MIRROR WARS标志带(76x30,避开每赛季必变的日期条,自匹配1.0/条带内次名0.459),Or追加。",
         "template": [
             "QuickCart_PVP.png",
-            "QuickCart_PVP_PC.png"
+            "QuickCart_PVP_PC.png",
+            "QuickCart_PVP_PC2.png"
         ]
     },
     "PVP_Sandplay": {
