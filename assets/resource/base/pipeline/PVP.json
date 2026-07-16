@@ -117,7 +117,7 @@
             69,
             40
         ],
-        "template": []
+        "template": ["pvp_wine_Rt&Dn.png"]
     },
     "PVP_Results": {
         "desc": "pvp赛季正在结算中(按印象,缺乏实测)",
