@@ -445,5 +445,101 @@
             "向女神像许愿",
             "對女神像許願"
         ]
+    },
+    "Sub_Intimacy_Ctm": {
+        "desc": "[检测]主页亲密度存在红点",
+        "roi": [
+            247,
+            141,
+            23,
+            26
+        ]
+    },
+    "Rec_Intimacy_Tpl": {
+        "desc": "[识别]亲密度 图标",
+        "roi": [
+            206,
+            128,
+            138,
+            168
+        ]
+    },
+    "Daily_Intimacy_Enter": {
+        "roi": [
+            173,
+            16,
+            92,
+            35
+        ],
+        "expected": [
+            "亲密度",
+            "親密度"
+        ]
+    },
+    "Daily_Intimacy_TalkClear": {
+        "focus": "[WRN]需要消除亲密度教程(PC缺素材图)"
+    },
+    "Daily_Intimacy_RedHeart": {
+        "roi": [
+            89,
+            195,
+            1053,
+            222
+        ]
+    },
+    "Daily_Intimacy_CatalogCard": {
+        "desc": "在亲密度目录卡中",
+        "roi": [
+            180,
+            50,
+            83,
+            28
+        ],
+        "expected": [
+            "亲密度增益",
+            "親密度加成"
+        ]
+    },
+    "Daily_Intimacy_Set_FirstPerson": {
+        "desc": "设定第一位人员左边",
+        "roi": [
+            103,
+            155,
+            12,
+            11
+        ]
+    },
+    "Daily_Intimacy_Up": {
+        "desc": "可以谈心的对象 开始谈心",
+        "roi": [
+            1030,
+            650,
+            32,
+            22
+        ]
+    },
+    "Daily_Intimacy_Up_MSG": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "Daily_Intimacy_Turn_NextPerson": {
+        "desc": "下一位谈心对象",
+        "max_hit": 8,
+        "roi_offset": [
+            0,
+            75,
+            0,
+            0
+        ]
+    },
+    "Daily_Intimacy_Exhausted": {
+        "roi": [
+            1069,
+            22,
+            22,
+            27
+        ]
     }
 }
