@@ -101,6 +101,7 @@
         "next": [
             "Global_ToHomePage_Enter",
             "Global_ToHomePage_HomeButton",
+            "[JumpBack]StartGame_7dAD_Check",
             "Global_ToHomePage_Reset"
         ],
         "on_error": [
@@ -212,7 +213,8 @@
         "next": [
             "Global_BackToPve_ToCardMenu",
             "[JumpBack]Global_HomeButton_Once",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]StartGame_7dAD_Check"
         ],
         "focus": "G.复位卡带开始.预设1#"
     },
@@ -224,7 +226,8 @@
         "next": [
             "Global_BackToPve_ToCardMenu",
             "[JumpBack]Global_HomeButton_Once",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]StartGame_7dAD_Check"
         ],
         "focus": "G.复位卡带开始.预设2#"
     },
