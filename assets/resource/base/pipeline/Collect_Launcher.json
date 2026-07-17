@@ -190,7 +190,7 @@
         },
         "timeout": 1,
         "next": [
-            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_QuickCart_MenuReset_2P",
             "Collect_EventPack_SetSimpleSkip"
         ]
     },
@@ -2783,8 +2783,8 @@
         "action": "Click",
         "target": "[Anchor]Pack_Click",
         "target_offset": [
-            -5,
-            -3,
+            -10,
+            15,
             0,
             0
         ],
