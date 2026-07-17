@@ -2133,6 +2133,36 @@
             "Drops": "巧克力鸡尾酒,火烤鱼板棒,鱼子酱蛋包饭,炸三文鱼便当,卢戈山参烤串,煤炭饼干,闪闪铁板虾,透明沙拉,地狱火紫菜包饭"
         }
     },
+    "Arbitrage_Sell_Col_Name": {
+        "desc": "数据节点:出售解析·商品名列带(py首跑查询roi后缓存,不入流程;x/w即列带范围,#380)",
+        "recognition": "DirectHit",
+        "roi": [
+            470,
+            209,
+            260,
+            344
+        ]
+    },
+    "Arbitrage_Sell_Col_Price": {
+        "desc": "数据节点:出售解析·价格列带(#380)",
+        "recognition": "DirectHit",
+        "roi": [
+            880,
+            209,
+            80,
+            344
+        ]
+    },
+    "Arbitrage_Sell_Col_Cart": {
+        "desc": "数据节点:出售解析·卡带列带(roi右缘=解析上限;base宽至1280保持原'无上限'语义,#380)",
+        "recognition": "DirectHit",
+        "roi": [
+            960,
+            209,
+            320,
+            344
+        ]
+    },
     "Arbitrage_Swip_PriceList": {
         "desc": "【非孤立节点】由Agent调用,价目表下滑Runtask入口",
         "action": "Swipe",

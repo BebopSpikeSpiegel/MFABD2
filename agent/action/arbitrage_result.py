@@ -6,6 +6,36 @@ from maa.context import Context
 from maa.agent.agent_server import AgentServer
 from utils import mfaalog
 
+# ==========================================
+# 列带配置:节点 roi 承载(#380)。py 首跑查询一次并缓存,
+# 由 base/pc 分层天然获得平台差异化;节点缺失时回退旧常数。
+# ==========================================
+_BAND_NODES = {
+    "name": "Arbitrage_Sell_Col_Name",
+    "price": "Arbitrage_Sell_Col_Price",
+    "cart": "Arbitrage_Sell_Col_Cart",
+}
+_LEGACY_BANDS = {"name": (470, 730), "price": (880, 960), "cart": (960, 1280)}
+_BANDS_CACHE = None
+
+def _get_bands(context: Context) -> dict:
+    global _BANDS_CACHE
+    if _BANDS_CACHE is not None:
+        return _BANDS_CACHE
+    bands = {}
+    try:
+        for key, node in _BAND_NODES.items():
+            roi = (context.get_node_data(node) or {}).get("roi")
+            if not roi or len(roi) < 4:
+                raise ValueError(f"{node} 无有效 roi")
+            bands[key] = (roi[0], roi[0] + roi[2])
+        mfaalog.info(f"[Arbitrage] 📐 列带已从节点解析: 名{bands['name']} 价{bands['price']} 卡带{bands['cart']}")
+    except Exception as e:
+        bands = dict(_LEGACY_BANDS)
+        mfaalog.warning(f"[Arbitrage] ⚠️ 列带节点查询失败({e}),回退内置常数(安卓布局)")
+    _BANDS_CACHE = bands
+    return bands
+
 @AgentServer.custom_action("ArbitrageSellController")
 class ArbitrageSellController(CustomAction):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
@@ -138,11 +168,14 @@ class ArbitrageSellController(CustomAction):
     # 附：V8 图像解析引擎 
     # ==========================================
     def _parse_current_page(self, context: Context) -> list:
-        # 配置区
-        EQUATOR_OFFSET = 7 
-        COL_NAME_MIN, COL_NAME_MAX = 470, 730
-        COL_PRICE_MIN, COL_PRICE_MAX = 880, 960
-        COL_CART_MIN = 960
+        # 配置区(列带来自节点roi,#380;EQUATOR为y向行内分界,两端一致)
+        EQUATOR_OFFSET = 7
+        bands = _get_bands(context)
+        COL_NAME_MIN, COL_NAME_MAX = bands["name"]
+        COL_PRICE_MIN, COL_PRICE_MAX = bands["price"]
+        COL_CART_MIN, COL_CART_MAX = bands["cart"]
+        # 价格%列右缘枢轴:随价带派生(安卓 960-60=900 与原硬编码严格一致)
+        PRICE_EDGE = COL_PRICE_MAX - 60
 
         screenshot = context.tasker.controller.post_screencap().wait().get()
         # 新增的防御逻辑：如果截图失败，记录警告并安全退出当前解析
@@ -192,15 +225,22 @@ class ArbitrageSellController(CustomAction):
             item_data = {"name": row["name"], "is_max_price": False, "target_cartridge": ""}
             equator = row["equator_y"]
             price_texts = [t for t in row["items"] if COL_PRICE_MIN <= t["cx"] < COL_PRICE_MAX]
-            cart_texts = [t for t in row["items"] if t["cx"] >= COL_CART_MIN]
+            cart_texts = [t for t in row["items"] if COL_CART_MIN <= t["cx"] < COL_CART_MAX]
             
             top_pct, bot_pct = [], []
             for t in price_texts:
-                if t["box"][0] + t["box"][2] > 900:
-                    nums = re.findall(r'\d+', t["text"])
-                    if nums:
-                        if t["cy"] < equator: top_pct.append(nums[-1])
-                        else: bot_pct.append(nums[-1])
+                if t["box"][0] + t["box"][2] > PRICE_EDGE:
+                    # 溢价%优先按 '1[0-2]d%' 提取:OCR 会把价格与百分比粘连
+                    # (实录 '18120%' -> 原 nums[-1]='18120' 而非 '120',致满价误判非满价)
+                    m = re.search(r'(1[0-2]\d)\s*%', t["text"])
+                    if m:
+                        val = m.group(1)
+                    else:
+                        nums = re.findall(r'\d+', t["text"])
+                        val = nums[-1] if nums else None
+                    if val:
+                        if t["cy"] < equator: top_pct.append(val)
+                        else: bot_pct.append(val)
             
             if top_pct and bot_pct and set(top_pct).intersection(set(bot_pct)):
                 item_data["is_max_price"] = True
