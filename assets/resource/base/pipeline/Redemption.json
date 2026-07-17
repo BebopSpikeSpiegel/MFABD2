@@ -152,8 +152,33 @@
         "next": [
             "Redemption_Evil_Redemption_DetPassLv",
             "Redemption_Evil_Redemption_Lv1",
+            "[JumpBack]Redemption_Evil_Redemption_ListSwip",
             "[JumpBack]Redemption_Evil_Redemption_SelLv-1"
         ]
+    },
+    "Redemption_Evil_Redemption_ListSwip": {
+        "desc": "到lv.2时滑动,确保首位为lv.1.保护退出",
+        "max_hit": 2,
+        "recognition": "OCR",
+        "roi": [
+            621,
+            86,
+            85,
+            73
+        ],
+        "expected": "2$",
+        "action": "Swipe",
+        "begin": [
+            240,
+            190
+        ],
+        "end": [
+            240,
+            600
+        ],
+        "end_hold": 500,
+        "duration": 600,
+        "post_delay": 2000
     },
     "Redemption_Evil_Redemption_DetPassLv": {
         "recognition": "TemplateMatch",
@@ -167,24 +192,15 @@
         ]
     },
     "Redemption_Evil_Redemption_Lv1": {
-        "recognition": "ColorMatch",
+        "recognition": "OCR",
         "roi": [
-            225,
-            109,
-            38,
-            35
+            621,
+            86,
+            85,
+            73
         ],
-        "lower": [
-            255,
-            255,
-            255
-        ],
-        "upper": [
-            255,
-            255,
-            255
-        ],
-        "count": 20,
+        "expected": "1$",
+        "action": "Swipe",
         "next": [
             "Redemption_Evil_Redemption_QuickBattUnable",
             "Redemption_Evil_Redemption_QuickBatt"
@@ -205,7 +221,7 @@
         "green_mask": true,
         "action": "Click",
         "target_offset": [
-            8,
+            15,
             -95,
             0,
             0

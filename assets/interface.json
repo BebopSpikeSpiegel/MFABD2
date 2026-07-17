@@ -12,7 +12,7 @@
             "win32": {
                 "class_regex": "UnityWndClass",
                 "window_regex": "BrownDust II",
-                "screencap": "FramePool",
+                "screencap": "PrintWindow",
                 "mouse": "PostMessageWithWindowPos",
                 "keyboard": "PostMessageWithWindowPos"
             },

@@ -84,6 +84,15 @@
             57
         ]
     },
+    "StartGame_PerPetTask": {
+        "desc": "宠物派遣领取(认宠物头顶'!'气泡)。|[PC审阅·2026-07-17] 如原base模板误识别,就改用PC专门模板。",
+        "template": [
+            "PetMidGe_PC.png"
+        ],
+        "threshold": [
+            0.8
+        ]
+    },
     "StartGame_Special": {
         "desc": "另类赛季奖励接收[已适配,黄金竞技场]",
         "expected": [
@@ -134,6 +143,19 @@
         "template": [
             "KadaiGe.png",
             "KadaiGe_PC.png"
+        ]
+    },
+    "StartGame_7dAD_Check": {
+        "desc": "查找并点击 7天内不再显示此广告",
+        "roi": [
+            846,
+            143,
+            142,
+            36
+        ],
+        "expected": [
+            "7天内不再显示",
+            "7日期間不再觀看"
         ]
     }
 }

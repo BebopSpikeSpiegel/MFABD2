@@ -1,11 +1,12 @@
 {
     "Global_BackPageHub_Once": {
-        "desc": "其他页面,返回按钮(一次性)。|[PC覆盖] 【2026-07-03实机】PC抽卡商店页(服装抽抽乐)左上返回箭头为暗色胶囊条细线'<'样式,base三张安卓模板实跑分仅0.14~0.25<阈0.7全miss→一键速抽后Global_ToHomePage回主页8s超时Exception,AREA2#装备池永远轮不到(装备免费抽漏抽根因)。从PC 720实帧裁BackBut_DarkCapsule_PC.png(36x32,自匹配0.0)追加进列表(Or语义,不影响其他页);base三张保留兼容其余页面。green_mask沿用(新模板无绿区不受影响)。",
+        "desc": "其他页面,返回按钮(一次性)。|[PC覆盖] 【2026-07-03实机】PC抽卡商店页(服装抽抽乐)左上返回箭头为暗色胶囊条细线'<'样式,base三张安卓模板实跑分仅0.14~0.25<阈0.7全miss→一键速抽后Global_ToHomePage回主页8s超时Exception,AREA2#装备池永远轮不到(装备免费抽漏抽根因)。从PC 720实帧裁BackBut_DarkCapsule_PC.png(36x32,自匹配0.0)追加进列表(Or语义,不影响其他页);base三张保留兼容其余页面。green_mask沿用(新模板无绿区不受影响)。|【2026-07-14实录】复发变体:PC点击后鼠标光标停驻在按钮正中,Win32截图带光标→模板区被光标箭头污染,干净模板0.98骤降0.654~0.686<0.7连miss(08:56:52~08:57:00逐秒实测)→回家链再死→装备池再漏。从当日on_error帧(08.57.00.307)裁同框'按钮+停驻光标'态BackBut_DarkCapsule_PC2.png(36x32,污染帧自匹配1.0)再追加;光标由点击落点决定,位置确定性强。",
         "template": [
             "BackButGe.png",
             "BackButGe2.png",
             "UI_qsback.png",
-            "BackBut_DarkCapsule_PC.png"
+            "BackBut_DarkCapsule_PC.png",
+            "BackBut_DarkCapsule_PC2.png"
         ]
     },
     "Global_QuickCart_MenuReset": {
@@ -14,14 +15,14 @@
             "QuickCartGeadai.png"
         ]
     },
-    "Global_ToHomePage": {
-        "desc": "[PC覆盖·2026-07-03] 通用复位加第四分支修'餐馆场景启动任务逻辑真空':base三分支Enter(要主页)/HomeButton(要箱庭)/Reset(要左上返回箭头)在餐馆3D场景全miss→8s超时→on_error全miss→Global_Null_Exception循环(实测22次,逼近35次Panic阈值).追加BusinExit_PC(识别'格鲁菲餐厅'标题→点右上Home)兜住.next数组整替换,on_error继承base.",
+    "Global_ToHomePage_Crash": {
+        "desc": "[PC新增] 餐馆场景退出:OCR'格鲁菲餐厅'标题(roi同pc Daily_Busin_Entered已校准)命中则点右上Home按钮(720实测中心(1197,39))回箱庭,后续HomeButton分支接手回主页.",
         "next": [
             "Global_ToHomePage_Enter",
             "Global_ToHomePage_HomeButton",
-            "Global_ToHomePage_Reset",
-            "Global_ToHomePage_Crash"
-        ]
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G=1.餐馆场景,点Home退出"
     },
     "Global_BackToPve_CardMenu_Tp1": {
         "desc": "判断在传统卡带界面",
@@ -66,6 +67,22 @@
             377,
             214
         ]
+    },
+    "Global_BackToQC_StoryCor": {
+        "desc": "剧情页签色核。|[PC覆盖·2026-07-12日志实测] PC高亮白像素214~295(本节点色下限203较严故基数小),base count:200贴地飞行(最低仅高出14px,任意抗锯齿/动画抖动就翻车)。count降150留~30%余量。",
+        "count": 150
+    },
+    "Global_BackToQC_EventCor": {
+        "desc": "活动页签色核。|[PC覆盖·2026-07-12] 无PC实测样本,但与Gameplay同字数(5字)同色下限[167,167,165],高亮像素预期同为~380量级,base count:500必挂。随Gameplay同步降300。",
+        "count": 300
+    },
+    "Global_BackToQC_ManagerCor": {
+        "desc": "店长页签色核。|[PC覆盖·2026-07-12] 同EventCor:与Gameplay同字数同色下限,base count:500在PC预期必挂,随组降300。(CharacterCor base本为300≈实测安全线,不动)",
+        "count": 300
+    },
+    "Global_BackToQC_GameplayCor": {
+        "desc": "玩法页签色核。|[PC覆盖·2026-07-11/12实录] base count:500在PC够不到——高亮白像素实测376~446(主峰380)→SelectGameplay反复点tab死循环;count降300留~20%余量,非高亮灰字远低于此不误判。",
+        "count": 300
     },
     "Anc_SliderSwitch_YewOn_Clr": {
         "desc": "滑块识别,黄色,已enable",
@@ -225,27 +242,6 @@
             "格魯菲餐廳"
         ]
     },
-    "Global_ToHomePage_Crash": {
-        "desc": "[PC新增] 餐馆场景退出:OCR'格鲁菲餐厅'标题(roi同pc Daily_Busin_Entered已校准)命中则点右上Home按钮(720实测中心(1197,39))回箱庭,后续HomeButton分支接手回主页.",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1135,
-            5,
-            133,
-            82
-        ],
-        "template": [
-            "MainHomeRIceGE.png"
-        ],
-        "action": "Click",
-        "post_delay": 3000,
-        "next": [
-            "Global_ToHomePage_Enter",
-            "Global_ToHomePage_HomeButton",
-            "[JumpBack]Global_WaitingForLoading"
-        ],
-        "focus": "G=1.餐馆场景,点Home退出"
-    },
     "Global_BackToPve2#_CardMenu": {
         "recognition": "DirectHit",
         "roi": [
@@ -296,21 +292,5 @@
     },
     "Rec_「Global_WaitingForLoading」_05": {
         "desc": "[识别]转场等待03,大色块-黑"
-    },
-    "Global_BackToQC_GameplayCor": {
-        "desc": "玩法页签色核。|[PC覆盖·2026-07-11/12实录] base count:500在PC够不到——高亮白像素实测376~446(主峰380)→SelectGameplay反复点tab死循环;count降300留~20%余量,非高亮灰字远低于此不误判。",
-        "count": 300
-    },
-    "Global_BackToQC_StoryCor": {
-        "desc": "剧情页签色核。|[PC覆盖·2026-07-12日志实测] PC高亮白像素214~295(本节点色下限203较严故基数小),base count:200贴地飞行(最低仅高出14px,任意抗锯齿/动画抖动就翻车)。count降150留~30%余量。",
-        "count": 150
-    },
-    "Global_BackToQC_EventCor": {
-        "desc": "活动页签色核。|[PC覆盖·2026-07-12] 无PC实测样本,但与Gameplay同字数(5字)同色下限[167,167,165],高亮像素预期同为~380量级,base count:500必挂。随Gameplay同步降300。",
-        "count": 300
-    },
-    "Global_BackToQC_ManagerCor": {
-        "desc": "店长页签色核。|[PC覆盖·2026-07-12] 同EventCor:与Gameplay同字数同色下限,base count:500在PC预期必挂,随组降300。(CharacterCor base本为300≈实测安全线,不动)",
-        "count": 300
     }
 }

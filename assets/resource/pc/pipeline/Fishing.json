@@ -1,0 +1,17 @@
+{
+    "Fishing_InMap_TalkSkip": {
+        "desc": "点击对话快进",
+        "roi": [
+            1005,
+            15,
+            198,
+            66
+        ]
+    },
+    "Fishing_InMap_TalkSkip_Ck": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    }
+}

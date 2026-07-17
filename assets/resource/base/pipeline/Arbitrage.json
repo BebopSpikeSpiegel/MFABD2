@@ -40,8 +40,8 @@
         "threshold": 0.95,
         "action": "Click",
         "target_offset": [
-            -20,
-            25,
+            -45,
+            30,
             0,
             0
         ],
@@ -309,7 +309,8 @@
             "[JumpBack]Arbitrage_SellItem",
             "[JumpBack]Arbitrage_Merchant_Close_Ck",
             "[JumpBack]Global_BackPageHub_Once",
-            "Global_ToSandBox"
+            "Global_ToSandBox",
+            "Global_ToSandBox_Enter"
         ]
     },
     "Arbitrage_Merchant_Close_Ck": {
