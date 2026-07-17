@@ -1227,6 +1227,7 @@
             28
         ],
         "expected": "^0",
+        "only_rec": true,
         "next": ["Global_ToHomePage"],
         "focus": "谈心次数已耗尽"
     }
