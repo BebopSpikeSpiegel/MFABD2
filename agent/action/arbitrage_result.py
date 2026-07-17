@@ -18,17 +18,26 @@ _BAND_NODES = {
 _LEGACY_BANDS = {"name": (470, 730), "price": (880, 960), "cart": (960, 1280)}
 _BANDS_CACHE = None
 
-def _get_bands(context: Context) -> dict:
+def _get_bands(context: Context, screenshot) -> dict:
+    """经 run_recognition 读取 DirectHit 数据节点的生效 roi(box=roi,引擎合并视图,pc覆盖可见)。
+    注:get_node_data 跨 agent 边界对资源节点返回空(07-17 实测),不可用。"""
     global _BANDS_CACHE
     if _BANDS_CACHE is not None:
         return _BANDS_CACHE
     bands = {}
     try:
         for key, node in _BAND_NODES.items():
-            roi = (context.get_node_data(node) or {}).get("roi")
-            if not roi or len(roi) < 4:
-                raise ValueError(f"{node} 无有效 roi")
-            bands[key] = (roi[0], roi[0] + roi[2])
+            reco = context.run_recognition(node, screenshot)
+            box = getattr(reco, "box", None) if reco else None
+            if box is None:
+                raise ValueError(f"{node} 识别未返回box")
+            try:
+                x, w = box.x, box.w
+            except AttributeError:
+                x, _, w, _ = box
+            if w <= 0:
+                raise ValueError(f"{node} roi宽度非法")
+            bands[key] = (x, x + w)
         mfaalog.info(f"[Arbitrage] 📐 列带已从节点解析: 名{bands['name']} 价{bands['price']} 卡带{bands['cart']}")
     except Exception as e:
         bands = dict(_LEGACY_BANDS)
@@ -168,20 +177,22 @@ class ArbitrageSellController(CustomAction):
     # 附：V8 图像解析引擎 
     # ==========================================
     def _parse_current_page(self, context: Context) -> list:
-        # 配置区(列带来自节点roi,#380;EQUATOR为y向行内分界,两端一致)
+        # 配置区(EQUATOR为y向行内分界,两端一致)
         EQUATOR_OFFSET = 7
-        bands = _get_bands(context)
-        COL_NAME_MIN, COL_NAME_MAX = bands["name"]
-        COL_PRICE_MIN, COL_PRICE_MAX = bands["price"]
-        COL_CART_MIN, COL_CART_MAX = bands["cart"]
-        # 价格%列右缘枢轴:随价带派生(安卓 960-60=900 与原硬编码严格一致)
-        PRICE_EDGE = COL_PRICE_MAX - 60
 
         screenshot = context.tasker.controller.post_screencap().wait().get()
         # 新增的防御逻辑：如果截图失败，记录警告并安全退出当前解析
         if screenshot is None:
             print("[Arbitrage] ❌ 严重错误: 底层截图获取失败 (返回 None)！跳过当前页解析。")
             return []
+
+        # 列带来自数据节点roi(#380),首跑经run_recognition解析并缓存
+        bands = _get_bands(context, screenshot)
+        COL_NAME_MIN, COL_NAME_MAX = bands["name"]
+        COL_PRICE_MIN, COL_PRICE_MAX = bands["price"]
+        COL_CART_MIN, COL_CART_MAX = bands["cart"]
+        # 价格%列右缘枢轴:随价带派生(安卓 960-60=900 与原硬编码严格一致)
+        PRICE_EDGE = COL_PRICE_MAX - 60
         reco_result = context.run_recognition("Arbitrage_Sell_ReadList_OCR", screenshot)
         
         if not reco_result or not reco_result.hit or not reco_result.all_results:
