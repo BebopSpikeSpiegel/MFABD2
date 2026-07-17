@@ -45,15 +45,14 @@
         "desc": "[识别]pvp代币.防止弹窗滞后,设置两个一样的节点.| 此处int为消除弹窗",
         "recognition": "TemplateMatch",
         "roi": [
-            612,
-            29,
-            173,
-            32
+            479,
+            24,
+            187,
+            43
         ],
         "template": [
-            "pvp_Medals.png"
+            "pvp_wine_Top.png"
         ],
-        "threshold": 0.8,
         "post_delay": 5000,
         "next": [
             "[JumpBack]Setup_Entry1",
@@ -70,6 +69,7 @@
         "recognition": "Or",
         "any_of": ["PVP_Sandplay"],
         "next": [
+            "PVP_Drill_Enter",
             "PVP_Results",
             "[JumpBack]PVP_PerPetTask",
             "[JumpBack]PVP_PVPMes",

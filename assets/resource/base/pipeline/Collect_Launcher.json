@@ -190,7 +190,7 @@
         },
         "timeout": 1,
         "next": [
-            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_QuickCart_MenuReset_2P",
             "Collect_EventPack_SetSimpleSkip"
         ]
     },

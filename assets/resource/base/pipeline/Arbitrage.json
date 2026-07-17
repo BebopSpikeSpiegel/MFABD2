@@ -309,7 +309,8 @@
             "[JumpBack]Arbitrage_SellItem",
             "[JumpBack]Arbitrage_Merchant_Close_Ck",
             "[JumpBack]Global_BackPageHub_Once",
-            "Global_ToSandBox"
+            "Global_ToSandBox",
+            "Global_ToSandBox_Enter"
         ]
     },
     "Arbitrage_Merchant_Close_Ck": {
