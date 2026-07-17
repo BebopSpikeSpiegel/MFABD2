@@ -13,22 +13,22 @@ def configure_ocr_model():
     ocr_dir = assets_dir / "resource" / "base" / "model" / "ocr"
     ocr_dir.mkdir(parents=True, exist_ok=True)
 
-    ppocr_dir = assets_ocr_dir / "ppocr_v5"
+    ppocr_dir = assets_ocr_dir / "ppocr_v6"
 
     # det: 移动版 (zh_cn，无后缀文件夹)
-    det_src = ppocr_dir / "zh_cn" / "det.onnx"
+    det_src = ppocr_dir / "small" / "det.onnx"
     det_dst = ocr_dir / "det.onnx"
-    print(f"正在复制 det 模型 (移动版): {det_src} ...")
+    print(f"正在复制 det 模型 (small版): {det_src} ...")
     shutil.copy2(det_src, det_dst)
 
     # rec: 服务端版 (zh_cn-server/model.onnx -> rec.onnx)
-    rec_src = ppocr_dir / "zh_cn-server" / "rec.onnx"
+    rec_src = ppocr_dir / "medium" / "rec.onnx"
     rec_dst = ocr_dir / "rec.onnx"
-    print(f"正在复制 rec 模型 (服务端版): {rec_src} ...")
+    print(f"正在复制 rec 模型 (medium版): {rec_src} ...")
     shutil.copy2(rec_src, rec_dst)
 
     # keys: 字典文件 (zh_cn-server/keys.txt)
-    keys_src = ppocr_dir / "zh_cn-server" / "keys.txt"
+    keys_src = ppocr_dir / "medium" / "keys.txt"
     keys_dst = ocr_dir / "keys.txt"
     print(f"正在复制字典文件: {keys_src} ...")
     shutil.copy2(keys_src, keys_dst)
