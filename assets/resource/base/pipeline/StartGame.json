@@ -398,6 +398,7 @@
         "next": [
             "[JumpBack]StartGame_PayFailed",
             "StartGame_TouchStart",
+            "[JumpBack]StartGame_7dAD_Check",
             "StartGame_MainMsgBox_Remove",
             "[JumpBack]StartGame_PVPSet",
             "[JumpBack]StartGame_Special",
@@ -462,6 +463,28 @@
         "action": "Click",
         "post_delay": 2000,
         "focus": "SM.进入游戏-PVP结算"
+    },
+    "StartGame_7dAD_Check": {
+        "desc": "查找并点击 7天内不再显示此广告",
+        "recognition": "OCR",
+        "roi": [
+            910,
+            102,
+            141,
+            35
+        ],
+        "expected": "7天内不再显示",
+        "action": "Click",
+        "post_delay": 1000,
+        "next": ["StartGame_7dAD_Clear"]
+    },
+    "StartGame_7dAD_Clear": {
+        "action": "Click",
+        "target": [
+            1,
+            1
+        ],
+        "post_delay": 1000
     },
     "StartGame_SandPlayPage": {
         "desc": "识别右下奔跑图标-章节主页",

@@ -144,5 +144,18 @@
             "KadaiGe.png",
             "KadaiGe_PC.png"
         ]
+    },
+    "StartGame_7dAD_Check": {
+        "desc": "查找并点击 7天内不再显示此广告",
+        "roi": [
+            846,
+            143,
+            142,
+            36
+        ],
+        "expected": [
+            "7天内不再显示",
+            "7日期間不再觀看"
+        ]
     }
 }
