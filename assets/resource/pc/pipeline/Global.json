@@ -15,13 +15,14 @@
             "QuickCartGeadai.png"
         ]
     },
-    "Global_ToHomePage": {
-        "desc": "[PC覆盖·2026-07-03] 通用复位加第四分支修'餐馆场景启动任务逻辑真空':base三分支Enter(要主页)/HomeButton(要箱庭)/Reset(要左上返回箭头)在餐馆3D场景全miss→8s超时→on_error全miss→Global_Null_Exception循环(实测22次,逼近35次Panic阈值).追加BusinExit_PC(识别'格鲁菲餐厅'标题→点右上Home)兜住.next数组整替换,on_error继承base.",
+    "Global_ToHomePage_Crash": {
+        "desc": "[PC新增] 餐馆场景退出:OCR'格鲁菲餐厅'标题(roi同pc Daily_Busin_Entered已校准)命中则点右上Home按钮(720实测中心(1197,39))回箱庭,后续HomeButton分支接手回主页.",
         "next": [
             "Global_ToHomePage_Enter",
             "Global_ToHomePage_HomeButton",
-            "Global_ToHomePage_Reset"
-        ]
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G=1.餐馆场景,点Home退出"
     },
     "Global_BackToPve_CardMenu_Tp1": {
         "desc": "判断在传统卡带界面",
@@ -66,6 +67,22 @@
             377,
             214
         ]
+    },
+    "Global_BackToQC_StoryCor": {
+        "desc": "剧情页签色核。|[PC覆盖·2026-07-12日志实测] PC高亮白像素214~295(本节点色下限203较严故基数小),base count:200贴地飞行(最低仅高出14px,任意抗锯齿/动画抖动就翻车)。count降150留~30%余量。",
+        "count": 150
+    },
+    "Global_BackToQC_EventCor": {
+        "desc": "活动页签色核。|[PC覆盖·2026-07-12] 无PC实测样本,但与Gameplay同字数(5字)同色下限[167,167,165],高亮像素预期同为~380量级,base count:500必挂。随Gameplay同步降300。",
+        "count": 300
+    },
+    "Global_BackToQC_ManagerCor": {
+        "desc": "店长页签色核。|[PC覆盖·2026-07-12] 同EventCor:与Gameplay同字数同色下限,base count:500在PC预期必挂,随组降300。(CharacterCor base本为300≈实测安全线,不动)",
+        "count": 300
+    },
+    "Global_BackToQC_GameplayCor": {
+        "desc": "玩法页签色核。|[PC覆盖·2026-07-11/12实录] base count:500在PC够不到——高亮白像素实测376~446(主峰380)→SelectGameplay反复点tab死循环;count降300留~20%余量,非高亮灰字远低于此不误判。",
+        "count": 300
     },
     "Anc_SliderSwitch_YewOn_Clr": {
         "desc": "滑块识别,黄色,已enable",
@@ -225,27 +242,6 @@
             "格魯菲餐廳"
         ]
     },
-    "Global_ToHomePage_Crash": {
-        "desc": "[PC新增] 餐馆场景退出:OCR'格鲁菲餐厅'标题(roi同pc Daily_Busin_Entered已校准)命中则点右上Home按钮(720实测中心(1197,39))回箱庭,后续HomeButton分支接手回主页.",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1135,
-            5,
-            133,
-            82
-        ],
-        "template": [
-            "MainHomeRIceGE.png"
-        ],
-        "action": "Click",
-        "post_delay": 3000,
-        "next": [
-            "Global_ToHomePage_Enter",
-            "Global_ToHomePage_HomeButton",
-            "[JumpBack]Global_WaitingForLoading"
-        ],
-        "focus": "G=1.餐馆场景,点Home退出"
-    },
     "Global_BackToPve2#_CardMenu": {
         "recognition": "DirectHit",
         "roi": [
@@ -296,21 +292,5 @@
     },
     "Rec_「Global_WaitingForLoading」_05": {
         "desc": "[识别]转场等待03,大色块-黑"
-    },
-    "Global_BackToQC_GameplayCor": {
-        "desc": "玩法页签色核。|[PC覆盖·2026-07-11/12实录] base count:500在PC够不到——高亮白像素实测376~446(主峰380)→SelectGameplay反复点tab死循环;count降300留~20%余量,非高亮灰字远低于此不误判。",
-        "count": 300
-    },
-    "Global_BackToQC_StoryCor": {
-        "desc": "剧情页签色核。|[PC覆盖·2026-07-12日志实测] PC高亮白像素214~295(本节点色下限203较严故基数小),base count:200贴地飞行(最低仅高出14px,任意抗锯齿/动画抖动就翻车)。count降150留~30%余量。",
-        "count": 150
-    },
-    "Global_BackToQC_EventCor": {
-        "desc": "活动页签色核。|[PC覆盖·2026-07-12] 无PC实测样本,但与Gameplay同字数(5字)同色下限[167,167,165],高亮像素预期同为~380量级,base count:500必挂。随Gameplay同步降300。",
-        "count": 300
-    },
-    "Global_BackToQC_ManagerCor": {
-        "desc": "店长页签色核。|[PC覆盖·2026-07-12] 同EventCor:与Gameplay同字数同色下限,base count:500在PC预期必挂,随组降300。(CharacterCor base本为300≈实测安全线,不动)",
-        "count": 300
     }
 }

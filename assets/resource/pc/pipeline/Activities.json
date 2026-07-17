@@ -39,6 +39,7 @@
     "Activities_FindActive": {
         "desc": "左侧列表竖条扫描红点选可领活动。|[PC覆盖] 红点在活动卡片右上角(x同列~335-350)。【2026-07-03实机定案】PC 720列表小红点仅12×11px,感叹号断层被抗锯齿糊平→检测器gap分项恒0,无gap置信上限0.55(权重gap0.45/vert0.35/white0.15/cent0.05),实测conf 0.442<Panoram预设阈0.5永远miss(log stage=confidence实锤,内布利斯Pickup红点漏检)。preset模式不支持参数覆盖→改独立模式(参数照抄Panoram)+min_confidence降0.4(仍高于精准roi默认0.25,靠enclosed拓扑+vert防杂红)。roi左扩补回被切2px(红点box x335起,原x337切左缘),y按实测列表可视区(卡片y95~600)扩[330,100,30,460](原y173-527首尾卡红点会漏)。点红点后左下偏选卡片主体target_offset[-85,30]。",
         "custom_recognition_param": {
+            "gap_ratio": 0.35,
             "hsv_ranges": [
                 {
                     "lower": [
@@ -65,12 +66,11 @@
                     ]
                 }
             ],
+            "min_confidence": 0.4,
             "red_area": [
                 50,
                 450
-            ],
-            "gap_ratio": 0.35,
-            "min_confidence": 0.4
+            ]
         },
         "roi": [
             330,
@@ -211,13 +211,19 @@
             1
         ],
         "end": [
-            260,
-            133,
-            1,
-            1
+            [
+                260,
+                133,
+                1,
+                1
+            ]
         ],
-        "end_hold": 1000,
-        "duration": 1000,
+        "end_hold": [
+            1000
+        ],
+        "duration": [
+            1000
+        ],
         "next": [
             "Activities_FindActive",
             "Activities_GetAllRe",
@@ -242,13 +248,19 @@
             1
         ],
         "end": [
-            260,
-            133,
-            1,
-            1
+            [
+                260,
+                133,
+                1,
+                1
+            ]
         ],
-        "end_hold": 1000,
-        "duration": 1000,
+        "end_hold": [
+            1000
+        ],
+        "duration": [
+            1000
+        ],
         "next": [
             "Activities_FindActive",
             "Activities_GetAllRe",
@@ -273,13 +285,19 @@
             1
         ],
         "end": [
-            260,
-            467,
-            1,
-            1
+            [
+                260,
+                467,
+                1,
+                1
+            ]
         ],
-        "end_hold": 1000,
-        "duration": 1000,
+        "end_hold": [
+            1000
+        ],
+        "duration": [
+            1000
+        ],
         "next": [
             "Activities_FindActive",
             "Activities_GetAllRe",
@@ -304,13 +322,19 @@
             1
         ],
         "end": [
-            260,
-            467,
-            1,
-            1
+            [
+                260,
+                467,
+                1,
+                1
+            ]
         ],
-        "end_hold": 1000,
-        "duration": 1000,
+        "end_hold": [
+            1000
+        ],
+        "duration": [
+            1000
+        ],
         "next": [
             "Activities_FindActive",
             "Activities_GetAllRe",
@@ -335,13 +359,19 @@
             1
         ],
         "end": [
-            260,
-            467,
-            1,
-            1
+            [
+                260,
+                467,
+                1,
+                1
+            ]
         ],
-        "end_hold": 1000,
-        "duration": 1000,
+        "end_hold": [
+            1000
+        ],
+        "duration": [
+            1000
+        ],
         "timeout": 6000,
         "next": [
             "Activities_FindActive",

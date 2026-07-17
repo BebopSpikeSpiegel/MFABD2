@@ -394,12 +394,12 @@
             120,
             72
         ],
-        "threshold": [
-            0.55
-        ],
         "template": [
             "Mirror_FantasiaSquare_Ico.png",
             "Mirror_FantasiaSquare_Ico_PC2.png"
+        ],
+        "threshold": [
+            0.55
         ]
     },
     "Daily_DailyIco_1": {
