@@ -1113,15 +1113,11 @@
     },
     "Daily_Intimacy_Up": {
         "desc": "可以谈心的对象 开始谈心",
-        "recognition": "OCR",
-        "roi": [
-            986,
-            637,
-            31,
-            24
+        "recognition": "And",
+        "all_of": [
+            "Sub_Intimacy_Number",
+            "Sub_Intimacy_LV"
         ],
-        "expected": "(\\d+)\\s*[/:：|\\-~]\\s*\\1(?!\\d)",
-        "only_rec": true,
         "action": "Click",
         "target_offset": [
             -10,
@@ -1135,6 +1131,33 @@
             "Daily_Intimacy_Up"
         ],
         "focus": "可以谈心-开始"
+    },
+    "Sub_Intimacy_Number": {
+        "desc": "谈心存在空余次数",
+        "recognition": "OCR",
+        "roi": [
+            986,
+            637,
+            31,
+            24
+        ],
+        "expected": "(\\d+)\\s*[/:：|\\-~]\\s*\\1(?!\\d)",
+        "only_rec": true
+    },
+    "Sub_Intimacy_LV": {
+        "desc": "谈心等级围栏",
+        "recognition": "OCR",
+        "roi": [
+            739,
+            131,
+            81,
+            42
+        ],
+        "expected": ["^([1-9]|1[0-9])$"],
+        "replace": [[
+                "\\D",
+                ""
+            ]]
     },
     "Daily_Intimacy_Up_MSG": {
         "recognition": "OCR",
