@@ -89,13 +89,14 @@
         ]
     },
     "GachaADV_AREA2#_Enter": {
+        "desc": "[PC覆盖·2026-07-14] 装备页签选中白核count 35/50仍边缘化:7-13实录连miss 14轮(1.35s/轮,共约19s逼近20s超时)才过闸,前日同点直接哑火。on_error帧实测负样本(装备未选中态)纯白像素0/50,区分度绝对,count降10(20%)终结循环;参照AREA1#_Enter基准count 6/18=33%同哲学。",
         "roi": [
             112,
             274,
             10,
             5
         ],
-        "count": 35
+        "count": 10
     },
     "GachaADV_Location1": {
         "roi": [
