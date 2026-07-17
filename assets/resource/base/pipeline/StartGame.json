@@ -619,6 +619,7 @@
             "tanhaoGE.png"
         ],
         "green_mask": true,
+        "order_by": "Score",
         "action": "Click",
         "post_delay": 1000,
         "timeout": 5000,

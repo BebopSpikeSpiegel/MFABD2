@@ -48,15 +48,14 @@
         "desc": "[识别]pvp代币.防止弹窗滞后,设置两个一样的节点.| 此处int为消除弹窗",
         "recognition": "TemplateMatch",
         "roi": [
-            612,
-            29,
-            173,
-            32
+            479,
+            24,
+            187,
+            43
         ],
         "template": [
-            "pvp_Medals.png"
+            "pvp_wine_Top.png"
         ],
-        "threshold": 0.8,
         "post_delay": 5000,
         "next": [
             "[JumpBack]Setup_Entry1",
@@ -73,8 +72,8 @@
         "recognition": "Or",
         "any_of": ["PVP_Sandplay"],
         "next": [
+            "PVP_Drill_Enter",
             "PVP_Results",
-            "PVP_AutoBattle",
             "[JumpBack]PVP_PerPetTask",
             "[JumpBack]PVP_PVPMes",
             "[JumpBack]PVP_PVPMes2",
@@ -85,6 +84,40 @@
             "[JumpBack]PVP_Sandplay_NoFindSrena"
         ],
         "focus": "PM.PVP箱庭确认,(2/2)"
+    },
+    "PVP_Drill_Enter": {
+        "desc": "PVP过血池,已在校场",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_PVP_Drill_Ocr",
+            "Rec_PVP_Drill_Tmp"
+        ],
+        "next": [
+            "PVP_Results",
+            "PVP_AutoBattle"
+        ],
+        "focus": "PM.pvp校场界面"
+    },
+    "Rec_PVP_Drill_Ocr": {
+        "desc": "[识别]pvp校场-阵型按钮字",
+        "recognition": "OCR",
+        "roi": [
+            70,
+            605,
+            137,
+            54
+        ],
+        "expected": "阵形设置"
+    },
+    "Rec_PVP_Drill_Tmp": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1030,
+            624,
+            69,
+            40
+        ],
+        "template": ["pvp_wine_Rt&Dn.png"]
     },
     "PVP_Results": {
         "desc": "pvp赛季正在结算中(按印象,缺乏实测)",
