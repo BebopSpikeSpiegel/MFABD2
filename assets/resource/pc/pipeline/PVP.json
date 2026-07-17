@@ -1,42 +1,11 @@
 {
-    "PVP_PullUp_QuickCart_PVP": {
-        "desc": "点PVP玩法卡带=MIRROR WARS(镜中之战/普通竞技场,紧凑面板玩法行最左)。|[PC覆盖·2026-07-08 MFA on_error帧] base QuickCart_PVP.png(安卓紧凑缩略图62x39)在PC紧凑面板MIRROR WARS仅0.457<0.7→新裁QuickCart_PVP_PC.png(78x42,从MFA on_error紧凑面板帧,自匹配1.0/Golden Colosseum仅0.33/余卡≤0.39,阈0.7唯一命中不误配黄金竞技场).roi沿用base紧凑行[51,582,873,133],模板自身区分.|[07-16实录] 维护开新赛季后卡面盖'SEASON.151~日期'条,PC旧模板0.533崩→竞技场卡带认不到。新裁PC2只取上半MIRROR WARS标志带(76x30,避开每赛季必变的日期条,自匹配1.0/条带内次名0.459),Or追加。",
-        "template": [
-            "QuickCart_PVP.png",
-            "QuickCart_PVP_PC.png",
-            "QuickCart_PVP_PC2.png"
-        ]
-    },
     "PVP_Sandplay": {
         "desc": "确认在竞技场沙盒(认顶栏奖牌图标)。|[PC覆盖·2026-07-09] base pvp_Medals.png(安卓25x25)在PC 720实测0.72~0.75<阈0.8恒miss→Sandplay认不到→AutoBattle永远轮不到(MFA实录:进场后Sandplay连败23次空转,一场没打)。从maa-mcp今日沙盒帧(INTER_AREA降720)裁pvp_Medals_PC.png(26x26金徽章),三帧交叉验0.915/0.938/0.932全过0.8、roi内唯一命中。追加进template(Or语义,base保留),阈沿base 0.8。|[07-16实录] 维护后QC1剧情箱庭顶栏货币图标在roi内打0.712,踩过遗留的[0.7]阈(desc与实值矛盾的历史遗留)→(1/2)在QC1假阳性→卡带导航被跳过→竞技场整场空跑。阈回0.8(PC奖牌真身0.915~0.938余量充足,0.712冒牌被挡)。",
         "roi": [
-            612,
-            18,
-            173,
-            43
-        ],
-        "template": [
-            "pvp_Medals.png",
-            "pvp_Medals_PC.png"
-        ],
-        "threshold": [
-            0.8
-        ]
-    },
-    "PVP_Sandplay_Again": {
-        "desc": "第二次已确认,1/除消除弹窗,2/还要进入舞台,3/复位异常位置",
-        "next": [
-            "PVP_Results",
-            "PVP_AutoBattle",
-            "[JumpBack]PVP_PerPetTask",
-            "[JumpBack]PVP_PVPMes",
-            "[JumpBack]PVP_PVPMes2",
-            "[JumpBack]PVP_Errmsg1#_Clear",
-            "[JumpBack]PVP_Errmsg2#_Clear",
-            "[JumpBack]PVP_PerOperationsMain_Error",
-            "[JumpBack]PVP_InsandboxAndlocAbnormal",
-            "[JumpBack]PVP_PVPStart",
-            "[JumpBack]PVP_Sandplay_NoFindSrena"
+            503,
+            14,
+            161,
+            47
         ]
     },
     "PVP_Results": {

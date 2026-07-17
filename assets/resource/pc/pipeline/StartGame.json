@@ -84,6 +84,15 @@
             57
         ]
     },
+    "StartGame_PerPetTask": {
+        "desc": "宠物派遣领取(认宠物头顶'!'气泡)。|[PC审阅·2026-07-17] 如原base模板误识别,就改用PC专门模板。",
+        "template": [
+            "PetMidGe_PC.png"
+        ],
+        "threshold": [
+            0.8
+        ]
+    },
     "StartGame_Special": {
         "desc": "另类赛季奖励接收[已适配,黄金竞技场]",
         "expected": [
@@ -135,9 +144,5 @@
             "KadaiGe.png",
             "KadaiGe_PC.png"
         ]
-    },
-    "StartGame_PerPetTask": {
-        "desc": "宠物派遣领取(认宠物头顶'!'气泡)。|[PC覆盖·2026-07-13实机] 旧pc同名模板(10x23,仅'!'字形)在PC箱庭场景大面积假阳性(建筑纹理0.90~0.93),Horizontal取最左点空17次80秒,派遣未领(07-13 00:22实录);base整泡模板(43x32)在PC仅~0.59恒miss(PC气泡实际仅~35x26)。从实机720帧重裁完整气泡(44x34,椭圆+尾巴外绿蒙版),真泡实测1.0/0.987/遮挡0.826;负样本最高0.723→threshold提0.8双向安全。",
-        "threshold": 0.8
     }
 }
