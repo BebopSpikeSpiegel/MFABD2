@@ -1205,7 +1205,9 @@
             86
         ],
         "template": ["Talk_Status.png"],
+        "post_delay": 3000,
         "next": [
+            "[JumpBack]PVP_PVPMes2",
             "Daily_Intimacy_Talk_Out",
             "[JumpBack]Daily_Intimacy_TalkSkip",
             "[JumpBack]Daily_Intimacy_TalkSkip_Ck",
