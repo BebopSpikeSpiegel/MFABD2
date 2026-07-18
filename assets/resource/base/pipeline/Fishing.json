@@ -227,7 +227,9 @@
         ]
     },
     "Fishing_Entry": {
-        "anchor": {"MainMenu_GoFishing": "Fishing_InFishingNet"},
+        "anchor": {
+            "MainMenu_GoFishing": "Fishing_InFishingNet"
+        },
         "next": [
             "Daily_Busin_Hub_Post",
             "Fishing_Already_Setsail",
@@ -252,7 +254,15 @@
             "[JumpBack]Global_WaitingForLoading",
             "Fishing_InMap",
             "[JumpBack]Fishing_InMap_TalkSkip"
-        ]
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": [
+                "钓鱼鱼笼入口进入"
+            ],
+            "Node.Recognition.Failed": [
+                "[WRN]钓鱼鱼笼入口未找到,2级渔船是否已升级?"
+            ]
+        }
     },
     "Fishing_InMap": {
         "desc": "进入地图选择界面",
