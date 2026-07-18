@@ -153,6 +153,30 @@
             "開啟全部"
         ]
     },
+    "Activities_Roulette": {
+        "expected": [
+            "1次免费",
+            "1次免費"
+        ]
+    },
+    "Activities_Roulette_Pay_CkIn": {
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "roi": [
+                    934,
+                    481,
+                    136,
+                    63
+                ],
+                "expected": [
+                    "旋转",
+                    "^轉[0-9]+次$"
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ]
+    },
     "Activities_ResultBack": {
         "desc": "抽卡/活动结果页返回。|[PC覆盖] OCR'活动':base roi[313,139,334,441]→720[148,8,95,45];target返回箭头base[120,35]→(15,20)。",
         "target": [
