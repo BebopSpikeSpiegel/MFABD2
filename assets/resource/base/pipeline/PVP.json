@@ -208,9 +208,11 @@
             "PVPstage.png"
         ],
         "action": "Click",
-        "target": [
-            529,
-            414
+        "target_offset": [
+            0,
+            -30,
+            0,
+            0
         ],
         "post_delay": 3000,
         "focus": "PM.PVP.点击舞台物件"
