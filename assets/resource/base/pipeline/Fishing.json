@@ -227,7 +227,9 @@
         ]
     },
     "Fishing_Entry": {
-        "anchor": {"MainMenu_GoFishing": "Fishing_InFishingNet"},
+        "anchor": {
+            "MainMenu_GoFishing": "Fishing_InFishingNet"
+        },
         "next": [
             "Daily_Busin_Hub_Post",
             "Fishing_Already_Setsail",
@@ -252,7 +254,15 @@
             "[JumpBack]Global_WaitingForLoading",
             "Fishing_InMap",
             "[JumpBack]Fishing_InMap_TalkSkip"
-        ]
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": [
+                "钓鱼鱼笼入口进入"
+            ],
+            "Node.Recognition.Failed": [
+                "[WRN]钓鱼鱼笼入口未找到,2级渔船是否已升级?"
+            ]
+        }
     },
     "Fishing_InMap": {
         "desc": "进入地图选择界面",
@@ -289,7 +299,8 @@
         "post_delay": 1000,
         "timeout": 10000,
         "next": [
-            "Fishing_InMap_TalkSkip_Ck"
+            "[JumpBack]Fishing_InMap_TalkSkip_Ck",
+            "[JumpBack]Fishing_InMap_TutorialSkip"
         ],
         "focus": "消除广场教程对话"
     },
@@ -306,6 +317,25 @@
         ],
         "action": "Click",
         "post_delay": 1000
+    },
+    "Fishing_InMap_TutorialSkip": {
+        "recognition": "OCR",
+        "roi": [
+            410,
+            106,
+            437,
+            564
+        ],
+        "expected": "活泼少女",
+        "action": "Click",
+        "target": [
+            861,
+            287,
+            7,
+            10
+        ],
+        "repeat": 50,
+        "repeat_delay": 457
     },
     "Fishing_MapNavigate": {
         "next": [
@@ -329,6 +359,7 @@
         "post_delay": 2000,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]Fishing_InMap_TutorialSkip",
             "Fishing_Start"
         ]
     },
@@ -375,5 +406,77 @@
         "expected": [
             "^[1-9]\\d*$"
         ]
+    },
+    "Fishing_Move_Hub": {
+        "max_hit": 1,
+        "action": "Custom",
+        "custom_action": "PatchBatch",
+        "custom_action_param": {
+            "patches": {
+                "Daily_FantasiaSquare": {
+                    "next": [
+                        "Fishing_Move_SandBoxAct"
+                    ]
+                }
+            },
+            "origins": {
+                "Daily_FantasiaSquare": {
+                    "next": [
+                        "Daily_Pray",
+                        "Daily_DailyIco_1",
+                        "Daily_DailyIco_2"
+                    ]
+                }
+            }
+        },
+        "next": ["Daily_Square_Hub"]
+    },
+    "Fishing_Move_SandBoxAct": {
+        "next": [
+            "[JumpBack]QuickHunt_MIniMap_locErr",
+            "Fishing_Move_NviGuide_Butt"
+        ]
+    },
+    "Fishing_Move_NviGuide_Butt": {
+        "max_hit": 3,
+        "action": "Click",
+        "target": [
+            230,
+            88,
+            3,
+            3
+        ],
+        "post_delay": 2000,
+        "next": [
+            "Fishing_Move_NviGuide_SubOcr",
+            "Fishing_Move_NviGuide_Butt"
+        ]
+    },
+    "Fishing_Move_NviGuide_SubOcr": {
+        "recognition": "OCR",
+        "roi": [
+            294,
+            68,
+            130,
+            288
+        ],
+        "expected": "码头",
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Fishing_InMap",
+            "[JumpBack]Fishing_Move_NviGuide_CKMsgBox_Ocr",
+            "[JumpBack]Arbitrage_NviGuide_Onfoot_Loop",
+            "[JumpBack]Fishing_InMap_TalkSkip",
+            "[JumpBack]Fishing_InMap_TutorialSkip",
+            "[JumpBack]Global_WaitingForLoading",
+            "Fishing_Move_NviGuide_SubOcr"
+        ]
+    },
+    "Fishing_Move_NviGuide_CKMsgBox_Ocr": {
+        "recognition": "Or",
+        "any_of": ["Arbitrage_NviGuide_CKMsgBox_Ocr"],
+        "action": "Click",
+        "post_delay": 2000
     }
 }

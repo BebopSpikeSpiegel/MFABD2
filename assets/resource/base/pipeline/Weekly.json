@@ -48,9 +48,13 @@
     "Weekly_Fishing_Start_pre": {
         "desc": "先恢复到主界面",
         "recognition": "And",
-        "all_of": ["Global_ToHomePage_Enter"],
+        "all_of": [
+            "Global_ToHomePage_Enter"
+        ],
         "timeout": 1,
-        "next": ["Weekly_Fishing_Start"]
+        "next": [
+            "Weekly_Fishing_Start"
+        ]
     },
     "Weekly_Fishing_Start": {
         "recognition": "Custom",
@@ -88,6 +92,27 @@
     },
     "Weekly_Fishing_Anchor_Goto": {
         "max_hit": 1,
+        "action": "Custom",
+        "custom_action": "PatchBatch",
+        "custom_action_param": {
+            "patches": {
+                "Daily_Busin_SubMenu": {
+                    "next": [
+                        "[Anchor]MainMenu_GoFishing"
+                    ]
+                }
+            },
+            "origins": {
+                "Daily_Busin_SubMenu": {
+                    "next": [
+                        "[Anchor]MainMenu_GoFishing",
+                        "[JumpBack]Daily_GetBusin_SubMenu_Claim",
+                        "[JumpBack]Daily_GetBusinRewardBack",
+                        "Daily_Busin_Enter"
+                    ]
+                }
+            }
+        },
         "next": [
             "Fishing_Entry"
         ]
