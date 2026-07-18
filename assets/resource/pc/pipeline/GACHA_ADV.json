@@ -1,6 +1,40 @@
 {
     "GachaADV_GachaRed_Have": {
-        "desc": "识别左下抽抽乐-红点存在-点击抽卡",
+        "desc": "识别左下抽抽乐-红点存在-点击抽卡。|[PC覆盖·2026-07-18] 主页抽抽乐图标的红徽章为菱形带白'!'(约9x9px),PC渲染饱和度偏低:全局预设S>=140时仅26px过筛且被'!'劈成2 blob(单块<red_area min 30)->假阴性'无可关注抽抽乐'漏免费抽(尸检帧rdd_GachaADV_GachaRed_Have实测:S>=120徽章43px vs 图标艺术区噪声仅6px,S>=100噪声暴涨53px不可取)。改节点局部直连参数(整体替换base的preset间接引用,不动全局Agt_RedDot_Preset):S下限120/red_area min 15(防劈半)/min_confidence 0.1(本节点误报=白进抽卡页无害退出,漏报=丢免费抽,成本不对称偏灵敏)。",
+        "custom_recognition_param": {
+            "gap_ratio": 0.35,
+            "hsv_ranges": [
+                {
+                    "lower": [
+                        0,
+                        120,
+                        120
+                    ],
+                    "upper": [
+                        12,
+                        255,
+                        255
+                    ]
+                },
+                {
+                    "lower": [
+                        165,
+                        120,
+                        120
+                    ],
+                    "upper": [
+                        180,
+                        255,
+                        255
+                    ]
+                }
+            ],
+            "min_confidence": 0.1,
+            "red_area": [
+                15,
+                1200
+            ]
+        },
         "roi": [
             92,
             617,
