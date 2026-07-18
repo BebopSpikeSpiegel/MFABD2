@@ -509,6 +509,24 @@
             11
         ]
     },
+    "Sub_Intimacy_Number": {
+        "desc": "谈心存在空余次数",
+        "roi": [
+            1031,
+            649,
+            37,
+            25
+        ]
+    },
+    "Sub_Intimacy_LV": {
+        "desc": "谈心等级围栏",
+        "roi": [
+            611,
+            104,
+            82,
+            43
+        ]
+    },
     "Daily_Intimacy_Up_MSG": {
         "expected": [
             "确认",
