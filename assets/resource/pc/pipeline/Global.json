@@ -24,6 +24,55 @@
         ],
         "focus": "G=1.餐馆场景,点Home退出"
     },
+    "Global_CardMenu_RewardBubble_TurnOFF": {
+        "desc": "检查QC,卡带奖励气泡,若黄则点击关闭。|[PC覆盖·2026-07-19] And追加'游戏卡珍藏集'标题OCR守卫(第三成员,尾插不改And box=首子项即点击落点):base裸判定=[1098,35,44,10]数黄像素>=10,竞技场准备界面右上阵形/补充次数面板实测53黄px假阳性(07-18 19:51实录)→复位链误入竞技场后本节点每轮抢答点(1122,42)空点25s,压制链条自带的HomeButton逃生,套利整任务静默零执行。守卫roi/expected与Tp1同源,气泡开关在右上与左上标题互不遮挡。",
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "ColorMatch",
+                "roi": [
+                    1098,
+                    35,
+                    44,
+                    10
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Sub_SieveExpand_Yew_Clr",
+            {
+                "sub_name": "TitleGuard",
+                "recognition": "OCR",
+                "roi": [
+                    150,
+                    4,
+                    178,
+                    64
+                ],
+                "expected": [
+                    "游戏卡珍藏集",
+                    "^遊戲卡.收藏集"
+                ]
+            }
+        ]
+    },
+    "Global_HomeButton_Once": {
+        "desc": "点击一次主页面图标。|[PC覆盖·2026-07-19] 追加竞技场准备界面右上Home药丸图标模板(Or语义,base两张保留):复位链被'返回战场'挂起块劫持进竞技场后,base安卓模板在该界面仅0.435/0.555<0.7全miss→逃生链断裂,20s超时任务死。MainHome_ArenaPrep_PC.png 26x26从07-18 19:51:53尸检帧裁,自匹配1.000/次日竞技场帧交叉0.847@(1184,27)/主页负样本0.366/图鉴负样本-0.044。与气泡守卫构成自愈组合:误入竞技场→无人抢答→本节点认出Home→点击回箱庭→链条重试。",
+        "template": [
+            "MainHomeIceGE.png",
+            "MainHomeRIceGE.png",
+            "MainHome_ArenaPrep_PC.png"
+        ]
+    },
     "Global_BackToPve_CardMenu_Tp1": {
         "desc": "判断在传统卡带界面",
         "roi": [
