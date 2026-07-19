@@ -509,13 +509,22 @@
             11
         ]
     },
-    "Daily_Intimacy_Up": {
-        "desc": "可以谈心的对象 开始谈心",
+    "Sub_Intimacy_Number": {
+        "desc": "谈心存在空余次数",
         "roi": [
-            1030,
-            650,
-            32,
-            22
+            1031,
+            649,
+            37,
+            25
+        ]
+    },
+    "Sub_Intimacy_LV": {
+        "desc": "谈心等级围栏",
+        "roi": [
+            611,
+            104,
+            82,
+            43
         ]
     },
     "Daily_Intimacy_Up_MSG": {
@@ -541,5 +550,40 @@
             22,
             27
         ]
+    },
+    "Daily_Intimacy_Swip": {
+        "roi": [
+            70,
+            641,
+            78,
+            76
+        ],
+        "custom_action_param": {
+            "action": "Swipe",
+            "begin": [
+                108,
+                654,
+                1,
+                1
+            ],
+            "detect_roi": [
+                98,
+                652,
+                22,
+                22
+            ],
+            "duration": 800,
+            "end": [
+                108,
+                155,
+                1,
+                1
+            ],
+            "end_hold": 1000,
+            "proxy_node": "Custom_Proxy_Swipe",
+            "retry_times": 2,
+            "settle_delay": 500,
+            "threshold": 5.0
+        }
     }
 }
