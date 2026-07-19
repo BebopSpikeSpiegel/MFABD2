@@ -1071,16 +1071,46 @@
         "expected": "亲密度增益",
         "only_rec": true,
         "next": [
-            "[JumpBack]Daily_Intimacy_Set_FirstPerson",
+            "[JumpBack]Daily_Intimacy_Switch_Set",
             "Daily_Intimacy_Exhausted",
             "[JumpBack]Daily_Intimacy_Up",
-            "[JumpBack]Daily_Intimacy_Turn_NextPerson"
+            "[JumpBack]Daily_Intimacy_Switch_Turn",
+            "Daily_Intimacy_Swip"
         ],
         "focus": "亲密度目录"
     },
+    "Daily_Intimacy_Switch_Set": {
+        "recognition": "Custom",
+        "custom_recognition": "CheckTag",
+        "custom_recognition_param": {
+            "tag": "Intimacy_Switch_Set",
+            "max": 1
+        },
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "Intimacy_Switch_Set",
+            "value": 1
+        },
+        "next": ["Daily_Intimacy_Set_FirstPerson"]
+    },
+    "Daily_Intimacy_Switch_Turn": {
+        "recognition": "Custom",
+        "custom_recognition": "CheckTag",
+        "custom_recognition_param": {
+            "tag": "Intimacy_Switch_Turn",
+            "max": 6
+        },
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "Intimacy_Switch_Turn",
+            "value": 1
+        },
+        "next": ["Daily_Intimacy_Turn_NextPerson"]
+    },
     "Daily_Intimacy_Set_FirstPerson": {
         "desc": "设定第一位人员左边",
-        "max_hit": 1,
         "recognition": "ColorMatch",
         "roi": [
             124,
@@ -1104,15 +1134,11 @@
     },
     "Daily_Intimacy_Up": {
         "desc": "可以谈心的对象 开始谈心",
-        "recognition": "OCR",
-        "roi": [
-            986,
-            637,
-            31,
-            24
+        "recognition": "And",
+        "all_of": [
+            "Sub_Intimacy_Number",
+            "Sub_Intimacy_LV"
         ],
-        "expected": "(\\d+)\\s*[/:：|\\-~]\\s*\\1(?!\\d)",
-        "only_rec": true,
         "action": "Click",
         "target_offset": [
             -10,
@@ -1126,6 +1152,33 @@
             "Daily_Intimacy_Up"
         ],
         "focus": "可以谈心-开始"
+    },
+    "Sub_Intimacy_Number": {
+        "desc": "谈心存在空余次数",
+        "recognition": "OCR",
+        "roi": [
+            986,
+            637,
+            31,
+            24
+        ],
+        "expected": "(\\d+)\\s*[/:：|\\-~]\\s*\\1(?!\\d)",
+        "only_rec": true
+    },
+    "Sub_Intimacy_LV": {
+        "desc": "谈心等级围栏",
+        "recognition": "OCR",
+        "roi": [
+            739,
+            131,
+            81,
+            42
+        ],
+        "expected": ["^([1-9]|1[0-9])$"],
+        "replace": [[
+                "\\D",
+                ""
+            ]]
     },
     "Daily_Intimacy_Up_MSG": {
         "recognition": "OCR",
@@ -1152,7 +1205,9 @@
             86
         ],
         "template": ["Talk_Status.png"],
+        "post_delay": 3000,
         "next": [
+            "[JumpBack]PVP_PVPMes2",
             "Daily_Intimacy_Talk_Out",
             "[JumpBack]Daily_Intimacy_TalkSkip",
             "[JumpBack]Daily_Intimacy_TalkSkip_Ck",
@@ -1193,7 +1248,6 @@
     },
     "Daily_Intimacy_Turn_NextPerson": {
         "desc": "下一位谈心对象",
-        "max_hit": 6,
         "recognition": "ColorMatch",
         "roi": "[Anchor]SetBox",
         "roi_offset": [
@@ -1230,5 +1284,57 @@
         "only_rec": true,
         "next": ["Global_ToHomePage"],
         "focus": "谈心次数已耗尽"
+    },
+    "Daily_Intimacy_Swip": {
+        "max_hit": 3,
+        "recognition": "OCR",
+        "roi": [
+            85,
+            591,
+            92,
+            88
+        ],
+        "expected": ["^[a-zA-Z\u4e00-\u9fa5]+$"],
+        "action": "Custom",
+        "custom_action": "SmartSwipe",
+        "custom_action_param": {
+            "proxy_node": "Custom_Proxy_Swipe",
+            "action": "Swipe",
+            "begin": [
+                129,
+                615,
+                1,
+                1
+            ],
+            "end": [
+                129,
+                188,
+                1,
+                1
+            ],
+            "detect_roi": [
+                116,
+                612,
+                26,
+                25
+            ],
+            "duration": 800,
+            "end_hold": 1000,
+            "settle_delay": 500,
+            "retry_times": 2,
+            "threshold": 5.0
+        },
+        "next": ["Daily_Intimacy_Swich_Reset"]
+    },
+    "Daily_Intimacy_Swich_Reset": {
+        "action": "Custom",
+        "custom_action": "ResetTag",
+        "custom_action_param": {
+            "tags": [
+                "Intimacy_Switch_Set",
+                "Intimacy_Switch_Set"
+            ]
+        },
+        "next": ["Daily_Intimacy_CatalogCard"]
     }
 }
