@@ -158,7 +158,7 @@
                 "广场每日祈求",
                 "亲密度谈心"
             ],
-            "description": "依次执行：<code>公会每日签到</code>、<code>餐馆-格鲁费之星</code>、<code>广场-神像许愿抽奖</code>。<br>进入餐馆领取每日<code>常客圣石</code>。"
+            "description": "依次执行：<code>公会每日签到</code>、<code>餐馆-格鲁费之星</code>、<code>亲密度谈心</code>、<code>广场-神像许愿抽奖</code>。<br>进入餐馆领取每日<code>常客圣石</code>。"
         },
         {
             "name": "[领取]任务页(每日/每周)",
@@ -1353,7 +1353,7 @@
             ]
         },
         "亲密度谈心": {
-            "description": "",
+            "description": "在亲密度目录中依次与符合等级条件且仍有次数的对象谈心。",
             "type": "switch",
             "cases": [
                 {
@@ -1372,7 +1372,7 @@
             ]
         },
         "亲密度谈心等级筛选": {
-            "description": "",
+            "description": "仅与亲密度等级低于所选阈值的对象谈心。",
             "type": "select",
             "default_case": "Lv<20",
             "cases": [
