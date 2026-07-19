@@ -1341,7 +1341,7 @@
         "custom_action_param": {
             "tags": [
                 "Intimacy_Switch_Set",
-                "Intimacy_Switch_Set"
+                "Intimacy_Switch_Turn"
             ]
         },
         "next": ["Daily_Intimacy_CatalogCard"]
