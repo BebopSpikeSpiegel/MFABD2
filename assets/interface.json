@@ -179,7 +179,8 @@
             "option": [
                 "餐馆领装饰币",
                 "餐馆自动升级",
-                "广场每日祈求"
+                "广场每日祈求",
+                "亲密度谈心"
             ],
             "description": "依次执行：<code>公会每日签到</code>、<code>餐馆-格鲁费之星</code>、<code>广场-神像许愿抽奖</code>。<br>进入餐馆领取每日<code>常客圣石</code>。"
         },
@@ -1342,6 +1343,56 @@
                     "pipeline_override": {
                         "Daily_Square_Hub": {
                             "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
+        "亲密度谈心": {
+            "description": "",
+            "type": "switch",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {},
+                    "option": ["亲密度谈心等级筛选"]
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "Daily_Intimacy_HUB": {
+                            "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
+        "亲密度谈心等级筛选": {
+            "description": "",
+            "type": "select",
+            "default_case": "Lv<20",
+            "cases": [
+                {
+                    "name": "Lv<10",
+                    "pipeline_override": {
+                        "Sub_Intimacy_LV": {
+                            "expected": ["^[1-9]$"]
+                        }
+                    }
+                },
+                {
+                    "name": "Lv<15",
+                    "pipeline_override": {
+                        "Sub_Intimacy_LV": {
+                            "expected": ["^([1-9]|1[0-4])$"]
+                        }
+                    }
+                },
+                {
+                    "name": "Lv<20",
+                    "pipeline_override": {
+                        "Sub_Intimacy_LV": {
+                            "expected": ["^([1-9]|1[0-9])$"]
                         }
                     }
                 }
