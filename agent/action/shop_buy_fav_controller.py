@@ -319,13 +319,20 @@ class ShopBuyFavController(CustomAction):
         self, img, bx, by, bw, bh, img_w, img_h
     ) -> str:
         """
-        采样星星完整 box，计算饱和度 >0.3 的像素占比。
-        黄星 ~68%，灰星 ~0%。阈值 15% 可靠分离。
+        采样星星 box 中心核（四边各内缩 30%），计算饱和度 >0.3 的像素占比。
+        黄星星心 ~58-72%，灰星星心 ~0%。阈值 15% 可靠分离。
+
+        [2026-07-20] 原为全框采样（安卓标定黄~68%/灰~0%）。PC 上商品图整体
+        缩小，识别框角部渗入卡面暖色艺术背景（米=金色稻草），灰星全框高饱和
+        占比实测可达 16%+ 越过 15% 阈被误判黄 → 对齐循环点亮/熄灭振荡。
+        改采星心核后背景被排除，判别力恢复；对安卓无损（星心=纯星体填充）。
         """
-        x1 = max(0, bx)
-        y1 = max(0, by)
-        x2 = min(img_w, bx + bw)
-        y2 = min(img_h, by + bh)
+        inset_x = int(bw * 0.3)
+        inset_y = int(bh * 0.3)
+        x1 = max(0, bx + inset_x)
+        y1 = max(0, by + inset_y)
+        x2 = min(img_w, bx + bw - inset_x)
+        y2 = min(img_h, by + bh - inset_y)
 
         patch = img[y1:y2, x1:x2, :3].astype(np.float32)
         if patch.size == 0:
