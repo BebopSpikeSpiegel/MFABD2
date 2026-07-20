@@ -44,22 +44,25 @@ CORE_BIN=$(dirname "$CORE_LIB")
 echo "📦 覆盖内核源: $CORE_BIN"
 
 # 2) 定位 target_root 里 MFAA 自带内核目录（可能多个 rid）
-mapfile -t TARGET_LIBS < <(find "$TARGET_ROOT" \( -name 'libMaaFramework.*' -o -name 'MaaFramework.dll' \) || true)
-if [ "${#TARGET_LIBS[@]}" -eq 0 ]; then
+#    注意：macOS 自带 Bash 3.2，不支持 mapfile / declare -A，这里改用去重后的目录列表
+#    + while-read（here-string 不开子 shell，能保住 FIRST_NATIVE_DIR）。
+TARGET_DIRS=$(find "$TARGET_ROOT" -path '*/symbols/*' -prune -o \
+                \( -name 'libMaaFramework.so' -o -name 'libMaaFramework.dylib' -o -name 'MaaFramework.dll' \) \
+                -exec dirname {} \; 2>/dev/null | sort -u || true)
+if [ -z "$TARGET_DIRS" ]; then
   echo "::error::目标里找不到 MFAA 自带内核（$TARGET_ROOT）"
   exit 1
 fi
 
 FIRST_NATIVE_DIR=""
-declare -A SEEN_DIR=()
-for lib in "${TARGET_LIBS[@]}"; do
-  ndir=$(dirname "$lib")
-  [ -n "${SEEN_DIR[$ndir]:-}" ] && continue
-  SEEN_DIR[$ndir]=1
+while IFS= read -r ndir; do
+  [ -z "$ndir" ] && continue
   echo "⚙️  覆盖内核: $CORE_BIN/* -> $ndir/"
   cp -rf "$CORE_BIN"/. "$ndir"/
   [ -z "$FIRST_NATIVE_DIR" ] && FIRST_NATIVE_DIR="$ndir"
-done
+done <<EOF
+$TARGET_DIRS
+EOF
 
 # 3) 同步 MaaAgentBinary（若 Core 带、且目标里已有）
 AB_SRC=$(find "$CORE_SRC" -type d -name 'MaaAgentBinary' | head -n 1 || true)
