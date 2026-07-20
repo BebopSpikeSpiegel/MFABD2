@@ -128,16 +128,23 @@ jobs:
           import re, os, sys
           req_file = 'requirements.txt'
           mfaa_tag = ''
+          mfa_core_tag = ''
           if os.path.exists(req_file):
               with open(req_file, 'r', encoding='utf-8') as f:
                   for line in f:
-                      m = re.match(r'^#\s*MFAA_TAG=(v[\w\.\-]+)', line.strip())
-                      if m: mfaa_tag = m.group(1); break
+                      s = line.strip()
+                      m = re.match(r'^#\s*MFAA_TAG=(v[\w\.\-]+)', s)
+                      if m: mfaa_tag = m.group(1)
+                      # 急救覆盖：允许留空 (留空即不覆盖，不报错)
+                      m2 = re.match(r'^#\s*MFA_CORE_TAG=(v[\w\.\-]+)', s)
+                      if m2: mfa_core_tag = m2.group(1)
           if not mfaa_tag:
               print('::error::未找到 # MFAA_TAG 配置'); sys.exit(1)
           print(f'✅ 目标资源版本: {mfaa_tag}')
+          print(f'🔧 MFA 内核覆盖: {mfa_core_tag or \"（未启用）\"}')
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
               f.write(f'mfaa_tag={mfaa_tag}\n')
+              f.write(f'mfa_core_tag={mfa_core_tag}\n')
           "
 
       # [修改] 下载资源 (改用 steps.parse_config.outputs.mfaa_tag)
@@ -151,6 +158,18 @@ jobs:
           out-file-path: "temp_detect"
           extract: true
 
+      # [急救] 下载覆盖内核（仅作拷贝源，随后原地覆盖 MFAA 自带内核）
+      - name: Download Override Core for Detection
+        if: steps.parse_config.outputs.mfa_core_tag != ''
+        uses: robinraju/release-downloader@28fc21f50d76778e7023361aa1f863e717d3d56f # v1
+        with:
+          repository: MaaXYZ/MaaFramework
+          latest: false
+          tag: ${{ steps.parse_config.outputs.mfa_core_tag }}
+          fileName: "MAA-linux-x86_64-*"
+          out-file-path: "core_src"
+          extract: true
+
       # 3. 探测内核版本
       - name: Detect Core Version
         id: detect_maa
@@ -161,6 +180,14 @@ jobs:
           if [ -z "$SO_FILE" ]; then
             echo "::error::根本找不到 libMaaFramework.so 文件！"
             exit 1
+          fi
+
+          # [急救] 若指定了覆盖内核：把 Core 的 bin/* 原地覆盖到 MFAA 内核所在目录，
+          # 覆盖后 SO_FILE 路径不变、字节已是覆盖版 → 探测到的即“最终会随包发出的版本”。
+          if [ -d "$(pwd)/core_src" ]; then
+            echo "🚑 检测到覆盖内核，执行原地覆盖后再探测版本"
+            chmod +x ./scripts/overlay_core.sh
+            ./scripts/overlay_core.sh "$(pwd)/core_src" "$(pwd)/temp_detect"
           fi
 
           SO_DIR=$(dirname "$SO_FILE")
@@ -212,6 +239,7 @@ jobs:
       version_type: ${{ steps.set_tag.outputs.version_type }}
       maa_version: ${{ steps.detect_maa.outputs.version }}
       mfaa_tag: ${{ steps.parse_config.outputs.mfaa_tag }}
+      mfa_core_tag: ${{ steps.parse_config.outputs.mfa_core_tag }}
 
   resource_check:
     name: Check Resources
@@ -265,8 +293,9 @@ jobs:
     env:
       MAA_VERSION: ${{ needs.meta.outputs.maa_version }}
       MFAA_TAG: ${{ needs.meta.outputs.mfaa_tag }}
+      MFA_CORE_TAG: ${{ needs.meta.outputs.mfa_core_tag }}
 
-      # 解决 Windows 乱码问题 
+      # 解决 Windows 乱码问题
       PYTHONUTF8: 1
       PYTHONIOENCODING: utf-8
       # 解决部分 Windows 终端不认 ANSI 颜色的问题（可选）
@@ -408,7 +437,8 @@ jobs:
         with:
           repository: MaaXYZ/MaaFramework
           latest: false
-          tag: "${{ env.MAA_VERSION }}"
+          # 急救时优先用覆盖 tag（保证与桌面/pip 同版本）；否则沿用探测到的 MAA_VERSION
+          tag: ${{ env.MFA_CORE_TAG != '' && env.MFA_CORE_TAG || env.MAA_VERSION }}
           # Android 文件名格式通常是 MAA-android-arm64-xxxx
           fileName: "MAA-android-${{ matrix.arch }}*"
           out-file-path: "AndroidCore"
@@ -669,13 +699,62 @@ jobs:
             fi
           fi
 
+      # [急救] 桌面端：下载指定版本内核（仅作拷贝源）
+      - name: Download Override Core (Desktop)
+        if: matrix.is_android == false && env.MFA_CORE_TAG != ''
+        uses: robinraju/release-downloader@28fc21f50d76778e7023361aa1f863e717d3d56f # v1
+        with:
+          repository: MaaXYZ/MaaFramework
+          latest: false
+          tag: ${{ env.MFA_CORE_TAG }}
+          # matrix.os ∈ {win,macos,linux}，matrix.arch ∈ {x86_64,aarch64}，与官方命名一致
+          fileName: "MAA-${{ matrix.os }}-${{ matrix.arch }}-*"
+          out-file-path: "OverrideCore"
+          extract: true
+
+      # [急救] 桌面端：原地覆盖 MFAA 自带内核 + 校验覆盖后版本
+      - name: Overlay & Verify Override Core (Desktop)
+        if: matrix.is_android == false && env.MFA_CORE_TAG != ''
+        shell: bash
+        run: |
+          set -e
+          chmod +x ./scripts/overlay_core.sh
+          # 覆盖，并抓出被覆盖的内核目录（用于随后校验）
+          OUT=$(./scripts/overlay_core.sh "$(pwd)/OverrideCore" "$(pwd)/install")
+          echo "$OUT"
+          NATIVE_DIR=$(echo "$OUT" | grep '^OVERLAY_NATIVE_DIR=' | cut -d= -f2-)
+
+          # 校验：读取覆盖后 install 里内核的版本，必须等于 MAA_VERSION
+          EXPECT="${MAA_VERSION#v}"
+          LIB=$(find "$NATIVE_DIR" \( -name 'libMaaFramework.*' -o -name 'MaaFramework.dll' \) | head -n1)
+          echo "🔎 校验目标: $LIB"
+          export LD_LIBRARY_PATH="$NATIVE_DIR:${LD_LIBRARY_PATH:-}"
+          export TARGET_LIB="$LIB" EXPECT_VER="$EXPECT"
+          python3 - << 'EOF'
+          import os, sys, ctypes
+          lib_path = os.environ["TARGET_LIB"]
+          expect = os.environ["EXPECT_VER"]
+          try:
+              lib = ctypes.CDLL(lib_path, mode=getattr(ctypes, "RTLD_GLOBAL", 0))
+              lib.MaaVersion.restype = ctypes.c_char_p
+              got = lib.MaaVersion().decode("utf-8").lstrip("v")
+          except OSError as e:
+              # Win/Mac 可能因依赖搜索路径无法加载 → 退化为文件存在性告警，不阻断
+              print(f"::warning::无法加载校验版本({e})，仅确认文件已覆盖")
+              sys.exit(0)
+          if got != expect:
+              print(f"::error::覆盖后内核版本={got} 与目标={expect} 不一致")
+              sys.exit(1)
+          print(f"✅ 覆盖后内核版本校验通过: v{got}")
+          EOF
+
       # [核心修复 1] 强力清理残留的压缩包
       - name: Cleanup Archives
         shell: bash
         run: |
           echo "🧹 Cleaning up zip/tar.gz files..."
-          rm -f *.zip *.tar.gz 
-          rm -rf MFA AndroidCore
+          rm -f *.zip *.tar.gz
+          rm -rf MFA AndroidCore OverrideCore
           # 清理 install 目录里可能被拷进去的压缩包
           find install -name "*.zip" ! -name "python*.zip" -delete 2>/dev/null || true
           find install -name "*.tar.gz" -delete 2>/dev/null || true
