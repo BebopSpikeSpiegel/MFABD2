@@ -28,10 +28,16 @@ set -euo pipefail
 CORE_SRC="${1:?用法: overlay_core.sh <core_src_dir> <target_root>}"
 TARGET_ROOT="${2:?用法: overlay_core.sh <core_src_dir> <target_root>}"
 
-# 1) 定位 Core 的 bin 目录（以 libMaaFramework 为锚，兼容 .so/.dylib/.dll）
-CORE_LIB=$(find "$CORE_SRC" \( -name 'libMaaFramework.*' -o -name 'MaaFramework.dll' \) | head -n 1 || true)
+# 1) 定位 Core 的运行时目录（通常是 bin/），以 libMaaFramework 为锚。
+#    【关键】必须排除 symbols/（调试符号目录，内含 libMaaFramework.so.debug 之类），
+#    否则会把符号文件当成运行时库拷过去，真正的运行时 .so 反而没被覆盖。
+#    仅取“真身”运行时库：linux=libMaaFramework.so / macos=libMaaFramework.dylib /
+#    win=MaaFramework.dll，用精确名匹配，天然避开 *.so.debug / *.sym 等符号文件。
+CORE_LIB=$(find "$CORE_SRC" -path '*/symbols/*' -prune -o \
+             \( -name 'libMaaFramework.so' -o -name 'libMaaFramework.dylib' -o -name 'MaaFramework.dll' \) \
+             -print | head -n 1 || true)
 if [ -z "$CORE_LIB" ]; then
-  echo "::error::覆盖内核源里找不到 libMaaFramework.*（$CORE_SRC）"
+  echo "::error::覆盖内核源里找不到运行时 libMaaFramework（$CORE_SRC，已排除 symbols/）"
   exit 1
 fi
 CORE_BIN=$(dirname "$CORE_LIB")
