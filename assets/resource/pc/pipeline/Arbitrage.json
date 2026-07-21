@@ -8,10 +8,11 @@
             170
         ],
         "template": [
-            "pve5.png",
             "pve5_PC.png"
         ],
-        "threshold": 0.7,
+        "threshold": [
+            0.7
+        ],
         "focus": "Arb.PC.插入PACK5卡带进箱庭",
         "target_offset": [
             20,
@@ -33,22 +34,34 @@
         "desc": "剧情行横向复位swipe(回滚到PACK1)。|[PC覆盖·2026-07-13实录] base begin/end y445在PC珍藏集布局落在剧情行(y300-430)与角色行(y490+)之间的货架缝,拖了个寂寞→行不归位→Tp3(pack1固定位)恒0.46→Lift无限循环(23:30实录)。y下移到剧情行内370(同sunyink 2#链2026-07-03同坑修法)。",
         "begin": [
             150,
-            370
+            370,
+            1,
+            1
         ],
         "end": [
-            1264,
-            370
+            [
+                1264,
+                370,
+                1,
+                1
+            ]
         ]
     },
     "Global_BackToPve_PVEBookSwipe": {
         "desc": "卡带菜单竖划回顶。|[PC覆盖·2026-07-13预防] base begin/end x=30在PC布局是列表外死区(sunyink 2#链2026-07-03实录:连划5轮页面纹丝不动),拖拽点移进货架区x150,方向长度沿用base。",
         "begin": [
             150,
-            300
+            300,
+            1,
+            1
         ],
         "end": [
-            150,
-            700
+            [
+                150,
+                700,
+                1,
+                1
+            ]
         ]
     },
     "Collect_FindTeleporCircle": {
@@ -67,7 +80,9 @@
             "Map_Merchant.png",
             "Map_Merchant_PC.png"
         ],
-        "threshold": 0.75,
+        "threshold": [
+            0.75
+        ],
         "focus": "Arb.PC.小地图发现商人→寻路"
     },
     "Arbitrage_NviGuide_Butt": {
@@ -79,11 +94,29 @@
             60
         ],
         "template": [
-            "Nvi_SandGuideButt.png",
             "Nvi_SandGuideButt_PC.png"
         ],
-        "threshold": 0.55,
         "focus": "Arb.PC.打开寻路列表"
+    },
+    "Arbitrage_NviGuide_Merchant_Ocr": {
+        "roi": [
+            232,
+            54,
+            292,
+            301
+        ]
+    },
+    "Arbitrage_NviGuide_CKMsgBox_Ocr": {
+        "roi": [
+            690,
+            385,
+            93,
+            186
+        ],
+        "expected": [
+            "确认",
+            "確認"
+        ]
     },
     "Arbitrage_Merchant_Ico": {
         "desc": "点商人交互钱袋按钮进对话。|[PC覆盖·2026-07-14实录] PC交互按钮实测720中心(941,591),base roi[838,534,71,69]右缘罩不到(边缘按钮右移病,同PVP自动战斗)→寻路到位后此处断链(00:01实录)。从MFA帧重裁PC版32x30(圆外绿蒙版),自匹1.000/他场景≤0.607;roi[900,555,110,80]。",
@@ -94,7 +127,6 @@
             80
         ],
         "template": [
-            "Merchant_IcoGE.png",
             "Merchant_IcoGE_PC.png"
         ]
     },
@@ -105,7 +137,7 @@
             40,
             440,
             140,
-            40
+            55
         ],
         "expected": [
             "天赋技能"
@@ -119,21 +151,58 @@
             590,
             905,
             60
+        ],
+        "expected": [
+            "砍价",
+            "討價還價"
+        ]
+    },
+    "Arbitrage_Bargaining_Msgbox_Ck": {
+        "expected": [
+            "砍价",
+            "討價還價"
         ]
     },
     "Arbitrage_Bargaining_SkipAm": {
         "desc": "跳过砍价动画(加速点击)。|[PC覆盖·2026-07-14实录·禁用] 终止条件=右上'天赋药图标'重现,PC无此图标→inverse:true永真→无限点(130,447)(00:17实录)。动画不跳过会自行播完,外层Msgbox_Ck循环每轮先轮询Merchant_Menu,菜单出现即前进——禁用仅慢几秒,安全。",
-        "enabled": false
+        "enabled": false,
+        "roi": [
+            999,
+            22,
+            225,
+            32
+        ]
+    },
+    "Arbitrage_Bargaining_Msgbox_NoMedicine": {
+        "desc": "云书写,没有测试过",
+        "roi": [
+            646,
+            433,
+            123,
+            30
+        ]
     },
     "Arbitrage_Merchant_Menu": {
         "desc": "确认商店已开(认左栏'购买/出售'页签)。|[PC覆盖·2026-07-14帧校准] PC页签字实测购买(100-125,108-125)/出售(100-125,165-182),base roi[110,92,51,149]左缘x110切'购'字左侧。roi扩[85,85,90,120]。",
         "roi": [
             85,
             85,
-            90,
+            66,
             120
         ],
-        "focus": "Arb.PC.商店已开(砍价后)"
+        "focus": "Arb.PC.商店已开(砍价后)",
+        "expected": [
+            "购买",
+            "出售",
+            "購買",
+            "販售"
+        ]
+    },
+    "Arbitrage_Merchant_Close_Ck": {
+        "expected": [
+            "关闭商店",
+            "關閉商店"
+        ]
     },
     "Arbitrage_Buy_Select_QC1": {
         "roi": [
@@ -326,7 +395,8 @@
             85,
             170,
             610
-        ]
+        ],
+        "desc": "ocr避嫌错字.常驻商店未开放,预留入口"
     },
     "Arbitrage_Buy_Select_QR1": {
         "roi": [
@@ -438,7 +508,9 @@
             "Shop/star_gray_PC2.png",
             "Shop/star_yellow_PC.png"
         ],
-        "threshold": 0.68
+        "threshold": [
+            0.68
+        ]
     },
     "Arbitrage_Swip_Calibration_Down": {
         "desc": "价目表像素级滚动校准。|[PC覆盖·2026-07-14禁用] 校准三件套=26x3/10x4/7x7微roi+HSV±3色带,按安卓渲染逐像素标定;PC上FineTuning色带意外常真→每1.5s微滑无限循环(00:27实录)。py卖货主脑按名字行锚定解析(EQUATOR_OFFSET),对滚动位置本有容忍度,PC先禁用校准直接扫描;翻页重叠由py查重防抖兜底。",
@@ -456,7 +528,6 @@
         "desc": "点'一键购买全部收藏'。|[PC覆盖·2026-07-14帧校准] PC按钮文字实测720(900-1015,662-680),base子OCR roi[809,624,186,70]右缘x995切'藏'字。子OCR roi改[875,648,190,45];Enable_Clr色核沿用。",
         "all_of": [
             {
-                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     875,
@@ -476,11 +547,17 @@
         "desc": "卡带列表复位下滑。|[PC覆盖·2026-07-14实录] base x285在PC落商品格区滑错面板;移侧栏x200(同Select_Swip)。",
         "begin": [
             200,
-            135
+            135,
+            1,
+            1
         ],
         "end": [
-            200,
-            660
+            [
+                200,
+                660,
+                1,
+                1
+            ]
         ]
     },
     "Arbitrage_PackList_ResetEnter": {
@@ -561,12 +638,6 @@
         "begin": [
             260,
             590,
-            1,
-            1
-        ],
-        "end": [
-            1134,
-            592,
             1,
             1
         ]
@@ -836,10 +907,12 @@
             1
         ],
         "end": [
-            820,
-            90,
-            1,
-            1
+            [
+                820,
+                90,
+                1,
+                1
+            ]
         ]
     },
     "Arbitrage_Cooking_SubMenu": {
