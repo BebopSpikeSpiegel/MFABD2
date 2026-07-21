@@ -27,6 +27,18 @@ body:
         例如：在主界面点击开始任务后，卡在加载画面，没有继续点击下一步。
     validations:
       required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: 运行平台 / 控制器
+      description: 决定我们怎么定位问题，请务必选对；选错会拖慢排查。
+      options:
+        - 安卓 模拟器 / 真机（ADB 控制器）
+        - PC 客户端 / Windows 独立端（Win32 控制器）
+        - iOS · PlayCover（Mac，MaaTools 控制器）
+        - 其他 / 不确定
+    validations:
+      required: true
   - type: input
     id: version
     attributes:
