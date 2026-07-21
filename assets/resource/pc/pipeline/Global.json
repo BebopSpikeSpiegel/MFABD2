@@ -339,6 +339,30 @@
             34
         ]
     },
+    "Global_RankSettleModal_Confirm": {
+        "desc": "[PC新增·2026-07-21] 竞技场段位结算弹窗(段位下滑/晋升)确认。竞技场打完只要段位有变动即弹,非赛季一次性事件(07-20蓝宝石I/07-21蓝宝石II连日实录)。base StartGame_SeasonSet(挂在ToHomePage的on_error兜底)OCR roi[781,520,325,84]只罩赛季更新弹窗右下'开始游戏'按钮,而段位弹窗的'确认'在正中央下方(约640,670)完全在其roi之外→漏接→复位链在此全屏modal上所有识别(Tp1游戏卡珍藏集标题/Tp2店长游戏卡/PVEBookSwipe翻书)全miss空转至超时,套利进图失败、整任务静默SUCCEEDED(07-18/07-20/07-21连三次29秒速通,商人/购买/出售全没跑)。本节点OCR居中确认按钮并点命中框中心;roi[500,640,280,60]经蓝宝石I/II两帧渲染验证稳罩'确认'两字,正常主页/珍藏集该位置无按钮故不误伤。",
+        "recognition": "OCR",
+        "roi": [
+            500,
+            640,
+            280,
+            60
+        ],
+        "expected": [
+            "确认",
+            "確認"
+        ],
+        "action": "Click"
+    },
+    "Global_BackToPve_Anc": {
+        "desc": "【传统卡带识别链-标准入口】|[PC覆盖·2026-07-21] next前插段位结算弹窗确认(见Global_RankSettleModal_Confirm)。Anc是DirectHit纯路由节点,每轮复位必经→弹窗在则先OCR命中点确认、JumpBack回起点重走复位;弹窗不在则miss,照常走ToCardMenu。只前插一个识别分支,不碰锚点BackToPack逻辑。",
+        "next": [
+            "[JumpBack]Global_RankSettleModal_Confirm",
+            "Global_BackToPve_ToCardMenu",
+            "[JumpBack]Global_HomeButton_Once",
+            "[JumpBack]Global_WaitingForLoading"
+        ]
+    },
     "Rec_「Global_WaitingForLoading」_05": {
         "desc": "[识别]转场等待03,大色块-黑"
     }
