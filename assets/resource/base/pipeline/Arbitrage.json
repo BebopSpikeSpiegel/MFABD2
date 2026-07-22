@@ -3338,8 +3338,8 @@
         },
         "focus": "Arb.料理模块跳出"
     },
-    "Arbitrage_ShopBuy_Data": {
-        "desc": "【数据存放节点】各卡带购物清单、ocr_exclude系OCR过滤清单。确保一个数组key对应一个卡带。后续key = 卡带标识（与 custom_action_param 传入值一致），value = 逗号分隔的目标商品名",
+    "Arbitrage_ShopBuy_Data_Csm": {
+        "desc": "【ShopBuy_Csm 1/4·数据·勿手动引用/勿打乱本块四节点顺序】各卡带购物清单、ocr_exclude系OCR过滤清单。三端共用内容，一般不做per端覆盖。key=卡带标识（与 custom_action_param 一致），value=逗号分隔目标商品名。",
         "enabled": false,
         "attach": {
             "S1:血骑士": "蘑菇,胡萝卜,甜辣酱",
@@ -3375,18 +3375,33 @@
             "ocr_exclude": "材料,食材,购买,出售,初始化,还剩"
         }
     },
-    "Arbitrage_ShopBuy_ReadNames_OCR": {
-        "desc": "【Py-ShopBuy引用节点】截图商店内物品页面",
+    "Arbitrage_ShopBuy_Tuning_Csm": {
+        "desc": "【ShopBuy_Csm 2/4·数据·per端可覆盖(attach按key字典合并)】控制器行为参数：点击/验证延时、单页重试次数、星-名几何配对窗口。py读取，缺失回落py内置兜底。",
+        "enabled": false,
+        "attach": {
+            "click_delay": 1.5,
+            "verify_delay": 2.0,
+            "max_retries": 1,
+            "bind_dx_min": 5,
+            "bind_dx_max": 40,
+            "bind_dy_max": 15
+        }
+    },
+    "Arbitrage_ShopBuy_ReadNames_Csm": {
+        "desc": "【ShopBuy_Csm 3/4·识别·per端可覆盖】OCR商品名(py-ShopBuy引用)。attach.name_max_len=商品名最大中文字符数，滤除Toast长文本。",
         "recognition": "OCR",
         "roi": [
             390,
             93,
             735,
             529
-        ]
+        ],
+        "attach": {
+            "name_max_len": 5
+        }
     },
-    "Arbitrage_ShopBuy_Star_All": {
-        "desc": "【Py-ShopBuy引用节点】调用识别商店内截图中，收藏星星标记部分。（色彩识别基于py-numpy）",
+    "Arbitrage_ShopBuy_FindStars_Csm": {
+        "desc": "【ShopBuy_Csm 4/4·识别·per端可覆盖】定位收藏星(py-ShopBuy引用，TemplateMatch出框，颜色由py-numpy判)。attach为判色参数：sat_pixel_threshold单像素饱和阈，sat_ratio_threshold高饱和占比阈，star_core_inset星框四边内缩比(0=全框/安卓基线，pc覆盖0.3排除暖色卡面渗入)。",
         "recognition": "TemplateMatch",
         "roi": [
             390,
@@ -3395,7 +3410,12 @@
             529
         ],
         "template": "Shop/star_gray.png",
-        "threshold": 0.7
+        "threshold": 0.7,
+        "attach": {
+            "sat_pixel_threshold": 0.3,
+            "sat_ratio_threshold": 0.15,
+            "star_core_inset": 0.0
+        }
     },
     "Arbitrage_ShopBuy_Pack_S1": {
         "max_hit": 1,
