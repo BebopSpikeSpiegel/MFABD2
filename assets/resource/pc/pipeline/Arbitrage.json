@@ -13,60 +13,13 @@
         "threshold": [
             0.7
         ],
-        "focus": "Arb.PC.插入PACK5卡带进箱庭",
         "target_offset": [
             20,
             15,
             -40,
             -30
-        ]
-    },
-    "Collect_OperationsMain_ToAreaMap": {
-        "desc": "判断在区域地图(移动魔法阵)界面。|[PC覆盖·2026-07-13实录] base roi[183,11,249,53]左缘正好切'移'字左边条,OCR以0.989读成'多动魔法阵'→expected恒miss→传送阵界面死等(23:24实录)。roi左扩[150,11,280,53]罩全标题。注:节点属Collect_Navigation,跑商链途经,覆盖暂置pc/Arbitrage.json(节点命名空间全局合并)。",
-        "roi": [
-            150,
-            11,
-            280,
-            53
-        ]
-    },
-    "Global_BackToPve_PVEBookSwipe_Lift": {
-        "desc": "剧情行横向复位swipe(回滚到PACK1)。|[PC覆盖·2026-07-13实录] base begin/end y445在PC珍藏集布局落在剧情行(y300-430)与角色行(y490+)之间的货架缝,拖了个寂寞→行不归位→Tp3(pack1固定位)恒0.46→Lift无限循环(23:30实录)。y下移到剧情行内370(同sunyink 2#链2026-07-03同坑修法)。",
-        "begin": [
-            150,
-            370,
-            1,
-            1
         ],
-        "end": [
-            [
-                1264,
-                370,
-                1,
-                1
-            ]
-        ]
-    },
-    "Global_BackToPve_PVEBookSwipe": {
-        "desc": "卡带菜单竖划回顶。|[PC覆盖·2026-07-13预防] base begin/end x=30在PC布局是列表外死区(sunyink 2#链2026-07-03实录:连划5轮页面纹丝不动),拖拽点移进货架区x150,方向长度沿用base。",
-        "begin": [
-            150,
-            300,
-            1,
-            1
-        ],
-        "end": [
-            [
-                150,
-                700,
-                1,
-                1
-            ]
-        ]
-    },
-    "Collect_FindTeleporCircle": {
-        "desc": "箱庭内找传送阵物件(FeatureMatch)。|[PC覆盖·2026-07-13实录] base count:9在PC时够时不够:23:24一轮命中,23:34同位置圈只匹到4个特征点(box(250,318)定位正确,受相机角度/特效遮挡影响)→filtered空→找商人五路全灭静默。count降3留余量;ratio沿base 0.5。若后续出现误匹再从MFA帧重裁PC特征模板。",
-        "count": 3
+        "focus": "Arb.PC.插入PACK5卡带进箱庭"
     },
     "Arbitrage_Sandplay_SeeMerchant": {
         "desc": "小地图认商人钱袋图标→走路寻路(优先于传送分支)。|[PC覆盖·2026-07-13实录] PC小地图更小更靠左:钱袋实测720(146,143),base roi[163,142,129,115]左缘把它排除在外(帧内噪声0.565);安卓模板对PC渲染也不可靠。从MFA帧重裁Map_Merchant_PC.png(18x18)追加template,roi扩罩整个小地图[80,70,130,110],阈0.75(自匹1.000,他图小地图噪声≤0.60)。此节点命中即走SeeMerchant→NviGuide寻路直达商人,绕开未适配的区域地图选点链(点错进副本的根源)。",
@@ -140,7 +93,8 @@
             55
         ],
         "expected": [
-            "天赋技能"
+            "天赋技能",
+            "天賦技能"
         ],
         "focus": "Arb.PC.商人交互态确认"
     },
@@ -174,7 +128,6 @@
         ]
     },
     "Arbitrage_Bargaining_Msgbox_NoMedicine": {
-        "desc": "云书写,没有测试过",
         "roi": [
             646,
             433,
@@ -190,13 +143,13 @@
             66,
             120
         ],
-        "focus": "Arb.PC.商店已开(砍价后)",
         "expected": [
             "购买",
             "出售",
             "購買",
             "販售"
-        ]
+        ],
+        "focus": "Arb.PC.商店已开(砍价后)"
     },
     "Arbitrage_Merchant_Close_Ck": {
         "expected": [
@@ -205,13 +158,105 @@
         ]
     },
     "Arbitrage_Buy_Select_QC1": {
+        "desc": "选卡梯(31节点同修)。|[PC覆盖·2026-07-14帧校准] PC商店卡带列表在左侧栏,名字列实测x140-310/y95-690,base roi[236,90,142,655]错位→21秒无一命中(00:26实录)。31个QC/QR/QE节点统一roi[140,85,170,610];各_Clr色核roi按名引用自动跟随。",
         "roi": [
             140,
             85,
             170,
             610
         ],
-        "desc": "选卡梯(31节点同修)。|[PC覆盖·2026-07-14帧校准] PC商店卡带列表在左侧栏,名字列实测x140-310/y95-690,base roi[236,90,142,655]错位→21秒无一命中(00:26实录)。31个QC/QR/QE节点统一roi[140,85,170,610];各_Clr色核roi按名引用自动跟随。"
+        "expected": [
+            "血骑士",
+            "血騎士"
+        ]
+    },
+    "Arbitrage_Buy_Select_QC2": {
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ],
+        "expected": [
+            "苍蓝魔女",
+            "蒼藍魔女"
+        ]
+    },
+    "Arbitrage_Buy_Select_QC3": {
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ],
+        "expected": [
+            "迷雾神射手",
+            "迷霧神射手"
+        ]
+    },
+    "Arbitrage_Buy_Select_QC4": {
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ],
+        "expected": [
+            "眼镜与猫",
+            "眼鏡與貓"
+        ]
+    },
+    "Arbitrage_Buy_Select_QC5": {
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ]
+    },
+    "Arbitrage_Buy_Select_QC6": {
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ],
+        "expected": [
+            "异教塔",
+            "異教塔"
+        ]
+    },
+    "Arbitrage_Buy_Select_QC7": {
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ],
+        "expected": [
+            "愤怒天使",
+            "憤怒的天使"
+        ]
+    },
+    "Arbitrage_Buy_Select_QC8": {
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ]
+    },
+    "Arbitrage_Buy_Select_QC9": {
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ],
+        "expected": [
+            "铁假面",
+            "鐵面具"
+        ]
     },
     "Arbitrage_Buy_Select_QC10": {
         "roi": [
@@ -219,6 +264,10 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "霍尔蒙克斯",
+            "霍爾蒙克斯"
         ]
     },
     "Arbitrage_Buy_Select_QC11": {
@@ -227,6 +276,10 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "虚假游戏",
+            "虚假遊戲"
         ]
     },
     "Arbitrage_Buy_Select_QC12": {
@@ -251,6 +304,10 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "神圣审判",
+            "神聖審判"
         ]
     },
     "Arbitrage_Buy_Select_QC15": {
@@ -259,6 +316,10 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "复仇的誓言",
+            "復仇的誓約"
         ]
     },
     "Arbitrage_Buy_Select_QC16": {
@@ -267,6 +328,10 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "国同盟",
+            "國同盟"
         ]
     },
     "Arbitrage_Buy_Select_QC17": {
@@ -275,6 +340,10 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "试炼之路",
+            "試煉之路"
         ]
     },
     "Arbitrage_Buy_Select_QC18": {
@@ -283,6 +352,10 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "救赎",
+            "救贖"
         ]
     },
     "Arbitrage_Buy_Select_QC19": {
@@ -291,112 +364,11 @@
             85,
             170,
             610
-        ]
-    },
-    "Arbitrage_Buy_Select_QC2": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
-        ]
-    },
-    "Arbitrage_Buy_Select_QC3": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
-        ]
-    },
-    "Arbitrage_Buy_Select_QC4": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
-        ]
-    },
-    "Arbitrage_Buy_Select_QC5": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
-        ]
-    },
-    "Arbitrage_Buy_Select_QC6": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
-        ]
-    },
-    "Arbitrage_Buy_Select_QC7": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
-        ]
-    },
-    "Arbitrage_Buy_Select_QC8": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
-        ]
-    },
-    "Arbitrage_Buy_Select_QC9": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
-        ]
-    },
-    "Arbitrage_Buy_Select_QE1": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
-        ]
-    },
-    "Arbitrage_Buy_Select_QE2": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
-        ]
-    },
-    "Arbitrage_Buy_Select_QE3": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
-        ]
-    },
-    "Arbitrage_Buy_Select_QE4": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
-        ]
-    },
-    "Arbitrage_Buy_Select_QE5": {
-        "roi": [
-            140,
-            85,
-            170,
-            610
         ],
-        "desc": "ocr避嫌错字.常驻商店未开放,预留入口"
+        "expected": [
+            "被遗忘的战争",
+            "被遺忘的戰爭"
+        ]
     },
     "Arbitrage_Buy_Select_QR1": {
         "roi": [
@@ -404,6 +376,10 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "杰登之门",
+            "傑登之門"
         ]
     },
     "Arbitrage_Buy_Select_QR2": {
@@ -412,6 +388,10 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "火晶片",
+            "火片"
         ]
     },
     "Arbitrage_Buy_Select_QR3": {
@@ -420,6 +400,10 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "美丽无望",
+            "不可能的美麗"
         ]
     },
     "Arbitrage_Buy_Select_QR4": {
@@ -428,6 +412,10 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "大逃脱",
+            "大逃脫"
         ]
     },
     "Arbitrage_Buy_Select_QR5": {
@@ -436,6 +424,9 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "[魯鲁]的迷[宮宫]"
         ]
     },
     "Arbitrage_Buy_Select_QR6": {
@@ -444,6 +435,10 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "御剑传",
+            "劍傳"
         ]
     },
     "Arbitrage_Buy_Select_QR7": {
@@ -452,64 +447,340 @@
             85,
             170,
             610
+        ],
+        "expected": [
+            "合约之战",
+            "合約之戰"
+        ]
+    },
+    "Arbitrage_Buy_Select_QE1": {
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ],
+        "expected": [
+            "夏日骑士",
+            "夏天騎士"
+        ]
+    },
+    "Arbitrage_Buy_Select_QE2": {
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ],
+        "expected": [
+            "恶梦之冬",
+            "夢.冬季"
+        ]
+    },
+    "Arbitrage_Buy_Select_QE3": {
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ],
+        "expected": [
+            "海滨天使",
+            "海邊天使"
+        ]
+    },
+    "Arbitrage_Buy_Select_QE4": {
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ],
+        "expected": [
+            "记忆边缘",
+            "記憶邊緣"
+        ]
+    },
+    "Arbitrage_Buy_Select_QE5": {
+        "roi": [
+            140,
+            85,
+            170,
+            632
+        ],
+        "expected": [
+            "戏水女",
+            "戲水女王"
+        ]
+    },
+    "Arbitrage_Favorit_Buy": {
+        "desc": "点'一键购买全部收藏'。|[PC覆盖·2026-07-14帧校准] PC按钮文字实测720(900-1015,662-680),base子OCR roi[809,624,186,70]右缘x995切'藏'字。子OCR roi改[875,648,190,45];Enable_Clr色核沿用。",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    875,
+                    648,
+                    190,
+                    45
+                ],
+                "expected": [
+                    "购买全部收藏",
+                    "鍵購買全部收藏"
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ],
+        "focus": "Arb.PC.执行一键购买全部收藏"
+    },
+    "Arbitrage_Favorit_Buy_SubMenu": {
+        "roi": [
+            534,
+            218,
+            221,
+            100
+        ],
+        "expected": [
+            "购买全部收藏",
+            "購買全部收藏"
+        ]
+    },
+    "Arbitrage_Favorit_Buy_SubMenu_BuyAction": {
+        "expected": [
+            "确认",
+            "確認"
+        ],
+        "post_wait_freezes": {
+            "target": [
+                618,
+                291,
+                46,
+                45
+            ]
+        }
+    },
+    "Arbitrage_Favorit_Buy_SubMenu_Closure": {
+        "desc": "购买收尾:识别售罄标确认买完。|[PC覆盖·2026-07-15] 售罄小红标仅20x10px,安卓OCR惯读'售馨'(base将错就错),PC OCR实读'售款'0.654(42轮评估两日复现:07-14 09:30/07-15 11:27)→恒miss→BuyAction点击后36s超时1219真空。实购本身成功(帧证藏红花挂售罄标+金币正常扣款),只差收尾。expected放宽正则'售.'通吃两家误读及后续漂移。[sunyink.2026-7-22]那就改成色核红色单字,从base就改",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    338,
+                    87,
+                    784,
+                    540
+                ],
+                "expected": [
+                    "售"
+                ]
+            },
+            {
+                "sub_name": "ColorMatch",
+                "recognition": "ColorMatch",
+                "roi": "OCR",
+                "method": 40,
+                "lower": [
+                    [
+                        0,
+                        207,
+                        121
+                    ]
+                ],
+                "upper": [
+                    [
+                        10,
+                        233,
+                        255
+                    ]
+                ],
+                "count": 10
+            }
         ]
     },
     "Arbitrage_Select_Swip": {
         "desc": "商店卡带列表滑动。|[PC覆盖·2026-07-14] base swipe x285在PC落在商品格区(会滚错面板),移进侧栏x200;detect_roi同步移侧栏。其余参数沿base。|[二修] 本节点自己的门卫OCR('购买/出售'页签)roi也是安卓坐标致滑动永不触发→梯子只扫可见10包即断、Buy_Select_End/一键收藏购买不执行(00:43实录)。roi同Merchant_Menu修法[85,85,90,120]。",
         "custom_action_param": {
-            "proxy_node": "Custom_Proxy_Swipe",
-            "focus": "Arb.商店列表滑动",
             "action": "Swipe",
+            "begin": [
+                200,
+                660
+            ],
             "detect_roi": [
                 150,
                 104,
                 60,
                 120
             ],
-            "begin": [
-                200,
-                660
-            ],
+            "duration": 600,
             "end": [
                 200,
                 135
             ],
-            "duration": 600,
             "end_hold": 1000,
-            "settle_delay": 500,
+            "focus": "Arb.商店列表滑动",
+            "proxy_node": "Custom_Proxy_Swipe",
             "retry_times": 2,
+            "settle_delay": 500,
             "threshold": 3.0
-        },
+        }
+    },
+    "Arbitrage_Merchant_BuyMsg": {
         "roi": [
-            85,
-            85,
-            90,
-            120
+            571,
+            466,
+            63,
+            33
         ]
     },
-    "Arbitrage_ShopBuy_ReadNames_OCR": {
-        "desc": "【Py引用】商品名OCR。|[PC覆盖·2026-07-14] 商品格实测x335-1190起于y85,base roi[390,93]切首列星标区,扩[330,85,810,545]。",
+    "Arbitrage_Merchant_BuyMsg_Clr": {
         "roi": [
-            330,
-            85,
-            810,
-            545
+            584,
+            434,
+            3,
+            19
         ]
     },
-    "Arbitrage_ShopBuy_Star_All": {
-        "desc": "【Py引用】收藏星定位。|[PC覆盖·2026-07-14帧校准] base star_gray安卓模板PC仅0.57~0.68(阈0.7全漏且噪声混段)。MFA帧重裁灰圈白星18x18圆蒙版:8/8命中0.70~0.97(两分数段=收藏/未收藏两态,py按饱和度判色不受影响),噪声<0.6。阈降0.65,roi同步扩。|[PC覆盖·2026-07-20生产实录二修] 暖色艺术卡面(米=金稻草)上两模板双双掉分(彩NCC:安卓模板0.57~0.62/0714模板0.35~0.58),而安卓模板在星旁艺术区反打0.64>=0.65假过阈→识别框偏离真星20px,py分类器采到纯稻草恒判黄→'非目标熄灭'点击与验证扫描振荡(S1/S4实录:真点击有效但验证被假框骗,重试把刚熄的星又点亮,最终❌未对齐)。从当日生产帧重裁双态模板star_gray_PC2/star_yellow_PC(18x18):真星彩NCC 0.79~1.00/素背景灰星0.90/艺术假阳区<=0.61,阈0.68两侧余量;旧两张移出列表(安卓模板假阳性根源,0714模板死重)。",
+    "Arbitrage_Merchant_BuyMsg_Button": {
         "roi": [
-            330,
-            85,
-            810,
-            545
+            838,
+            464,
+            82,
+            49
         ],
-        "template": [
-            "Shop/star_gray_PC2.png",
-            "Shop/star_yellow_PC.png"
+        "expected": [
+            "购买",
+            "購買"
+        ]
+    },
+    "Arbitrage_Sell_Type_Ocr": {
+        "roi": [
+            66,
+            73,
+            84,
+            209
         ],
-        "threshold": [
-            0.68
+        "expected": [
+            "出售",
+            "販售"
+        ]
+    },
+    "Arbitrage_Sell_Type_Clr": {
+        "roi": [
+            96,
+            140,
+            37,
+            60
+        ]
+    },
+    "Arbitrage_Sell_PriceList": {
+        "expected": [
+            "价目表",
+            "販售行情表"
+        ]
+    },
+    "Arbitrage_Sell_PriceList_Enter": {
+        "roi": [
+            271,
+            150,
+            170,
+            63
+        ],
+        "expected": [
+            "价目表",
+            "販售行情表"
+        ]
+    },
+    "Arbitrage_Sell_PackShopListSwich_OCR_Entry": {
+        "desc": "|[PC覆盖·07-17] 未排序守卫(首行非120%触发重排)。base roi[894,210,72,93]安卓坐标,PC首行%实测x851-905/y243-262(07-16帧),安卓roi仅擦到12px右缘→未排序日守卫失明,截断会漏。roi改罩PC首行%区。",
+        "roi": [
+            840,
+            235,
+            80,
+            40
+        ]
+    },
+    "Arbitrage_Sell_PackShopListSwich_Butt": {
+        "target": [
+            933,
+            176,
+            16,
+            20
+        ]
+    },
+    "Arbitrage_Sell_PackShopListSwich_Type_Enter": {
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    732,
+                    213,
+                    191,
+                    46
+                ],
+                "expected": [
+                    "从高到低",
+                    "降序"
+                ]
+            },
+            "Sub_SieveExpand_Yew_Clr"
+        ]
+    },
+    "Arbitrage_Sell_PackShopListSwich_Type_Change": {
+        "roi": [
+            706,
+            209,
+            234,
+            235
+        ],
+        "expected": [
+            "溢价率",
+            "加價率"
+        ]
+    },
+    "Arbitrage_Sell_PackShopListSwich_Close": {
+        "target": [
+            508,
+            161,
+            110,
+            44
+        ]
+    },
+    "Arbitrage_Sell_PackShopListSwich_OnlyHave_NeedDisable": {
+        "roi": [
+            969,
+            535,
+            17,
+            16
+        ]
+    },
+    "Arbitrage_Sell_Col_Name": {
+        "desc": "|[PC覆盖·#380·07-15实测] 名列x507-570;左缘500排除表头'类'@cx480(垃圾锚根因)。",
+        "roi": [
+            504,
+            234,
+            209,
+            289
+        ]
+    },
+    "Arbitrage_Sell_Col_Price": {
+        "desc": "|[PC覆盖·#380] 价格簇实测x791-906(样式'18120%'/'1,416 120%')。",
+        "roi": [
+            847,
+            235,
+            63,
+            288
+        ]
+    },
+    "Arbitrage_Sell_Col_Cart": {
+        "desc": "|[PC覆盖·#380] 卡带列x912-985+尾缀序号965-981;右缘990截断弹窗外底层商店数字(x1007+)。",
+        "roi": [
+            908,
+            236,
+            82,
+            295
         ]
     },
     "Arbitrage_Swip_Calibration_Down": {
@@ -524,24 +795,104 @@
         "desc": "价目表像素级滚动校准。|[PC覆盖·2026-07-14禁用] 校准三件套=26x3/10x4/7x7微roi+HSV±3色带,按安卓渲染逐像素标定;PC上FineTuning色带意外常真→每1.5s微滑无限循环(00:27实录)。py卖货主脑按名字行锚定解析(EQUATOR_OFFSET),对滚动位置本有容忍度,PC先禁用校准直接扫描;翻页重叠由py查重防抖兜底。",
         "enabled": false
     },
-    "Arbitrage_Favorit_Buy": {
-        "desc": "点'一键购买全部收藏'。|[PC覆盖·2026-07-14帧校准] PC按钮文字实测720(900-1015,662-680),base子OCR roi[809,624,186,70]右缘x995切'藏'字。子OCR roi改[875,648,190,45];Enable_Clr色核沿用。",
+    "Arbitrage_Sell_Button_Clr": {
+        "desc": "寻找匹配卡带。|[PC覆盖·2026-07-22] next前插列表到顶复位(ToTop/ToTopSwip),base原有两项原样保留在后。语义:先确认/滑到列表顶部→再OCR找目标卡带→找不到才由Select_Swip向下逐屏翻。不碰anchor(PackSwip_Str/End)。",
+        "next": [
+            "Arbitrage_Sell_PackList_ToTop",
+            "Arbitrage_Sell_PackList_ToTopSwip",
+            "Arbitrage_Sell_PackShopSwich",
+            "Arbitrage_Select_Swip"
+        ]
+    },
+    "Arbitrage_Sell_PackShopSwich": {
+        "desc": "出售卡带选择。|[PC覆盖·2026-07-22] base roi[236,90,142,594]是安卓名字列坐标,PC卡带名字列实测x140-310——与买货梯31个Buy_Select_QC*/QR*/QE*同款病灶(那批已于07-14全部改为[140,85,170,610]),唯独出售链这个漏改。后果:实卖派发后选目标卡带OCR恒miss,只能靠Select_Swip一路向下翻,翻到底仍找不到→SmartSwipe判触底JumpOut→py收到run_task=True假报'售卖成功',实际一件没卖(07-22实录:桑格利亚酒)。roi对齐买货梯实测值。",
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ]
+    },
+    "Arbitrage_ItemList_Sorting_Type_Not": {
+        "target": [
+            1172,
+            38,
+            10,
+            6
+        ]
+    },
+    "Arbitrage_ItemList_Sorting_Type_Not_Change": {
+        "roi": [
+            947,
+            64,
+            240,
+            237
+        ],
+        "expected": [
+            "溢价率",
+            "加價率"
+        ]
+    },
+    "Arbitrage_ItemList_Sorting_Reverse": {
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
-                    875,
-                    648,
-                    190,
+                    958,
+                    70,
+                    211,
                     45
                 ],
                 "expected": [
-                    "购买全部收藏"
+                    "从高到低",
+                    "降序"
                 ]
             },
-            "Sub_Ocr_Enable_Clr"
-        ],
-        "focus": "Arb.PC.执行一键购买全部收藏"
+            "Sub_SieveExpand_Yew_Clr"
+        ]
+    },
+    "Arbitrage_ItemList_Swip": {
+        "recognition": "Or",
+        "any_of": [
+            "Arbitrage_Merchant_Menu"
+        ]
+    },
+    "Rec_<Arbitrage_Sell_Item_SellMenu>_Ocr_01": {
+        "expected": [
+            "出售",
+            "販售"
+        ]
+    },
+    "Rec_<Arbitrage_Sell_Item_SellMenu>_Ocr_02": {
+        "roi": [
+            312,
+            445,
+            350,
+            109
+        ]
+    },
+    "Arbitrage_Sell_Item_NumberSafety_ON": {
+        "target": [
+            367,
+            480,
+            1,
+            1
+        ]
+    },
+    "Arbitrage_Sell_Item_NumberSafety_OFF": {
+        "target": [
+            599,
+            480,
+            1,
+            1
+        ]
+    },
+    "Arbitrage_Sell_Item_Selling": {
+        "expected": [
+            "出售",
+            "販售"
+        ]
     },
     "Arbitrage_PackList_ResetSwip": {
         "desc": "卡带列表复位下滑。|[PC覆盖·2026-07-14实录] base x285在PC落商品格区滑错面板;移侧栏x200(同Select_Swip)。",
@@ -552,60 +903,28 @@
             1
         ],
         "end": [
-            [
-                200,
-                660,
-                1,
-                1
-            ]
+            200,
+            660,
+            1,
+            1
         ]
     },
     "Arbitrage_PackList_ResetEnter": {
         "desc": "确认列表已复位到顶(血骑士可见)。|[PC覆盖·2026-07-14实录] base roi[236,90,142,72]安卓坐标,PC名字列x140-310→永不满足致复位无限滑(00:57实录)。roi改[140,85,170,120]。",
         "roi": [
-            140,
+            207,
             85,
-            170,
-            120
+            105,
+            49
+        ],
+        "expected": [
+            "血骑士",
+            "血騎士"
         ]
     },
-    "Setup_SetSkill_OpenSklMenu": {
-        "desc": "打开技能菜单(底栏星形Q按钮)。|[PC覆盖·2026-07-14实录] base UI_SetSkill安卓模板PC仅0.18→料理链每轮在此无声死掉(23:11/23:23/00:00/00:06四轮on_error尸检)。MFA帧重裁40x40圆蒙版:箱庭常态1.000/镜战0.935(商人交互态低分不影响,料理链在交互前开菜单)。roi微扩[690,625,100,60]。注:节点属Setup.json,料理链借道,覆盖暂置pc/Arbitrage.json。",
-        "roi": [
-            690,
-            625,
-            100,
-            60
-        ],
-        "template": [
-            "UI_SetSkill.png",
-            "UI_SetSkill_PC.png"
-        ],
-        "focus": "Arb.PC.料理:打开技能菜单"
-    },
-    "Setup_SetSkill_tab3": {
-        "desc": "切到技能页签3(图钉3)。|[PC覆盖·2026-07-14帧校准] base固定target[380,411]为安卓tab3位;PC三图钉页签实测720 (190,460)/(260,460)/(321,461),点错致tab3永不选中→Ck恒败(01:17实录)。target改[313,452,18,18]。|[07-14二修·竖切病] base识别roi[87,371,97,99]底边y470把'天赋技能'标签(实测y448-482)拦腰切断→OCR间歇读出'售/福/王'碎片(09:28实录逐秒miss 21s,01:17同roi却蒙过=边缘非确定性)。roi改[70,438,110,52]罩全标签,x右缘185避开图钉1。",
-        "roi": [
-            70,
-            438,
-            110,
-            52
-        ],
-        "target": [
-            313,
-            452,
-            18,
-            18
-        ]
-    },
-    "Setup_SetSkill_tab3_Ck": {
-        "desc": "tab3选中态金色色核。|[PC覆盖·2026-07-14帧采样] PC选中金钉实测bbox(310,452)-(334,469)(金像素213个),base roi[366,405,36,22]错位。roi改[305,448,34,26],色带沿base。",
-        "roi": [
-            305,
-            448,
-            34,
-            26
-        ]
+    "Arbitrage_Cooking_Weekly": {
+        "desc": "料理模块周次入口。|[PC覆盖] focus输出至MFA侧。",
+        "focus": "Arb.料理模块启动"
     },
     "Arbitrage_Cooking_SetupToSkill": {
         "desc": "技能列表点'料理'进烹饪菜单。|[PC覆盖·2026-07-14帧校准] PC技能卡名字行实测720 y617-635,base roi[110,580,1053,33](y580-613)整体偏上漏读。roi改[80,600,1120,45]。",
@@ -617,27 +936,26 @@
         ],
         "focus": "Arb.PC.料理:找到'料理'技能,进烹饪菜单"
     },
-    "Arbitrage_Favorit_Buy_SubMenu_Closure": {
-        "desc": "购买收尾:识别售罄标确认买完。|[PC覆盖·2026-07-15] 售罄小红标仅20x10px,安卓OCR惯读'售馨'(base将错就错),PC OCR实读'售款'0.654(42轮评估两日复现:07-14 09:30/07-15 11:27)→恒miss→BuyAction点击后36s超时1219真空。实购本身成功(帧证藏红花挂售罄标+金币正常扣款),只差收尾。expected放宽正则'售.'通吃两家误读及后续漂移。",
-        "expected": [
-            "售."
+    "Arbitrage_Cooking_MenuEnter": {
+        "desc": "确认进了料理菜单。|[PC覆盖·2026-07-16帧校准] PC标题'料理·传说'实测x158-274/y23-44,base roi[221,7,96,65]只罩到尾巴(读'理传说'碎片)→timeout:1单发必miss→料理链在点入菜单后无声死亡(07-14 01:33/07-15 11:25两帧尸检)。roi改[160,8,130,50]。",
+        "roi": [
+            160,
+            8,
+            130,
+            50
         ]
     },
-    "Arbitrage_Cooking_Weekly": {
-        "desc": "料理模块周次入口。|[PC覆盖] focus输出至MFA侧。",
-        "focus": "Arb.料理模块启动"
-    },
-    "Setup_SetSkill_tab3_ReLift": {
-        "desc": "技能行右滑复位(回列表头部)。|[PC覆盖·2026-07-14用户实证] '料理'在列表头部,右滑即见;base拖拽起点x115在PC列表外死区(同sunyink 2#链x30死区记录)→复位拖空,流程被3-1_Swip带右后永回不到头部→误诊'无料理技能'。起点移进卡区x260,终点沿base。|[07-14二修] 识别与tab3同源(OCR'天赋技能'),同步修竖切roi→[70,438,110,52]。",
-        "roi": [
-            70,
-            438,
-            110,
-            52
-        ],
+    "Arbitrage_Cooking_Swip_Page2": {
+        "desc": "翻到第2页。|[PC覆盖·2026-07-16] base begin[887,669]在PC菜格(y80-580)下方空区=拖拽死区病第4例,滑动必空拖。起止点收进菜格内。",
         "begin": [
-            260,
-            590,
+            820,
+            550,
+            1,
+            1
+        ],
+        "end": [
+            820,
+            90,
             1,
             1
         ]
@@ -737,26 +1055,6 @@
                 "template": [
                     "Shop/cook_Coal Cookies.png",
                     "Shop/cook_Coal Cookies_PC.png"
-                ]
-            },
-            "Sub_<Arbitrage_Cooking>_Clr"
-        ]
-    },
-    "Arbitrage_Cooking_A1": {
-        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
-        "all_of": [
-            {
-                "sub_name": "Templateroi",
-                "recognition": "TemplateMatch",
-                "roi": [
-                    480,
-                    80,
-                    690,
-                    510
-                ],
-                "template": [
-                    "Shop/cook_Honey Baked Apple.png",
-                    "Shop/cook_Honey Baked Apple_PC.png"
                 ]
             },
             "Sub_<Arbitrage_Cooking>_Clr"
@@ -862,31 +1160,24 @@
             "Sub_<Arbitrage_Cooking>_Clr"
         ]
     },
-    "Arbitrage_Cooking_MenuEnter": {
-        "desc": "确认进了料理菜单。|[PC覆盖·2026-07-16帧校准] PC标题'料理·传说'实测x158-274/y23-44,base roi[221,7,96,65]只罩到尾巴(读'理传说'碎片)→timeout:1单发必miss→料理链在点入菜单后无声死亡(07-14 01:33/07-15 11:25两帧尸检)。roi改[160,8,130,50]。",
-        "roi": [
-            160,
-            8,
-            130,
-            50
-        ]
-    },
-    "Arbitrage_Cooking_Menu_ReBack": {
-        "desc": "|[PC覆盖·2026-07-16帧校准] '所需材料'标签PC实测x491-543/y55-72,base roi[566,46,116,56]整体偏右漏读。roi改[470,45,140,45]。",
-        "roi": [
-            470,
-            45,
-            140,
-            45
-        ]
-    },
-    "Arbitrage_Cooking_Menu_Reset_SubOut": {
-        "desc": "|[PC覆盖·2026-07-16帧校准] '所需材料'标签PC实测x491-543/y55-72,base roi[566,46,116,56]整体偏右漏读。roi改[470,45,140,45]。",
-        "roi": [
-            470,
-            45,
-            140,
-            45
+    "Arbitrage_Cooking_A1": {
+        "desc": "菜品选择器。|[PC覆盖·2026-07-16离线校准] 菜品图标PC=安卓0.82~0.84倍(多尺度扫描,缩放后0.94~0.99),追加缩放版_PC模板(Or);菜格PC实测x480-1160/y80-580,base roi[592,103,596,598]漏掉左1~2列,改罩全格。色核Sub跨端存活(有色1652~2371px/置灰0px)不动。",
+        "all_of": [
+            {
+                "sub_name": "Templateroi",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    480,
+                    80,
+                    690,
+                    510
+                ],
+                "template": [
+                    "Shop/cook_Honey Baked Apple.png",
+                    "Shop/cook_Honey Baked Apple_PC.png"
+                ]
+            },
+            "Sub_<Arbitrage_Cooking>_Clr"
         ]
     },
     "Arbitrage_Cooking_Menu_Reset": {
@@ -898,24 +1189,7 @@
             150
         ]
     },
-    "Arbitrage_Cooking_Swip_Page2": {
-        "desc": "翻到第2页。|[PC覆盖·2026-07-16] base begin[887,669]在PC菜格(y80-580)下方空区=拖拽死区病第4例,滑动必空拖。起止点收进菜格内。",
-        "begin": [
-            820,
-            550,
-            1,
-            1
-        ],
-        "end": [
-            [
-                820,
-                90,
-                1,
-                1
-            ]
-        ]
-    },
-    "Arbitrage_Cooking_SubMenu": {
+    "Arbitrage_Cooking_Menu_Reset_SubIn": {
         "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。|[07-16二修·MAX档新边界] MAX量产把材料打穿后'料理'按钮置灰(实录:杏仁1050个/蜂蜜0),正常态模板仅0.497→Starus反转永真'动画中'死循环(19:09实录,无限不退出)。补置灰态UI_cooking_submenu_PC2(mcp 1080帧INTER_AREA降720裁取,MIN/MAX条标定0.952/零偏移;灰-常相似0.42不混淆)。语义:灰=制作结束→ReBack命中退出,Starus三态全无才算动画,SubMenu/SubIn照常。",
         "roi": [
             700,
@@ -929,7 +1203,16 @@
             "UI_cooking_submenu_PC2.png"
         ]
     },
-    "Arbitrage_Cooking_Menu_Reset_SubIn": {
+    "Arbitrage_Cooking_Menu_Reset_SubOut": {
+        "desc": "|[PC覆盖·2026-07-16帧校准] '所需材料'标签PC实测x491-543/y55-72,base roi[566,46,116,56]整体偏右漏读。roi改[470,45,140,45]。",
+        "roi": [
+            470,
+            45,
+            140,
+            45
+        ]
+    },
+    "Arbitrage_Cooking_SubMenu": {
         "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。|[07-16二修·MAX档新边界] MAX量产把材料打穿后'料理'按钮置灰(实录:杏仁1050个/蜂蜜0),正常态模板仅0.497→Starus反转永真'动画中'死循环(19:09实录,无限不退出)。补置灰态UI_cooking_submenu_PC2(mcp 1080帧INTER_AREA降720裁取,MIN/MAX条标定0.952/零偏移;灰-常相似0.42不混淆)。语义:灰=制作结束→ReBack命中退出,Starus三态全无才算动画,SubMenu/SubIn照常。",
         "roi": [
             700,
@@ -971,31 +1254,134 @@
             "UI_cooking_submenu_PC2.png"
         ]
     },
-    "Arbitrage_Sell_Col_Name": {
-        "desc": "|[PC覆盖·#380·07-15实测] 名列x507-570;左缘500排除表头'类'@cx480(垃圾锚根因)。",
+    "Arbitrage_Cooking_Menu_ReBack": {
+        "desc": "|[PC覆盖·2026-07-16帧校准] '所需材料'标签PC实测x491-543/y55-72,base roi[566,46,116,56]整体偏右漏读。roi改[470,45,140,45]。",
         "roi": [
-            500,
-            209,
+            470,
+            45,
+            140,
+            45
+        ]
+    },
+    "Arbitrage_ShopBuy_ReadNames_OCR": {
+        "desc": "【Py引用】商品名OCR。|[PC覆盖·2026-07-14] 商品格实测x335-1190起于y85,base roi[390,93]切首列星标区,扩[330,85,810,545]。",
+        "roi": [
+            330,
+            85,
+            810,
+            545
+        ]
+    },
+    "Arbitrage_ShopBuy_Star_All": {
+        "desc": "【Py引用】收藏星定位。|[PC覆盖·2026-07-14帧校准] base star_gray安卓模板PC仅0.57~0.68(阈0.7全漏且噪声混段)。MFA帧重裁灰圈白星18x18圆蒙版:8/8命中0.70~0.97(两分数段=收藏/未收藏两态,py按饱和度判色不受影响),噪声<0.6。阈降0.65,roi同步扩。|[PC覆盖·2026-07-20生产实录二修] 暖色艺术卡面(米=金稻草)上两模板双双掉分(彩NCC:安卓模板0.57~0.62/0714模板0.35~0.58),而安卓模板在星旁艺术区反打0.64>=0.65假过阈→识别框偏离真星20px,py分类器采到纯稻草恒判黄→'非目标熄灭'点击与验证扫描振荡(S1/S4实录:真点击有效但验证被假框骗,重试把刚熄的星又点亮,最终❌未对齐)。从当日生产帧重裁双态模板star_gray_PC2/star_yellow_PC(18x18):真星彩NCC 0.79~1.00/素背景灰星0.90/艺术假阳区<=0.61,阈0.68两侧余量;旧两张移出列表(安卓模板假阳性根源,0714模板死重)。",
+        "roi": [
+            330,
+            85,
+            810,
+            545
+        ],
+        "template": [
+            "Shop/star_gray_PC2.png",
+            "Shop/star_yellow_PC.png"
+        ],
+        "threshold": [
+            0.68
+        ]
+    },
+    "Collect_OperationsMain_ToAreaMap": {
+        "desc": "判断在区域地图(移动魔法阵)界面。|[PC覆盖·2026-07-13实录] base roi[183,11,249,53]左缘正好切'移'字左边条,OCR以0.989读成'多动魔法阵'→expected恒miss→传送阵界面死等(23:24实录)。roi左扩[150,11,280,53]罩全标题。注:节点属Collect_Navigation,跑商链途经,覆盖暂置pc/Arbitrage.json(节点命名空间全局合并)。",
+        "roi": [
+            150,
+            11,
+            280,
+            53
+        ]
+    },
+    "Global_BackToPve_PVEBookSwipe_Lift": {
+        "desc": "剧情行横向复位swipe(回滚到PACK1)。|[PC覆盖·2026-07-13实录] base begin/end y445在PC珍藏集布局落在剧情行(y300-430)与角色行(y490+)之间的货架缝,拖了个寂寞→行不归位→Tp3(pack1固定位)恒0.46→Lift无限循环(23:30实录)。y下移到剧情行内370(同sunyink 2#链2026-07-03同坑修法)。",
+        "begin": [
+            150,
+            370,
+            1,
+            1
+        ],
+        "end": [
+            1264,
+            370,
+            1,
+            1
+        ]
+    },
+    "Global_BackToPve_PVEBookSwipe": {
+        "desc": "卡带菜单竖划回顶。|[PC覆盖·2026-07-13预防] base begin/end x=30在PC布局是列表外死区(sunyink 2#链2026-07-03实录:连划5轮页面纹丝不动),拖拽点移进货架区x150,方向长度沿用base。",
+        "begin": [
+            150,
+            300,
+            1,
+            1
+        ],
+        "end": [
+            150,
+            700,
+            1,
+            1
+        ]
+    },
+    "Collect_FindTeleporCircle": {
+        "desc": "箱庭内找传送阵物件(FeatureMatch)。|[PC覆盖·2026-07-13实录] base count:9在PC时够时不够:23:24一轮命中,23:34同位置圈只匹到4个特征点(box(250,318)定位正确,受相机角度/特效遮挡影响)→filtered空→找商人五路全灭静默。count降3留余量;ratio沿base 0.5。若后续出现误匹再从MFA帧重裁PC特征模板。",
+        "count": 3
+    },
+    "Setup_SetSkill_OpenSklMenu": {
+        "desc": "打开技能菜单(底栏星形Q按钮)。|[PC覆盖·2026-07-14实录] base UI_SetSkill安卓模板PC仅0.18→料理链每轮在此无声死掉(23:11/23:23/00:00/00:06四轮on_error尸检)。MFA帧重裁40x40圆蒙版:箱庭常态1.000/镜战0.935(商人交互态低分不影响,料理链在交互前开菜单)。roi微扩[690,625,100,60]。注:节点属Setup.json,料理链借道,覆盖暂置pc/Arbitrage.json。",
+        "roi": [
+            690,
+            625,
             100,
-            344
+            60
+        ],
+        "template": [
+            "UI_SetSkill.png",
+            "UI_SetSkill_PC.png"
+        ],
+        "focus": "Arb.PC.料理:打开技能菜单"
+    },
+    "Setup_SetSkill_tab3": {
+        "desc": "切到技能页签3(图钉3)。|[PC覆盖·2026-07-14帧校准] base固定target[380,411]为安卓tab3位;PC三图钉页签实测720 (190,460)/(260,460)/(321,461),点错致tab3永不选中→Ck恒败(01:17实录)。target改[313,452,18,18]。|[07-14二修·竖切病] base识别roi[87,371,97,99]底边y470把'天赋技能'标签(实测y448-482)拦腰切断→OCR间歇读出'售/福/王'碎片(09:28实录逐秒miss 21s,01:17同roi却蒙过=边缘非确定性)。roi改[70,438,110,52]罩全标签,x右缘185避开图钉1。",
+        "roi": [
+            70,
+            438,
+            110,
+            52
+        ],
+        "target": [
+            313,
+            452,
+            18,
+            18
         ]
     },
-    "Arbitrage_Sell_Col_Price": {
-        "desc": "|[PC覆盖·#380] 价格簇实测x791-906(样式'18120%'/'1,416 120%')。",
+    "Setup_SetSkill_tab3_Ck": {
+        "desc": "tab3选中态金色色核。|[PC覆盖·2026-07-14帧采样] PC选中金钉实测bbox(310,452)-(334,469)(金像素213个),base roi[366,405,36,22]错位。roi改[305,448,34,26],色带沿base。",
         "roi": [
-            790,
-            209,
-            120,
-            344
+            305,
+            448,
+            34,
+            26
         ]
     },
-    "Arbitrage_Sell_Col_Cart": {
-        "desc": "|[PC覆盖·#380] 卡带列x912-985+尾缀序号965-981;右缘990截断弹窗外底层商店数字(x1007+)。",
+    "Setup_SetSkill_tab3_ReLift": {
+        "desc": "技能行右滑复位(回列表头部)。|[PC覆盖·2026-07-14用户实证] '料理'在列表头部,右滑即见;base拖拽起点x115在PC列表外死区(同sunyink 2#链x30死区记录)→复位拖空,流程被3-1_Swip带右后永回不到头部→误诊'无料理技能'。起点移进卡区x260,终点沿base。|[07-14二修] 识别与tab3同源(OCR'天赋技能'),同步修竖切roi→[70,438,110,52]。",
         "roi": [
-            908,
-            209,
-            82,
-            344
+            70,
+            438,
+            110,
+            52
+        ],
+        "begin": [
+            260,
+            590,
+            1,
+            1
         ]
     },
     "Arbitrage_Sell_GoldRead": {
@@ -1006,15 +1392,6 @@
             20,
             130,
             32
-        ]
-    },
-    "Arbitrage_Sell_PackShopSwich": {
-        "desc": "出售卡带选择。|[PC覆盖·2026-07-22] base roi[236,90,142,594]是安卓名字列坐标,PC卡带名字列实测x140-310——与买货梯31个Buy_Select_QC*/QR*/QE*同款病灶(那批已于07-14全部改为[140,85,170,610]),唯独出售链这个漏改。后果:实卖派发后选目标卡带OCR恒miss,只能靠Select_Swip一路向下翻,翻到底仍找不到→SmartSwipe判触底JumpOut→py收到run_task=True假报'售卖成功',实际一件没卖(07-22实录:桑格利亚酒)。roi对齐买货梯实测值。",
-        "roi": [
-            140,
-            85,
-            170,
-            610
         ]
     },
     "Arbitrage_Sell_PackList_ToTop": {
@@ -1036,42 +1413,31 @@
     },
     "Arbitrage_Sell_PackList_ToTopSwip": {
         "desc": "[PC新增·2026-07-22] 出售前列表复位下滑(手指下拖=回到列表顶部),坐标沿用已PC校准的PackList_ResetSwip[200,135]→[200,660]。max_hit:8为兜底闸——若'血骑士'始终认不到(列表异常/OCR失手),滑满8次后本节点不再命中,流程降级回原行为(直接PackShopSwich+Select_Swip向下找),不会无限滑。",
-        "recognition": "DirectHit",
+        "max_hit": 8,
         "action": "Swipe",
         "begin": [
             200,
-            135
+            135,
+            1,
+            1
         ],
         "end": [
             200,
-            660
+            660,
+            1,
+            1
         ],
-        "duration": 300,
-        "end_hold": 500,
+        "end_hold": [
+            500
+        ],
+        "duration": [
+            300
+        ],
         "post_wait_freezes": 1000,
-        "max_hit": 8,
         "next": [
             "Arbitrage_Sell_PackList_ToTop",
             "Arbitrage_Sell_PackList_ToTopSwip"
         ],
         "focus": "Arb.sell.卡带表复位到顶"
-    },
-    "Arbitrage_Sell_Button_Clr": {
-        "desc": "寻找匹配卡带。|[PC覆盖·2026-07-22] next前插列表到顶复位(ToTop/ToTopSwip),base原有两项原样保留在后。语义:先确认/滑到列表顶部→再OCR找目标卡带→找不到才由Select_Swip向下逐屏翻。不碰anchor(PackSwip_Str/End)。",
-        "next": [
-            "Arbitrage_Sell_PackList_ToTop",
-            "Arbitrage_Sell_PackList_ToTopSwip",
-            "Arbitrage_Sell_PackShopSwich",
-            "Arbitrage_Select_Swip"
-        ]
-    },
-    "Arbitrage_Sell_PackShopListSwich_OCR_Entry": {
-        "desc": "|[PC覆盖·07-17] 未排序守卫(首行非120%触发重排)。base roi[894,210,72,93]安卓坐标,PC首行%实测x851-905/y243-262(07-16帧),安卓roi仅擦到12px右缘→未排序日守卫失明,截断会漏。roi改罩PC首行%区。",
-        "roi": [
-            840,
-            235,
-            80,
-            40
-        ]
     }
 }
