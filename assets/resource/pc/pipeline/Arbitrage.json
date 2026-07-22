@@ -1281,11 +1281,7 @@
             545
         ],
         "template": [
-            "Shop/star_gray_PC2.png",
-            "Shop/star_yellow_PC.png"
-        ],
-        "threshold": [
-            0.68
+            "Shop/star_gray_PC.png"
         ]
     },
     "Collect_OperationsMain_ToAreaMap": {
