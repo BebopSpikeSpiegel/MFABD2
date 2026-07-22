@@ -24,6 +24,7 @@
         "desc": "识别右下全部获得OCR+高亮CLR。|[PC覆盖] '全部领取'按钮OCR roi:720实测按钮文字在[1093,659,59,20],base roi[1052,645,82,30](x止1134)切掉'取'→读成'全部领'匹配失败。右扩到[1085,652,80,28]罩住完整'全部领取'(实机点击已验证领取成功)。覆盖须整段重写all_of(MaaFW覆盖替换整字段);Sub_Ocr_Enable_Clr用roi:OCR自动跟随新框。Mail_GetBusAll复用本节点→商品邮箱领取同时被覆盖。action/post_delay/next/focus继承base。",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     1085,
