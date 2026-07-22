@@ -998,6 +998,73 @@
             344
         ]
     },
+    "Arbitrage_Sell_GoldRead": {
+        "desc": "[PC新增·2026-07-22]【Py引用·被动数据节点,不入任何流程】读右上角金币数,供出售主脑做卖出验证。背景:主脑原先只看 run_task(\"Arbitrage_Sell_HUB\") 的返回值判成败,而该返回值只表示链条\"正常结束\",链条在选卡带找不到目标、SmartSwipe 判触底 JumpOut 时同样返回 True→假报'售卖成功'(07-22实录:桑格利亚酒一件没卖仍报成功)。改为派发前后各读一次金币,增长才算真卖出。roi 自 07-22 出售界面实帧量取(金币串'6,393,080'位于 x1070~1140/y30~45),留宽到130px容纳8位数。读不到时主脑自动跳过验证、退回原行为,不阻断流程。",
+        "recognition": "OCR",
+        "roi": [
+            1045,
+            20,
+            130,
+            32
+        ]
+    },
+    "Arbitrage_Sell_PackShopSwich": {
+        "desc": "出售卡带选择。|[PC覆盖·2026-07-22] base roi[236,90,142,594]是安卓名字列坐标,PC卡带名字列实测x140-310——与买货梯31个Buy_Select_QC*/QR*/QE*同款病灶(那批已于07-14全部改为[140,85,170,610]),唯独出售链这个漏改。后果:实卖派发后选目标卡带OCR恒miss,只能靠Select_Swip一路向下翻,翻到底仍找不到→SmartSwipe判触底JumpOut→py收到run_task=True假报'售卖成功',实际一件没卖(07-22实录:桑格利亚酒)。roi对齐买货梯实测值。",
+        "roi": [
+            140,
+            85,
+            170,
+            610
+        ]
+    },
+    "Arbitrage_Sell_PackList_ToTop": {
+        "desc": "[PC新增·2026-07-22] 出售选卡带前的列表到顶判定(认第一张'血骑士')。base出售链只有Select_Swip一个方向(begin[285,660]→end[285,135]=向下翻),若列表停在中下部而目标卡带在其上方,则永远翻不到→死循环至超时(07-22用户目击'只会向下滑,找不到游戏卡11')。本节点+ToTopSwip构成先复位到顶再向下找的完整扫描。roi沿用已PC校准的PackList_ResetEnter[140,85,170,120]。",
+        "recognition": "OCR",
+        "roi": [
+            140,
+            85,
+            170,
+            120
+        ],
+        "expected": [
+            "血骑士",
+            "血騎士"
+        ],
+        "next": [
+            "Arbitrage_Sell_PackShopSwich"
+        ]
+    },
+    "Arbitrage_Sell_PackList_ToTopSwip": {
+        "desc": "[PC新增·2026-07-22] 出售前列表复位下滑(手指下拖=回到列表顶部),坐标沿用已PC校准的PackList_ResetSwip[200,135]→[200,660]。max_hit:8为兜底闸——若'血骑士'始终认不到(列表异常/OCR失手),滑满8次后本节点不再命中,流程降级回原行为(直接PackShopSwich+Select_Swip向下找),不会无限滑。",
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            200,
+            135
+        ],
+        "end": [
+            200,
+            660
+        ],
+        "duration": 300,
+        "end_hold": 500,
+        "post_wait_freezes": 1000,
+        "max_hit": 8,
+        "next": [
+            "Arbitrage_Sell_PackList_ToTop",
+            "Arbitrage_Sell_PackList_ToTopSwip"
+        ],
+        "focus": "Arb.sell.卡带表复位到顶"
+    },
+    "Arbitrage_Sell_Button_Clr": {
+        "desc": "寻找匹配卡带。|[PC覆盖·2026-07-22] next前插列表到顶复位(ToTop/ToTopSwip),base原有两项原样保留在后。语义:先确认/滑到列表顶部→再OCR找目标卡带→找不到才由Select_Swip向下逐屏翻。不碰anchor(PackSwip_Str/End)。",
+        "next": [
+            "Arbitrage_Sell_PackList_ToTop",
+            "Arbitrage_Sell_PackList_ToTopSwip",
+            "Arbitrage_Sell_PackShopSwich",
+            "Arbitrage_Select_Swip"
+        ]
+    },
     "Arbitrage_Sell_PackShopListSwich_OCR_Entry": {
         "desc": "|[PC覆盖·07-17] 未排序守卫(首行非120%触发重排)。base roi[894,210,72,93]安卓坐标,PC首行%实测x851-905/y243-262(07-16帧),安卓roi仅擦到12px右缘→未排序日守卫失明,截断会漏。roi改罩PC首行%区。",
         "roi": [

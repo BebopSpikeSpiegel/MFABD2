@@ -18,6 +18,62 @@ _BAND_NODES = {
 _LEGACY_BANDS = {"name": (470, 730), "price": (880, 960), "cart": (960, 1280)}
 _BANDS_CACHE = None
 
+# ==========================================
+# 子行锚(2026-07-22)：价目表每个商品占两行
+#   上行「当前」   = 今天的实际行情(溢价率/该去哪个卡带卖)
+#   下行「每月N日」= 该商品每月最高价日的行情(仅供比对,不可当目标)
+# 原实现用「商品名底边+7」作赤道分上下,但商品行距仅约73px而分配阈值50px,
+# 上一个商品的「每月」行会被吸进本行上半区 → 假交集误判满价(07-22实录:
+# 流浪美食家烤肉吃进上行120%与自身120%凑交集);且目标卡带取的是下行,
+# 拿到的是"每月最高价日的卡带"而非今天该去的卡带(07-22实录:桑格利亚酒
+# 当前118%在剧情游戏卡4,却被判去剧情游戏卡11——那是每月5日才有的120%)。
+# 改用行标记文本直接锚定两个子行,彻底隔离跨行污染。
+# ==========================================
+RE_MARK_CUR = re.compile(r'^[当當]前$')
+RE_MARK_MONTH = re.compile(r'^每月')
+# 溢价率必须是两三位数+%,排除OCR把装饰符号读成"4"/"A"这类噪声
+# (07-22实录:(859,358)与(856,391)两处噪声"4"上下各一,凑出假交集)
+RE_PCT = re.compile(r'(\d{2,3})\s*%')
+SUBROW_TOL = 14      # 同子行 y 容差(子行间距约35px,行距约73px)
+CUR_NEAR_NAME = 25   # 「当前」标记与商品名的最大 y 偏差
+MONTH_BELOW_CUR = (12, 70)  # 「每月」标记相对「当前」的 y 偏移窗口
+
+
+# 卖出验证：派发前后各读一次金币,增长才算真卖出(2026-07-22)
+# run_task 的返回值只表示链条"正常结束",选卡带找不到目标而 SmartSwipe 判触底
+# JumpOut 时同样返回 True,会假报售卖成功(07-22实录:桑格利亚酒一件没卖仍报成功)
+GOLD_NODE = "Arbitrage_Sell_GoldRead"
+
+
+def _read_gold(context) -> int:
+    """读右上角金币数。读不到返回 0(主脑据此跳过验证,退回原行为,不阻断流程)。"""
+    try:
+        ss = context.tasker.controller.post_screencap().wait().get()
+        if ss is None:
+            return 0
+        reco = context.run_recognition(GOLD_NODE, ss)
+        if not reco or not getattr(reco, "all_results", None):
+            return 0
+        best = 0
+        for m in reco.all_results:
+            digits = re.sub(r'\D', '', getattr(m, "text", "") or "")
+            # 金币至少四位;取最大者以防图标/百分比等碎片混入
+            if len(digits) >= 4:
+                best = max(best, int(digits))
+        return best
+    except Exception as e:
+        mfaalog.warning(f"[Arbitrage] ⚠️ 金币读取异常({e}),本次跳过卖出验证")
+        return 0
+
+
+def _cart_expected(raw: str) -> str:
+    """卡带名 → 容错正则。OCR 常把'剧'读成'则'(07-22实录'则情游戏卡3'),
+    故前缀模糊、卡号精确;(?!\\d) 防止卡4误匹配卡41。"""
+    m = re.search(r'(\d+)\s*$', raw)
+    if m:
+        return r'游[戏戲]卡\s*' + m.group(1) + r'(?!\d)'
+    return raw
+
 def _get_bands(context: Context, screenshot) -> dict:
     """经 run_recognition 读取 DirectHit 数据节点的生效 roi(box=roi,引擎合并视图,pc覆盖可见)。
     注:get_node_data 跨 agent 边界对资源节点返回空(07-17 实测),不可用。"""
@@ -144,6 +200,7 @@ class ArbitrageSellController(CustomAction):
         final_sell_names = [t["name"] for t in targets_to_sell]
         mfaalog.info(f"[Arbitrage] 🛒 扫描完毕！确认共 {len(targets_to_sell)} 项物品待出售: {', '.join(final_sell_names)}")
         
+        sold_ok, sold_fail = [], []
         for idx, target in enumerate(targets_to_sell, 1):
             if context.tasker.stopping: break
             
@@ -152,25 +209,59 @@ class ArbitrageSellController(CustomAction):
             mfaalog.info(f"[Arbitrage] 👉 正在执行 {idx}/{len(targets_to_sell)}: 前往 [{cart_raw}] 售卖 [{item_name}]")
 
             # 核心：构造多节点参数替换字典
+            # 卡带名走容错正则(OCR 把'剧'读成'则'等,前缀模糊卡号精确)
+            cart_pat = _cart_expected(cart_raw)
+            if cart_pat != cart_raw:
+                mfaalog.info(f"[Arbitrage]   ↳ 卡带匹配用容错式: {cart_pat}")
             override_cfg = {
                 "Arbitrage_Sell_PackShopSwich": {
-                    "expected": cart_raw
+                    "expected": cart_pat
                 },
                 "Arbitrage_Sell_Item_ListTraverse": {
                     "expected": item_name
                 }
             }
             
+            # 卖出验证:派发前后各读一次金币
+            gold_before = _read_gold(context)
+
             # 拉起 JSON 端的出售链，并阻塞等待它执行完毕
             # 起点设为进入出售菜单的识别节点
             sell_result = context.run_task("Arbitrage_Sell_HUB", pipeline_override=override_cfg)
-            
-            if sell_result:
-                mfaalog.info(f"[Arbitrage] ✅ [{item_name}] 售卖流程执行成功！")
+
+            gold_after = _read_gold(context)
+
+            if gold_before and gold_after:
+                delta = gold_after - gold_before
+                if delta > 0:
+                    sold_ok.append(item_name)
+                    mfaalog.info(
+                        f"[Arbitrage] ✅ [{item_name}] 确认售出，金币 +{delta:,} "
+                        f"({gold_before:,} → {gold_after:,})"
+                    )
+                else:
+                    sold_fail.append(item_name)
+                    mfaalog.warning(
+                        f"[Arbitrage] ❌ [{item_name}] 未实际售出！金币无变化"
+                        f"({gold_before:,} → {gold_after:,})，"
+                        f"链条多半卡在选卡带/物品定位，run_task 的成功是假信号"
+                    )
+            elif sell_result:
+                # 金币读不到(画面不在出售界面/OCR失手),退回原行为但如实标注未验证
+                mfaalog.info(f"[Arbitrage] ➖ [{item_name}] 售卖链执行完毕（金币不可读，未验证）")
             else:
+                sold_fail.append(item_name)
                 mfaalog.warning(f"[Arbitrage] ❌ [{item_name}] 售卖流程中断或失败，继续尝试下一个。")
-                
-        mfaalog.info("[Arbitrage] 🎉 所有售卖派发任务执行结束！")
+
+        if sold_fail:
+            mfaalog.warning(
+                f"[Arbitrage] ⚠️ 本轮 {len(sold_fail)}/{len(targets_to_sell)} 项未能售出："
+                f"{', '.join(sold_fail)}"
+            )
+        if sold_ok:
+            mfaalog.info(f"[Arbitrage] 🎉 本轮实际售出 {len(sold_ok)} 项：{', '.join(sold_ok)}")
+        else:
+            mfaalog.info("[Arbitrage] 🎉 所有售卖派发任务执行结束！")
         return True
 
     # ==========================================
@@ -231,39 +322,63 @@ class ArbitrageSellController(CustomAction):
             if abs(t["cy"] - closest['anchor_cy']) < 50:
                 closest['items'].append(t)
                 
+        # 行标记文本(在价格列左侧的独立列,不属于任何数据列带)
+        cur_marks = [t for t in all_texts
+                     if RE_MARK_CUR.match(re.sub(r'\s', '', t["text"]))]
+        month_marks = [t for t in all_texts if RE_MARK_MONTH.match(t["text"])]
+
         results = []
         for row in anchors:
             item_data = {"name": row["name"], "is_max_price": False, "target_cartridge": ""}
-            equator = row["equator_y"]
-            price_texts = [t for t in row["items"] if COL_PRICE_MIN <= t["cx"] < COL_PRICE_MAX]
-            cart_texts = [t for t in row["items"] if COL_CART_MIN <= t["cx"] < COL_CART_MAX]
-            
-            top_pct, bot_pct = [], []
-            for t in price_texts:
-                if t["box"][0] + t["box"][2] > PRICE_EDGE:
-                    # 溢价%优先按 '1[0-2]d%' 提取:OCR 会把价格与百分比粘连
-                    # (实录 '18120%' -> 原 nums[-1]='18120' 而非 '120',致满价误判非满价)
-                    m = re.search(r'(1[0-2]\d)\s*%', t["text"])
+            ay = row["anchor_cy"]
+
+            # 上子行锚:与商品名同高的「当前」
+            cur_cands = [m for m in cur_marks if abs(m["cy"] - ay) <= CUR_NEAR_NAME]
+            if not cur_cands:
+                # 找不到行标记宁可不卖(错卖代价 >> 漏卖代价)
+                mfaalog.warning(
+                    f"[Arbitrage] ⚠️ [{row['name']}] 未找到「当前」行标记,本行不参与满价判定"
+                )
+                results.append(item_data)
+                continue
+            cur_y = min(cur_cands, key=lambda m: abs(m["cy"] - ay))["cy"]
+
+            # 下子行锚:「当前」下方窗口内最近的「每月N日」
+            _lo, _hi = MONTH_BELOW_CUR
+            mon_cands = [m for m in month_marks if _lo < (m["cy"] - cur_y) < _hi]
+            mon_y = (min(mon_cands, key=lambda m: m["cy"] - cur_y)["cy"]
+                     if mon_cands else None)
+
+            def _pcts(y, _texts=all_texts, _lo=COL_PRICE_MIN, _hi2=COL_PRICE_MAX):
+                if y is None:
+                    return []
+                out = []
+                for t in _texts:
+                    if not (_lo <= t["cx"] < _hi2):
+                        continue
+                    if abs(t["cy"] - y) > SUBROW_TOL:
+                        continue
+                    m = RE_PCT.search(t["text"])
                     if m:
-                        val = m.group(1)
-                    else:
-                        nums = re.findall(r'\d+', t["text"])
-                        val = nums[-1] if nums else None
-                    if val:
-                        if t["cy"] < equator: top_pct.append(val)
-                        else: bot_pct.append(val)
-            
+                        out.append(m.group(1))
+                return out
+
+            top_pct = _pcts(cur_y)
+            bot_pct = _pcts(mon_y)
+
+            # 已达满价 = 今天的溢价率 与 每月最高价档 相同
             if top_pct and bot_pct and set(top_pct).intersection(set(bot_pct)):
                 item_data["is_max_price"] = True
-            
-            bot_cart_texts = [t for t in cart_texts if t["cy"] >= equator]
-            target_texts = bot_cart_texts if bot_cart_texts else [t for t in cart_texts if t["cy"] < equator]
-                
-            if target_texts:
-                target_texts.sort(key=lambda t: t["cx"]) 
-                raw_cart = "".join([t["text"] for t in target_texts])
-                item_data["target_cartridge"] = re.sub(r'[^\w\u4e00-\u9fa5]', '', raw_cart)
-            
+
+            # 目标卡带取「当前」行:今天该去哪卖。下行是每月最高价日的卡带,取了会白跑
+            cart_texts = [t for t in all_texts
+                          if COL_CART_MIN <= t["cx"] < COL_CART_MAX
+                          and abs(t["cy"] - cur_y) <= SUBROW_TOL]
+            if cart_texts:
+                cart_texts.sort(key=lambda t: t["cx"])
+                raw_cart = "".join([t["text"] for t in cart_texts])
+                item_data["target_cartridge"] = re.sub(r'[^\w一-龥]', '', raw_cart)
+
             results.append(item_data)
-            
+
         return results
