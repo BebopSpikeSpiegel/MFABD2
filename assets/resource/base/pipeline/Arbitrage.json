@@ -1795,28 +1795,41 @@
         ]
     },
     "Arbitrage_Favorit_Buy_SubMenu_Closure": {
-        "recognition": "OCR",
-        "roi": [
-            390,
-            87,
-            727,
-            540
-        ],
-        "expected": "售馨"
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    390,
+                    87,
+                    727,
+                    540
+                ],
+                "expected": "售馨"
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": "OCR",
+                "method": 40,
+                "lower": [
+                    0,
+                    207,
+                    121
+                ],
+                "upper": [
+                    10,
+                    233,
+                    255
+                ],
+                "count": 10
+            }
+        ]
     },
     "Arbitrage_Select_Swip": {
         "desc": "商店卡带列表滑动.使用特殊的anchor来实现同层级类JumpBack复用,因为smartswip的跳出是节点链级,Jb会+1级导致失效、循环",
-        "recognition": "OCR",
-        "roi": [
-            110,
-            92,
-            51,
-            149
-        ],
-        "expected": [
-            "购买",
-            "出售"
-        ],
+        "recognition": "Or",
+        "any_of": ["Arbitrage_Merchant_Menu"],
         "action": "Custom",
         "custom_action": "SmartSwipe",
         "custom_action_param": {
@@ -1909,16 +1922,8 @@
         ]
     },
     "Arbitrage_Merchant_BuyMsg_Button_IsDone": {
-        "recognition": "OCR",
-        "roi": [
-            884,
-            486,
-            81,
-            48
-        ],
-        "expected": [
-            "购买"
-        ],
+        "recognition": "Or",
+        "any_of": ["Arbitrage_Merchant_BuyMsg_Button"],
         "inverse": true
     },
     "#4出售侦察与调度": {},
@@ -2136,31 +2141,31 @@
     },
     "Arbitrage_Sell_Col_Name": {
         "desc": "数据节点:出售解析·商品名列带(py首跑查询roi后缓存,不入流程;x/w即列带范围,#380)",
-        "recognition": "DirectHit",
+        "recognition": "OCR",
         "roi": [
-            470,
+            478,
             209,
-            260,
+            252,
             344
         ]
     },
     "Arbitrage_Sell_Col_Price": {
         "desc": "数据节点:出售解析·价格列带(#380)",
-        "recognition": "DirectHit",
+        "recognition": "OCR",
         "roi": [
-            880,
+            890,
             209,
-            80,
+            70,
             344
         ]
     },
     "Arbitrage_Sell_Col_Cart": {
         "desc": "数据节点:出售解析·卡带列带(roi右缘=解析上限;base宽至1280保持原'无上限'语义,#380)",
-        "recognition": "DirectHit",
+        "recognition": "OCR",
         "roi": [
             960,
             209,
-            320,
+            102,
             344
         ]
     },
@@ -2295,16 +2300,8 @@
     },
     "Arbitrage_Sell_Button_Ocr": {
         "desc": "类型确认为-出售",
-        "recognition": "OCR",
-        "roi": [
-            66,
-            159,
-            140,
-            123
-        ],
-        "expected": [
-            "出售"
-        ],
+        "recognition": "Or",
+        "any_of": ["Arbitrage_Sell_Type_Ocr"],
         "action": "Click",
         "post_delay": 2000,
         "next": [
@@ -2314,25 +2311,8 @@
     },
     "Arbitrage_Sell_Button_Clr": {
         "desc": "寻找匹配卡带,如果匹配不到超时跳出。",
-        "recognition": "ColorMatch",
-        "roi": [
-            118,
-            173,
-            36,
-            59
-        ],
-        "method": 40,
-        "lower": [
-            0,
-            0,
-            188
-        ],
-        "upper": [
-            30,
-            2,
-            255
-        ],
-        "count": 30,
+        "recognition": "Or",
+        "any_of": ["Arbitrage_Sell_Type_Clr"],
         "anchor": {
             "PackSwip_Str": "Arbitrage_Sell_Button_Clr",
             "PackSwip_End": "Arbitrage_Sell_PackShopSwich"
@@ -2390,12 +2370,12 @@
         ],
         "count": 100,
         "next": [
-            "Arbitrage_ItemList_Sorting_AllRight",
+            "Arbitrage_Sell_Item_ListTraverse",
             "Arbitrage_ItemList_Sorting_Type_Not"
         ]
     },
     "Arbitrage_ItemList_Sorting_AllRight": {
-        "desc": "确认排序模式完全正确=%模式与降序",
+        "desc": "确认排序模式完全正确=%模式与降序[2026-7-22错误]条件在不打开下拉时永不满足,业务错误,不用修,准备删除",
         "recognition": "And",
         "all_of": [
             "Arbitrage_ItemList_Sorting_Type_Ent",
@@ -2435,6 +2415,7 @@
         ]
     },
     "Arbitrage_ItemList_Sorting_Type_Not_Change": {
+        "desc": "识别下拉菜单已打开",
         "recognition": "OCR",
         "roi": [
             901,
@@ -2502,14 +2483,8 @@
         "focus": "Arb.排序结果可以确认"
     },
     "Arbitrage_ItemList_Sorting_Remove": {
-        "recognition": "OCR",
-        "roi": [
-            901,
-            92,
-            206,
-            264
-        ],
-        "expected": "从高到低",
+        "recognition": "Or",
+        "any_of": ["Arbitrage_ItemList_Sorting_Type_Not_Change"],
         "action": "Click",
         "target": [
             1,
@@ -2517,7 +2492,7 @@
         ]
     },
     "Arbitrage_ItemList_Swip": {
-        "desc": "商店卡带列表滑动(感觉做好排序的话,用不到滑动,停用、先保留",
+        "desc": "商店卡带列表滑动(感觉做好排序的话,用不到滑动,停用、先保留[2026-7-22错误]上游入口永不进入,业务错误,不用修,准备删除",
         "enabled": false,
         "recognition": "OCR",
         "roi": [
@@ -2601,7 +2576,8 @@
             "Rec_<Arbitrage_Sell_Item_SellMenu>_Ocr_02"
         ],
         "next": [
-            "Arbitrage_Sell_Item_Number"
+            "Arbitrage_Sell_Item_NumberSafety_ON",
+            "Arbitrage_Sell_Item_NumberSafety_OFF"
         ]
     },
     "Rec_<Arbitrage_Sell_Item_SellMenu>_Ocr_01": {
@@ -2629,12 +2605,24 @@
             "MAX"
         ]
     },
-    "Arbitrage_Sell_Item_Number": {
-        "desc": "决定出售个数,未添加验证控制。Intface控制，默认Mix，操作后覆盖成Max",
+    "Arbitrage_Sell_Item_NumberSafety_ON": {
+        "desc": "决定出售个数最小,未添加验证控制。Intface路由控制，此为默认",
         "action": "Click",
         "target": [
             318,
             502
+        ],
+        "next": [
+            "Arbitrage_Sell_Item_Selling"
+        ]
+    },
+    "Arbitrage_Sell_Item_NumberSafety_OFF": {
+        "desc": "决定出售个数最大,未添加验证控制。Intface路由控制，此为旁路",
+        "enabled": false,
+        "action": "Click",
+        "target": [
+            596,
+            506
         ],
         "next": [
             "Arbitrage_Sell_Item_Selling"

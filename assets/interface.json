@@ -1634,22 +1634,22 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "Arbitrage_Sell_Item_Number": {
-                            "target": [
-                                318,
-                                502
-                            ]
+                        "Arbitrage_Sell_Item_NumberSafety_ON": {
+                            "enabled": true
+                        },
+                        "Arbitrage_Sell_Item_NumberSafety_OFF": {
+                            "enabled": false
                         }
                     }
                 },
                 {
                     "name": "No",
                     "pipeline_override": {
-                        "Arbitrage_Sell_Item_Number": {
-                            "target": [
-                                596,
-                                506
-                            ]
+                        "Arbitrage_Sell_Item_NumberSafety_ON": {
+                            "enabled": false
+                        },
+                        "Arbitrage_Sell_Item_NumberSafety_OFF": {
+                            "enabled": true
                         }
                     }
                 }
