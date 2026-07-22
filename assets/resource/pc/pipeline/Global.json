@@ -73,8 +73,29 @@
             "MainHome_ArenaPrep_PC.png"
         ]
     },
+    "Global_ArenaEscape_PC": {
+        "desc": "[PC新增·2026-07-22] 复位链误入竞技场准备界面的逃生口。触发路径:主页右下QC区在竞技场会话挂起时会多出'返回战场'与'游戏中'两块(#394),base Global_BackToPve_ToCardMenu 的固定 target(1111,650)正落在'游戏中'卡带块上→点下去回到竞技场准备界面(07-18 19:51 / 07-22 10:14 两次实录),此后复位链所有识别在该界面全 miss 空转至超时,套利整任务静默 SUCCEEDED。|挂点说明:PR#396 曾把 Home 逃生挂在 Global_BackToPve_Anc.next,但链条一旦进入 CardMenu_Tp1 的 JumpBack 子循环,候选集就固定为{Tp1,RewardBubble,Tp2,PVEBookSwipe}再不回 Anc 层——07-22 实录 23 秒内 HomeButton_Once 一次都没被评估。故本节点改挂 Tp1.next 首位,进入真正在轮询的候选集。|模板 MainHome_ArenaPrep_PC.png 为竞技场准备界面右上 Home 药丸(07-18 尸检帧裁,自匹配1.000/次日竞技场帧0.847/主页负样本0.366/图鉴页-0.04),阈0.75 两侧余量充足,珍藏集正常态不误伤。max_hit:3 防止挂起会话未清导致'逃生→再误入'无限循环。",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1132,
+            4,
+            122,
+            77
+        ],
+        "template": [
+            "MainHome_ArenaPrep_PC.png"
+        ],
+        "threshold": 0.75,
+        "action": "Click",
+        "post_delay": 2000,
+        "max_hit": 3,
+        "next": [
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "G=1.误入竞技场,点Home逃生"
+    },
     "Global_BackToPve_CardMenu_Tp1": {
-        "desc": "判断在传统卡带界面",
+        "desc": "判断在传统卡带界面。|[PC覆盖·2026-07-22] next 首位前插 Global_ArenaEscape_PC(误入竞技场逃生),base 原有三项原样保留在后。",
         "roi": [
             150,
             4,
@@ -84,6 +105,12 @@
         "expected": [
             "游戏卡珍藏集",
             "^遊戲卡.收藏集"
+        ],
+        "next": [
+            "Global_ArenaEscape_PC",
+            "[JumpBack]Global_CardMenu_RewardBubble_TurnOFF",
+            "Global_BackToPve_CardMenu_Tp2",
+            "[JumpBack]Global_BackToPve_PVEBookSwipe"
         ]
     },
     "Global_BackToPve_CardMenu_Tp2": {
