@@ -136,12 +136,41 @@
             "StartGame_MainMsgBox_Remove"
         ],
         "on_error": [
-            "StartGame_RunApp"
+            "StartGame_Win32SetSize_Retry_PC"
         ],
         "focus": {
             "Node.Action.Failed": "[color:red]PC窗口未找到或调整失败[/color]",
             "Node.Action.Succeeded": "[color:green]PC窗口已就绪（1280x720）[/color]"
         }
+    },
+    "StartGame_Win32SetSize_Retry_PC": {
+        "desc": "[PC新增·2026-07-22] resize失败重试垫。原on_error指向StartGame_RunApp,但该节点在PC层enabled:false,等于零兜底:窗口短暂不可用(游戏刚启动尚未出窗口)也直接终止整条启动链。改为等5秒重试resize,最多3次;3次后本节点不再命中,流程带红字focus停止(真·窗口不存在/全屏锁定场景,自动化本就无法自救,快败并报清楚)。",
+        "post_delay": 5000,
+        "max_hit": 3,
+        "next": [
+            "StartGame_Check_Win32_SetSize"
+        ],
+        "focus": "SM.PC窗口未就绪,5秒后重试resize"
+    },
+    "StartGame_PVPSet": {
+        "desc": "[PC覆盖·2026-07-22] 段位结算弹窗确认按钮。base roi[612,642,53,35]按安卓布局,PC紧凑弹窗确认钮实测在居中带——复用PR#396同弹窗校准值[500,640,280,60](Global_RankSettleModal_Confirm实测roi);expected补繁体。段位每变动即弹(非赛季一次性),启动相位接不住=07-18/20/21三次29秒速通失败同族雷。",
+        "roi": [
+            500,
+            640,
+            280,
+            60
+        ],
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "StartGame_SeasonSet": {
+        "desc": "[PC覆盖·2026-07-22] 赛季结算弹窗。base expected'奖励已发放至背包'8字精确匹配+roi[813,580,145,34]仅145px宽容8汉字零切字容错(同项目实锤:紧roi把'抽抽乐'切成'抽乐'致恒false);放宽为'发放至背包'子串+繁体变体。roi暂沿base,待赛季结算日实帧校准。",
+        "expected": [
+            "发放至背包",
+            "發放至背包"
+        ]
     },
     "Global_BackToQC_TouchQC1Pack": {
         "desc": "任意门出口:点剧情页签第1槽卡带回主线箱庭。|[PC覆盖·2026-07-09实录] base KadaiGe.png=卡带右上图钉按钮的安卓渲染(金底白钉),PC端同一按钮渲染为灰底白钉→实测0.352<0.7恒miss→启动脚本落在黄金竞技场箱庭时BackToQC复位链死循环(20:25/20:31两轮实录,本节点每轮连败20+后JumpBack绕回)。从on_error帧(2026.07.09-20.42.50)裁KadaiGe_PC.png(25x25,徽章圆外r>11绿蒙版),追加进template(Or语义,base金钉保留不影响安卓)。三帧离线验:槽1徽章0.99~1.0且横序最左+分数最高双保险指向QC1,余卡徽章0.72~0.86不抢位(order_by默认Horizontal取最左)。注:暂置于pc/StartGame.json避让#322对pc/Global.json的重构,节点命名空间全局合并不影响生效。",
