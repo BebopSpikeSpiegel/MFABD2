@@ -9,7 +9,6 @@
         ]
     },
     "Rec_PVP_Drill_Ocr": {
-        "desc": "[识别]pvp校场-阵型按钮字",
         "roi": [
             57,
             620,
@@ -30,7 +29,6 @@
         ]
     },
     "PVP_Results": {
-        "desc": "pvp赛季正在结算中(按印象,缺乏实测)",
         "roi": [
             255,
             55,
@@ -47,14 +45,12 @@
         "enabled": false
     },
     "PVP_PVPMes": {
-        "desc": "防守分结算，点击确认",
         "expected": [
             "确认",
             "確認"
         ]
     },
     "PVP_Errmsg1#_Clear": {
-        "desc": "以防万一,PVP防守分误点",
         "roi": [
             215,
             179,
@@ -107,14 +103,12 @@
         ]
     },
     "PVP_AutoBattle_SucCK": {
-        "desc": "点击自动战斗",
         "expected": [
             "鲜血鸡尾酒",
             "血之雞尾酒"
         ]
     },
     "PVP_SeasonSettling": {
-        "desc": "镜中之战赛季结算期间,自动战斗菜单被'可在赛季结算完成后确认'弹窗替代,PVP无法进行(奖励顺延至结算),优雅退出避免死循环",
         "expected": [
             "结算完成后确认",
             "结算完成后",
@@ -205,7 +199,6 @@
         ]
     },
     "PVP_Multiplier_Adjust_Set": {
-        "desc": "默认max倍",
         "expected": [
             "^(?=.*[设置])(?=.*[鲜血鸡尾酒])(?=.*[消耗量]).{4,12}$",
             "^(?=.*[血之雞尾酒])(?=.*[消耗量])(?=.*[設定]).{6,12}$"
@@ -232,7 +225,6 @@
         ]
     },
     "PVP_AutoBattle_Battling": {
-        "desc": "识别战斗中",
         "roi": [
             44,
             591,
@@ -245,7 +237,6 @@
         ]
     },
     "PVP_BattleResult": {
-        "desc": "反复战斗结果",
         "roi": [
             542,
             187,
@@ -258,7 +249,6 @@
         ]
     },
     "PVP_BattleWaitingLoad": {
-        "desc": "匹配PVP对手画面,等待...",
         "roi": [
             1076,
             21,
@@ -267,7 +257,6 @@
         ]
     },
     "PVP_BattleLeave": {
-        "desc": "识别离开",
         "roi": [
             1095,
             655,
@@ -280,7 +269,6 @@
         ]
     },
     "PVP_BattleFaildLeave": {
-        "desc": "识别离开",
         "roi": [
             676,
             635,
@@ -293,7 +281,6 @@
         ]
     },
     "PVP_PVPMes_Back": {
-        "desc": "升降级点击确认",
         "expected": [
             "确认",
             "確認"
@@ -309,7 +296,6 @@
         ]
     },
     "PVP_AutoBattle_APShortage_Depleted": {
-        "desc": "此时AP为零,结束",
         "roi": [
             1072,
             25,
@@ -332,7 +318,6 @@
         ]
     },
     "PVP_AutoBattle_APShortage_Remaining": {
-        "desc": "还有残余AP但是不够刷满目标倍数,改到1刷完",
         "roi": [
             1072,
             25,

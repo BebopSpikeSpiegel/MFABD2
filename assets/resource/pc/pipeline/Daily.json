@@ -28,7 +28,6 @@
         ]
     },
     "Daily_Union_Intnet_Err": {
-        "desc": "公会页面连接错误",
         "expected": [
             "确认",
             "確認"
@@ -48,9 +47,9 @@
         ]
     },
     "Daily_UnionBack": {
-        "desc": "工会返回主页",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     150,
@@ -109,6 +108,7 @@
         "desc": "子菜单OCR点击'一键获得'一键领取+色核。|[PC覆盖] #322 sunyink:应点底部'一键获得'(非'结算')。720实机OCR det实测'一键获得'在box(703,532,49,18);原PC误识别'结算'(roi[640,180,260,260]仅到y440,框不到y532的一键获得)。改roi[660,505,180,60]罩底部一键获得,expected'键获得'(det易丢'一',与base #322一致)。action/Sub_Ocr_Enable_Clr继承base。",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     660,
@@ -240,6 +240,7 @@
         "desc": "常客钻石旁路(OCR'全部获得')。|[PC覆盖] 实机'全部获得'在常客笔记页右下角1080[1646,992,78,22]中心(1685,1003)(720[1097,661,52,15]),PC宽屏布局与base[1012,636]位置完全不同→PC子roi[1090,655,75,30]。action/Sub_Ocr_Enable_Clr沿用base。",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     1090,
@@ -263,12 +264,10 @@
             1
         ],
         "end": [
-            [
-                0,
-                614,
-                1,
-                1
-            ]
+            0,
+            614,
+            1,
+            1
         ]
     },
     "Daily_Busin_DecorCoin_Move_2": {
@@ -279,12 +278,10 @@
             1
         ],
         "end": [
-            [
-                979,
-                705,
-                1,
-                1
-            ]
+            979,
+            705,
+            1,
+            1
         ]
     },
     "Daily_Busin_DecorCoin_Move_3": {
@@ -295,12 +292,10 @@
             1
         ],
         "end": [
-            [
-                0,
-                94,
-                1,
-                1
-            ]
+            0,
+            94,
+            1,
+            1
         ]
     },
     "Daily_Busin_NoGift": {
@@ -320,6 +315,7 @@
         "desc": "餐厅星级'下一阶段'升级。|[PC覆盖] base sub roi[1155,937,158,81]×0.667=[770,625,105,54];实机进成长视图见升级花费区约1080(1150-1260,994)(720~803,663),按钮略低→PC sub roi[760,635,120,55]。默认关(餐馆自动升级),无可升状态未触发实按钮,待MFA验。",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     760,
@@ -338,6 +334,7 @@
         "desc": "餐厅等级'升级'。|[PC覆盖] 同StageUp区域,base sub roi[1155,937,158,81]→PC sub roi[760,635,120,55]。默认关,待MFA验。",
         "all_of": [
             {
+                "sub_name": "OCR",
                 "recognition": "OCR",
                 "roi": [
                     760,
@@ -447,7 +444,6 @@
         ]
     },
     "Sub_Intimacy_Ctm": {
-        "desc": "[检测]主页亲密度存在红点",
         "roi": [
             247,
             141,
@@ -456,7 +452,6 @@
         ]
     },
     "Rec_Intimacy_Tpl": {
-        "desc": "[识别]亲密度 图标",
         "roi": [
             206,
             128,
@@ -488,7 +483,6 @@
         ]
     },
     "Daily_Intimacy_CatalogCard": {
-        "desc": "在亲密度目录卡中",
         "roi": [
             180,
             50,
@@ -501,7 +495,6 @@
         ]
     },
     "Daily_Intimacy_Set_FirstPerson": {
-        "desc": "设定第一位人员左边",
         "roi": [
             103,
             155,
@@ -510,7 +503,6 @@
         ]
     },
     "Sub_Intimacy_Number": {
-        "desc": "谈心存在空余次数",
         "roi": [
             1031,
             649,
@@ -519,7 +511,6 @@
         ]
     },
     "Sub_Intimacy_LV": {
-        "desc": "谈心等级围栏",
         "roi": [
             611,
             104,
@@ -534,7 +525,6 @@
         ]
     },
     "Daily_Intimacy_Turn_NextPerson": {
-        "desc": "下一位谈心对象",
         "max_hit": 8,
         "roi_offset": [
             0,

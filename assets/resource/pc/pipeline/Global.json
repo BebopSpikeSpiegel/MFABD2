@@ -10,7 +10,6 @@
         ]
     },
     "Global_QuickCart_MenuReset": {
-        "desc": "调出快速卡带1/2,操作",
         "template": [
             "QuickCartGeadai.png"
         ]
@@ -25,7 +24,6 @@
         "focus": "G=1.餐馆场景,点Home退出"
     },
     "Global_BackToPve_CardMenu_Tp1": {
-        "desc": "判断在传统卡带界面",
         "roi": [
             150,
             4,
@@ -38,7 +36,6 @@
         ]
     },
     "Global_BackToPve_CardMenu_Tp2": {
-        "desc": "传统卡带界面已上划到顶",
         "roi": [
             98,
             81,
@@ -51,7 +48,6 @@
         ]
     },
     "Global_BackToPve_CardMenu_Tp3": {
-        "desc": "【传统卡带识别链-结束. 出口由锚点 'BackToPack' 决定，未设锚会停在此处】固定位置识别pack1#=传统卡带界面已左划到首部",
         "roi": [
             71,
             290,
@@ -60,7 +56,6 @@
         ]
     },
     "Global_BackToPve_TouchPVE2#Pack": {
-        "desc": "【传统卡带识别链-预设出口.pve2#】",
         "roi": [
             264,
             254,
@@ -85,7 +80,6 @@
         "count": 300
     },
     "Anc_SliderSwitch_YewOn_Clr": {
-        "desc": "滑块识别,黄色,已enable",
         "lower": [
             [
                 16,
@@ -102,7 +96,6 @@
         ]
     },
     "Anc_SliderSwitch_GryOff_Clr": {
-        "desc": "滑块识别,灰色,已disable",
         "lower": [
             [
                 98,
@@ -166,7 +159,6 @@
         "count": 100
     },
     "Rec_SandBox_Pin_Tpl": {
-        "desc": "[识别]箱庭,pin按钮的UI",
         "roi": [
             1090,
             646,
@@ -176,7 +168,6 @@
         "green_mask": true
     },
     "Rec_SandBox_Run_Tpl": {
-        "desc": "[识别]箱庭,'冲刺'按钮的UI",
         "roi": [
             1067,
             539,
@@ -195,7 +186,6 @@
         "green_mask": true
     },
     "Rec_Reward_Ocr": {
-        "desc": "[识别]获得奖励,下方文字",
         "roi": [
             536,
             633,
@@ -208,7 +198,6 @@
         ]
     },
     "Rec_Pack_FantasiaSquare": {
-        "desc": "在广场,识别静止UI",
         "roi": [
             623,
             632,
@@ -217,7 +206,6 @@
         ]
     },
     "Rec_Pack_GoldenColosseum": {
-        "desc": "在黄金角斗场",
         "roi": [
             79,
             613,
@@ -230,7 +218,6 @@
         ]
     },
     "Rec_Pack_GlupyDiner": {
-        "desc": "在格鲁菲餐厅",
         "roi": [
             72,
             11,

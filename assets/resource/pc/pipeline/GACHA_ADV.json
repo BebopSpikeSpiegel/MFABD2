@@ -49,7 +49,6 @@
         ]
     },
     "GachaADV_GachaPage2": {
-        "desc": "识别抽卡页",
         "roi": [
             966,
             398,
@@ -62,7 +61,6 @@
         ]
     },
     "GachaADV_PageEnter_1#": {
-        "desc": "确认已在抽卡页",
         "roi": [
             882,
             178,
@@ -141,7 +139,6 @@
         ]
     },
     "GachaADV_Location1_Ck": {
-        "desc": "抽取按钮区域-确认有红点",
         "roi": [
             921,
             607,
@@ -190,7 +187,6 @@
         ]
     },
     "GachaADV_Location2_NoPool_Clr": {
-        "desc": "发现卡池位置全黑,为无卡池",
         "roi": [
             160,
             206,
@@ -199,7 +195,6 @@
         ]
     },
     "GachaADV_Location3_NoPool_Clr": {
-        "desc": "发现卡池位置全黑,为无卡池",
         "roi": [
             160,
             278,
@@ -208,7 +203,6 @@
         ]
     },
     "GachaADV_Location4_NoPool_Clr": {
-        "desc": "发现卡池位置全黑,为无卡池",
         "roi": [
             160,
             347,
@@ -217,7 +211,6 @@
         ]
     },
     "GachaADV_Location5_NoPool_Clr": {
-        "desc": "发现卡池位置全黑,为无卡池",
         "roi": [
             160,
             418,
@@ -226,7 +219,6 @@
         ]
     },
     "GachaADV_Location2_NoPool_Tmp": {
-        "desc": "发现卡池位置全黑,为无卡池",
         "roi": [
             152,
             197,
@@ -235,7 +227,6 @@
         ]
     },
     "GachaADV_Location3_NoPool_Tmp": {
-        "desc": "发现卡池位置全黑,为无卡池",
         "roi": [
             152,
             266,
@@ -244,7 +235,6 @@
         ]
     },
     "GachaADV_Location4_NoPool_Tmp": {
-        "desc": "发现卡池位置全黑,为无卡池",
         "roi": [
             152,
             333,
@@ -253,7 +243,6 @@
         ]
     },
     "GachaADV_Location5_NoPool_Tmp": {
-        "desc": "发现卡池位置全黑,为无卡池",
         "roi": [
             152,
             406,
@@ -262,7 +251,6 @@
         ]
     },
     "Rec_<GachaADV_Special_ReservedRights>_Ocr": {
-        "desc": "将要触发抽抽乐200保底识别器01,",
         "roi": [
             818,
             441,
@@ -271,7 +259,6 @@
         ]
     },
     "Rec_<GachaADV_Special_ReservedRights>_Tpl": {
-        "desc": "将要触发抽抽乐200保底识别器02,",
         "roi": [
             706,
             231,
@@ -288,7 +275,6 @@
         ]
     },
     "GachaADV_Slip": {
-        "desc": "下滑寻找免费抽卡",
         "roi": [
             185,
             15,
@@ -301,7 +287,6 @@
         ]
     },
     "GachaADV_Slip_Action": {
-        "desc": "下滑寻找免费抽卡",
         "begin": [
             174,
             435,
@@ -309,16 +294,13 @@
             1
         ],
         "end": [
-            [
-                174,
-                142,
-                1,
-                1
-            ]
+            174,
+            142,
+            1,
+            1
         ]
     },
     "GachaADV_SkipPV": {
-        "desc": "正常抽卡页面,2个'兑换'覆盖",
         "roi": [
             913,
             399,
@@ -359,14 +341,12 @@
         ]
     },
     "GachaADV_TouchFreeGacha": {
-        "desc": "免费抽流程开始:点击右下免费1抽",
         "expected": [
             "免费1次",
             "免費1次"
         ]
     },
     "GachaADV_TouchFreeGachaConfirmMenu": {
-        "desc": "抽卡确认通用流程:抽卡菜单弹出,已确认",
         "roi": [
             536,
             227,
@@ -379,7 +359,6 @@
         ]
     },
     "GachaADV_TouchFreeGachaBuy": {
-        "desc": "GA.抽卡",
         "roi": [
             633,
             393,
@@ -392,7 +371,6 @@
         ]
     },
     "GachaADV_TouchFreeGachaSkip": {
-        "desc": "抽卡商店动画,点跳过",
         "roi": [
             1147,
             15,
@@ -405,7 +383,6 @@
         "green_mask": true
     },
     "GachaADV_5X": {
-        "desc": "五星卡",
         "expected": [
             "艾莉诺",
             "艾莉諾",
@@ -419,7 +396,6 @@
         ]
     },
     "GachaADV_5X2": {
-        "desc": "五星卡2",
         "target": [
             1175,
             37,
@@ -436,7 +412,6 @@
         ]
     },
     "GachaADV_GachaResultBack": {
-        "desc": "抽卡结果页返回",
         "roi": [
             93,
             650,
@@ -456,7 +431,6 @@
         ]
     },
     "GachaADV_FinGacha": {
-        "desc": "返回首页",
         "target": [
             108,
             29,
@@ -465,7 +439,6 @@
         ]
     },
     "Gacha_Quick_All": {
-        "desc": "点击页面一键抽抽乐",
         "roi": [
             140,
             608,
@@ -484,7 +457,6 @@
         ]
     },
     "Gacha_Quick_5X": {
-        "desc": "假设抽中会跳立绘",
         "target": [
             1173,
             37,
@@ -493,7 +465,6 @@
         ]
     },
     "Rec_<Gacha_Quick_Briefing>_Tmp": {
-        "desc": "[识别]抽卡结果页,位置01-图案",
         "roi": [
             101,
             615,
@@ -506,7 +477,6 @@
         ]
     },
     "Rec_<Gacha_Quick_Briefing>_Ocr": {
-        "desc": "[识别]抽卡结果页,位置02-正则",
         "roi": [
             135,
             624,

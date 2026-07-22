@@ -1,6 +1,5 @@
 {
     "Equip_Skill3_5_Nothing": {
-        "desc": "PVE点击技能2（栏位4。栏位5留空，摸鱼）",
         "roi": [
             1164,
             496,
@@ -9,7 +8,6 @@
         ]
     },
     "Equip_Skill3_5": {
-        "desc": "PVE点击技能4",
         "roi": [
             1164,
             496,
@@ -44,7 +42,6 @@
         ]
     },
     "Equip_EquipSelect": {
-        "desc": "点击筛选武器",
         "roi": [
             473,
             414,
@@ -53,7 +50,6 @@
         ]
     },
     "Equip_EquipMake": {
-        "desc": "制作装备界面，点击制作",
         "roi": [
             894,
             636,
@@ -66,7 +62,6 @@
         ]
     },
     "Equip_EquipMakeClose": {
-        "desc": "制作完成，点击X",
         "roi": [
             934,
             201,
@@ -75,7 +70,6 @@
         ]
     },
     "Equip_EquipMakeBack": {
-        "desc": "制作装备界面，左上返回",
         "recognition": "And",
         "all_of": [
             "Equip_EquipMake"
@@ -88,14 +82,12 @@
         ]
     },
     "Equip_ToEquipGui": {
-        "desc": "前往装备界面",
         "recognition": "And",
         "all_of": [
             "Equip_EquipMakeGui"
         ]
     },
     "Equip_EquipGui": {
-        "desc": "寻找一键强化并点击",
         "roi": [
             955,
             656,
@@ -108,7 +100,6 @@
         ]
     },
     "Equip_EquipUp": {
-        "desc": "寻找一键强化...",
         "roi": [
             1061,
             653,
@@ -138,7 +129,6 @@
         ]
     },
     "Equip_EquipUpSelectN": {
-        "desc": "点击N",
         "roi": [
             856,
             352,
@@ -150,7 +140,6 @@
         ]
     },
     "Equip_EquipUpSelectN_Confirm": {
-        "desc": "色核N",
         "roi": [
             856,
             352,
@@ -159,7 +148,6 @@
         ]
     },
     "Equip_EquipUpSelect": {
-        "desc": "点击对号",
         "roi": [
             1175,
             661,
@@ -200,7 +188,6 @@
         ]
     },
     "Equip_Processing": {
-        "desc": "等待作业装备 */* .匹配数字的*/*",
         "roi": [
             564,
             298,
@@ -220,7 +207,6 @@
         ]
     },
     "Equip_EquipUp_Action": {
-        "desc": "确认强化",
         "roi": [
             653,
             490,
@@ -229,7 +215,6 @@
         ]
     },
     "Equip_EquipUpResult": {
-        "desc": "强化结果收取|然后(如果有,返回装备满溢锚点) or 去精炼",
         "roi": [
             575,
             491,
@@ -242,7 +227,6 @@
         ]
     },
     "Equip_Refine_filter": {
-        "desc": "点击左上筛选",
         "roi": [
             1125,
             51,
@@ -252,7 +236,6 @@
         "green_mask": true
     },
     "Equip_filter_SubMenu": {
-        "desc": "筛选,二级菜单,已确认",
         "expected": [
             "装备筛选",
             "裝備筛選"
@@ -265,13 +248,11 @@
         ]
     },
     "Equip_filterSR": {
-        "desc": "点击筛选SR",
         "threshold": [
             0.7
         ]
     },
     "Equip_filterUR": {
-        "desc": "点击筛选UR",
         "roi": [
             559,
             388,
@@ -347,7 +328,6 @@
         ]
     },
     "Equip_filterON": {
-        "desc": "应用筛选,点击确认",
         "roi": [
             872,
             523,
@@ -383,12 +363,10 @@
             3
         ],
         "end": [
-            [
-                986,
-                68,
-                3,
-                3
-            ]
+            986,
+            68,
+            3,
+            3
         ]
     },
     "Equip_Sequen_MenuFind": {
@@ -419,7 +397,6 @@
         ]
     },
     "Equip_FindRefining": {
-        "desc": "点击第一个装备",
         "target": [
             513,
             131,
@@ -428,7 +405,6 @@
         ]
     },
     "Equip_Refining_Menu=24": {
-        "desc": "识别精炼二级菜单的等级.经过测试Roi的x轴已错开,不会匹配到一级装备平铺列表等级",
         "roi": [
             920,
             419,
@@ -437,7 +413,6 @@
         ]
     },
     "Equip_filter_SubMenu_Mamono": {
-        "desc": "防止魔兽装备捣乱",
         "roi": [
             443,
             313,
@@ -446,7 +421,6 @@
         ]
     },
     "Rec_<Equip_Overdrive_RefLvMax_Second_Clr>_Clr_01": {
-        "desc": "装备筛选sub,分类:'专用'",
         "roi": [
             341,
             312,
@@ -455,7 +429,6 @@
         ]
     },
     "Rec_<Equip_Overdrive_RefLvMax_Second_Clr>_Clr_02": {
-        "desc": "装备筛选sub,分类:'制作'",
         "roi": [
             544,
             315,
@@ -478,7 +451,6 @@
         ]
     },
     "Equip_Refining": {
-        "desc": "点击精炼",
         "roi": [
             880,
             477,
@@ -497,7 +469,6 @@
         ]
     },
     "Equip_TouchRefining": {
-        "desc": "精炼界面，点击精炼2",
         "roi": [
             997,
             654,
@@ -510,7 +481,6 @@
         ]
     },
     "Rec_<Equip_Backpack_Full>_Ocr_01": {
-        "desc": "箱庭右上显示背包满",
         "roi": [
             1112,
             11,
@@ -519,7 +489,6 @@
         ]
     },
     "Rec_<Equip_Backpack_Full>_Ocr_02": {
-        "desc": "主页左下显示背包满",
         "roi": [
             226,
             621,
