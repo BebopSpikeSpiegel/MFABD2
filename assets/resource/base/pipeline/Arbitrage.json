@@ -3397,7 +3397,7 @@
             529
         ],
         "attach": {
-            "name_max_len": 5
+            "name_max_len": 7
         }
     },
     "Arbitrage_ShopBuy_FindStars_Csm": {
