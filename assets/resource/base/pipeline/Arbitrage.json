@@ -426,7 +426,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC1": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -439,6 +438,7 @@
             "血骑士"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -469,7 +469,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC2": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -482,6 +481,7 @@
             "苍蓝魔女"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -512,7 +512,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC3": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -525,6 +524,7 @@
             "迷雾神射手"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -555,7 +555,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC4": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -568,6 +567,7 @@
             "眼镜与猫"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -598,7 +598,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC5": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -611,6 +610,7 @@
             "沙漠之花"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -641,7 +641,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC6": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -654,6 +653,7 @@
             "异教塔"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -684,7 +684,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC7": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -697,6 +696,7 @@
             "愤怒天使"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -727,7 +727,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC8": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -740,6 +739,7 @@
             "血之狂想曲"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -770,7 +770,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC9": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -783,6 +782,7 @@
             "铁假面"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -813,7 +813,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC10": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -826,6 +825,7 @@
             "霍尔蒙克斯"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -856,7 +856,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC11": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -869,6 +868,7 @@
             "虚假游戏"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -899,7 +899,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC12": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -912,6 +911,7 @@
             "黑羽毛"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -942,7 +942,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC13": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -955,6 +954,7 @@
             "雪之歌"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -985,7 +985,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC14": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -998,6 +997,7 @@
             "神圣审判"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1028,7 +1028,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC15": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1041,6 +1040,7 @@
             "复仇的誓言"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1071,7 +1071,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC16": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1084,6 +1083,7 @@
             "国同盟"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1114,7 +1114,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC17": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1127,6 +1126,7 @@
             "试炼之路"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1157,7 +1157,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC18": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1170,6 +1169,7 @@
             "救赎"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1200,7 +1200,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QC19": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1213,6 +1212,7 @@
             "被遗忘的战争"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1243,7 +1243,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QR1": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1256,6 +1255,7 @@
             "杰登之门"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1286,7 +1286,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QR2": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1299,6 +1298,7 @@
             "火晶片"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1329,7 +1329,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QR3": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1342,6 +1341,7 @@
             "美丽无望"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1372,7 +1372,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QR4": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1385,6 +1384,7 @@
             "大逃脱"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1415,7 +1415,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QR5": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1428,6 +1427,7 @@
             "鲁的迷宫"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1458,7 +1458,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QR6": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1471,6 +1470,7 @@
             "御剑传"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1501,7 +1501,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QR7": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1514,6 +1513,7 @@
             "合约之战"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1544,7 +1544,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QE1": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1557,6 +1556,7 @@
             "夏日骑士"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1587,7 +1587,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QE2": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1600,6 +1599,7 @@
             "恶梦之冬"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1630,7 +1630,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QE3": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1643,6 +1642,7 @@
             "海滨天使"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1674,7 +1674,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QE4": {
-        "anchor": "CurCard",
         "max_hit": 3,
         "recognition": "OCR",
         "roi": [
@@ -1687,6 +1686,7 @@
             "记忆边缘"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
@@ -1717,7 +1717,6 @@
         ]
     },
     "Arbitrage_Buy_Select_QE5": {
-        "anchor": "CurCard",
         "desc": "ocr避嫌错字.常驻商店未开放,预留入口",
         "enabled": false,
         "max_hit": 3,
@@ -1732,6 +1731,7 @@
             "戏水女"
         ],
         "action": "Click",
+        "anchor": "CurCard",
         "post_wait_freezes": {
             "time": 500
         },
