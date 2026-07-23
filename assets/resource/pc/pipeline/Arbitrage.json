@@ -19,7 +19,19 @@
             -40,
             -30
         ],
+        "on_error": [
+            "Arbitrage_Chain_Retry_PC"
+        ],
         "focus": "Arb.PC.插入PACK5卡带进箱庭"
+    },
+    "Arbitrage_Chain_Retry_PC": {
+        "desc": "[PC新增·2026-07-23] 套利进图链超时救援垫。07-23 09:06/09:14两轮实录:插卡成功进商队城镇后Sandplay识别断腿(安卓pin模板PC城镇0.604<0.7),Card5#_Goin的next全miss超时→无自定义on_error→MFA默认Global_Null兜底恒命中→流程SUCCEEDED,'找不到商人'被翻译成任务完成。本节点DirectHit恒中,回Global_BackToPve_Anc整链重试;max_hit 2耗尽后不再命中→流程以失败终止(自定义on_error覆盖默认Null,MFA #1219语义)。",
+        "max_hit": 2,
+        "post_delay": 1000,
+        "next": [
+            "Global_BackToPve_Anc"
+        ],
+        "focus": "Arb.PC.进图链超时!重回复位整链重试"
     },
     "Arbitrage_Sandplay_SeeMerchant": {
         "desc": "小地图认商人钱袋图标→走路寻路(优先于传送分支)。|[PC覆盖·2026-07-13实录] PC小地图更小更靠左:钱袋实测720(146,143),base roi[163,142,129,115]左缘把它排除在外(帧内噪声0.565);安卓模板对PC渲染也不可靠。从MFA帧重裁Map_Merchant_PC.png(18x18)追加template,roi扩罩整个小地图[80,70,130,110],阈0.75(自匹1.000,他图小地图噪声≤0.60)。此节点命中即走SeeMerchant→NviGuide寻路直达商人,绕开未适配的区域地图选点链(点错进副本的根源)。",
