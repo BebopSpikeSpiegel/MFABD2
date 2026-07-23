@@ -370,11 +370,15 @@
             "血骑士"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC1_Clr"
+            "Arbitrage_Buy_Select_QC1_Clr",
+            "Arbitrage_Buy_Select_QC1"
         ]
     },
     "Arbitrage_Buy_Select_QC1_Clr": {
@@ -413,11 +417,15 @@
             "苍蓝魔女"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC2_Clr"
+            "Arbitrage_Buy_Select_QC2_Clr",
+            "Arbitrage_Buy_Select_QC2"
         ]
     },
     "Arbitrage_Buy_Select_QC2_Clr": {
@@ -456,11 +464,15 @@
             "迷雾神射手"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC3_Clr"
+            "Arbitrage_Buy_Select_QC3_Clr",
+            "Arbitrage_Buy_Select_QC3"
         ]
     },
     "Arbitrage_Buy_Select_QC3_Clr": {
@@ -499,11 +511,15 @@
             "眼镜与猫"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC4_Clr"
+            "Arbitrage_Buy_Select_QC4_Clr",
+            "Arbitrage_Buy_Select_QC4"
         ]
     },
     "Arbitrage_Buy_Select_QC4_Clr": {
@@ -542,11 +558,15 @@
             "沙漠之花"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC5_Clr"
+            "Arbitrage_Buy_Select_QC5_Clr",
+            "Arbitrage_Buy_Select_QC5"
         ]
     },
     "Arbitrage_Buy_Select_QC5_Clr": {
@@ -585,11 +605,15 @@
             "异教塔"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC6_Clr"
+            "Arbitrage_Buy_Select_QC6_Clr",
+            "Arbitrage_Buy_Select_QC6"
         ]
     },
     "Arbitrage_Buy_Select_QC6_Clr": {
@@ -628,11 +652,15 @@
             "愤怒天使"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC7_Clr"
+            "Arbitrage_Buy_Select_QC7_Clr",
+            "Arbitrage_Buy_Select_QC7"
         ]
     },
     "Arbitrage_Buy_Select_QC7_Clr": {
@@ -671,11 +699,15 @@
             "血之狂想曲"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC8_Clr"
+            "Arbitrage_Buy_Select_QC8_Clr",
+            "Arbitrage_Buy_Select_QC8"
         ]
     },
     "Arbitrage_Buy_Select_QC8_Clr": {
@@ -714,11 +746,15 @@
             "铁假面"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC9_Clr"
+            "Arbitrage_Buy_Select_QC9_Clr",
+            "Arbitrage_Buy_Select_QC9"
         ]
     },
     "Arbitrage_Buy_Select_QC9_Clr": {
@@ -756,11 +792,15 @@
             "霍尔蒙克斯"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC10_Clr"
+            "Arbitrage_Buy_Select_QC10_Clr",
+            "Arbitrage_Buy_Select_QC10"
         ]
     },
     "Arbitrage_Buy_Select_QC10_Clr": {
@@ -799,11 +839,15 @@
             "虚假游戏"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC11_Clr"
+            "Arbitrage_Buy_Select_QC11_Clr",
+            "Arbitrage_Buy_Select_QC11"
         ]
     },
     "Arbitrage_Buy_Select_QC11_Clr": {
@@ -842,11 +886,15 @@
             "黑羽毛"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC12_Clr"
+            "Arbitrage_Buy_Select_QC12_Clr",
+            "Arbitrage_Buy_Select_QC12"
         ]
     },
     "Arbitrage_Buy_Select_QC12_Clr": {
@@ -885,11 +933,15 @@
             "雪之歌"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC13_Clr"
+            "Arbitrage_Buy_Select_QC13_Clr",
+            "Arbitrage_Buy_Select_QC13"
         ]
     },
     "Arbitrage_Buy_Select_QC13_Clr": {
@@ -928,11 +980,15 @@
             "神圣审判"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC14_Clr"
+            "Arbitrage_Buy_Select_QC14_Clr",
+            "Arbitrage_Buy_Select_QC14"
         ]
     },
     "Arbitrage_Buy_Select_QC14_Clr": {
@@ -971,11 +1027,15 @@
             "复仇的誓言"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC15_Clr"
+            "Arbitrage_Buy_Select_QC15_Clr",
+            "Arbitrage_Buy_Select_QC15"
         ]
     },
     "Arbitrage_Buy_Select_QC15_Clr": {
@@ -1014,11 +1074,15 @@
             "国同盟"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC16_Clr"
+            "Arbitrage_Buy_Select_QC16_Clr",
+            "Arbitrage_Buy_Select_QC16"
         ]
     },
     "Arbitrage_Buy_Select_QC16_Clr": {
@@ -1057,11 +1121,15 @@
             "试炼之路"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC17_Clr"
+            "Arbitrage_Buy_Select_QC17_Clr",
+            "Arbitrage_Buy_Select_QC17"
         ]
     },
     "Arbitrage_Buy_Select_QC17_Clr": {
@@ -1100,11 +1168,15 @@
             "救赎"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC18_Clr"
+            "Arbitrage_Buy_Select_QC18_Clr",
+            "Arbitrage_Buy_Select_QC18"
         ]
     },
     "Arbitrage_Buy_Select_QC18_Clr": {
@@ -1143,11 +1215,15 @@
             "被遗忘的战争"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QC19_Clr"
+            "Arbitrage_Buy_Select_QC19_Clr",
+            "Arbitrage_Buy_Select_QC19"
         ]
     },
     "Arbitrage_Buy_Select_QC19_Clr": {
@@ -1186,11 +1262,15 @@
             "杰登之门"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QR1_Clr"
+            "Arbitrage_Buy_Select_QR1_Clr",
+            "Arbitrage_Buy_Select_QR1"
         ]
     },
     "Arbitrage_Buy_Select_QR1_Clr": {
@@ -1229,11 +1309,15 @@
             "火晶片"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QR2_Clr"
+            "Arbitrage_Buy_Select_QR2_Clr",
+            "Arbitrage_Buy_Select_QR2"
         ]
     },
     "Arbitrage_Buy_Select_QR2_Clr": {
@@ -1272,11 +1356,15 @@
             "美丽无望"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QR3_Clr"
+            "Arbitrage_Buy_Select_QR3_Clr",
+            "Arbitrage_Buy_Select_QR3"
         ]
     },
     "Arbitrage_Buy_Select_QR3_Clr": {
@@ -1315,11 +1403,15 @@
             "大逃脱"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QR4_Clr"
+            "Arbitrage_Buy_Select_QR4_Clr",
+            "Arbitrage_Buy_Select_QR4"
         ]
     },
     "Arbitrage_Buy_Select_QR4_Clr": {
@@ -1358,11 +1450,15 @@
             "鲁的迷宫"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QR5_Clr"
+            "Arbitrage_Buy_Select_QR5_Clr",
+            "Arbitrage_Buy_Select_QR5"
         ]
     },
     "Arbitrage_Buy_Select_QR5_Clr": {
@@ -1401,11 +1497,15 @@
             "御剑传"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QR6_Clr"
+            "Arbitrage_Buy_Select_QR6_Clr",
+            "Arbitrage_Buy_Select_QR6"
         ]
     },
     "Arbitrage_Buy_Select_QR6_Clr": {
@@ -1444,11 +1544,15 @@
             "合约之战"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QR7_Clr"
+            "Arbitrage_Buy_Select_QR7_Clr",
+            "Arbitrage_Buy_Select_QR7"
         ]
     },
     "Arbitrage_Buy_Select_QR7_Clr": {
@@ -1487,11 +1591,15 @@
             "夏日骑士"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QE1_Clr"
+            "Arbitrage_Buy_Select_QE1_Clr",
+            "Arbitrage_Buy_Select_QE1"
         ]
     },
     "Arbitrage_Buy_Select_QE1_Clr": {
@@ -1530,11 +1638,15 @@
             "恶梦之冬"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QE2_Clr"
+            "Arbitrage_Buy_Select_QE2_Clr",
+            "Arbitrage_Buy_Select_QE2"
         ]
     },
     "Arbitrage_Buy_Select_QE2_Clr": {
@@ -1573,11 +1685,15 @@
             "海滨天使"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QE3_Clr"
+            "Arbitrage_Buy_Select_QE3_Clr",
+            "Arbitrage_Buy_Select_QE3"
         ]
     },
     "Arbitrage_Buy_Select_QE3_Clr": {
@@ -1617,11 +1733,15 @@
             "记忆边缘"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QE4_Clr"
+            "Arbitrage_Buy_Select_QE4_Clr",
+            "Arbitrage_Buy_Select_QE4"
         ]
     },
     "Arbitrage_Buy_Select_QE4_Clr": {
@@ -1663,11 +1783,15 @@
             "戏水女"
         ],
         "action": "Click",
+        "max_hit": 3,
+        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
+        "post_delay": 1000,
         "next": [
-            "Arbitrage_Buy_Select_QE5_Clr"
+            "Arbitrage_Buy_Select_QE5_Clr",
+            "Arbitrage_Buy_Select_QE5"
         ]
     },
     "Arbitrage_Buy_Select_QE5_Clr": {
