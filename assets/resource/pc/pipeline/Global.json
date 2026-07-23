@@ -89,12 +89,35 @@
         "post_delay": 2000,
         "max_hit": 3,
         "next": [
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "Global_BackToPve_Anc"
         ],
         "focus": "G=1.误入竞技场,点Home逃生"
     },
+    "Global_ResetChain_Retry_PC": {
+        "desc": "[PC新增·2026-07-23] 复位链超时救援垫。08:36实锤:Tp1的next耗尽20s超时后无自定义on_error→MFA默认Global_Null兜底恒命中且next空→流程以SUCCEEDED结束——竞技场劫持被翻译成'任务完成',买货零执行仍报成功。本节点DirectHit恒中,整链重回Anc再试;max_hit 2耗尽后不再命中→on_error全miss→流程以失败终止,GUI可见,绝不再假成功(自定义on_error覆盖默认Null兜底,MFA #1219语义)。",
+        "max_hit": 2,
+        "post_delay": 1000,
+        "next": [
+            "Global_BackToPve_Anc"
+        ],
+        "focus": "G=1.复位链超时!重回Anc整链重试"
+    },
+    "Global_BackToPve_ToCardMenu": {
+        "desc": "[PC覆盖·2026-07-23] 防双击轮盘赌:base无post_delay,点击(1111,650)后~0.5s即复查Tp1,开卡集动画~1.2s实测必miss→~0.8s后二次点击。07-23 08:36实锤:首击已开卡集(Tp1隔帧0.951命中),次击压中右下挂起会话块→关卡集转进黄金竞技场。post_delay 2000让首击结果渲染完再复查;next整组重写=base两项+弹窗接手+竞技场逃生(它自己在异常场景超时也不再漏进Null假成功,on_error挂重试垫)。",
+        "post_delay": 2000,
+        "next": [
+            "Global_BackToPve_CardMenu_Tp1",
+            "[JumpBack]StartGame_Special",
+            "Global_ArenaEscape_PC",
+            "Global_BackToPve_ToCardMenu"
+        ],
+        "on_error": [
+            "Global_ResetChain_Retry_PC"
+        ]
+    },
     "Global_BackToPve_CardMenu_Tp1": {
-        "desc": "判断在传统卡带界面。|[PC覆盖·2026-07-22] next 首位前插 Global_ArenaEscape_PC(误入竞技场逃生),base 原有三项原样保留在后。",
+        "desc": "判断在传统卡带界面。|[PC覆盖·2026-07-22] next 首位前插 Global_ArenaEscape_PC(误入竞技场逃生),base 原有三项原样保留在后。|[07-23] 再前插[JumpBack]StartGame_Special:竞技场里可叠赛季结算弹窗(黄金竞技场体验赛季奖励,#393场景,08:36 on_error帧实拍),全屏模态盖住Home药丸→ArenaEscape 21秒全miss是遮挡所致非模板问题;StartGame_Special(base已适配该弹窗,点(39,444)左缘安全区消除)先消弹窗,JumpBack回本循环后ArenaEscape接手。on_error挂重试垫堵死默认Null假成功出口。",
         "roi": [
             150,
             4,
@@ -106,10 +129,14 @@
             "^遊戲卡.收藏集"
         ],
         "next": [
+            "[JumpBack]StartGame_Special",
             "Global_ArenaEscape_PC",
             "[JumpBack]Global_CardMenu_RewardBubble_TurnOFF",
             "Global_BackToPve_CardMenu_Tp2",
             "[JumpBack]Global_BackToPve_PVEBookSwipe"
+        ],
+        "on_error": [
+            "Global_ResetChain_Retry_PC"
         ]
     },
     "Global_BackToPve_CardMenu_Tp2": {
