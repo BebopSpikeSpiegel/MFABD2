@@ -348,9 +348,76 @@
             "cycle_type": "g_weekly"
         },
         "next": [
-            "Arbitrage_Buy_Select_QC1"
+            "Arbitrage_PackList_ResetEnter",
+            "[JumpBack]Arbitrage_PackList_ResetSwip"
         ],
         "focus": "Arb.B.购买选收藏模块"
+    },
+    "Arbitrage_PackList_ResetEnter": {
+        "recognition": "OCR",
+        "roi": [
+            236,
+            90,
+            142,
+            72
+        ],
+        "expected": [
+            "血骑士"
+        ],
+        "next": ["Arbitrage_Buy_Select_Str"]
+    },
+    "Arbitrage_Buy_Select_Str": {
+        "recognition": "Or",
+        "any_of": ["Arbitrage_Merchant_Menu"],
+        "anchor": "PackSwip_Str",
+        "next": [
+            "[JumpBack]Arbitrage_Buy_Select_QC1",
+            "[JumpBack]Arbitrage_Buy_Select_QC2",
+            "[JumpBack]Arbitrage_Buy_Select_QC3",
+            "[JumpBack]Arbitrage_Buy_Select_QC4",
+            "[JumpBack]Arbitrage_Buy_Select_QC5",
+            "[JumpBack]Arbitrage_Buy_Select_QC6",
+            "[JumpBack]Arbitrage_Buy_Select_QC7",
+            "[JumpBack]Arbitrage_Buy_Select_QC8",
+            "[JumpBack]Arbitrage_Buy_Select_QC9",
+            "[JumpBack]Arbitrage_Buy_Select_QC10",
+            "[JumpBack]Arbitrage_Buy_Select_QC11",
+            "[JumpBack]Arbitrage_Buy_Select_QC12",
+            "[JumpBack]Arbitrage_Buy_Select_QC13",
+            "[JumpBack]Arbitrage_Buy_Select_QC14",
+            "[JumpBack]Arbitrage_Buy_Select_QC15",
+            "[JumpBack]Arbitrage_Buy_Select_QC16",
+            "[JumpBack]Arbitrage_Buy_Select_QC17",
+            "[JumpBack]Arbitrage_Buy_Select_QC18",
+            "[JumpBack]Arbitrage_Buy_Select_QC19",
+            "[JumpBack]Arbitrage_Buy_Select_QR1",
+            "[JumpBack]Arbitrage_Buy_Select_QR2",
+            "[JumpBack]Arbitrage_Buy_Select_QR3",
+            "[JumpBack]Arbitrage_Buy_Select_QR4",
+            "[JumpBack]Arbitrage_Buy_Select_QR5",
+            "[JumpBack]Arbitrage_Buy_Select_QR6",
+            "[JumpBack]Arbitrage_Buy_Select_QR7",
+            "[JumpBack]Arbitrage_Buy_Select_QE1",
+            "[JumpBack]Arbitrage_Buy_Select_QE2",
+            "[JumpBack]Arbitrage_Buy_Select_QE3",
+            "[JumpBack]Arbitrage_Buy_Select_QE4",
+            "[JumpBack]Arbitrage_Buy_Select_QE5",
+            "Arbitrage_Select_Swip"
+        ]
+    },
+    "Arbitrage_Buy_SharedEnd": {
+        "desc": "购买选卡:成功买完后关掉刚处理的卡带([Anchor]CurCard),防节点A重复分发;origin登账供ResetAll复位",
+        "action": "Custom",
+        "custom_action": "PatchNode",
+        "custom_action_param": {
+            "node": "[Anchor]CurCard",
+            "patch": {
+                "enabled": false
+            },
+            "origin": {
+                "enabled": true
+            }
+        }
     },
     "Arbitrage_Buy_SkipSelect": {
         "desc": "跳过筛选,直接购买收藏物品",
@@ -361,6 +428,8 @@
         ]
     },
     "Arbitrage_Buy_Select_QC1": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -372,12 +441,11 @@
             "血骑士"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC1_Clr",
             "Arbitrage_Buy_Select_QC1"
@@ -397,17 +465,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC1_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC2"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S1",
-            "Arbitrage_Buy_Select_QC2",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC2": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -419,12 +484,11 @@
             "苍蓝魔女"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC2_Clr",
             "Arbitrage_Buy_Select_QC2"
@@ -444,17 +508,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC2_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC3"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S2",
-            "Arbitrage_Buy_Select_QC3",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC3": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -466,12 +527,11 @@
             "迷雾神射手"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC3_Clr",
             "Arbitrage_Buy_Select_QC3"
@@ -491,17 +551,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC3_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC4"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S3",
-            "Arbitrage_Buy_Select_QC4",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC4": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -513,12 +570,11 @@
             "眼镜与猫"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC4_Clr",
             "Arbitrage_Buy_Select_QC4"
@@ -538,17 +594,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC4_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC5"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S4",
-            "Arbitrage_Buy_Select_QC5",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC5": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -560,12 +613,11 @@
             "沙漠之花"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC5_Clr",
             "Arbitrage_Buy_Select_QC5"
@@ -585,17 +637,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC5_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC6"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S5",
-            "Arbitrage_Buy_Select_QC6",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC6": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -607,12 +656,11 @@
             "异教塔"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC6_Clr",
             "Arbitrage_Buy_Select_QC6"
@@ -632,17 +680,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC6_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC7"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S6",
-            "Arbitrage_Buy_Select_QC7",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC7": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -654,12 +699,11 @@
             "愤怒天使"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC7_Clr",
             "Arbitrage_Buy_Select_QC7"
@@ -679,17 +723,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC7_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC8"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S7",
-            "Arbitrage_Buy_Select_QC8",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC8": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -701,12 +742,11 @@
             "血之狂想曲"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC8_Clr",
             "Arbitrage_Buy_Select_QC8"
@@ -726,17 +766,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC8_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC9"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S8",
-            "Arbitrage_Buy_Select_QC9",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC9": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -748,12 +785,11 @@
             "铁假面"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC9_Clr",
             "Arbitrage_Buy_Select_QC9"
@@ -773,16 +809,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC9_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC10"
-        },
         "next": [
-            "Arbitrage_Buy_Select_QC10",
-            "Arbitrage_Select_Swip"
+            "[JumpBack]Arbitrage_ShopBuy_Pack_S9",
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC10": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -794,12 +828,11 @@
             "霍尔蒙克斯"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC10_Clr",
             "Arbitrage_Buy_Select_QC10"
@@ -819,17 +852,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC10_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC11"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S10",
-            "Arbitrage_Buy_Select_QC11",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC11": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -841,12 +871,11 @@
             "虚假游戏"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC11_Clr",
             "Arbitrage_Buy_Select_QC11"
@@ -866,17 +895,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC11_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC12"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S11",
-            "Arbitrage_Buy_Select_QC12",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC12": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -888,12 +914,11 @@
             "黑羽毛"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC12_Clr",
             "Arbitrage_Buy_Select_QC12"
@@ -913,17 +938,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC12_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC13"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S12",
-            "Arbitrage_Buy_Select_QC13",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC13": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -935,12 +957,11 @@
             "雪之歌"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC13_Clr",
             "Arbitrage_Buy_Select_QC13"
@@ -960,17 +981,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC13_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC14"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S13",
-            "Arbitrage_Buy_Select_QC14",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC14": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -982,12 +1000,11 @@
             "神圣审判"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC14_Clr",
             "Arbitrage_Buy_Select_QC14"
@@ -1007,17 +1024,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC14_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC15"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S14",
-            "Arbitrage_Buy_Select_QC15",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC15": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1029,12 +1043,11 @@
             "复仇的誓言"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC15_Clr",
             "Arbitrage_Buy_Select_QC15"
@@ -1054,17 +1067,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC15_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC16"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S15",
-            "Arbitrage_Buy_Select_QC16",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC16": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1076,12 +1086,11 @@
             "国同盟"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC16_Clr",
             "Arbitrage_Buy_Select_QC16"
@@ -1101,17 +1110,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC16_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC17"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S16",
-            "Arbitrage_Buy_Select_QC17",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC17": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1123,12 +1129,11 @@
             "试炼之路"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC17_Clr",
             "Arbitrage_Buy_Select_QC17"
@@ -1148,17 +1153,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC17_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC18"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S17",
-            "Arbitrage_Buy_Select_QC18",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC18": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1170,12 +1172,11 @@
             "救赎"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC18_Clr",
             "Arbitrage_Buy_Select_QC18"
@@ -1195,17 +1196,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC18_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QC19"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S18",
-            "Arbitrage_Buy_Select_QC19",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QC19": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1217,12 +1215,11 @@
             "被遗忘的战争"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QC19_Clr",
             "Arbitrage_Buy_Select_QC19"
@@ -1242,17 +1239,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QC19_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QR1"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_S19",
-            "Arbitrage_Buy_Select_QR1",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QR1": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1264,12 +1258,11 @@
             "杰登之门"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QR1_Clr",
             "Arbitrage_Buy_Select_QR1"
@@ -1289,17 +1282,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QR1_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QR2"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_R1",
-            "Arbitrage_Buy_Select_QR2",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QR2": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1311,12 +1301,11 @@
             "火晶片"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QR2_Clr",
             "Arbitrage_Buy_Select_QR2"
@@ -1336,17 +1325,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QR2_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QR3"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_R2",
-            "Arbitrage_Buy_Select_QR3",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QR3": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1358,12 +1344,11 @@
             "美丽无望"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QR3_Clr",
             "Arbitrage_Buy_Select_QR3"
@@ -1383,17 +1368,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QR3_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QR4"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_R3",
-            "Arbitrage_Buy_Select_QR4",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QR4": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1405,12 +1387,11 @@
             "大逃脱"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QR4_Clr",
             "Arbitrage_Buy_Select_QR4"
@@ -1430,17 +1411,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QR4_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QR5"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_R4",
-            "Arbitrage_Buy_Select_QR5",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QR5": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1452,12 +1430,11 @@
             "鲁的迷宫"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QR5_Clr",
             "Arbitrage_Buy_Select_QR5"
@@ -1477,17 +1454,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QR5_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QR6"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_R5",
-            "Arbitrage_Buy_Select_QR6",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QR6": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1499,12 +1473,11 @@
             "御剑传"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QR6_Clr",
             "Arbitrage_Buy_Select_QR6"
@@ -1524,17 +1497,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QR6_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QR7"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_R6",
-            "Arbitrage_Buy_Select_QR7",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QR7": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1546,12 +1516,11 @@
             "合约之战"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QR7_Clr",
             "Arbitrage_Buy_Select_QR7"
@@ -1571,17 +1540,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QR7_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QE1"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_R7",
-            "Arbitrage_Buy_Select_QE1",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QE1": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1593,12 +1559,11 @@
             "夏日骑士"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QE1_Clr",
             "Arbitrage_Buy_Select_QE1"
@@ -1618,17 +1583,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QE1_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QE2"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_E1",
-            "Arbitrage_Buy_Select_QE2",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QE2": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1640,12 +1602,11 @@
             "恶梦之冬"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QE2_Clr",
             "Arbitrage_Buy_Select_QE2"
@@ -1665,17 +1626,14 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QE2_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QE3"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_E2",
-            "Arbitrage_Buy_Select_QE3",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QE3": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1687,12 +1645,11 @@
             "海滨天使"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QE3_Clr",
             "Arbitrage_Buy_Select_QE3"
@@ -1712,18 +1669,15 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QE3_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QE4"
-        },
         "timeout": 5000,
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_E3",
-            "Arbitrage_Buy_Select_QE4",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QE4": {
+        "anchor": "CurCard",
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1735,12 +1689,11 @@
             "记忆边缘"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QE4_Clr",
             "Arbitrage_Buy_Select_QE4"
@@ -1760,20 +1713,16 @@
             255
         ],
         "count": 100,
-        "anchor": {
-            "PackSwip_Str": "Arbitrage_Buy_Select_QE4_Clr",
-            "PackSwip_End": "Arbitrage_Buy_Select_QE5"
-        },
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_E4",
-            "Arbitrage_Buy_Select_QE5",
-            "Arbitrage_Buy_Select_End",
-            "Arbitrage_Select_Swip"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_QE5": {
+        "anchor": "CurCard",
         "desc": "ocr避嫌错字.常驻商店未开放,预留入口",
         "enabled": false,
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             236,
@@ -1785,12 +1734,11 @@
             "戏水女"
         ],
         "action": "Click",
-        "max_hit": 3,
-        "timeout": 10000,
         "post_wait_freezes": {
             "time": 500
         },
         "post_delay": 1000,
+        "timeout": 10000,
         "next": [
             "Arbitrage_Buy_Select_QE5_Clr",
             "Arbitrage_Buy_Select_QE5"
@@ -1812,7 +1760,7 @@
         "count": 100,
         "next": [
             "[JumpBack]Arbitrage_ShopBuy_Pack_E5",
-            "Arbitrage_Buy_Select_End"
+            "Arbitrage_Buy_SharedEnd"
         ]
     },
     "Arbitrage_Buy_Select_End": {
@@ -2787,18 +2735,6 @@
         "duration": 300,
         "post_wait_freezes": 1000,
         "focus": "复位商店卡带表"
-    },
-    "Arbitrage_PackList_ResetEnter": {
-        "recognition": "OCR",
-        "roi": [
-            236,
-            90,
-            142,
-            72
-        ],
-        "expected": [
-            "血骑士"
-        ]
     },
     "6#料理制作": {},
     "Arbitrage_Cooking_Weekly": {
