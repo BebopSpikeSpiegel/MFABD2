@@ -19,10 +19,28 @@
             -40,
             -30
         ],
+        "on_error": [
+            "Arbitrage_Chain_Retry_PC"
+        ],
         "focus": "Arb.PC.插入PACK5卡带进箱庭"
     },
+    "Arbitrage_Chain_Retry_PC": {
+        "desc": "[PC新增·2026-07-23] 套利进图链超时救援垫。07-23 09:06/09:14两轮实录:插卡成功进商队城镇后Sandplay识别断腿(安卓pin模板PC城镇0.604<0.7),Card5#_Goin的next全miss超时→无自定义on_error→MFA默认Global_Null兜底恒命中→流程SUCCEEDED,'找不到商人'被翻译成任务完成。本节点DirectHit恒中,回Global_BackToPve_Anc整链重试;max_hit 2耗尽后不再命中→流程以失败终止(自定义on_error覆盖默认Null,MFA #1219语义)。",
+        "max_hit": 2,
+        "post_delay": 1000,
+        "next": [
+            "Global_BackToPve_Anc"
+        ],
+        "focus": "Arb.PC.进图链超时!重回复位整链重试"
+    },
+    "Arbitrage_OperationsMain_Sandplay": {
+        "desc": "[PC覆盖·2026-07-23] 仅补on_error(base的Or识别/any_of/next/anchor全继承):箱庭确认命中后,next的找商人/传送导航候选若全miss(10:19实录:SeeMerchant旧模板0.588),20s超时无自定义on_error→MFA默认Global_Null兜底→流程SUCCEEDED假成功。挂同一重试垫,2次内整链重试,仍败则响亮失败。",
+        "on_error": [
+            "Arbitrage_Chain_Retry_PC"
+        ]
+    },
     "Arbitrage_Sandplay_SeeMerchant": {
-        "desc": "小地图认商人钱袋图标→走路寻路(优先于传送分支)。|[PC覆盖·2026-07-13实录] PC小地图更小更靠左:钱袋实测720(146,143),base roi[163,142,129,115]左缘把它排除在外(帧内噪声0.565);安卓模板对PC渲染也不可靠。从MFA帧重裁Map_Merchant_PC.png(18x18)追加template,roi扩罩整个小地图[80,70,130,110],阈0.75(自匹1.000,他图小地图噪声≤0.60)。此节点命中即走SeeMerchant→NviGuide寻路直达商人,绕开未适配的区域地图选点链(点错进副本的根源)。",
+        "desc": "小地图认商人钱袋图标→走路寻路(优先于传送分支)。|[PC覆盖·2026-07-13实录] PC小地图更小更靠左:钱袋实测720(146,143),base roi[163,142,129,115]左缘把它排除在外(帧内噪声0.565);安卓模板对PC渲染也不可靠。从MFA帧重裁Map_Merchant_PC.png(18x18)追加template,roi扩罩整个小地图[80,70,130,110],阈0.75(自匹1.000,他图小地图噪声≤0.60)。此节点命中即走SeeMerchant→NviGuide寻路直达商人,绕开未适配的区域地图选点链(点错进副本的根源)。|[07-23三修] 10:19实录:小地图商人图标现渲染为商摊样(163,107,18,18),旧PC钱袋模板对它仅0.588<0.75→找商人层全断,Sandplay.next耗尽超时走默认Null假成功('找不到商人'报成任务完成,09:06/09:14/10:19三轮)。从10:19 on_error帧重裁Map_Merchant_PC2.png(22x22)追加;离线验:自match 1.000/09:06交叉0.932/09:14交叉0.934(三轮同位=固定图标)/主页负样0.667,故本张阈取0.8两侧均衡。",
         "roi": [
             80,
             70,
@@ -31,10 +49,13 @@
         ],
         "template": [
             "Map_Merchant.png",
-            "Map_Merchant_PC.png"
+            "Map_Merchant_PC.png",
+            "Map_Merchant_PC2.png"
         ],
         "threshold": [
-            0.75
+            0.75,
+            0.75,
+            0.8
         ],
         "focus": "Arb.PC.小地图发现商人→寻路"
     },
@@ -796,13 +817,17 @@
         "enabled": false
     },
     "Arbitrage_Sell_Button_Clr": {
-        "desc": "寻找匹配卡带。|[PC覆盖·2026-07-22] next前插列表到顶复位(ToTop/ToTopSwip),base原有两项原样保留在后。语义:先确认/滑到列表顶部→再OCR找目标卡带→找不到才由Select_Swip向下逐屏翻。不碰anchor(PackSwip_Str/End)。",
+        "desc": "寻找匹配卡带。|[PC覆盖·2026-07-22] next前插列表到顶复位(ToTop/ToTopSwip),base原有两项原样保留在后。语义:先确认/滑到列表顶部→再OCR找目标卡带→找不到才由Select_Swip向下逐屏翻。|[07-23改锚] base锚PackSwip_Str=Button_Clr自身,在PC插入回顶组后形成'下滑一页→锚回本节点→ToTopSwip又拽回顶'拉锯;Str改指PackSearch_PC纯搜索回环,End沿base指PackShopSwich(触底最后一搏)。",
         "next": [
             "Arbitrage_Sell_PackList_ToTop",
             "Arbitrage_Sell_PackList_ToTopSwip",
             "Arbitrage_Sell_PackShopSwich",
             "Arbitrage_Select_Swip"
-        ]
+        ],
+        "anchor": {
+            "PackSwip_Str": "Arbitrage_Sell_PackSearch_PC",
+            "PackSwip_End": "Arbitrage_Sell_PackShopSwich"
+        }
     },
     "Arbitrage_Sell_PackShopSwich": {
         "desc": "出售卡带选择。|[PC覆盖·2026-07-22] base roi[236,90,142,594]是安卓名字列坐标,PC卡带名字列实测x140-310——与买货梯31个Buy_Select_QC*/QR*/QE*同款病灶(那批已于07-14全部改为[140,85,170,610]),唯独出售链这个漏改。后果:实卖派发后选目标卡带OCR恒miss,只能靠Select_Swip一路向下翻,翻到底仍找不到→SmartSwipe判触底JumpOut→py收到run_task=True假报'售卖成功',实际一件没卖(07-22实录:桑格利亚酒)。roi对齐买货梯实测值。",
@@ -1404,8 +1429,17 @@
             "血騎士"
         ],
         "next": [
-            "Arbitrage_Sell_PackShopSwich"
+            "Arbitrage_Sell_PackShopSwich",
+            "Arbitrage_Select_Swip"
         ]
+    },
+    "Arbitrage_Sell_PackSearch_PC": {
+        "desc": "[PC新增·2026-07-23] 出售选卡搜索回环。10:30实录:ToTop命中后其next只有PackShopSwich一个候选(07-22设计缺腿),目标卡14在首屏之下→20秒原地找不翻页→超时假成功。且不能直接把滑动锚回Button_Clr:那会途经ToTopSwip(DirectHit)把列表又拽回顶,形成下滑/回顶拉锯。本节点=纯搜索循环{找目标|继续下滑},由PC覆盖的Button_Clr.anchor把PackSwip_Str指到这里,绕开回顶组。",
+        "next": [
+            "Arbitrage_Sell_PackShopSwich",
+            "Arbitrage_Select_Swip"
+        ],
+        "focus": "Arb.sell.卡带表向下搜索"
     },
     "Arbitrage_Sell_PackList_ToTopSwip": {
         "desc": "[PC新增·2026-07-22] 出售前列表复位下滑(手指下拖=回到列表顶部),坐标沿用已PC校准的PackList_ResetSwip[200,135]→[200,660]。max_hit:8为兜底闸——若'血骑士'始终认不到(列表异常/OCR失手),滑满8次后本节点不再命中,流程降级回原行为(直接PackShopSwich+Select_Swip向下找),不会无限滑。",
