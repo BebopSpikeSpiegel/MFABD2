@@ -36,6 +36,7 @@ from maa.custom_action import CustomAction
 from maa.context import Context
 from maa.agent.agent_server import AgentServer
 from utils import mfaalog
+from utils.name_i18n import canon
 
 
 # 数据节点名（py 自定义引用节点，_Csm 后缀标记）
@@ -226,7 +227,8 @@ class ShopBuyFavController(CustomAction):
         for item in raw_items:
             c = re.sub(r'[^\w一-龥]', '', item)
             if c:
-                cleaned.add(c)
+                # 归一化到规范简体：清单可用简/繁书写，统一后与 OCR 名同域比较。
+                cleaned.add(canon(c))
         return cleaned
 
     # ==========================================
@@ -326,6 +328,10 @@ class ShopBuyFavController(CustomAction):
                 continue
             x, y, w, h = box
             cleaned = re.sub(r'[^\w一-龥]', '', text)
+            # 归一化到规范简体：繁体端 OCR 读到的繁体名（含跨版本异义词）在此折叠为
+            # 简体，之后的 ocr_exclude/长度阈/与 target_items 比较全在同一简体域进行。
+            # 名字只用于判定与按坐标点星，不回填 UI，归一化安全（对比卖出侧的约束）。
+            cleaned = canon(cleaned)
             if not cleaned or cleaned.isdigit():
                 continue
             if cleaned in ocr_exclude:
