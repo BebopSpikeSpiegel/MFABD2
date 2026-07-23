@@ -817,13 +817,17 @@
         "enabled": false
     },
     "Arbitrage_Sell_Button_Clr": {
-        "desc": "寻找匹配卡带。|[PC覆盖·2026-07-22] next前插列表到顶复位(ToTop/ToTopSwip),base原有两项原样保留在后。语义:先确认/滑到列表顶部→再OCR找目标卡带→找不到才由Select_Swip向下逐屏翻。不碰anchor(PackSwip_Str/End)。",
+        "desc": "寻找匹配卡带。|[PC覆盖·2026-07-22] next前插列表到顶复位(ToTop/ToTopSwip),base原有两项原样保留在后。语义:先确认/滑到列表顶部→再OCR找目标卡带→找不到才由Select_Swip向下逐屏翻。|[07-23改锚] base锚PackSwip_Str=Button_Clr自身,在PC插入回顶组后形成'下滑一页→锚回本节点→ToTopSwip又拽回顶'拉锯;Str改指PackSearch_PC纯搜索回环,End沿base指PackShopSwich(触底最后一搏)。",
         "next": [
             "Arbitrage_Sell_PackList_ToTop",
             "Arbitrage_Sell_PackList_ToTopSwip",
             "Arbitrage_Sell_PackShopSwich",
             "Arbitrage_Select_Swip"
-        ]
+        ],
+        "anchor": {
+            "PackSwip_Str": "Arbitrage_Sell_PackSearch_PC",
+            "PackSwip_End": "Arbitrage_Sell_PackShopSwich"
+        }
     },
     "Arbitrage_Sell_PackShopSwich": {
         "desc": "出售卡带选择。|[PC覆盖·2026-07-22] base roi[236,90,142,594]是安卓名字列坐标,PC卡带名字列实测x140-310——与买货梯31个Buy_Select_QC*/QR*/QE*同款病灶(那批已于07-14全部改为[140,85,170,610]),唯独出售链这个漏改。后果:实卖派发后选目标卡带OCR恒miss,只能靠Select_Swip一路向下翻,翻到底仍找不到→SmartSwipe判触底JumpOut→py收到run_task=True假报'售卖成功',实际一件没卖(07-22实录:桑格利亚酒)。roi对齐买货梯实测值。",
@@ -1429,8 +1433,17 @@
             "血騎士"
         ],
         "next": [
-            "Arbitrage_Sell_PackShopSwich"
+            "Arbitrage_Sell_PackShopSwich",
+            "Arbitrage_Select_Swip"
         ]
+    },
+    "Arbitrage_Sell_PackSearch_PC": {
+        "desc": "[PC新增·2026-07-23] 出售选卡搜索回环。10:30实录:ToTop命中后其next只有PackShopSwich一个候选(07-22设计缺腿),目标卡14在首屏之下→20秒原地找不翻页→超时假成功。且不能直接把滑动锚回Button_Clr:那会途经ToTopSwip(DirectHit)把列表又拽回顶,形成下滑/回顶拉锯。本节点=纯搜索循环{找目标|继续下滑},由PC覆盖的Button_Clr.anchor把PackSwip_Str指到这里,绕开回顶组。",
+        "next": [
+            "Arbitrage_Sell_PackShopSwich",
+            "Arbitrage_Select_Swip"
+        ],
+        "focus": "Arb.sell.卡带表向下搜索"
     },
     "Arbitrage_Sell_PackList_ToTopSwip": {
         "desc": "[PC新增·2026-07-22] 出售前列表复位下滑(手指下拖=回到列表顶部),坐标沿用已PC校准的PackList_ResetSwip[200,135]→[200,660]。max_hit:8为兜底闸——若'血骑士'始终认不到(列表异常/OCR失手),滑满8次后本节点不再命中,流程降级回原行为(直接PackShopSwich+Select_Swip向下找),不会无限滑。",
