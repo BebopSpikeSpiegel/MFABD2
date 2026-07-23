@@ -5,6 +5,7 @@ from maa.custom_action import CustomAction
 from maa.context import Context
 from maa.agent.agent_server import AgentServer
 from utils import mfaalog
+from utils.name_i18n import canon
 
 @AgentServer.custom_action("ArbitrageSellController")
 class ArbitrageSellController(CustomAction):
@@ -29,7 +30,8 @@ class ArbitrageSellController(CustomAction):
                         # 使用和 OCR 底层一模一样的清洗规则，保证 100% 绝对匹配
                         cleaned_item = re.sub(r'[^\w\u4e00-\u9fa5]', '', item)
                         if cleaned_item:
-                            whitelist_set.add(cleaned_item)
+                            # \u5f52\u4e00\u5316\u5230\u89c4\u8303\u7b80\u4f53\uff1a\u767d\u540d\u5355\u53ef\u7b80/\u7e41\u4e66\u5199\uff0c\u7edf\u4e00\u540e\u4e0e OCR \u540d\u540c\u57df\u6838\u5bf9\u3002
+                            whitelist_set.add(canon(cleaned_item))
                     
         if not whitelist_set:
             mfaalog.warning("[Arbitrage] ⚠️ 未读取到任何待售物品白名单，流程结束。")
@@ -69,8 +71,9 @@ class ArbitrageSellController(CustomAction):
                 if name not in all_max_price_items:
                     all_max_price_items.append(name)
                    
-                # 检查是否在白名单中
-                if name in whitelist_set:
+                # 检查是否在白名单中（仅归一化「比较用副本」；name 原文保留回填售卖链，
+                # 繁体端须以 OCR 原文匹配同语言 UI，切勿把归一化后的简体名传给 expected）
+                if canon(name) in whitelist_set:
                     # 查重防抖 (防止翻页重叠导致同个物品被记录两次)
                     if not any(t["name"] == name for t in targets_to_sell):
                         targets_to_sell.append({
