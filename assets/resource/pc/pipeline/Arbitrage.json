@@ -24,15 +24,6 @@
         ],
         "focus": "Arb.PC.插入PACK5卡带进箱庭"
     },
-    "Arbitrage_Chain_Retry_PC": {
-        "desc": "[PC新增·2026-07-23] 套利进图链超时救援垫。07-23 09:06/09:14两轮实录:插卡成功进商队城镇后Sandplay识别断腿(安卓pin模板PC城镇0.604<0.7),Card5#_Goin的next全miss超时→无自定义on_error→MFA默认Global_Null兜底恒命中→流程SUCCEEDED,'找不到商人'被翻译成任务完成。本节点DirectHit恒中,回Global_BackToPve_Anc整链重试;max_hit 2耗尽后不再命中→流程以失败终止(自定义on_error覆盖默认Null,MFA #1219语义)。",
-        "max_hit": 2,
-        "post_delay": 1000,
-        "next": [
-            "Global_BackToPve_Anc"
-        ],
-        "focus": "Arb.PC.进图链超时!重回复位整链重试"
-    },
     "Arbitrage_OperationsMain_Sandplay": {
         "desc": "[PC覆盖·2026-07-23] 仅补on_error(base的Or识别/any_of/next/anchor全继承):箱庭确认命中后,next的找商人/传送导航候选若全miss(10:19实录:SeeMerchant旧模板0.588),20s超时无自定义on_error→MFA默认Global_Null兜底→流程SUCCEEDED假成功。挂同一重试垫,2次内整链重试,仍败则响亮失败。",
         "on_error": [
@@ -178,6 +169,19 @@
             "關閉商店"
         ]
     },
+    "Arbitrage_PackList_ResetEnter": {
+        "desc": "确认列表已复位到顶(血骑士可见)。|[PC覆盖·2026-07-14实录] base roi[236,90,142,72]安卓坐标,PC名字列x140-310→永不满足致复位无限滑(00:57实录)。roi改[140,85,170,120]。",
+        "roi": [
+            207,
+            85,
+            105,
+            49
+        ],
+        "expected": [
+            "血骑士",
+            "血騎士"
+        ]
+    },
     "Arbitrage_Buy_Select_QC1": {
         "desc": "选卡梯(31节点同修)。|[PC覆盖·2026-07-14帧校准] PC商店卡带列表在左侧栏,名字列实测x140-310/y95-690,base roi[236,90,142,655]错位→21秒无一命中(00:26实录)。31个QC/QR/QE节点统一roi[140,85,170,610];各_Clr色核roi按名引用自动跟随。",
         "roi": [
@@ -191,6 +195,9 @@
             "血騎士"
         ]
     },
+    "Arbitrage_Buy_Select_QC1_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QC2": {
         "roi": [
             140,
@@ -202,6 +209,9 @@
             "苍蓝魔女",
             "蒼藍魔女"
         ]
+    },
+    "Arbitrage_Buy_Select_QC2_Clr": {
+        "count": 50
     },
     "Arbitrage_Buy_Select_QC3": {
         "roi": [
@@ -215,6 +225,9 @@
             "迷霧神射手"
         ]
     },
+    "Arbitrage_Buy_Select_QC3_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QC4": {
         "roi": [
             140,
@@ -227,6 +240,9 @@
             "眼鏡與貓"
         ]
     },
+    "Arbitrage_Buy_Select_QC4_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QC5": {
         "roi": [
             140,
@@ -234,6 +250,9 @@
             170,
             610
         ]
+    },
+    "Arbitrage_Buy_Select_QC5_Clr": {
+        "count": 50
     },
     "Arbitrage_Buy_Select_QC6": {
         "roi": [
@@ -247,6 +266,9 @@
             "異教塔"
         ]
     },
+    "Arbitrage_Buy_Select_QC6_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QC7": {
         "roi": [
             140,
@@ -259,6 +281,9 @@
             "憤怒的天使"
         ]
     },
+    "Arbitrage_Buy_Select_QC7_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QC8": {
         "roi": [
             140,
@@ -266,6 +291,9 @@
             170,
             610
         ]
+    },
+    "Arbitrage_Buy_Select_QC8_Clr": {
+        "count": 50
     },
     "Arbitrage_Buy_Select_QC9": {
         "roi": [
@@ -279,6 +307,9 @@
             "鐵面具"
         ]
     },
+    "Arbitrage_Buy_Select_QC9_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QC10": {
         "roi": [
             140,
@@ -290,6 +321,9 @@
             "霍尔蒙克斯",
             "霍爾蒙克斯"
         ]
+    },
+    "Arbitrage_Buy_Select_QC10_Clr": {
+        "count": 50
     },
     "Arbitrage_Buy_Select_QC11": {
         "roi": [
@@ -303,6 +337,9 @@
             "虚假遊戲"
         ]
     },
+    "Arbitrage_Buy_Select_QC11_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QC12": {
         "roi": [
             140,
@@ -311,6 +348,9 @@
             610
         ]
     },
+    "Arbitrage_Buy_Select_QC12_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QC13": {
         "roi": [
             140,
@@ -318,6 +358,9 @@
             170,
             610
         ]
+    },
+    "Arbitrage_Buy_Select_QC13_Clr": {
+        "count": 50
     },
     "Arbitrage_Buy_Select_QC14": {
         "roi": [
@@ -331,6 +374,9 @@
             "神聖審判"
         ]
     },
+    "Arbitrage_Buy_Select_QC14_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QC15": {
         "roi": [
             140,
@@ -343,6 +389,9 @@
             "復仇的誓約"
         ]
     },
+    "Arbitrage_Buy_Select_QC15_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QC16": {
         "roi": [
             140,
@@ -354,6 +403,9 @@
             "国同盟",
             "國同盟"
         ]
+    },
+    "Arbitrage_Buy_Select_QC16_Clr": {
+        "count": 50
     },
     "Arbitrage_Buy_Select_QC17": {
         "roi": [
@@ -368,6 +420,9 @@
             "試炼之路"
         ]
     },
+    "Arbitrage_Buy_Select_QC17_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QC18": {
         "roi": [
             140,
@@ -379,6 +434,9 @@
             "救赎",
             "救贖"
         ]
+    },
+    "Arbitrage_Buy_Select_QC18_Clr": {
+        "count": 50
     },
     "Arbitrage_Buy_Select_QC19": {
         "roi": [
@@ -392,6 +450,9 @@
             "被遺忘的戰爭"
         ]
     },
+    "Arbitrage_Buy_Select_QC19_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QR1": {
         "roi": [
             140,
@@ -403,6 +464,9 @@
             "杰登之门",
             "傑登之門"
         ]
+    },
+    "Arbitrage_Buy_Select_QR1_Clr": {
+        "count": 50
     },
     "Arbitrage_Buy_Select_QR2": {
         "roi": [
@@ -416,6 +480,9 @@
             "火片"
         ]
     },
+    "Arbitrage_Buy_Select_QR2_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QR3": {
         "roi": [
             140,
@@ -427,6 +494,9 @@
             "美丽无望",
             "不可能的美麗"
         ]
+    },
+    "Arbitrage_Buy_Select_QR3_Clr": {
+        "count": 50
     },
     "Arbitrage_Buy_Select_QR4": {
         "roi": [
@@ -440,6 +510,9 @@
             "大逃脫"
         ]
     },
+    "Arbitrage_Buy_Select_QR4_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QR5": {
         "roi": [
             140,
@@ -450,6 +523,9 @@
         "expected": [
             "[魯鲁]的迷[宮宫]"
         ]
+    },
+    "Arbitrage_Buy_Select_QR5_Clr": {
+        "count": 50
     },
     "Arbitrage_Buy_Select_QR6": {
         "roi": [
@@ -463,6 +539,9 @@
             "劍傳"
         ]
     },
+    "Arbitrage_Buy_Select_QR6_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QR7": {
         "roi": [
             140,
@@ -474,6 +553,9 @@
             "合约之战",
             "合約之戰"
         ]
+    },
+    "Arbitrage_Buy_Select_QR7_Clr": {
+        "count": 50
     },
     "Arbitrage_Buy_Select_QE1": {
         "roi": [
@@ -487,6 +569,9 @@
             "夏天騎士"
         ]
     },
+    "Arbitrage_Buy_Select_QE1_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QE2": {
         "roi": [
             140,
@@ -498,6 +583,9 @@
             "恶梦之冬",
             "夢.冬季"
         ]
+    },
+    "Arbitrage_Buy_Select_QE2_Clr": {
+        "count": 50
     },
     "Arbitrage_Buy_Select_QE3": {
         "roi": [
@@ -511,6 +599,9 @@
             "海邊天使"
         ]
     },
+    "Arbitrage_Buy_Select_QE3_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QE4": {
         "roi": [
             140,
@@ -523,6 +614,9 @@
             "記憶邊緣"
         ]
     },
+    "Arbitrage_Buy_Select_QE4_Clr": {
+        "count": 50
+    },
     "Arbitrage_Buy_Select_QE5": {
         "roi": [
             140,
@@ -534,6 +628,9 @@
             "戏水女",
             "戲水女王"
         ]
+    },
+    "Arbitrage_Buy_Select_QE5_Clr": {
+        "count": 50
     },
     "Arbitrage_Favorit_Buy": {
         "desc": "点'一键购买全部收藏'。|[PC覆盖·2026-07-14帧校准] PC按钮文字实测720(900-1015,662-680),base子OCR roi[809,624,186,70]右缘x995切'藏'字。子OCR roi改[875,648,190,45];Enable_Clr色核沿用。",
@@ -820,8 +917,7 @@
     "Arbitrage_Sell_Button_Clr": {
         "desc": "寻找匹配卡带。|[PC覆盖·2026-07-22] next前插列表到顶复位(ToTop/ToTopSwip),base原有两项原样保留在后。语义:先确认/滑到列表顶部→再OCR找目标卡带→找不到才由Select_Swip向下逐屏翻。|[07-23改锚] base锚PackSwip_Str=Button_Clr自身,在PC插入回顶组后形成'下滑一页→锚回本节点→ToTopSwip又拽回顶'拉锯;Str改指PackSearch_PC纯搜索回环,End沿base指PackShopSwich(触底最后一搏)。",
         "anchor": {
-            "PackSwip_Str": "Arbitrage_Sell_PackSearch_PC",
-            "PackSwip_End": "Arbitrage_Sell_PackShopSwich"
+            "PackSwip_Str": "Arbitrage_Sell_PackSearch_PC"
         },
         "next": [
             "Arbitrage_Sell_PackList_ToTop",
@@ -933,19 +1029,6 @@
             660,
             1,
             1
-        ]
-    },
-    "Arbitrage_PackList_ResetEnter": {
-        "desc": "确认列表已复位到顶(血骑士可见)。|[PC覆盖·2026-07-14实录] base roi[236,90,142,72]安卓坐标,PC名字列x140-310→永不满足致复位无限滑(00:57实录)。roi改[140,85,170,120]。",
-        "roi": [
-            207,
-            85,
-            105,
-            49
-        ],
-        "expected": [
-            "血骑士",
-            "血騎士"
         ]
     },
     "Arbitrage_Cooking_Weekly": {
@@ -1309,6 +1392,15 @@
         "template": [
             "Shop/star_gray_PC.png"
         ]
+    },
+    "Arbitrage_Chain_Retry_PC": {
+        "desc": "[PC新增·2026-07-23] 套利进图链超时救援垫。07-23 09:06/09:14两轮实录:插卡成功进商队城镇后Sandplay识别断腿(安卓pin模板PC城镇0.604<0.7),Card5#_Goin的next全miss超时→无自定义on_error→MFA默认Global_Null兜底恒命中→流程SUCCEEDED,'找不到商人'被翻译成任务完成。本节点DirectHit恒中,回Global_BackToPve_Anc整链重试;max_hit 2耗尽后不再命中→流程以失败终止(自定义on_error覆盖默认Null,MFA #1219语义)。",
+        "max_hit": 2,
+        "post_delay": 1000,
+        "next": [
+            "Global_BackToPve_Anc"
+        ],
+        "focus": "Arb.PC.进图链超时!重回复位整链重试"
     },
     "Collect_OperationsMain_ToAreaMap": {
         "desc": "判断在区域地图(移动魔法阵)界面。|[PC覆盖·2026-07-13实录] base roi[183,11,249,53]左缘正好切'移'字左边条,OCR以0.989读成'多动魔法阵'→expected恒miss→传送阵界面死等(23:24实录)。roi左扩[150,11,280,53]罩全标题。注:节点属Collect_Navigation,跑商链途经,覆盖暂置pc/Arbitrage.json(节点命名空间全局合并)。",
