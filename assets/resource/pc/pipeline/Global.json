@@ -109,6 +109,7 @@
         "next": [
             "Global_BackToPve_CardMenu_Tp1",
             "[JumpBack]StartGame_Special",
+            "[JumpBack]Global_RankSettleModal_Confirm",
             "Global_ArenaEscape_PC",
             "Global_BackToPve_ToCardMenu"
         ],
@@ -117,7 +118,7 @@
         ]
     },
     "Global_BackToPve_CardMenu_Tp1": {
-        "desc": "判断在传统卡带界面。|[PC覆盖·2026-07-22] next 首位前插 Global_ArenaEscape_PC(误入竞技场逃生),base 原有三项原样保留在后。|[07-23] 再前插[JumpBack]StartGame_Special:竞技场里可叠赛季结算弹窗(黄金竞技场体验赛季奖励,#393场景,08:36 on_error帧实拍),全屏模态盖住Home药丸→ArenaEscape 21秒全miss是遮挡所致非模板问题;StartGame_Special(base已适配该弹窗,点(39,444)左缘安全区消除)先消弹窗,JumpBack回本循环后ArenaEscape接手。on_error挂重试垫堵死默认Null假成功出口。",
+        "desc": "判断在传统卡带界面。|[PC覆盖·2026-07-22] next 首位前插 Global_ArenaEscape_PC(误入竞技场逃生),base 原有三项原样保留在后。|[07-23] 再前插[JumpBack]StartGame_Special:竞技场里可叠赛季结算弹窗(黄金竞技场体验赛季奖励,#393场景,08:36 on_error帧实拍),全屏模态盖住Home药丸→ArenaEscape 21秒全miss是遮挡所致非模板问题;StartGame_Special(base已适配该弹窗,点(39,444)左缘安全区消除)先消弹窗,JumpBack回本循环后ArenaEscape接手。RankSettleModal_Confirm同插:劫持后若弹的是段位弹窗(带居中'确认',今晨08:26 PVP段实弹过)则由它接——该识别器原只挂Anc层,进Tp1子循环后不可达。on_error挂重试垫堵死默认Null假成功出口。",
         "roi": [
             150,
             4,
@@ -130,6 +131,7 @@
         ],
         "next": [
             "[JumpBack]StartGame_Special",
+            "[JumpBack]Global_RankSettleModal_Confirm",
             "Global_ArenaEscape_PC",
             "[JumpBack]Global_CardMenu_RewardBubble_TurnOFF",
             "Global_BackToPve_CardMenu_Tp2",
