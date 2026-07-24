@@ -2620,7 +2620,7 @@
             392,
             94,
             733,
-            536
+            267
         ],
         "expected": [
             "目标物品"
@@ -2714,6 +2714,7 @@
         "timeout": 4000,
         "next": [
             "Arbitrage_Sell_Item_Selling",
+            "Arbitrage_Sell_Item_ListTraverse",
             "Arbitrage_PackList_ResetEnter",
             "[JumpBack]Arbitrage_PackList_ResetSwip"
         ]
