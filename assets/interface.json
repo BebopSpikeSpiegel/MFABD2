@@ -1356,6 +1356,9 @@
                         "Arbitrage_BuyItem": {
                             "enabled": false
                         },
+                        "Arbitrage_Favorit_Buy": {
+                            "enabled": false
+                        },
                         "Arbitrage_Bargaining_SkillList": {
                             "recognition": "DirectHit",
                             "target": [
