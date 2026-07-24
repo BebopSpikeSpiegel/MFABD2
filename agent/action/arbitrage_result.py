@@ -30,6 +30,7 @@ _COL_CART = "Arbitrage_Sell_Col_Cart"
 # 溢价率取两三位数+%:排除OCR把装饰符读成"4"/"A"的噪声,并吃'18120%'粘连(取靠%的三位)
 RE_PCT = re.compile(r'(\d{2,3})\s*%')
 SUBROW_TOL = 14      # 同子行 y 容差(子行间距约30px,商品行距约73px)
+SCORE_MIN = 0.6      # 卡带选中组组分低于此=低置信,打WRN(实录错读曾得0.51,正确读数更高,#B)
 
 
 # 卖出验证：派发前后各读一次金币,增长才算真卖出(2026-07-22)
@@ -73,6 +74,22 @@ def _cart_expected(raw: str) -> str:
         return raw            # 无号(提取正常应带号):退回整串,菜单按类型匹配
     body = ''.join(_CART_FUZZ.get(c, re.escape(c)) for c in raw[:m.start()])
     return body + r'(?<!\d)' + m.group(1) + r'(?!\d)'
+
+
+# 卡带上下两子行交叉核对(#B,2026-07-24)：满价商品「当前档」与「每月最高档」是同一柜台,卡带名
+# 理应同串。两子行各拼一组(类型+号两个det),组分=组内最小det置信(短板:类型和号都得对才能进对
+# 柜台),取组分高的一组整串去匹配菜单。卡带只决定「去哪卖」,读错最坏是进错柜台、首页找不到物品名
+# →当没卖掉(现有金币验证兜底WRN),绝不误卖,故不做类型闭集纠错/错字重映射(错字是开放集收不过来,
+# 收益仅省一次空跑,不划算)。
+def _cart_group(dets) -> tuple:
+    """一子行的卡带 det 组 → (整串, 组分)。串按 cx 序拼接+清洗;组分取组内最小 det 置信。空组→("",0.0)。"""
+    dets = sorted(dets, key=lambda t: t["cx"])
+    if not dets:
+        return "", 0.0
+    raw = "".join(t["text"] for t in dets)
+    text = re.sub(r'[^\w一-龥]', '', raw)
+    return text, min(t["score"] for t in dets)
+
 
 @AgentServer.custom_action("ArbitrageSellController")
 class ArbitrageSellController(CustomAction):
@@ -144,8 +161,10 @@ class ArbitrageSellController(CustomAction):
                     # 查重防抖 (防止翻页重叠导致同个物品被记录两次)
                     if not any(t["name"] == name for t in targets_to_sell):
                         targets_to_sell.append({
-                            "name": name, 
-                            "cartridge_raw": cart
+                            "name": name,
+                            "cartridge_raw": cart,
+                            "cart_score": item.get("cart_score", 0.0),
+                            "cart_conflict": item.get("cart_conflict", False)
                         })
 
             if has_non_max:
@@ -181,6 +200,15 @@ class ArbitrageSellController(CustomAction):
             item_name = target["name"]
             cart_raw = target["cartridge_raw"]
             mfaalog.info(f"[Arbitrage] 👉 正在执行 {idx}/{len(targets_to_sell)}: 前往 [{cart_raw}] 售卖 [{item_name}]")
+
+            # 卡带识别质量轻告警(#B):低置信或上下分歧只提示,不阻断——读错最坏进错柜台当没卖掉,
+            # 真相由下面的金币验证承担。派发链的 expected 沿用 OCR 原文(繁体端须同语言匹配菜单)。
+            if target.get("cart_score", 1.0) < SCORE_MIN or target.get("cart_conflict"):
+                mfaalog.warning(
+                    f"[Arbitrage]   ⚠️ 卡带识别可疑(组分{target.get('cart_score', 0):.2f}"
+                    f"{'·上下分歧' if target.get('cart_conflict') else ''})，"
+                    f"若进错柜台将当作未卖出处理"
+                )
 
             # 核心：构造多节点参数替换字典
             override_cfg = {
@@ -221,7 +249,8 @@ class ArbitrageSellController(CustomAction):
             out = []
             for r in (getattr(reco, "filtered_results", None) or []):
                 x, y, w, h = r.box
-                out.append({"text": r.text, "cx": x + w / 2, "cy": y + h / 2})
+                out.append({"text": r.text, "cx": x + w / 2, "cy": y + h / 2,
+                            "score": getattr(r, "score", 1.0)})
             return out
 
         names = _col(_COL_NAME)
@@ -253,7 +282,8 @@ class ArbitrageSellController(CustomAction):
 
         results = []
         for i, row in enumerate(anchors):
-            item_data = {"name": row["name"], "is_max_price": False, "target_cartridge": ""}
+            item_data = {"name": row["name"], "is_max_price": False, "target_cartridge": "",
+                         "cart_score": 0.0, "cart_conflict": False}
             ny = row["cy"]                                    # 上子行(当前)y = 名锚 y
             next_ny = anchors[i + 1]["cy"] if i + 1 < len(anchors) else ny + gap_bound
 
@@ -270,12 +300,18 @@ class ArbitrageSellController(CustomAction):
             if top_pct and bot_pct and (top_pct & bot_pct):
                 item_data["is_max_price"] = True
 
-            # 目标卡带取上子行(类型+号,按 cx 串);下子行是每月最高价日的卡带,取了会白跑
-            cur_cart = sorted((t for t in carts if abs(t["cy"] - ny) <= SUBROW_TOL),
-                              key=lambda t: t["cx"])
-            if cur_cart:
-                raw_cart = "".join(t["text"] for t in cur_cart)
-                item_data["target_cartridge"] = re.sub(r'[^\w一-龥]', '', raw_cart)
+            # 卡带:上子行(当前)组;满价时下子行(每月)是同柜台、理应同串(#B),两组各取组分并取
+            # 组分高的一组整串。非满价不卖,仅取上子行(每月档与当前不同,交叉无意义)。
+            up_str, up_sc = _cart_group(t for t in carts if abs(t["cy"] - ny) <= SUBROW_TOL)
+            best_str, best_sc = up_str, up_sc
+            if item_data["is_max_price"] and mon_y is not None:
+                lo_str, lo_sc = _cart_group(t for t in carts if abs(t["cy"] - mon_y) <= SUBROW_TOL)
+                if lo_str:                                    # 每月组也读到才交叉
+                    if lo_sc > up_sc:
+                        best_str, best_sc = lo_str, lo_sc
+                    item_data["cart_conflict"] = (up_str != lo_str)
+            item_data["target_cartridge"] = best_str
+            item_data["cart_score"] = best_sc
 
             results.append(item_data)
 
