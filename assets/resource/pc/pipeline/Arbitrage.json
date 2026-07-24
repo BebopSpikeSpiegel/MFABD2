@@ -903,16 +903,64 @@
         ]
     },
     "Arbitrage_Swip_Calibration_Down": {
-        "desc": "价目表像素级滚动校准。|[PC覆盖·2026-07-14禁用] 校准三件套=26x3/10x4/7x7微roi+HSV±3色带,按安卓渲染逐像素标定;PC上FineTuning色带意外常真→每1.5s微滑无限循环(00:27实录)。py卖货主脑按名字行锚定解析(EQUATOR_OFFSET),对滚动位置本有容忍度,PC先禁用校准直接扫描;翻页重叠由py查重防抖兜底。",
-        "enabled": false
+        "roi": [
+            509,
+            236,
+            59,
+            10
+        ],
+        "begin": [
+            635,
+            248,
+            1,
+            1
+        ],
+        "end": [
+            635,
+            266,
+            1,
+            1
+        ]
     },
     "Arbitrage_Swip_Calibration_Up": {
-        "desc": "价目表像素级滚动校准。|[PC覆盖·2026-07-14禁用] 校准三件套=26x3/10x4/7x7微roi+HSV±3色带,按安卓渲染逐像素标定;PC上FineTuning色带意外常真→每1.5s微滑无限循环(00:27实录)。py卖货主脑按名字行锚定解析(EQUATOR_OFFSET),对滚动位置本有容忍度,PC先禁用校准直接扫描;翻页重叠由py查重防抖兜底。",
-        "enabled": false
+        "roi": [
+            510,
+            270,
+            15,
+            32
+        ],
+        "begin": [
+            635,
+            254,
+            1,
+            1
+        ],
+        "end": [
+            635,
+            248,
+            1,
+            1
+        ]
     },
     "Arbitrage_Swip_Calibration_Up_FineTuning": {
-        "desc": "价目表像素级滚动校准。|[PC覆盖·2026-07-14禁用] 校准三件套=26x3/10x4/7x7微roi+HSV±3色带,按安卓渲染逐像素标定;PC上FineTuning色带意外常真→每1.5s微滑无限循环(00:27实录)。py卖货主脑按名字行锚定解析(EQUATOR_OFFSET),对滚动位置本有容忍度,PC先禁用校准直接扫描;翻页重叠由py查重防抖兜底。",
-        "enabled": false
+        "roi": [
+            510,
+            262,
+            15,
+            8
+        ],
+        "begin": [
+            635,
+            252,
+            1,
+            1
+        ],
+        "end": [
+            635,
+            249,
+            1,
+            1
+        ]
     },
     "Arbitrage_Sell_Button_Clr": {
         "desc": "寻找匹配卡带。|[PC覆盖·2026-07-22] next前插列表到顶复位(ToTop/ToTopSwip),base原有两项原样保留在后。语义:先确认/滑到列表顶部→再OCR找目标卡带→找不到才由Select_Swip向下逐屏翻。|[07-23改锚] base锚PackSwip_Str=Button_Clr自身,在PC插入回顶组后形成'下滑一页→锚回本节点→ToTopSwip又拽回顶'拉锯;Str改指PackSearch_PC纯搜索回环,End沿base指PackShopSwich(触底最后一搏)。",
