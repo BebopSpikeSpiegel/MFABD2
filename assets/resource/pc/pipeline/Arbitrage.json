@@ -917,7 +917,8 @@
     "Arbitrage_Sell_Button_Clr": {
         "desc": "寻找匹配卡带。|[PC覆盖·2026-07-22] next前插列表到顶复位(ToTop/ToTopSwip),base原有两项原样保留在后。语义:先确认/滑到列表顶部→再OCR找目标卡带→找不到才由Select_Swip向下逐屏翻。|[07-23改锚] base锚PackSwip_Str=Button_Clr自身,在PC插入回顶组后形成'下滑一页→锚回本节点→ToTopSwip又拽回顶'拉锯;Str改指PackSearch_PC纯搜索回环,End沿base指PackShopSwich(触底最后一搏)。",
         "anchor": {
-            "PackSwip_Str": "Arbitrage_Sell_PackSearch_PC"
+            "PackSwip_Str": "Arbitrage_Sell_PackSearch_PC",
+            "PackSwip_End": "Arbitrage_Sell_PackShopSwich"
         },
         "next": [
             "Arbitrage_Sell_PackList_ToTop",
