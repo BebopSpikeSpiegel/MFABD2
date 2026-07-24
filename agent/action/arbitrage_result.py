@@ -8,36 +8,28 @@ from utils import mfaalog
 from utils.name_i18n import canon
 
 # ==========================================
-# 列带配置:节点 roi 承载(#380)。py 首跑查询一次并缓存,
-# 由 base/pc 分层天然获得平台差异化;节点缺失时回退旧常数。
+# 三列各自窄 roi OCR(#Q2.5,2026-07-24)：名/价/卡带在各自节点的 roi 内分别识别。
+# 窄 roi 让小字(卡带尾号)可靠——大 roi 整表 OCR 会漏检小数字(07-24实录:活動卡的号
+# 在整表 ReadList 里检不出,单独窄 roi 一放大就认出)。roi 由各节点 JSON 承载,
+# run_recognition 自动生效,故不再需要 get_node_data 读列带、也无需 cx 过滤分列。
 # ==========================================
-_BAND_NODES = {
-    "name": "Arbitrage_Sell_Col_Name",
-    "price": "Arbitrage_Sell_Col_Price",
-    "cart": "Arbitrage_Sell_Col_Cart",
-}
-_LEGACY_BANDS = {"name": (470, 730), "price": (880, 960), "cart": (960, 1280)}
-_BANDS_CACHE = None
+_COL_NAME = "Arbitrage_Sell_Col_Name"
+_COL_PRICE = "Arbitrage_Sell_Col_Price"
+_COL_CART = "Arbitrage_Sell_Col_Cart"
 
 # ==========================================
-# 子行锚(2026-07-22)：价目表每个商品占两行
-#   上行「当前」   = 今天的实际行情(溢价率/该去哪个卡带卖)
-#   下行「每月N日」= 该商品每月最高价日的行情(仅供比对,不可当目标)
-# 原实现用「商品名底边+7」作赤道分上下,但商品行距仅约73px而分配阈值50px,
-# 上一个商品的「每月」行会被吸进本行上半区 → 假交集误判满价(07-22实录:
-# 流浪美食家烤肉吃进上行120%与自身120%凑交集);且目标卡带取的是下行,
-# 拿到的是"每月最高价日的卡带"而非今天该去的卡带(07-22实录:桑格利亚酒
-# 当前118%在剧情游戏卡4,却被判去剧情游戏卡11——那是每月5日才有的120%)。
-# 改用行标记文本直接锚定两个子行,彻底隔离跨行污染。
+# 子行断界(2026-07-24,#Q2)：价目表每个商品占两行
+#   上子行 = 今天的实际行情(溢价率/该去哪个卡带卖) —— 与商品名同高
+#   下子行 = 该商品每月最高价日的行情(仅供比对,不可当目标)
+# 断界不再读「当前/每月」文字(语言相关,繁/简/英/日各异,曾是硬编码语义依赖),改纯几何:
+#   名锚 y 即上子行 y;同一商品带(名锚 i → 名锚 i+1)内、名字下方最近的价格行即下子行。
+# 名锚分带令每个价格文本只归属唯一商品,结构性根除跨行假交集(旧赤道法分配阈值50px>行距
+# 73px,上一商品的下子行被吸进本行凑假交集误判满价,07-22实录:流浪美食家/桑格利亚酒);
+# 带内按 y 升序天然区分上/下,无需任何语言标记。
 # ==========================================
-RE_MARK_CUR = re.compile(r'^[当當]前$')
-RE_MARK_MONTH = re.compile(r'^每月')
-# 溢价率必须是两三位数+%,排除OCR把装饰符号读成"4"/"A"这类噪声
-# (07-22实录:(859,358)与(856,391)两处噪声"4"上下各一,凑出假交集)
+# 溢价率取两三位数+%:排除OCR把装饰符读成"4"/"A"的噪声,并吃'18120%'粘连(取靠%的三位)
 RE_PCT = re.compile(r'(\d{2,3})\s*%')
-SUBROW_TOL = 14      # 同子行 y 容差(子行间距约35px,行距约73px)
-CUR_NEAR_NAME = 25   # 「当前」标记与商品名的最大 y 偏差
-MONTH_BELOW_CUR = (12, 70)  # 「每月」标记相对「当前」的 y 偏移窗口
+SUBROW_TOL = 14      # 同子行 y 容差(子行间距约30px,商品行距约73px)
 
 
 # 卖出验证：派发前后各读一次金币,增长才算真卖出(2026-07-22)
@@ -67,55 +59,20 @@ def _read_gold(context) -> int:
         return 0
 
 
+# OCR 同趟里对繁简会来回读(07-24实录同次结果 帶/带 混用),这几个字互吃
+_CART_FUZZ = {'帶': '[帶带]', '带': '[帶带]', '遊': '[遊游]', '游': '[遊游]',
+              '戲': '[戲戏]', '戏': '[戲戏]'}
+
+
 def _cart_expected(raw: str) -> str:
-    """卡带名 → 容错正则。OCR 常把'剧'读成'则'(07-22实录'则情游戏卡3'),
-    故前缀模糊、卡号精确;(?!\\d) 防止卡4误匹配卡41。"""
+    """卡带整串 → 选卡带菜单匹配式。类型逐字取自实读(活動/故事/角色/剧情… 皆可,不写死),
+    仅对 OCR 繁简来回读的字互吃;号精确 (?<!\\d)N(?!\\d) 防 7 误配 17/71。
+    菜单侧空格由节点 replace 去除;类型的 OCR 错字(如剧→则)属异常,留后续插件。"""
     m = re.search(r'(\d+)\s*$', raw)
-    if m:
-        return r'游[戏戲]卡\s*' + m.group(1) + r'(?!\d)'
-    return raw
-
-def _node_roi(context: Context, node: str):
-    """读数据节点声明的生效 roi(pc 合并后),与 recognition 类型无关。
-
-    get_node_data 返回 V2 归一化结构,roi 位于 recognition.param.roi 而非顶层
-    (顶层 roi 恒为 null)。早期实现走 run_recognition 取 box 当 roi——box 仅在
-    DirectHit 时 ==roi;节点一旦标 OCR,box 变成"单个最佳匹配框",列带塌缩
-    (07-23 实录:价带被算成一个'↑'箭头的宽度,满价判定全灭,出售只认一件的根因)。
-    直读 param.roi 则无视节点是 OCR 还是 DirectHit,实测 maafw v5.12.2 返回 pc 值。"""
-    nd = context.get_node_data(node)
-    if not nd:
-        return None
-    reco = nd.get("recognition")
-    if isinstance(reco, dict):
-        roi = (reco.get("param") or {}).get("roi")
-        if roi:
-            return roi
-    return nd.get("roi")  # 兼容极少数顶层写法
-
-
-def _get_bands(context: Context) -> dict:
-    """列带 x 范围来自三个数据节点的 roi(#380),首跑查询并模块级缓存;
-    节点缺失/roi 非法时回退内置常数(安卓布局)并告警。"""
-    global _BANDS_CACHE
-    if _BANDS_CACHE is not None:
-        return _BANDS_CACHE
-    bands = {}
-    try:
-        for key, node in _BAND_NODES.items():
-            roi = _node_roi(context, node)
-            if not roi or len(roi) < 4:
-                raise ValueError(f"{node} 无有效 roi")
-            x, w = roi[0], roi[2]
-            if w <= 0:
-                raise ValueError(f"{node} roi宽度非法")
-            bands[key] = (x, x + w)
-        mfaalog.info(f"[Arbitrage] 📐 列带已从节点解析: 名{bands['name']} 价{bands['price']} 卡带{bands['cart']}")
-    except Exception as e:
-        bands = dict(_LEGACY_BANDS)
-        mfaalog.warning(f"[Arbitrage] ⚠️ 列带节点查询失败({e}),回退内置常数(安卓布局)")
-    _BANDS_CACHE = bands
-    return bands
+    if not m:
+        return raw            # 无号(提取正常应带号):退回整串,菜单按类型匹配
+    body = ''.join(_CART_FUZZ.get(c, re.escape(c)) for c in raw[:m.start()])
+    return body + r'(?<!\d)' + m.group(1) + r'(?!\d)'
 
 @AgentServer.custom_action("ArbitrageSellController")
 class ArbitrageSellController(CustomAction):
@@ -286,115 +243,73 @@ class ArbitrageSellController(CustomAction):
     # 附：V8 图像解析引擎 
     # ==========================================
     def _parse_current_page(self, context: Context) -> list:
-        # 配置区(EQUATOR为y向行内分界,两端一致)
-        EQUATOR_OFFSET = 7
-
+        # 每商品占价目表两行:上子行(当前,与名同高)/下子行(每月最高价日)
         screenshot = context.tasker.controller.post_screencap().wait().get()
-        # 新增的防御逻辑：如果截图失败，记录警告并安全退出当前解析
+        # 防御:截图失败则安全退出当前页解析
         if screenshot is None:
             print("[Arbitrage] ❌ 严重错误: 底层截图获取失败 (返回 None)！跳过当前页解析。")
             return []
 
-        # 列带来自数据节点roi(#380),首跑经get_node_data读recognition.param.roi并缓存
-        bands = _get_bands(context)
-        COL_NAME_MIN, COL_NAME_MAX = bands["name"]
-        COL_PRICE_MIN, COL_PRICE_MAX = bands["price"]
-        COL_CART_MIN, COL_CART_MAX = bands["cart"]
-        # 价格%列右缘枢轴:随价带派生(安卓 960-60=900 与原硬编码严格一致)
-        PRICE_EDGE = COL_PRICE_MAX - 60
-        reco_result = context.run_recognition("Arbitrage_Sell_ReadList_OCR", screenshot)
-        
-        if not reco_result or not reco_result.hit or not reco_result.all_results:
-            return []
-            
-        all_texts = []
-        for match in reco_result.all_results:
-            # 消除编辑器告警 + 防御性编程：确保当前结果确实包含所需属性
-            box = getattr(match, 'box', None)
-            text = getattr(match, 'text', None)
-            
-            # 如果没有这两个属性，直接跳过
-            if box is None or text is None:
-                continue
+        def _col(node):
+            """跑某列窄 roi OCR,取 filtered → [{text,cx,cy}, ...](窄 roi 已圈好列,无需 cx 过滤分列)。"""
+            reco = context.run_recognition(node, screenshot)
+            out = []
+            for r in (getattr(reco, "filtered_results", None) or []):
+                x, y, w, h = r.box
+                out.append({"text": r.text, "cx": x + w / 2, "cy": y + h / 2})
+            return out
 
-            x, y, w, h = box
-            all_texts.append({
-                "box": box, "text": text,
-                "cx": x + w / 2, "cy": y + h / 2, "bottom_y": y + h
-            })
-        
+        names = _col(_COL_NAME)
+        prices = _col(_COL_PRICE)
+        carts = _col(_COL_CART)
+
+        # 名锚:名列内非数字文本 = 各商品行(与上子行同高),按 y 升序、近距去重
         anchors = []
-        for t in all_texts:
-            if COL_NAME_MIN <= t["cx"] < COL_NAME_MAX:
-                cleaned = re.sub(r'[^\w\u4e00-\u9fa5]', '', t["text"])
-                if cleaned and not cleaned.isdigit():
-                    if not any(abs(t["cy"] - a['anchor_cy']) < 30 for a in anchors):
-                        anchors.append({
-                            'name': cleaned, 'anchor_cy': t["cy"],
-                            'equator_y': t["bottom_y"] + EQUATOR_OFFSET, 'items': []
-                        })
-        if not anchors: return []
+        for t in sorted(names, key=lambda t: t["cy"]):
+            cleaned = re.sub(r'[^\w一-龥]', '', t["text"])
+            if cleaned and not cleaned.isdigit():
+                if not any(abs(t["cy"] - a["cy"]) < 30 for a in anchors):
+                    anchors.append({"name": cleaned, "cy": t["cy"]})
+        if not anchors:
+            return []
+        # 商品行距中位数:供末行下子行搜索上界(无下一名锚时的兜底跨度)
+        gaps = [anchors[i + 1]["cy"] - anchors[i]["cy"] for i in range(len(anchors) - 1)]
+        gap_bound = sorted(gaps)[len(gaps) // 2] if gaps else 4 * SUBROW_TOL
 
-        for t in all_texts:
-            closest = min(anchors, key=lambda a: abs(t["cy"] - a['anchor_cy']))
-            if abs(t["cy"] - closest['anchor_cy']) < 50:
-                closest['items'].append(t)
-                
-        # 行标记文本(在价格列左侧的独立列,不属于任何数据列带)
-        cur_marks = [t for t in all_texts
-                     if RE_MARK_CUR.match(re.sub(r'\s', '', t["text"]))]
-        month_marks = [t for t in all_texts if RE_MARK_MONTH.match(t["text"])]
-
-        results = []
-        for row in anchors:
-            item_data = {"name": row["name"], "is_max_price": False, "target_cartridge": ""}
-            ay = row["anchor_cy"]
-
-            # 上子行锚:与商品名同高的「当前」
-            cur_cands = [m for m in cur_marks if abs(m["cy"] - ay) <= CUR_NEAR_NAME]
-            if not cur_cands:
-                # 找不到行标记宁可不卖(错卖代价 >> 漏卖代价)
-                mfaalog.warning(
-                    f"[Arbitrage] ⚠️ [{row['name']}] 未找到「当前」行标记,本行不参与满价判定"
-                )
-                results.append(item_data)
-                continue
-            cur_y = min(cur_cands, key=lambda m: abs(m["cy"] - ay))["cy"]
-
-            # 下子行锚:「当前」下方窗口内最近的「每月N日」
-            _lo, _hi = MONTH_BELOW_CUR
-            mon_cands = [m for m in month_marks if _lo < (m["cy"] - cur_y) < _hi]
-            mon_y = (min(mon_cands, key=lambda m: m["cy"] - cur_y)["cy"]
-                     if mon_cands else None)
-
-            def _pcts(y, _texts=all_texts, _lo=COL_PRICE_MIN, _hi2=COL_PRICE_MAX):
-                if y is None:
-                    return []
-                out = []
-                for t in _texts:
-                    if not (_lo <= t["cx"] < _hi2):
-                        continue
-                    if abs(t["cy"] - y) > SUBROW_TOL:
-                        continue
+        def _row_pcts(center_y):
+            """价列内、与 center_y 同高(±SUBROW_TOL)的所有溢价率数字集合。"""
+            out = set()
+            for t in prices:
+                if abs(t["cy"] - center_y) <= SUBROW_TOL:
                     m = RE_PCT.search(t["text"])
                     if m:
-                        out.append(m.group(1))
-                return out
+                        out.add(m.group(1))
+            return out
 
-            top_pct = _pcts(cur_y)
-            bot_pct = _pcts(mon_y)
+        results = []
+        for i, row in enumerate(anchors):
+            item_data = {"name": row["name"], "is_max_price": False, "target_cartridge": ""}
+            ny = row["cy"]                                    # 上子行(当前)y = 名锚 y
+            next_ny = anchors[i + 1]["cy"] if i + 1 < len(anchors) else ny + gap_bound
 
-            # 已达满价 = 今天的溢价率 与 每月最高价档 相同
-            if top_pct and bot_pct and set(top_pct).intersection(set(bot_pct)):
+            # 下子行(每月)y:本商品带内(next_ny 为界,防吸入下一商品上子行)、名字下方最近的价格行
+            below_ys = sorted(
+                t["cy"] for t in prices
+                if ny + SUBROW_TOL < t["cy"] < next_ny and RE_PCT.search(t["text"])
+            )
+            mon_y = below_ys[0] if below_ys else None
+
+            # 满价 = 今日溢价率 与 每月最高价档 相同(两子行都读到且有交集)
+            top_pct = _row_pcts(ny)
+            bot_pct = _row_pcts(mon_y) if mon_y is not None else set()
+            if top_pct and bot_pct and (top_pct & bot_pct):
                 item_data["is_max_price"] = True
 
-            # 目标卡带取「当前」行:今天该去哪卖。下行是每月最高价日的卡带,取了会白跑
-            cart_texts = [t for t in all_texts
-                          if COL_CART_MIN <= t["cx"] < COL_CART_MAX
-                          and abs(t["cy"] - cur_y) <= SUBROW_TOL]
-            if cart_texts:
-                cart_texts.sort(key=lambda t: t["cx"])
-                raw_cart = "".join([t["text"] for t in cart_texts])
+            # 目标卡带取上子行(类型+号,按 cx 串);下子行是每月最高价日的卡带,取了会白跑
+            cur_cart = sorted((t for t in carts if abs(t["cy"] - ny) <= SUBROW_TOL),
+                              key=lambda t: t["cx"])
+            if cur_cart:
+                raw_cart = "".join(t["text"] for t in cur_cart)
                 item_data["target_cartridge"] = re.sub(r'[^\w一-龥]', '', raw_cart)
 
             results.append(item_data)
