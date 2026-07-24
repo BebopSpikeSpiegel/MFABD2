@@ -75,23 +75,38 @@ def _cart_expected(raw: str) -> str:
         return r'游[戏戲]卡\s*' + m.group(1) + r'(?!\d)'
     return raw
 
-def _get_bands(context: Context, screenshot) -> dict:
-    """经 run_recognition 读取 DirectHit 数据节点的生效 roi(box=roi,引擎合并视图,pc覆盖可见)。
-    注:get_node_data 跨 agent 边界对资源节点返回空(07-17 实测),不可用。"""
+def _node_roi(context: Context, node: str):
+    """读数据节点声明的生效 roi(pc 合并后),与 recognition 类型无关。
+
+    get_node_data 返回 V2 归一化结构,roi 位于 recognition.param.roi 而非顶层
+    (顶层 roi 恒为 null)。早期实现走 run_recognition 取 box 当 roi——box 仅在
+    DirectHit 时 ==roi;节点一旦标 OCR,box 变成"单个最佳匹配框",列带塌缩
+    (07-23 实录:价带被算成一个'↑'箭头的宽度,满价判定全灭,出售只认一件的根因)。
+    直读 param.roi 则无视节点是 OCR 还是 DirectHit,实测 maafw v5.12.2 返回 pc 值。"""
+    nd = context.get_node_data(node)
+    if not nd:
+        return None
+    reco = nd.get("recognition")
+    if isinstance(reco, dict):
+        roi = (reco.get("param") or {}).get("roi")
+        if roi:
+            return roi
+    return nd.get("roi")  # 兼容极少数顶层写法
+
+
+def _get_bands(context: Context) -> dict:
+    """列带 x 范围来自三个数据节点的 roi(#380),首跑查询并模块级缓存;
+    节点缺失/roi 非法时回退内置常数(安卓布局)并告警。"""
     global _BANDS_CACHE
     if _BANDS_CACHE is not None:
         return _BANDS_CACHE
     bands = {}
     try:
         for key, node in _BAND_NODES.items():
-            reco = context.run_recognition(node, screenshot)
-            box = getattr(reco, "box", None) if reco else None
-            if box is None:
-                raise ValueError(f"{node} 识别未返回box")
-            try:
-                x, w = box.x, box.w
-            except AttributeError:
-                x, _, w, _ = box
+            roi = _node_roi(context, node)
+            if not roi or len(roi) < 4:
+                raise ValueError(f"{node} 无有效 roi")
+            x, w = roi[0], roi[2]
             if w <= 0:
                 raise ValueError(f"{node} roi宽度非法")
             bands[key] = (x, x + w)
@@ -280,8 +295,8 @@ class ArbitrageSellController(CustomAction):
             print("[Arbitrage] ❌ 严重错误: 底层截图获取失败 (返回 None)！跳过当前页解析。")
             return []
 
-        # 列带来自数据节点roi(#380),首跑经run_recognition解析并缓存
-        bands = _get_bands(context, screenshot)
+        # 列带来自数据节点roi(#380),首跑经get_node_data读recognition.param.roi并缓存
+        bands = _get_bands(context)
         COL_NAME_MIN, COL_NAME_MAX = bands["name"]
         COL_PRICE_MIN, COL_PRICE_MAX = bands["price"]
         COL_CART_MIN, COL_CART_MAX = bands["cart"]
