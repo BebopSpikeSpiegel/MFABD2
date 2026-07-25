@@ -1771,10 +1771,16 @@
         "timeout": 1005,
         "next": [
             "[JumpBack]Arbitrage_Favorit_Buy",
-            "Arbitrage_PackList_ResetEnter",
+            "Arbitrage_Buy_End",
             "[JumpBack]Arbitrage_PackList_ResetSwip"
         ],
         "focus": "Arb.B.购买选收藏模块结束"
+    },
+    "Arbitrage_Buy_End": {
+        "desc": "购买已进行,卡带已复位",
+        "recognition": "Or",
+        "any_of": ["Arbitrage_PackList_ResetEnter"],
+        "focus": "Arb.B.购买模块结束"
     },
     "Arbitrage_Favorit_Buy": {
         "desc": "点击一键购买,maxhit配置,使得双入口也只会判定一次",
@@ -2715,9 +2721,15 @@
         "next": [
             "Arbitrage_Sell_Item_Selling",
             "Arbitrage_Sell_Item_ListTraverse",
-            "Arbitrage_PackList_ResetEnter",
+            "Arbitrage_Sell_End",
             "[JumpBack]Arbitrage_PackList_ResetSwip"
         ]
+    },
+    "Arbitrage_Sell_End": {
+        "desc": "出售循环内已进行,卡带已复位",
+        "recognition": "Or",
+        "any_of": ["Arbitrage_PackList_ResetEnter"],
+        "focus": "Arb.B.出售一轮循环结束"
     },
     "Arbitrage_PackList_ResetSwip": {
         "desc": "商店卡带列表滑动",
