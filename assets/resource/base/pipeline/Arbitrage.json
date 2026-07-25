@@ -2392,11 +2392,21 @@
         "desc": "寻找匹配卡带,如果匹配不到超时跳出。",
         "recognition": "Or",
         "any_of": ["Arbitrage_Sell_Type_Clr"],
+        "next": [
+            "Arbitrage_Sell_ResetPack_Enter",
+            "[JumpBack]Arbitrage_PackList_ResetSwip"
+        ]
+    },
+    "Arbitrage_Sell_ResetPack_Enter": {
+        "recognition": "Or",
+        "any_of": ["Arbitrage_PackList_ResetEnter"],
         "anchor": {
-            "PackSwip_Str": "Arbitrage_Sell_Button_Clr",
+            "PackSwip_Str": "Arbitrage_Sell_PackList",
             "PackSwip_End": "Arbitrage_Sell_PackShopSwich"
         },
-        "timeout": 5000,
+        "next": ["Arbitrage_Sell_PackList"]
+    },
+    "Arbitrage_Sell_PackList": {
         "next": [
             "Arbitrage_Sell_PackShopSwich",
             "Arbitrage_Select_Swip"
