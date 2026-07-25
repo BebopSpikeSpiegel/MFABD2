@@ -91,10 +91,114 @@ def _cart_group(dets) -> tuple:
     return text, min(t["score"] for t in dets)
 
 
+# ==========================================
+# 尾号救援(2026-07-25)：DBNet 对孤立细「1」召回不稳——同页尾号里多位数(11/10/2)稳检、单个细「1」
+# 漏检,换 4mb~60mb 多个 det 均无解:坏的是 det,rec 本身能读。故某子行拼组后无尾号时,以类型 det 框为
+# 锚,其正下方 only_rec 跳过 det 直接把号读回。节点靠 override 内联,不占 JSON(同 RDDraw 回显)。
+#
+# roi 宽窄互补(21:33 实测复盘)：值恒右对齐于类型右缘,但噪声随 crop 边界而变——【宽 roi】给 rec 足
+# 够上下文、多数行读对,但有的行被左侧整排类型字底带偏(→00/=—/e 前缀,如实录 0021/e21/=—1);【窄
+# roi】只圈右侧值带、躲开左侧字底,但「1」正处「帶」正下方,窄了反被「帶」右下钩带偏(→」)。二者恰
+# 好互补(同帧宽崩的行窄能读对、反之亦然)。故每行按【宽+窄】各读一次,取「置信最高且号合理(1~99 无
+# 前导0)」的一版——对 crop 边界做小集成。全不合理/全低分则保持无号,交上层按「缺号可疑」跳过柜台。
+# ==========================================
+_RESCUE_NODE = "Arbitrage_Sell_Cart_RescueNum"
+# 救援可调参:默认=PC 720p 实测标定;可被 _RESCUE_NODE.attach 覆盖(见 _load_rescue_cfg),缺项回落此默认。
+# 外置到 JSON 的意义:UI 挪动/换端只改 attach、不动 py(仿 Arbitrage_ShopBuy_Tuning_Csm 范式)。
+_RESCUE_CFG = {
+    "min_score": 0.6,    # 号 rec 置信下限:多版里取分最高的合理号,仍低于此=糊读,判救援失败
+    "roi_h": 17,         # 号 roi 高
+    "wide_pad": 6,       # 宽 roi 横向外扩(左右各;宽=类型同宽+2*pad)
+    "narrow_left": 30,   # 窄 roi 自类型右缘往左的值带宽
+    "narrow_w": 38,      # 窄 roi 总宽
+}
+
+
+def _load_rescue_cfg(context):
+    """从 _RESCUE_NODE.attach 覆盖救援可调参(缺项保留 py 默认)。run 起始调一次,幂等。"""
+    try:
+        node = context.get_node_object(_RESCUE_NODE)
+        attach = getattr(node, "attach", None) if node else None
+        if not attach:
+            return
+        for k in _RESCUE_CFG:
+            if k in attach:
+                _RESCUE_CFG[k] = type(_RESCUE_CFG[k])(attach[k])
+    except Exception as e:
+        mfaalog.warning(f"[Arbitrage] ⚠️ 救援可调参读取异常({e}),沿用内置默认")
+
+
+def _tail_num(s: str) -> str:
+    """整串尾部连续数字(尾号);无则空串。"""
+    m = re.search(r'(\d+)\s*$', s)
+    return m.group(1) if m else ""
+
+
+def _rescue_rois(type_dets: list) -> list:
+    """尾号救援候选 roi(绝对坐标,宽窄互补)。值右对齐于类型右缘;yb=类型下缘=号上缘。"""
+    left = min(d["x"] for d in type_dets)
+    right = max(d["x"] + d["w"] for d in type_dets)
+    yb = max(d["y"] + d["h"] for d in type_dets)
+    h, pad = _RESCUE_CFG["roi_h"], _RESCUE_CFG["wide_pad"]
+    nl, nw = _RESCUE_CFG["narrow_left"], _RESCUE_CFG["narrow_w"]
+    return [
+        [max(0, left - pad), yb, (right - left) + 2 * pad, h],    # 宽:类型同宽+外扩(上下文足)
+        [max(0, right - nl), yb + 1, nw, h - 1],                   # 窄:右对齐值带(避左侧字底)
+    ]
+
+
+def _rescue_tail_num(context, screenshot, type_dets: list) -> tuple:
+    """宽/窄多 roi 各 only_rec 读一次,取置信最高且号合理(1~99无前导0)者 → (号串,置信)。全不中→("",0.0)。"""
+    if not type_dets:
+        return "", 0.0
+    best_num, best_sc = "", 0.0
+    for roi in _rescue_rois(type_dets):
+        roi = [int(v) for v in roi]
+        try:
+            reco = context.run_recognition(
+                _RESCUE_NODE, screenshot,
+                pipeline_override={_RESCUE_NODE: {"recognition": "OCR", "roi": roi, "only_rec": True}},
+            )
+        except Exception as e:
+            mfaalog.warning(f"[Arbitrage] ⚠️ 尾号救援 OCR 异常({e})")
+            continue
+        cand = (getattr(reco, "filtered_results", None)
+                or getattr(reco, "all_results", None) or [])
+        if not cand:
+            continue
+        top = max(cand, key=lambda r: getattr(r, "score", 0.0))
+        sc = getattr(top, "score", 0.0)
+        num = re.sub(r'\D', '', getattr(top, "text", "") or "")
+        if re.fullmatch(r'[1-9]\d?', num) and sc > best_sc:   # 只认合理号,挡 0021/」/=— 噪声
+            best_num, best_sc = num, sc
+    if best_sc < _RESCUE_CFG["min_score"]:
+        return "", 0.0
+    return best_num, best_sc
+
+
+def _cart_group_rescued(dets, context, screenshot, label="") -> tuple:
+    """_cart_group 外加尾号救援:拼组后若无尾号,以类型 det 为锚 only_rec 补号(号计入组分,取短板)。
+    置于置信率对比之前,故上/下两子行各自先补号再比对(#B 交叉核对拿到的是补齐后的整串)。
+    label=行标识(商品名·子行),仅用于日志人工核对定位。"""
+    dets = list(dets)
+    text, score = _cart_group(dets)
+    if text and not _tail_num(text):
+        type_dets = [d for d in dets
+                     if not re.sub(r'[^\w一-龥]', '', d["text"]).isdigit()]
+        num, nsc = _rescue_tail_num(context, screenshot, type_dets)
+        if num:
+            text, score = text + num, min(score, nsc)
+            mfaalog.info(f"[Arbitrage]   ↳ 尾号救援成功: {label} → {text}(号置信{nsc:.2f})")
+        else:
+            mfaalog.warning(f"[Arbitrage]   ⚠️ 尾号救援失败: {label},[{text}] 仍缺号,将按缺号可疑处置")
+    return text, score
+
+
 @AgentServer.custom_action("ArbitrageSellController")
 class ArbitrageSellController(CustomAction):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         mfaalog.info("[Arbitrage] 🚀 商店套利-出售主控器启动")
+        _load_rescue_cfg(context)   # 尾号救援可调参:JSON attach 覆盖 py 默认(缺则用默认)
         
         # ==========================================
         # 1. 提取并合并 Attach 白名单
@@ -202,6 +306,16 @@ class ArbitrageSellController(CustomAction):
             cart_raw = target["cartridge_raw"]
             mfaalog.info(f"[Arbitrage] 👉 正在执行 {idx}/{len(targets_to_sell)}: 前往 [{cart_raw}] 售卖 [{item_name}]")
 
+            # 缺尾号拦截(2026-07-25):尾号现实一定存在,拼组+救援后仍无号 = 识别彻底失手。按既定策略
+            # 报警并跳过——绝不去「只有类型、没有号」的柜台臆测消歧(最坏进错柜台空跑),交下轮重扫。
+            if not _tail_num(cart_raw):
+                mfaalog.warning(
+                    f"[Arbitrage] 🚨 [{item_name}] 卡带尾号缺失且救援失败([{cart_raw}]),"
+                    f"跳过本项以免进错柜台空跑"
+                )
+                sold_fail.append(item_name)
+                continue
+
             # 卡带识别质量轻告警(#B):低置信或上下分歧只提示,不阻断——读错最坏进错柜台当没卖掉,
             # 真相由下面的金币验证承担。派发链的 expected 沿用 OCR 原文(繁体端须同语言匹配菜单)。
             if target.get("cart_score", 1.0) < SCORE_MIN or target.get("cart_conflict"):
@@ -285,6 +399,7 @@ class ArbitrageSellController(CustomAction):
             for r in (getattr(reco, "filtered_results", None) or []):
                 x, y, w, h = r.box
                 out.append({"text": r.text, "cx": x + w / 2, "cy": y + h / 2,
+                            "x": x, "y": y, "w": w, "h": h,
                             "score": getattr(r, "score", 1.0)})
             return out
 
@@ -337,12 +452,21 @@ class ArbitrageSellController(CustomAction):
 
             # 卡带:上子行(当前)组;满价时下子行(每月)是同柜台、理应同串(#B),两组各取组分并取
             # 组分高的一组整串。非满价不卖,仅取上子行(每月档与当前不同,交叉无意义)。
-            up_str, up_sc = _cart_group(t for t in carts if abs(t["cy"] - ny) <= SUBROW_TOL)
+            up_str, up_sc = _cart_group_rescued(
+                (t for t in carts if abs(t["cy"] - ny) <= SUBROW_TOL),
+                context, screenshot, f"{row['name']}·当前")
             best_str, best_sc = up_str, up_sc
             if item_data["is_max_price"] and mon_y is not None:
-                lo_str, lo_sc = _cart_group(t for t in carts if abs(t["cy"] - mon_y) <= SUBROW_TOL)
+                lo_str, lo_sc = _cart_group_rescued(
+                    (t for t in carts if abs(t["cy"] - mon_y) <= SUBROW_TOL),
+                    context, screenshot, f"{row['name']}·每月")
                 if lo_str:                                    # 每月组也读到才交叉
-                    if lo_sc > up_sc:
+                    # 号是去柜台的必需位:带号组优先(缺号组即便类型分更高也不能选,否则会像 07-25
+                    # 实录——一子行救回号、另一子行没救回却因类型分高被选中→整项缺号被误跳)。
+                    up_has, lo_has = bool(_tail_num(up_str)), bool(_tail_num(lo_str))
+                    if lo_has and not up_has:
+                        best_str, best_sc = lo_str, lo_sc
+                    elif up_has == lo_has and lo_sc > up_sc:  # 两组同态(都带号/都缺号)→ 比组分
                         best_str, best_sc = lo_str, lo_sc
                     item_data["cart_conflict"] = (up_str != lo_str)
             item_data["target_cartridge"] = best_str

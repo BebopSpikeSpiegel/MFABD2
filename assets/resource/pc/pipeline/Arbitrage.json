@@ -899,6 +899,24 @@
             289
         ]
     },
+    "Arbitrage_Sell_Cart_RescueNum": {
+        "desc": "【SellCtrl·尾号救援·per端可覆盖(attach按key合并)】py按类型锚算roi后override跑only_rec把漏检的尾号读回;本节点承载可调参,py读取缺项回落内置默认。min_score=号rec置信下限;roi_h=值roi高;wide_pad=宽roi横向外扩;narrow_left=窄roi(右对齐值带)自类型右缘往左的宽;narrow_w=窄roi总宽。宽/窄两版互补取优,详见py注释。",
+        "recognition": "OCR",
+        "only_rec": true,
+        "roi": [
+            908,
+            234,
+            82,
+            289
+        ],
+        "attach": {
+            "min_score": 0.6,
+            "roi_h": 17,
+            "wide_pad": 6,
+            "narrow_left": 30,
+            "narrow_w": 38
+        }
+    },
     "Arbitrage_Swip_Calibration_Down": {
         "roi": [
             509,
