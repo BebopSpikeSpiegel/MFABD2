@@ -249,6 +249,7 @@
             1111,
             650
         ],
+        "post_delay": 3000,
         "next": [
             "Global_BackToPve_CardMenu_Tp1",
             "Global_BackToPve_ToCardMenu"
