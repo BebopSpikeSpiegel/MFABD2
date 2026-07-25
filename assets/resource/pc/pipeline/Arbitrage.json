@@ -900,7 +900,7 @@
         ]
     },
     "Arbitrage_Sell_Cart_RescueNum": {
-        "desc": "【SellCtrl·尾号救援·per端可覆盖(attach按key合并)】py按类型锚算roi后override跑only_rec把漏检的尾号读回;本节点承载可调参,py读取缺项回落内置默认。min_score=号rec置信下限;roi_h=值roi高;wide_pad=宽roi横向外扩;narrow_left=窄roi(右对齐值带)自类型右缘往左的宽;narrow_w=窄roi总宽。宽/窄两版互补取优,详见py注释。",
+        "desc": "【SellCtrl·尾号救援·参数全无量纲(相对实检类型框),故两端可共用】py按类型锚算roi后override跑only_rec把漏检的尾号读回;本节点承载可调参,py读取缺项回落内置默认。尺度:H=类高中位数、W=类型块宽、yb=类型下缘。min_score=号rec置信下限;narrow_frac=窄roi宽占W比例(右对齐值带避字底);pad_frac=宽roi横向外扩占W比例;h_frac=号roi高占H比例;y_shifts=带顶相对yb的纵向位移(单位=H,多档集成含下移躲字底)。选择器:候选投票→score,详见py注释。",
         "recognition": "OCR",
         "only_rec": true,
         "roi": [
@@ -911,10 +911,10 @@
         ],
         "attach": {
             "min_score": 0.6,
-            "roi_h": 17,
-            "wide_pad": 6,
-            "narrow_left": 30,
-            "narrow_w": 38
+            "narrow_frac": 0.5,
+            "pad_frac": 0.1,
+            "h_frac": 1.2,
+            "y_shifts": [-0.2, 0.0, 0.2]
         }
     },
     "Arbitrage_Swip_Calibration_Down": {

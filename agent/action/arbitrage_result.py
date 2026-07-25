@@ -103,14 +103,20 @@ def _cart_group(dets) -> tuple:
 # 前导0)」的一版——对 crop 边界做小集成。全不合理/全低分则保持无号,交上层按「缺号可疑」跳过柜台。
 # ==========================================
 _RESCUE_NODE = "Arbitrage_Sell_Cart_RescueNum"
-# 救援可调参:默认=PC 720p 实测标定;可被 _RESCUE_NODE.attach 覆盖(见 _load_rescue_cfg),缺项回落此默认。
-# 外置到 JSON 的意义:UI 挪动/换端只改 attach、不动 py(仿 Arbitrage_ShopBuy_Tuning_Csm 范式)。
+# 救援可调参:全部无量纲(相对"实检类型 det 框"的比例)——尺度锚定 H=类高中位数、W=类型块宽、yb=类型下缘,
+# 故字号/布局不同的两端(PC 繁体小字、ADB 简体大字)可共用同一份配置。可被 _RESCUE_NODE.attach 覆盖,缺项回落此默认。
+# 【调参指南】改值一律落 _RESCUE_NODE.attach(JSON)、不动 py;先看落图 vision/*_Sell_Cart_RescueNum_*.jpg 的红框对症:
+#   · 救援总失败(全档低分/不合理=号没框住):号被切顶/切底 → 增/移 y_shifts 档 或 调大 h_frac;
+#     号被左侧类型字底带出前缀(0021/=—/e 之类) → 调小 narrow_frac(值带更窄、更靠右缘,躲开字底)。
+#   · 救出怪值且被选中:调高 min_score(更严),或删掉最易蹭字底的 y_shifts 档(候选变少→误读面变小)。
+#   · 换端/换分辨率:参数是"相对类型框"的比例,一般无需改;仅当号高占比或号横向位置占比本身变了,才分别动 h_frac / narrow_frac。
+#   · 人工核对:每条救援日志都带名锚(商品名·子行),对照 vision/ 落图逐行核。
 _RESCUE_CFG = {
-    "min_score": 0.6,    # 号 rec 置信下限:多版里取分最高的合理号,仍低于此=糊读,判救援失败
-    "roi_h": 17,         # 号 roi 高
-    "wide_pad": 6,       # 宽 roi 横向外扩(左右各;宽=类型同宽+2*pad)
-    "narrow_left": 30,   # 窄 roi 自类型右缘往左的值带宽
-    "narrow_w": 38,      # 窄 roi 总宽
+    "min_score": 0.6,           # 号 rec 置信下限:集成里最优的合理号仍低于此=糊读,判救援失败
+    "narrow_frac": 0.5,         # 窄 roi 宽 = narrow_frac*W(右对齐值带,避左侧类型字底)
+    "pad_frac": 0.10,           # 宽 roi 横向外扩 = pad_frac*W(左右各;宽 = W+2*pad)
+    "h_frac": 1.2,              # 号 roi 高 = h_frac*H
+    "y_shifts": [-0.2, 0.0, 0.2],  # 带顶相对 yb 的纵向位移(单位=H);含下移档以躲开类型字底残笔
 }
 
 
@@ -135,23 +141,32 @@ def _tail_num(s: str) -> str:
 
 
 def _rescue_rois(type_dets: list) -> list:
-    """尾号救援候选 roi(绝对坐标,宽窄互补)。值右对齐于类型右缘;yb=类型下缘=号上缘。"""
+    """尾号救援候选 roi(绝对坐标)。尺度全锚定实检类型框:H=类高中位数(自适应端字号)、W=类型块宽、
+    yb=类型下缘。横向宽/窄互补(宽=类型同宽+外扩取上下文;窄=右对齐值带避左侧字底);纵向按 ±%H 多位移
+    (含下移档躲类型字底残笔)。候选 = {宽,窄} × y_shifts。"""
     left = min(d["x"] for d in type_dets)
     right = max(d["x"] + d["w"] for d in type_dets)
     yb = max(d["y"] + d["h"] for d in type_dets)
-    h, pad = _RESCUE_CFG["roi_h"], _RESCUE_CFG["wide_pad"]
-    nl, nw = _RESCUE_CFG["narrow_left"], _RESCUE_CFG["narrow_w"]
-    return [
-        [max(0, left - pad), yb, (right - left) + 2 * pad, h],    # 宽:类型同宽+外扩(上下文足)
-        [max(0, right - nl), yb + 1, nw, h - 1],                   # 窄:右对齐值带(避左侧字底)
-    ]
+    hs = sorted(d["h"] for d in type_dets)
+    H = hs[len(hs) // 2]                                    # 类高中位数 = 尺度单位
+    W = max(1, right - left)
+    pad = max(1, int(round(_RESCUE_CFG["pad_frac"] * W)))
+    nw = max(1, int(round(_RESCUE_CFG["narrow_frac"] * W)))
+    h = max(1, int(round(_RESCUE_CFG["h_frac"] * H)))
+    rois = []
+    for s in _RESCUE_CFG["y_shifts"]:
+        top = max(0, int(round(yb + s * H)))
+        rois.append([max(0, left - pad), top, W + 2 * pad, h])   # 宽
+        rois.append([max(0, right - nw), top, nw + pad, h])       # 窄
+    return rois
 
 
 def _rescue_tail_num(context, screenshot, type_dets: list) -> tuple:
-    """宽/窄多 roi 各 only_rec 读一次,取置信最高且号合理(1~99无前导0)者 → (号串,置信)。全不中→("",0.0)。"""
+    """多候选 roi 各 only_rec,收合理号(1~99无前导0);先按号串投票取多数(真号在多档复现、杂读难复现),
+    同票再以最高 score 破平 → (号串, 该号最高 score)。全不中或最优 score<min_score → ("",0.0)。"""
     if not type_dets:
         return "", 0.0
-    best_num, best_sc = "", 0.0
+    votes = {}   # num -> [票数, 最高 score]
     for roi in _rescue_rois(type_dets):
         roi = [int(v) for v in roi]
         try:
@@ -169,8 +184,15 @@ def _rescue_tail_num(context, screenshot, type_dets: list) -> tuple:
         top = max(cand, key=lambda r: getattr(r, "score", 0.0))
         sc = getattr(top, "score", 0.0)
         num = re.sub(r'\D', '', getattr(top, "text", "") or "")
-        if re.fullmatch(r'[1-9]\d?', num) and sc > best_sc:   # 只认合理号,挡 0021/」/=— 噪声
-            best_num, best_sc = num, sc
+        if not re.fullmatch(r'[1-9]\d?', num):   # 只收合理号,挡 0021/」/=— 噪声
+            continue
+        v = votes.setdefault(num, [0, 0.0])
+        v[0] += 1
+        v[1] = max(v[1], sc)
+    if not votes:
+        return "", 0.0
+    best_num = max(votes, key=lambda n: (votes[n][0], votes[n][1]))   # 票数优先,同票比 score
+    best_sc = votes[best_num][1]
     if best_sc < _RESCUE_CFG["min_score"]:
         return "", 0.0
     return best_num, best_sc
