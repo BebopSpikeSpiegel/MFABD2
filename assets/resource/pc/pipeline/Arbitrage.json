@@ -1459,6 +1459,9 @@
     "Arbitrage_Chain_Retry_PC": {
         "desc": "[PC新增·2026-07-23] 套利进图链超时救援垫。07-23 09:06/09:14两轮实录:插卡成功进商队城镇后Sandplay识别断腿(安卓pin模板PC城镇0.604<0.7),Card5#_Goin的next全miss超时→无自定义on_error→MFA默认Global_Null兜底恒命中→流程SUCCEEDED,'找不到商人'被翻译成任务完成。本节点DirectHit恒中,回Global_BackToPve_Anc整链重试;max_hit 2耗尽后不再命中→流程以失败终止(自定义on_error覆盖默认Null,MFA #1219语义)。",
         "max_hit": 2,
+        "anchor": {
+            "BackToPack": "Arbitrage_Card5#_Goin"
+        },
         "post_delay": 1000,
         "next": [
             "Global_BackToPve_Anc"
