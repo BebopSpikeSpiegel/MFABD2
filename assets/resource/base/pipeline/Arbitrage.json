@@ -2246,6 +2246,28 @@
             344
         ]
     },
+    "Arbitrage_Sell_Cart_RescueNum": {
+        "desc": "NK【SellCtrl·尾号救援·base/ADB端】节点存在性用于消除ADB(base-only)侧get_node_data找不到节点的WRN/ERR;参数无量纲、义同pc覆盖层同名节点(py默认已纸面校验覆盖ADB)。min_score=号rec置信下限;narrow_frac=窄roi宽占W比例;pad_frac=宽roi横向外扩占W比例;h_frac=号roi高占H比例;y_shifts=带顶相对yb的纵向位移(单位=H,多档集成含下移躲字底)。",
+        "recognition": "OCR",
+        "roi": [
+            960,
+            209,
+            102,
+            344
+        ],
+        "only_rec": true,
+        "attach": {
+            "min_score": 0.6,
+            "narrow_frac": 0.5,
+            "pad_frac": 0.1,
+            "h_frac": 1.2,
+            "y_shifts": [
+                -0.2,
+                0.0,
+                0.2
+            ]
+        }
+    },
     "Arbitrage_Swip_PriceList": {
         "desc": "【非孤立节点】由Agent调用,价目表下滑Runtask入口",
         "action": "Swipe",
