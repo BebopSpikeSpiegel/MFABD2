@@ -1770,11 +1770,10 @@
         },
         "timeout": 1005,
         "next": [
-            "[JumpBack]Arbitrage_Favorit_Buy",
             "Arbitrage_Buy_End",
             "[JumpBack]Arbitrage_PackList_ResetSwip"
         ],
-        "focus": "Arb.B.购买选收藏模块结束"
+        "focus": "Arb.B.购买选收藏模块结束.打标~"
     },
     "Arbitrage_Buy_End": {
         "desc": "购买已进行,卡带已复位",
@@ -1864,7 +1863,8 @@
         "post_delay": 5000,
         "next": [
             "Arbitrage_Favorit_Buy_SubMenu_BuyAction",
-            "Arbitrage_Favorit_Buy_SubMenu_Closure"
+            "Arbitrage_Favorit_Buy_SubMenu_Closure",
+            "Arbitrage_Buy_Select_End"
         ],
         "on_error": [
             "Global_Null_Exception"
@@ -1900,7 +1900,8 @@
                 ],
                 "count": 10
             }
-        ]
+        ],
+        "next": ["Arbitrage_Buy_Select_End"]
     },
     "Arbitrage_Select_Swip": {
         "desc": "商店卡带列表滑动.使用特殊的anchor来实现同层级类JumpBack复用,因为smartswip的跳出是节点链级,Jb会+1级导致失效、循环",
