@@ -422,9 +422,7 @@
     "Arbitrage_Buy_SkipSelect": {
         "desc": "跳过筛选,直接购买收藏物品",
         "next": [
-            "[JumpBack]Arbitrage_Favorit_Buy",
-            "Arbitrage_PackList_ResetEnter",
-            "[JumpBack]Arbitrage_PackList_ResetSwip"
+            "Arbitrage_Favorit_Buy"
         ]
     },
     "Arbitrage_Buy_Select_QC1": {
