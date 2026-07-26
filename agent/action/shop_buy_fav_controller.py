@@ -410,12 +410,13 @@ class ShopBuyFavController(CustomAction):
         的像素占比，占比 > sat_ratio 判黄，否则判灰。三参数均从 FindStars_Csm.attach
         读取，缺失回落兜底默认。
 
-        [2026-07-20] 引入内缩比：原为全框采样（安卓标定黄~68%/灰~0%）。PC 上商品图
-        整体缩小，识别框角部渗入卡面暖色艺术背景（米=金色稻草），灰星全框高饱和占比
-        实测可达 16%+ 越过 15% 阈被误判黄 → 对齐循环点亮/熄灭振荡。改采星心核后背景
-        被排除，判别力恢复；对安卓无损（星心=纯星体填充）。
-        [2026-07-22] 内缩比外置为 star_core_inset：base=0.0（安卓全框基线），
-        pc 覆盖为 0.3（星心核）。避免把两端差值硬编码进 py。
+        内缩比 star_core_inset 外置到 attach（避免把两端差值硬编码进 py），当前
+        base/pc 两端均取 0.0=全框采样（安卓标定黄~68%/灰~0%）。
+
+        【调参】识别框角部若渗入卡面暖色艺术背景（如米=金色稻草），灰星全框高饱和
+        占比可能越过 sat_ratio 阈被误判黄 → 对齐循环点亮/熄灭振荡。此时把对应端
+        FindStars_Csm.attach 的 star_core_inset 调到 0.3 左右改采星心核即可排除
+        背景；星心=纯星体填充，调高不损判别力。
         """
         inset = self.cfg["star_core_inset"]
         sat_pixel = self.cfg["sat_pixel_threshold"]
