@@ -1098,9 +1098,9 @@
         "desc": "技能列表点'料理'进烹饪菜单。|[PC覆盖·2026-07-14帧校准] PC技能卡名字行实测720 y617-635,base roi[110,580,1053,33](y580-613)整体偏上漏读。roi改[80,600,1120,45]。",
         "roi": [
             80,
-            600,
+            604,
             1120,
-            45
+            30
         ],
         "focus": "Arb.PC.料理:找到'料理'技能,进烹饪菜单"
     },
@@ -1109,12 +1109,16 @@
         "roi": [
             160,
             8,
-            130,
+            106,
             50
         ]
     },
+    "Arbitrage_Cooking_Page2": {
+        "enabled": false
+    },
     "Arbitrage_Cooking_Swip_Page2": {
-        "desc": "翻到第2页。|[PC覆盖·2026-07-16] base begin[887,669]在PC菜格(y80-580)下方空区=拖拽死区病第4例,滑动必空拖。起止点收进菜格内。",
+        "desc": "翻到第2页。|PC料理列表不用拖动,还有14空位呢,disable",
+        "enabled": false,
         "begin": [
             820,
             550,
@@ -1141,7 +1145,6 @@
                     510
                 ],
                 "template": [
-                    "Shop/cook_Sparkling Griddle Shrimp.png",
                     "Shop/cook_Sparkling Griddle Shrimp_PC.png"
                 ]
             },
@@ -1161,7 +1164,6 @@
                     510
                 ],
                 "template": [
-                    "Shop/cook_Transparent Salad.png",
                     "Shop/cook_Transparent Salad_PC.png"
                 ]
             },
@@ -1181,11 +1183,25 @@
                     510
                 ],
                 "template": [
-                    "Shop/cook_Hellfire Gimbap.png",
                     "Shop/cook_Hellfire Gimbap_PC.png"
                 ]
             },
             "Sub_<Arbitrage_Cooking>_Clr"
+        ]
+    },
+    "Arbitrage_Cooking_Hub": {
+        "next": [
+            "Arbitrage_Cooking_B8",
+            "Arbitrage_Cooking_B9",
+            "Arbitrage_Cooking_B10",
+            "Arbitrage_Cooking_B6",
+            "Arbitrage_Cooking_B7",
+            "Arbitrage_Cooking_A2",
+            "Arbitrage_Cooking_A3",
+            "Arbitrage_Cooking_A4",
+            "Arbitrage_Cooking_A5",
+            "Arbitrage_Cooking_A6",
+            "Arbitrage_Cooking_A1"
         ]
     },
     "Arbitrage_Cooking_B6": {
@@ -1201,7 +1217,6 @@
                     510
                 ],
                 "template": [
-                    "Shop/cook_Lugas Ginseng Skewer.png",
                     "Shop/cook_Lugas Ginseng Skewer_PC.png"
                 ]
             },
@@ -1221,7 +1236,6 @@
                     510
                 ],
                 "template": [
-                    "Shop/cook_Coal Cookies.png",
                     "Shop/cook_Coal Cookies_PC.png"
                 ]
             },
@@ -1241,7 +1255,6 @@
                     510
                 ],
                 "template": [
-                    "Shop/cook_Honey Butter Almonds.png",
                     "Shop/cook_Honey Butter Almonds_PC.png"
                 ]
             },
@@ -1261,7 +1274,6 @@
                     510
                 ],
                 "template": [
-                    "Shop/cook_Mayo Triangle Rice Ball.png",
                     "Shop/cook_Mayo Triangle Rice Ball_PC.png"
                 ]
             },
@@ -1281,7 +1293,6 @@
                     510
                 ],
                 "template": [
-                    "Shop/cook_Caviar Omurice.png",
                     "Shop/cook_Caviar Omurice_PC.png"
                 ]
             },
@@ -1301,7 +1312,6 @@
                     510
                 ],
                 "template": [
-                    "Shop/cook_Fried Salmon Bento.png",
                     "Shop/cook_Fried Salmon Bento_PC.png"
                 ]
             },
@@ -1321,7 +1331,6 @@
                     510
                 ],
                 "template": [
-                    "Shop/cook_Sangria.png",
                     "Shop/cook_Sangria_PC.png"
                 ]
             },
@@ -1341,7 +1350,6 @@
                     510
                 ],
                 "template": [
-                    "Shop/cook_Honey Baked Apple.png",
                     "Shop/cook_Honey Baked Apple_PC.png"
                 ]
             },
@@ -1349,12 +1357,13 @@
         ]
     },
     "Arbitrage_Cooking_Menu_Reset": {
-        "desc": "页内复位:随机点菜品进子菜单再退。|[PC覆盖·2026-07-16] base target[606,118,271,267]按安卓格位;PC菜格左移,且帧证下部行存在置灰卡(点击无响应风险),target收进PC上两行有色区[520,110,250,150]。",
+        "desc": "页内复位:随机点菜品进子菜单再退。|PC料理无需滑动,亦不需复位",
+        "enabled": false,
         "target": [
             520,
             110,
             250,
-            150
+            120
         ]
     },
     "Arbitrage_Cooking_Menu_Reset_SubIn": {
@@ -1381,45 +1390,23 @@
         ]
     },
     "Arbitrage_Cooking_SubMenu": {
-        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。|[07-16二修·MAX档新边界] MAX量产把材料打穿后'料理'按钮置灰(实录:杏仁1050个/蜂蜜0),正常态模板仅0.497→Starus反转永真'动画中'死循环(19:09实录,无限不退出)。补置灰态UI_cooking_submenu_PC2(mcp 1080帧INTER_AREA降720裁取,MIN/MAX条标定0.952/零偏移;灰-常相似0.42不混淆)。语义:灰=制作结束→ReBack命中退出,Starus三态全无才算动画,SubMenu/SubIn照常。",
         "roi": [
-            700,
-            635,
-            340,
-            70
+            136,
+            89,
+            173,
+            66
         ],
-        "template": [
-            "UI_cooking_submenu.png",
-            "UI_cooking_submenu_PC.png",
-            "UI_cooking_submenu_PC2.png"
+        "expected": [
+            "拥有",
+            "立刻恢复",
+            "個食物",
+            "立即恢復"
         ]
     },
-    "Arbitrage_Cooking_Doing_Starus": {
-        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。|[07-16二修·MAX档新边界] MAX量产把材料打穿后'料理'按钮置灰(实录:杏仁1050个/蜂蜜0),正常态模板仅0.497→Starus反转永真'动画中'死循环(19:09实录,无限不退出)。补置灰态UI_cooking_submenu_PC2(mcp 1080帧INTER_AREA降720裁取,MIN/MAX条标定0.952/零偏移;灰-常相似0.42不混淆)。语义:灰=制作结束→ReBack命中退出,Starus三态全无才算动画,SubMenu/SubIn照常。",
-        "roi": [
-            700,
-            635,
-            340,
-            70
-        ],
-        "template": [
-            "UI_cooking_submenu.png",
-            "UI_cooking_submenu_PC.png",
-            "UI_cooking_submenu_PC2.png"
-        ]
-    },
-    "Arbitrage_Cooking_Doing_ReBack": {
-        "desc": "|[PC覆盖·2026-07-16帧校准] PC子菜单布局与安卓两样(MIN/±10/MAX在左侧x152-534,'料理'按钮在右下x730-1025):安卓按钮团模板恒miss→复位点击50连击烧95s后崩整个套利任务(18:41实录,子菜单其实已打开)。从当日on_error帧裁'厨师帽+料理'按钮段UI_cooking_submenu_PC.png(188x34,自匹配1.0/菜单页负样本0.34)Or追加,roi改罩PC按钮位。|[07-16二修·MAX档新边界] MAX量产把材料打穿后'料理'按钮置灰(实录:杏仁1050个/蜂蜜0),正常态模板仅0.497→Starus反转永真'动画中'死循环(19:09实录,无限不退出)。补置灰态UI_cooking_submenu_PC2(mcp 1080帧INTER_AREA降720裁取,MIN/MAX条标定0.952/零偏移;灰-常相似0.42不混淆)。语义:灰=制作结束→ReBack命中退出,Starus三态全无才算动画,SubMenu/SubIn照常。",
-        "roi": [
-            700,
-            635,
-            340,
-            70
-        ],
-        "template": [
-            "UI_cooking_submenu.png",
-            "UI_cooking_submenu_PC.png",
-            "UI_cooking_submenu_PC2.png"
+    "Arbitrage_Cooking_Doing_OCR": {
+        "expected": [
+            "制作中",
+            "製作中"
         ]
     },
     "Arbitrage_Cooking_Menu_ReBack": {
@@ -1429,6 +1416,10 @@
             45,
             140,
             45
+        ],
+        "expected": [
+            "所需材料$",
+            "需要的材料"
         ]
     },
     "Arbitrage_ShopBuy_ReadNames_Csm": {
