@@ -397,10 +397,14 @@ class ArbitrageSellController(CustomAction):
                 f"[Arbitrage] ⚠️ 本轮 {len(sold_fail)}/{len(targets_to_sell)} 项未能售出："
                 f"{', '.join(sold_fail)}"
             )
+        # 无待售商品的情形已在上方提前 return,故此处 targets_to_sell 必非空:
+        # sold_ok 空只可能是「全失败」或「全部金币不可读=未验证」,两者都不该报喜。
         if sold_ok:
             mfaalog.info(f"[Arbitrage] 🎉 本轮实际售出 {len(sold_ok)} 项：{', '.join(sold_ok)}")
+        elif sold_fail:
+            mfaalog.warning(f"[Arbitrage] 🚫 本轮无一项成功售出({len(targets_to_sell)} 项全部失败),请检查上方失败原因。")
         else:
-            mfaalog.info("[Arbitrage] 🎉 所有售卖派发任务执行结束！")
+            mfaalog.info(f"[Arbitrage] ➖ 本轮 {len(targets_to_sell)} 项派发执行完毕,但金币均不可读、无一项通过验证。")
         return True
 
     # ==========================================
