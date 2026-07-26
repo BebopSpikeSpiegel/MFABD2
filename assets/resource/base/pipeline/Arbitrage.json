@@ -3355,7 +3355,7 @@
         "next": [
             "Arbitrage_Cooking_Doing_Starus",
             "Arbitrage_Cooking_NubMenu_Doing",
-            "[JumpBack]Arbitrage_Cooking_Doing_OCR"
+            "Arbitrage_Cooking_Doing_OCR"
         ]
     },
     "Arbitrage_Cooking_Doing_Starus": {
@@ -3384,7 +3384,15 @@
             85
         ],
         "expected": "制作中",
-        "post_delay": 5000
+        "post_delay": 1000,
+        "next": [
+            "Arbitrage_Cooking_Doing_Starus",
+            "[JumpBack]Arbitrage_Cooking_Doing_OCR"
+        ],
+        "on_error": [
+            "Arbitrage_Cooking_Doing_ReBack",
+            "Global_Null"
+        ]
     },
     "Arbitrage_Cooking_Doing_ReBack": {
         "desc": "按钮之前不存在,现在存在,动画结束",
