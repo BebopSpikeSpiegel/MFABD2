@@ -40,8 +40,8 @@
         "threshold": 0.95,
         "action": "Click",
         "target_offset": [
-            -20,
-            25,
+            -45,
+            30,
             0,
             0
         ],
@@ -101,6 +101,7 @@
         "template": [
             "Nvi_SandGuideButt.png"
         ],
+        "green_mask": true,
         "pre_delay": 500,
         "action": "Click",
         "next": [
@@ -309,7 +310,8 @@
             "[JumpBack]Arbitrage_SellItem",
             "[JumpBack]Arbitrage_Merchant_Close_Ck",
             "[JumpBack]Global_BackPageHub_Once",
-            "Global_ToSandBox"
+            "Global_ToSandBox",
+            "Global_ToSandBox_Enter"
         ]
     },
     "Arbitrage_Merchant_Close_Ck": {

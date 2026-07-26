@@ -320,6 +320,7 @@ class ArbitrageSellController(CustomAction):
         final_sell_names = [t["name"] for t in targets_to_sell]
         mfaalog.info(f"[Arbitrage] 🛒 扫描完毕！确认共 {len(targets_to_sell)} 项物品待出售: {', '.join(final_sell_names)}")
         
+        sold_ok, sold_fail = [], []
         for idx, target in enumerate(targets_to_sell, 1):
             if context.tasker.stopping: break
             
@@ -347,25 +348,59 @@ class ArbitrageSellController(CustomAction):
                 )
 
             # 核心：构造多节点参数替换字典
+            # 卡带名走容错正则(OCR 把'剧'读成'则'等,前缀模糊卡号精确)
+            cart_pat = _cart_expected(cart_raw)
+            if cart_pat != cart_raw:
+                mfaalog.info(f"[Arbitrage]   ↳ 卡带匹配用容错式: {cart_pat}")
             override_cfg = {
                 "Arbitrage_Sell_PackShopSwich": {
-                    "expected": cart_raw
+                    "expected": cart_pat
                 },
                 "Arbitrage_Sell_Item_ListTraverse": {
                     "expected": item_name
                 }
             }
             
+            # 卖出验证:派发前后各读一次金币
+            gold_before = _read_gold(context)
+
             # 拉起 JSON 端的出售链，并阻塞等待它执行完毕
             # 起点设为进入出售菜单的识别节点
             sell_result = context.run_task("Arbitrage_Sell_HUB", pipeline_override=override_cfg)
-            
-            if sell_result:
-                mfaalog.info(f"[Arbitrage] ✅ [{item_name}] 售卖流程执行成功！")
+
+            gold_after = _read_gold(context)
+
+            if gold_before and gold_after:
+                delta = gold_after - gold_before
+                if delta > 0:
+                    sold_ok.append(item_name)
+                    mfaalog.info(
+                        f"[Arbitrage] ✅ [{item_name}] 确认售出，金币 +{delta:,} "
+                        f"({gold_before:,} → {gold_after:,})"
+                    )
+                else:
+                    sold_fail.append(item_name)
+                    mfaalog.warning(
+                        f"[Arbitrage] ❌ [{item_name}] 未实际售出！金币无变化"
+                        f"({gold_before:,} → {gold_after:,})，"
+                        f"链条多半卡在选卡带/物品定位，run_task 的成功是假信号"
+                    )
+            elif sell_result:
+                # 金币读不到(画面不在出售界面/OCR失手),退回原行为但如实标注未验证
+                mfaalog.info(f"[Arbitrage] ➖ [{item_name}] 售卖链执行完毕（金币不可读，未验证）")
             else:
+                sold_fail.append(item_name)
                 mfaalog.warning(f"[Arbitrage] ❌ [{item_name}] 售卖流程中断或失败，继续尝试下一个。")
-                
-        mfaalog.info("[Arbitrage] 🎉 所有售卖派发任务执行结束！")
+
+        if sold_fail:
+            mfaalog.warning(
+                f"[Arbitrage] ⚠️ 本轮 {len(sold_fail)}/{len(targets_to_sell)} 项未能售出："
+                f"{', '.join(sold_fail)}"
+            )
+        if sold_ok:
+            mfaalog.info(f"[Arbitrage] 🎉 本轮实际售出 {len(sold_ok)} 项：{', '.join(sold_ok)}")
+        else:
+            mfaalog.info("[Arbitrage] 🎉 所有售卖派发任务执行结束！")
         return True
 
     # ==========================================
