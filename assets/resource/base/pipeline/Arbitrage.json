@@ -3283,17 +3283,8 @@
         ]
     },
     "Arbitrage_Cooking_Menu_Reset_SubIn": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            701,
-            587,
-            144,
-            131
-        ],
-        "template": [
-            "UI_cooking_submenu.png"
-        ],
-        "green_mask": true,
+        "recognition": "Or",
+        "any_of": ["Arbitrage_Cooking_SubMenu"],
         "post_delay": 3000,
         "next": [
             "Arbitrage_Cooking_Menu_Reset_SubOut",
@@ -3317,18 +3308,18 @@
         "focus": "Arb.返回料理菜单\n\n页内复位完成"
     },
     "Arbitrage_Cooking_SubMenu": {
-        "desc": "可复用料理流程开始.使用按钮团确定子菜单",
-        "recognition": "TemplateMatch",
+        "desc": "可复用料理流程开始.确定子菜单",
+        "recognition": "OCR",
         "roi": [
-            701,
-            587,
-            144,
-            131
+            173,
+            107,
+            183,
+            80
         ],
-        "template": [
-            "UI_cooking_submenu.png"
+        "expected": [
+            "拥有",
+            "立刻恢复"
         ],
-        "green_mask": true,
         "next": [
             "Arbitrage_Cooking_NubMenu_Max"
         ],
@@ -3364,29 +3355,20 @@
         "next": [
             "Arbitrage_Cooking_Doing_Starus",
             "Arbitrage_Cooking_NubMenu_Doing",
-            "Arbitrage_Cooking_Doing_OCR"
+            "[JumpBack]Arbitrage_Cooking_Doing_OCR"
         ]
     },
     "Arbitrage_Cooking_Doing_Starus": {
         "desc": "按钮之前存在,现在不存在,是在动画",
-        "recognition": "TemplateMatch",
-        "roi": [
-            701,
-            587,
-            144,
-            131
-        ],
-        "template": [
-            "UI_cooking_submenu.png"
-        ],
-        "green_mask": true,
+        "recognition": "Or",
+        "any_of": ["Arbitrage_Cooking_SubMenu"],
         "inverse": true,
         "action": "Click",
         "target": [
             1,
             1
         ],
-        "post_delay": 2000,
+        "post_delay": 3000,
         "next": [
             "Arbitrage_Cooking_Doing_ReBack",
             "Arbitrage_Cooking_Doing_Starus"
@@ -3402,27 +3384,12 @@
             85
         ],
         "expected": "制作中",
-        "post_delay": 5000,
-        "next": [
-            "Arbitrage_Cooking_Doing_OCR",
-            "Arbitrage_Cooking_Doing_ReBack",
-            "Arbitrage_Cooking_Menu_ReBack",
-            "[JumpBack]Global_BackPageHub_Once"
-        ]
+        "post_delay": 5000
     },
     "Arbitrage_Cooking_Doing_ReBack": {
         "desc": "按钮之前不存在,现在存在,动画结束",
-        "recognition": "TemplateMatch",
-        "roi": [
-            701,
-            587,
-            144,
-            131
-        ],
-        "template": [
-            "UI_cooking_submenu.png"
-        ],
-        "green_mask": true,
+        "recognition": "Or",
+        "any_of": ["Arbitrage_Cooking_SubMenu"],
         "next": [
             "Arbitrage_Cooking_Menu_ReBack",
             "[JumpBack]Global_BackPageHub_Once"
