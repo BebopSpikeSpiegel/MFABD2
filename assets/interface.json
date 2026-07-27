@@ -1407,6 +1407,9 @@
                         "Arbitrage_BuyItem": {
                             "enabled": false
                         },
+                        "Arbitrage_Favorit_Buy": {
+                            "enabled": false
+                        },
                         "Arbitrage_Bargaining_SkillList": {
                             "recognition": "DirectHit",
                             "target": [
@@ -1598,10 +1601,17 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "Arbitrage_Sell_Item_Number": {
-                            "target": [
-                                318,
-                                502
+                        "Arbitrage_Sell_Item_NumberSafety_ON": {
+                            "enabled": true
+                        },
+                        "Arbitrage_Sell_Item_NumberSafety_OFF": {
+                            "enabled": false
+                        },
+                        "Arbitrage_Sell_Item_Selling": {
+                            "next": [
+                                "Arbitrage_Sell_Item_Selling",
+                                "Arbitrage_Sell_End",
+                                "[JumpBack]Arbitrage_PackList_ResetSwip"
                             ]
                         }
                     }
@@ -1609,11 +1619,11 @@
                 {
                     "name": "No",
                     "pipeline_override": {
-                        "Arbitrage_Sell_Item_Number": {
-                            "target": [
-                                596,
-                                506
-                            ]
+                        "Arbitrage_Sell_Item_NumberSafety_ON": {
+                            "enabled": false
+                        },
+                        "Arbitrage_Sell_Item_NumberSafety_OFF": {
+                            "enabled": true
                         }
                     }
                 }
