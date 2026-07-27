@@ -123,10 +123,10 @@
             "Global_BackToPve_CardMenu_Tp1",
             "[JumpBack]StartGame_Special",
             "[JumpBack]Global_RankSettleModal_Confirm",
-            "Global_ArenaEscape_PC",
             "Global_BackToPve_ToCardMenu"
         ],
         "on_error": [
+            "Global_ArenaEscape_PC",
             "Global_ResetChain_Retry_PC"
         ]
     },
