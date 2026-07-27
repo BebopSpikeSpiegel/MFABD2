@@ -1,0 +1,6 @@
+{
+    "Collect_FindTeleporCircle": {
+        "desc": "箱庭内找传送阵物件(FeatureMatch)。|[PC覆盖·2026-07-13实录] base count:9在PC时够时不够:23:24一轮命中,23:34同位置圈只匹到4个特征点(box(250,318)定位正确,受相机角度/特效遮挡影响)→filtered空→找商人五路全灭静默。count降3留余量;ratio沿base 0.5。若后续出现误匹再从MFA帧重裁PC特征模板。",
+        "count": 3
+    }
+}

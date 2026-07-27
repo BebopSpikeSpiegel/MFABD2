@@ -161,6 +161,36 @@
             165
         ]
     },
+    "Global_BackToPve_PVEBookSwipe": {
+        "desc": "卡带菜单竖划回顶。|[PC覆盖·2026-07-13预防] base begin/end x=30在PC布局是列表外死区(sunyink 2#链2026-07-03实录:连划5轮页面纹丝不动),拖拽点移进货架区x150,方向长度沿用base。",
+        "begin": [
+            150,
+            300,
+            1,
+            1
+        ],
+        "end": [
+            150,
+            700,
+            1,
+            1
+        ]
+    },
+    "Global_BackToPve_PVEBookSwipe_Lift": {
+        "desc": "剧情行横向复位swipe(回滚到PACK1)。|[PC覆盖·2026-07-13实录] base begin/end y445在PC珍藏集布局落在剧情行(y300-430)与角色行(y490+)之间的货架缝,拖了个寂寞→行不归位→Tp3(pack1固定位)恒0.46→Lift无限循环(23:30实录)。y下移到剧情行内370(同sunyink 2#链2026-07-03同坑修法)。",
+        "begin": [
+            150,
+            370,
+            1,
+            1
+        ],
+        "end": [
+            1264,
+            370,
+            1,
+            1
+        ]
+    },
     "Global_BackToPve_TouchPVE2#Pack": {
         "roi": [
             264,
@@ -414,5 +444,14 @@
     },
     "Rec_「Global_WaitingForLoading」_05": {
         "desc": "[识别]转场等待03,大色块-黑"
+    },
+    "Collect_OperationsMain_ToAreaMap": {
+        "desc": "判断在区域地图(移动魔法阵)界面。|[PC覆盖·2026-07-13实录] base roi[183,11,249,53]左缘正好切'移'字左边条,OCR以0.989读成'多动魔法阵'→expected恒miss→传送阵界面死等(23:24实录)。roi左扩[150,11,280,53]罩全标题。注:节点属 Collect_Navigation,跑商链途经(节点命名空间全局合并)。",
+        "roi": [
+            150,
+            11,
+            280,
+            53
+        ]
     }
 }
