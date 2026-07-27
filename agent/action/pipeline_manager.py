@@ -29,7 +29,7 @@ from recognition.counter import TAG_STORE
 # "action": "Custom",
 # "custom_action": "PatchNode",
 # "custom_action_param": {
-#     "node": "Battle_Node",                                  // [必填] 目标节点名
+#     "node": "Battle_Node",                                  // [必填] 目标节点名；也支持 "[Anchor]锚点名"（运行时 get_anchor 反查真名，锚点为空则安全跳过）
 #     "patch": { "next": ["Boss_Win"], "timeout": 30000 },    // [必填] 要覆盖/修改的参数字典
 #     "origin": { "next": ["Normal_Win"], "timeout": 10000 }, // [选填] 原版数据备份。若缺省，首次运行时不会记录备份，导致后续无法还原。
 #     "reset_tags": ["Battle_Count", "Win_Count"]             // [选填] 旁作用：顺手重置这些计数器标签。
@@ -304,6 +304,41 @@ def _process_reset_tags(params: dict):
     if reset_logs:
         utils.mfaalog.info(f"[Py] 🧹 [旁作用] 顺手清零了标签: {reset_logs}")
 
+def _resolve_anchor_node(context: Context, node_ref):
+    """
+    [新增] 通用锚点解析：把 "[Anchor]锚点名" 形式的目标，运行时解析为锚点
+    当前指向的真实节点名；非该形式则原样返回。
+
+    配合上游节点用 pipeline 的 anchor 字段自登记（如 "anchor": "CurCard"），
+    让"共享结束节点"能对"从哪个节点跳进来的"精准操作，实现"从哪进来就动哪个"。
+
+    返回:
+        - 非字符串 / 无 "[Anchor]" 前缀: 原样返回。
+        - "[Anchor]名字" 且锚点有效: 返回真实节点名 (str)。
+        - "[Anchor]名字" 但锚点未设/为空/异常: 返回 None（调用方据此安全跳过）。
+    """
+    prefix = "[Anchor]"
+    if not isinstance(node_ref, str) or not node_ref.startswith(prefix):
+        return node_ref
+
+    anchor_name = node_ref[len(prefix):].strip()
+    if not anchor_name:
+        utils.mfaalog.warning("[Py] 🔗 [Anchor] 前缀但锚点名为空")
+        return None
+
+    try:
+        resolved = context.get_anchor(anchor_name)
+    except Exception as e:
+        utils.mfaalog.warning(f"[Py] 🔗 get_anchor('{anchor_name}') 异常: {e}")
+        return None
+
+    if not resolved:
+        utils.mfaalog.warning(f"[Py] 🔗 锚点 '{anchor_name}' 未指向任何节点")
+        return None
+
+    utils.mfaalog.info(f"[Py] 🔗 [Anchor]{anchor_name} → [{resolved}]")
+    return resolved
+
 @AgentServer.custom_action("PatchNode")
 class PatchNode(CustomAction):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
@@ -314,13 +349,20 @@ class PatchNode(CustomAction):
         _process_reset_tags(params)
 
         # 2. 主逻辑
-        target_node = params.get("node")
+        raw_node = params.get("node")
         patch_data = params.get("patch")
         origin_data = params.get("origin") # 用户手动提供的原版数据
 
-        if not target_node or not patch_data:
+        if not raw_node or not patch_data:
             utils.mfaalog.error("[Py] PatchNode 缺参数 (node/patch)")
             return False
+
+        # 2.5 [Anchor] 运行时解析：支持 "node": "[Anchor]锚点名"
+        target_node = _resolve_anchor_node(context, raw_node)
+        if target_node is None:
+            # 锚点未命中：安全空操作，不把补丁误注入到空目标，也不打断管线
+            utils.mfaalog.warning(f"[Py] PatchNode: 目标 [{raw_node}] 锚点解析为空，跳过")
+            return True
 
         try:
             # 如果用户提供了原版数据，且账本里还没有记录，就记下来
