@@ -105,7 +105,20 @@
     },
     "Global_BackToPve_ToCardMenu": {
         "desc": "[PC覆盖·2026-07-23] 防双击轮盘赌:base无post_delay,点击(1111,650)后~0.5s即复查Tp1,开卡集动画~1.2s实测必miss→~0.8s后二次点击。07-23 08:36实锤:首击已开卡集(Tp1隔帧0.951命中),次击压中右下挂起会话块→关卡集转进黄金竞技场。post_delay 2000让首击结果渲染完再复查;next整组重写=base两项+弹窗接手+竞技场逃生(它自己在异常场景超时也不再漏进Null假成功,on_error挂重试垫)。",
-        "post_delay": 2000,
+        "target": [
+            1174,
+            650,
+            1,
+            1
+        ],
+        "post_wait_freezes": {
+            "target": [
+                364,
+                13,
+                587,
+                59
+            ]
+        },
         "next": [
             "Global_BackToPve_CardMenu_Tp1",
             "[JumpBack]StartGame_Special",
