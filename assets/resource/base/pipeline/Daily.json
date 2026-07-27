@@ -1333,7 +1333,11 @@
             "retry_times": 2,
             "threshold": 5.0
         },
-        "next": ["Daily_Intimacy_Swich_Reset"]
+        "next": ["Daily_Intimacy_Swich_Reset"],
+        "on_error": [
+            "Global_ToHomePage",
+            "Global_Null"
+        ]
     },
     "Daily_Intimacy_Swich_Reset": {
         "action": "Custom",
