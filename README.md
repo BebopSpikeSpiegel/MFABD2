@@ -70,6 +70,21 @@
         </a>
       </td>
     </tr>
+    <tr>
+      <td align="center">
+        <b>内测版</b><br>
+        <small>版本号含 Alpha</small>
+      </td>
+      <td>
+        <b>新端适配的前沿。</b><br>
+        目前 <b>PC 客户端（Windows 独立端）适配</b>在此通道推进——<b>开放加入、人人可试</b>。功能仍在完善，遇到问题欢迎提 Issue，作者会跟进修复。
+      </td>
+      <td align="center">
+        <a href="https://github.com/sunyink/MFABD2/releases?q=alpha">
+          <img src="https://img.shields.io/github/v/tag/sunyink/MFABD2?include_prereleases&filter=%2Aalpha%2A&label=%E5%86%85%E6%B5%8B%E7%89%88&color=orange&logo=github" alt="内测版">
+        </a>
+      </td>
+    </tr>
   </tbody>
 </table>
 
@@ -89,7 +104,7 @@ UI 内可直接获取更新推送、下载，由[![Mirror酱](https://img.shield
 
 ## 配置指引
 
->运行提示：当前仅支持模拟器。请务必在良好的网络下运行，连通性波动导致的“重连转圈”易吞掉操作并引发失误。
+>运行提示：Windows 用安卓模拟器；Apple Silicon Mac 可用 PlayCover 免模拟器运行（见下方「Mac 使用指引」）。请务必在良好的网络下运行，连通性波动导致的“重连转圈”易吞掉操作并引发失误。
 >
 >反馈指南：遇到卡点欢迎提交 [Issue](https://github.com/sunyink/MFABD2/issues/new/choose)。为了快速定位问题，请附带：出错前后几秒的录屏/截图 + 一键导出的打包日志（按钮在UI日志墙上方）![](ReadMe/UILog_Tool.png)。
 
@@ -144,8 +159,25 @@ UI 内可直接获取更新推送、下载，由[![Mirror酱](https://img.shield
 <details>
 <summary>Mac 使用指引</summary>
 
-Mac 可用，配置流程略复杂，可参考 [M9A 文档站](https://1999.fan/zh_cn/manual/newbie.html)（同框架，软件部署部分通用）。
-Mac 版 Agent 功能在根目录提供一键修复环境脚本，遇到环境问题时可使用。
+**软件本体部署**：配置流程略复杂，可参考 [M9A 文档站](https://1999.fan/zh_cn/manual/newbie.html)（同框架，软件部署部分通用）。Mac 版 Agent 功能在根目录提供一键修复环境脚本，遇到环境问题时可使用。
+
+**控制方式**：Apple Silicon Mac 推荐用 **PlayCover 直接控制 iOS 版，无需安卓模拟器**，详见 [PlayCover 适配指南](docs/zh_cn/PlayCover适配指南.md)。
+> ⚠️ 需使用带 MaaTools 的 [hguandl fork 版 PlayCover](https://github.com/hguandl/PlayCover/releases)，**官方主线版没有 MaaTools、连不上**。当前覆盖全部**非钓鱼**任务，钓鱼适配随后续 PR 合入。
+>
+> PlayCover 支持由 [@KoujiMinamoto](https://github.com/KoujiMinamoto) 贡献与维护，相关问题欢迎在 issue 中 @他。
+
+</details>
+
+<details>
+<summary>PC 客户端（Windows 独立端）使用指引 · 内测中</summary>
+
+无需模拟器，直接控制 Windows 上的《棕色尘埃2》PC 客户端（Win32）。目前处于 **内测（Alpha 通道）**：功能仍在适配完善，**开放加入、人人可试**，遇到问题欢迎提 [Issue](https://github.com/sunyink/MFABD2/issues/new/choose)（运行平台请选「PC 客户端」），作者会跟进修复。
+
+获取方式：下载 [内测版（Alpha）发布](https://github.com/sunyink/MFABD2/releases?q=alpha)，或在 Mirror 酱切换到 Alpha 通道。
+
+> ⚠️ **切回提示**：内测版号在正式版基础上 **+2**（公测 +1），以保证各通道更新号单向递增。因此从内测**切回公测/正式版时，更新器会视为"降级"而不推送**——需手动重新下载目标通道，或等下一个正式版号追上后再自动衔接。
+
+PC 客户端适配由 [@BebopSpikeSpiegel](https://github.com/BebopSpikeSpiegel) 主力推进，感谢贡献。
 
 </details>
 
@@ -236,6 +268,8 @@ Mac 版 Agent 功能在根目录提供一键修复环境脚本，遇到环境问
 | [MaaPipelineEditor](https://github.com/kqcoxn/MaaPipelineEditor) | 可视化工具 |
 | **京墨** | 跑商功能初始代码 ([7e5bb2a](https://github.com/sunyink/MFABD2/commit/7e5bb2abed984f6fd3cc254605f00e3b924cd982))，感谢付出与支持 |
 | [@XiaoXKKK](https://github.com/XiaoXKKK) | 接管钓鱼初始代码 ([adb06bb](https://github.com/sunyink/MFABD2/commit/adb06bbb50f4be4150ca5b64119629af688ac8f9))，感谢付出与支持 |
+| [@BebopSpikeSpiegel](https://github.com/BebopSpikeSpiegel) | PC 客户端（Windows 独立端）适配主力推进，内测通道核心贡献 |
+| [@KoujiMinamoto](https://github.com/KoujiMinamoto) | PlayCover(iOS/macOS) 控制器支持与维护，让 Mac 免模拟器运行 |
 | [JZPPP/MaaBD2](https://github.com/JZPPP/MaaBD2) | 早期参考项目 |
 
 ---

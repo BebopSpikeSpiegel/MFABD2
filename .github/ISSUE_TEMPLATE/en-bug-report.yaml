@@ -38,6 +38,18 @@ body:
       description: Please provide a detailed description of your issue.
     validations:
       required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform / Controller
+      description: This determines how we debug your issue, so please pick the right one.
+      options:
+        - Android emulator / device (ADB controller)
+        - PC client / Windows standalone (Win32 controller)
+        - iOS · PlayCover (Mac, MaaTools controller)
+        - Other / not sure
+    validations:
+      required: true
   - type: textarea
     id: version
     attributes:
