@@ -3385,7 +3385,7 @@
         "post_delay": 1000,
         "next": [
             "Arbitrage_Cooking_Doing_Starus",
-            "[JumpBack]Arbitrage_Cooking_Doing_OCR"
+            "Arbitrage_Cooking_Doing_OCR"
         ],
         "on_error": [
             "Arbitrage_Cooking_Doing_ReBack",
