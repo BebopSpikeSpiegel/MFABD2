@@ -2237,7 +2237,7 @@
         ]
     },
     "Arbitrage_Sell_Col_Cart": {
-        "desc": "数据节点:出售解析·卡带列带(roi右缘=解析上限;base宽至1280保持原'无上限'语义,#380)",
+        "desc": "数据节点:出售解析·卡带列带(roi右缘=解析上限;改动需与 Arbitrage_Sell_Cart_RescueNum 的 roi 保持同步)",
         "recognition": "OCR",
         "roi": [
             960,
@@ -2781,7 +2781,7 @@
         "focus": "复位商店卡带表"
     },
     "Arbitrage_Sell_GoldRead": {
-        "desc": "【Py引用·被动数据节点,不入任何流程】读右上角金币数,供出售主脑做卖出验证。背景:主脑原先只看 run_task(\"Arbitrage_Sell_HUB\") 的返回值判成败,而该返回值只表示链条\"正常结束\",链条在选卡带找不到目标、SmartSwipe 判触底 JumpOut 时同样返回 True→假报'售卖成功'(07-22实录:桑格利亚酒一件没卖仍报成功)。改为派发前后各读一次金币,增长才算真卖出。roi 自 07-22 出售界面实帧量取(金币串'6,393,080'位于 x1070~1140/y30~45),留宽到130px容纳8位数。读不到时主脑自动跳过验证、退回原行为,不阻断流程。",
+        "desc": "【Py引用·被动数据节点,不入任何流程】读右上角金币数,供出售主脑做卖出验证。背景:主脑原先只看 run_task(\"Arbitrage_Sell_HUB\") 的返回值判成败,而该返回值只表示链条\"正常结束\",链条在选卡带找不到目标、SmartSwipe 判触底 JumpOut 时同样返回 True→假报'售卖成功'(07-22实录:桑格利亚酒一件没卖仍报成功)。改为派发前后各读一次金币,增长才算真卖出。读不到时主脑自动跳过验证、退回原行为,不阻断流程。",
         "recognition": "OCR",
         "roi": [
             964,
@@ -3492,7 +3492,7 @@
         }
     },
     "Arbitrage_ShopBuy_FindStars_Csm": {
-        "desc": "【ShopBuy_Csm 4/4·识别·per端可覆盖】定位收藏星(py-ShopBuy引用，TemplateMatch出框，颜色由py-numpy判)。attach为判色参数：sat_pixel_threshold单像素饱和阈，sat_ratio_threshold高饱和占比阈，star_core_inset星框四边内缩比(0=全框/安卓基线，pc覆盖0.3排除暖色卡面渗入)。",
+        "desc": "【ShopBuy_Csm 4/4·识别·per端可覆盖】定位收藏星(py-ShopBuy引用，TemplateMatch出框，颜色由py-numpy判)。attach为判色参数：sat_pixel_threshold单像素饱和阈，sat_ratio_threshold高饱和占比阈，star_core_inset星框四边内缩比(0=全框，两端现均用此值)。【调参】若识别框角部渗入卡面暖色艺术背景(如米=金稻草)致灰星高饱和占比越过 sat_ratio 被误判黄、进而出现对齐循环点亮/熄灭振荡，可在对应端的本节点 attach 内把 star_core_inset 调到 0.3 左右改采星心核;星心=纯星体填充，调高对判别力无损。",
         "recognition": "TemplateMatch",
         "roi": [
             390,
