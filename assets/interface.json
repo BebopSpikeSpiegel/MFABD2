@@ -247,7 +247,8 @@
             "name": "[执行]商店套利",
             "entry": "Arbitrage_Start",
             "controller": [
-                "Adb"
+                "Adb",
+                "PC客户端"
             ],
             "description": "卡带商店跑商套利：逐卡带扫购低价原料收藏一键购买，按每日最高价择机出售；同时制作高利润料理待出售变现。<br>三个环节均可独立开关，按需组合。",
             "option": [
@@ -1456,6 +1457,9 @@
                         "Arbitrage_BuyItem": {
                             "enabled": false
                         },
+                        "Arbitrage_Favorit_Buy": {
+                            "enabled": false
+                        },
                         "Arbitrage_Bargaining_SkillList": {
                             "recognition": "DirectHit",
                             "target": [
@@ -1547,11 +1551,17 @@
                     "name": "No",
                     "pipeline_override": {
                         "Arbitrage_Cooking_NubMenu_Max": {
-                            "action": "Click",
-                            "target": [
-                                576,
-                                563
-                            ]
+                            "recognition": "OCR",
+                            "roi": [
+                                415,
+                                520,
+                                220,
+                                100
+                            ],
+                            "expected": [
+                                "MAX"
+                            ],
+                            "action": "Click"
                         }
                     }
                 }
@@ -1647,10 +1657,17 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "Arbitrage_Sell_Item_Number": {
-                            "target": [
-                                318,
-                                502
+                        "Arbitrage_Sell_Item_NumberSafety_ON": {
+                            "enabled": true
+                        },
+                        "Arbitrage_Sell_Item_NumberSafety_OFF": {
+                            "enabled": false
+                        },
+                        "Arbitrage_Sell_Item_Selling": {
+                            "next": [
+                                "Arbitrage_Sell_Item_Selling",
+                                "Arbitrage_Sell_End",
+                                "[JumpBack]Arbitrage_PackList_ResetSwip"
                             ]
                         }
                     }
@@ -1658,11 +1675,11 @@
                 {
                     "name": "No",
                     "pipeline_override": {
-                        "Arbitrage_Sell_Item_Number": {
-                            "target": [
-                                596,
-                                506
-                            ]
+                        "Arbitrage_Sell_Item_NumberSafety_ON": {
+                            "enabled": false
+                        },
+                        "Arbitrage_Sell_Item_NumberSafety_OFF": {
+                            "enabled": true
                         }
                     }
                 }
