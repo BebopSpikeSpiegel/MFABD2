@@ -150,12 +150,14 @@
             "Global_ToHomePage_Reset"
         ],
         "on_error": [
-            "[JumpBack]StartGame_SeasonSet",
             "[JumpBack]StartGame_Special",
             "[JumpBack]StartGame_PVPSet",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
             "[JumpBack]PVP_PerOperationsMain_Error",
             "[JumpBack]Global_ERR_AtFish",
             "[JumpBack]Dummy_Err_GetProductsFail",
+            "[JumpBack]StartGame_Error_API",
             "[JumpBack]Global_HomeButton_Once",
             "Global_Null_Exception",
             "Global_Null_Panic"
@@ -238,11 +240,15 @@
         ],
         "on_error": [
             "Global_BackToQC1",
-            "[JumpBack]StartGame_SeasonSet",
             "[JumpBack]StartGame_Special",
             "[JumpBack]StartGame_PVPSet",
             "[JumpBack]PVP_PerOperationsMain_Error",
             "[JumpBack]Global_ERR_AtFish",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]Dummy_Err_GetProductsFail",
+            "[JumpBack]StartGame_Error_API",
+            "[JumpBack]Global_HomeButton_Once",
             "[JumpBack]Global_ToHomePage_Crash",
             "Global_Null_Exception",
             "Global_Null_Panic"
@@ -1028,6 +1034,7 @@
         "desc": "避免正常结束时,报错跳出"
     },
     "Global_ERR_AtFish": {
+        "desc": "钓鱼界面返回",
         "recognition": "TemplateMatch",
         "roi": [
             1168,

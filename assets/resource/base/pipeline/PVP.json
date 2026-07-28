@@ -845,6 +845,7 @@
         "focus": "PM.开始离开PVP卡带"
     },
     "PVP_PerOperationsMain_Error": {
+        "desc": "异常弹窗,没有赛季奖励等",
         "recognition": "OCR",
         "roi": [
             480,
