@@ -406,7 +406,8 @@ class HSVShapeMatching(CustomRecognition):
 #
 #   样本采集(语料即回归集，见 rdd_sampler.py)：命中/未命中都把小图 + 完整识别信息
 #     (conf 四项分解/proj/红块 aspect·fill/生效参数)落成累积语料：
-#     <log_dir>/RedDotDetector_samples/ 下唯一命名小图 + samples.jsonl(一行一事件)。
+#     <log_dir>/RedDotDetector_samples/ 下唯一命名小图 + samples.jsonl.log(一行一事件，
+#     .log 后缀是为了能被 UI"导出日志"收走，理由见 rdd_sampler.py 头注)。
 #     整个文件夹拿走即可离线回放定标(v3)。RDD_SAMPLE=off/fail/all(默认 all，env 穿透
 #     运行侧配置)；RDD_SAMPLE_DIR 指定落盘目录(VSCode 调试 log_dir 被重定向时用)；
 #     同检测点默认 1800s 采一张(RDD_SAMPLE_INTERVAL 可调)+ 画面不变去重。
