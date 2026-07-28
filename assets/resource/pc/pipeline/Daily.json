@@ -512,10 +512,10 @@
     },
     "Sub_Intimacy_LV": {
         "roi": [
-            611,
+            601,
             104,
-            82,
-            43
+            110,
+            50
         ]
     },
     "Daily_Intimacy_Up_MSG": {
@@ -535,10 +535,10 @@
     },
     "Daily_Intimacy_Exhausted": {
         "roi": [
-            1069,
+            1075,
             22,
-            22,
-            27
+            23,
+            28
         ]
     },
     "Daily_Intimacy_Swip": {
