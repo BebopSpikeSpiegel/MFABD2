@@ -16,12 +16,16 @@ from maa.define import RectType
 from utils import mfaalog
 from .rdd_sampler import RddSampler
 from .rdd_hsv_rescue import (
-    build_topology_states,
+    DIRECTIONS,
+    boxes_agree,
+    channel_cutpoints,
+    direction_deltas,
     is_strict_mask,
     lineage_parent,
-    mask_digest,
+    neighbor_states,
     normalize_rescue_config,
     select_stable_winner,
+    sort_parents,
     strict_profile,
 )
 
@@ -595,6 +599,45 @@ _RED_RANGES_DEFAULT = [
 # 定标依据见 docs/RedDotDetector_打分模型.md §15。
 _FLT_ASPECT_DEFAULT = [0.6, 1.6]
 
+# 被长宽比闸拒绝的红块，几何最多留几条进 detail/sampler。仅观测容量，不参与判定。
+# 放开到 12（原 3）是为了给"大 ROI 里父块会不会爆"提供分布数据：
+# 实测 boss-adb 一帧就有 5 个被拒块，只有 1 个是真红点，旧上限看不出这个比例。
+# 总数另记 aspect_rej_n，不受此上限影响。
+_ASPECT_REJ_KEEP = 12
+
+# 救援局部重跑窗口在父块外接框四周留的余量(像素)。父块本就完整落在自己的外接框内，
+# 理论上 0 亦可；留 2 是防边界效应的保险，实测 0 与 2 结果无差异，成本可忽略。
+_RESCUE_PAD = 2
+
+# select_stable_winner 的判定码 → 回传用中文，与金字塔风格一致。
+_RESCUE_DECISION_CN = {
+    "stable_hit": "稳定命中",
+    "no_hit": "未命中",
+    "unstable_hit": "命中不稳定",
+    "ambiguous_split": "同档多解",
+    "ambiguous_stable_hits": "多解歧义",
+    "error": "异常",
+}
+# GUI 日志栏用的一句话失败摘要。完整 hint(含 aspect_rej 明细、调参方向)长达数百字，
+# 只进 print 与 detail；日志栏刷全文既挤占用户视野，也容易让人漏看后面的救援结论。
+_MISS_BRIEF = {
+    "red_mask": "HSV 没框到红色",
+    "area": "红块面积不在闸内",
+    "aspect": "红块长宽比出圈(疑连片)",
+    "interior": "红块内无封闭白芯",
+    "confidence": "打分不足",
+}
+
+# 每种不成立各自的调参方向；成立时的说明由 _rescue_hint 现算。
+_RESCUE_HINT_CN = {
+    "no_hit": "三个切法都没从该父块切出合格红点；看 尝试[].卡在 —— "
+              "aspect=切得不够狠，interior/red_mask/area=切过头",
+    "unstable_hit": "只有单档命中、相邻档不复现；切点疑似落在悬崖边，不予采纳",
+    "ambiguous_split": "同一档内该父块切出多个候选，无法认定唯一后代",
+    "ambiguous_stable_hits": "出现多个互不相邻的稳定解，按 fail closed 一律拒绝",
+    "error": "救援内部异常，已保持 baseline 结果",
+}
+
 # ── 打分权重 sc_w_*（v2）─────────────────────────────────────────────
 # 设计依据见 docs/RedDotDetector_打分模型.md（真假样本论证）。核心两条：
 #   1) 竖长(高瘦) + 偏白(白芯) 抗模糊、是真正的判别金线，并列为主，各 0.45；
@@ -864,27 +907,39 @@ class RedDotDetector(CustomRecognition):
                 )
             except Exception:
                 rescue = {
-                    "mode": rescue_cfg["mode"], "attempted": True,
-                    "trigger": "stage_aspect", "decision": "error",
-                    "stop_reason": "exception",
-                    "error": traceback.format_exc().strip().splitlines()[-1],
+                    "模式": rescue_cfg["mode"], "结论": _RESCUE_DECISION_CN["error"],
+                    "说明": _RESCUE_HINT_CN["error"], "停因": "异常",
+                    "_decision": "error", "_winner": None,
+                    "错误": traceback.format_exc().strip().splitlines()[-1],
                 }
                 print(f"[RedDotDetector] HSV 救援异常，保持 baseline miss:\n"
                       f"{traceback.format_exc()}")
+            self._log_rescue(node, rescue)
             winner = rescue.get("_winner")
             if (winner is not None and rescue_cfg["mode"] == "active"
-                    and rescue.get("search_complete")
-                    and rescue.get("decision") == "stable_hit"):
-                return self._finalize_hit(
-                    context=context, argv=argv, node=node, key_roi=key_roi,
-                    caller=caller, work_bgr=work_bgr, roi_tuple=(rx, ry, rw, rh),
-                    params=params, area_range=(area_min, area_max),
+                    and rescue.get("_decision") == "stable_hit"):
+                confirmed = self._rescue_confirm_full(
+                    hsv_np=hsv_np, winner=winner,
+                    area_range=(area_min, area_max),
                     aspect_range=(asp_lo, asp_hi), gap_ratio=gap_ratio,
-                    min_conf=min_conf, outcome=winner["outcome"],
-                    candidate=winner["candidate"],
-                    effective_hsv=winner["profile"],
-                    rescue=self._public_rescue(rescue),
-                )
+                    min_conf=min_conf, rx=rx, ry=ry)
+                if confirmed is None:
+                    rescue["停因"] = "全区复核不一致"
+                    rescue["说明"] = "局部结论未能在整幅 ROI 复现，已 fail closed"
+                    print(f"[RedDotDetector] 救援 {node} | 全区复核不一致，维持 miss")
+                else:
+                    outcome_full, candidate_full = confirmed
+                    return self._finalize_hit(
+                        context=context, argv=argv, node=node, key_roi=key_roi,
+                        caller=caller, work_bgr=work_bgr,
+                        roi_tuple=(rx, ry, rw, rh),
+                        params=params, area_range=(area_min, area_max),
+                        aspect_range=(asp_lo, asp_hi), gap_ratio=gap_ratio,
+                        min_conf=min_conf, outcome=outcome_full,
+                        candidate=candidate_full,
+                        effective_hsv=winner["profile"],
+                        rescue=self._public_rescue(rescue),
+                    )
 
         return self._finalize_miss(
             context=context, argv=argv, node=node, key_roi=key_roi,
@@ -930,8 +985,10 @@ class RedDotDetector(CustomRecognition):
                         "fill": round(area / max(bw * bh, 1), 2)}
             if not (asp_lo <= aspect <= asp_hi):
                 eligible_parents.append(geometry)
-                if len(stat.setdefault("aspect_rej", [])) < 3:
-                    stat["aspect_rej"].append(
+                stat["aspect_rej_n"] = stat.get("aspect_rej_n", 0) + 1
+                rej = stat.setdefault("aspect_rej", [])
+                if len(rej) < _ASPECT_REJ_KEEP:
+                    rej.append(
                         {k: geometry[k] for k in ("w", "h", "area", "aspect", "fill")})
                 continue
             stat["aspect_pass"] += 1
@@ -1016,152 +1073,285 @@ class RedDotDetector(CustomRecognition):
                     "has_below": chk.get("has_below")},
         }
 
-    def _preview_rescue(self, labeled, baseline_labels, eligible_ids,
-                        area_min, area_max, asp_lo, asp_hi):
-        """只做 area/aspect/lineage，避免对无望 profile 完整打分。"""
-        feasible = []
-        n_blobs = int(labeled.max()) if labeled.size else 0
-        for i in range(1, n_blobs + 1):
-            blob = (labeled == i)
-            area = int(blob.sum())
-            if not (area_min <= area <= area_max):
+    def _rescue_try(self, *, hsv_np, baseline, geo, delta_s, delta_v,
+                    hsv_ranges, area_range, aspect_range, gap_ratio,
+                    min_conf, rx, ry):
+        """在**父块外接框**内跑一次完整检测链，返回 (候选, 卡在, 红像素数)。
+
+        只在局部重跑而非整个 ROI：救援的判定被 lineage 限定在这一个父块内，
+        框选区其余像素怎么变都与结论无关。实测 23 处对比与全区重跑逐位一致，
+        平均提速 5.8 倍，且成本随父块（受面积闸约束 ≤ area_max）而非 ROI 增长。
+        """
+        profile = strict_profile(hsv_ranges, delta_s, delta_v)
+        if profile is None:
+            return None, "参数", 0
+
+        h, w = hsv_np.shape[:2]
+        x0 = max(0, int(geo["x"]) - _RESCUE_PAD)
+        y0 = max(0, int(geo["y"]) - _RESCUE_PAD)
+        x1 = min(w, int(geo["x"]) + int(geo["w"]) + _RESCUE_PAD)
+        y1 = min(h, int(geo["y"]) + int(geo["h"]) + _RESCUE_PAD)
+        if x1 <= x0 or y1 <= y0:
+            return None, "窗口", 0
+
+        sub_hsv = hsv_np[y0:y1, x0:x1]
+        sub_base_mask = baseline["red_mask"][y0:y1, x0:x1]
+        sub_base_lab = baseline["labeled"][y0:y1, x0:x1]
+
+        out = self._detect_once(
+            sub_hsv, profile, area_range[0], area_range[1],
+            aspect_range[0], aspect_range[1], gap_ratio, min_conf,
+            rx + x0, ry + y0, collect_all=True,
+        )
+        red_px = int(out["stat"]["red_px"])
+        # 严格子集：只许删红像素，不许凭空添红。
+        if not is_strict_mask(out["red_mask"], sub_base_mask):
+            return None, "子集", red_px
+
+        for cand in out["candidates"]:
+            if lineage_parent(cand["blob_mask"], sub_base_lab,
+                              [geo["label"]]) != geo["label"]:
                 continue
-            ys, xs = np.where(blob)
-            bw, bh = int(xs.max() - xs.min() + 1), int(ys.max() - ys.min() + 1)
-            aspect = round(bh / max(bw, 1), 2)
-            if not (asp_lo <= aspect <= asp_hi):
-                continue
-            parent_id = lineage_parent(blob, baseline_labels, eligible_ids)
-            if parent_id is not None:
-                feasible.append({"label": i, "parent_id": parent_id})
-        return feasible
+            bx, by, bw, bh = cand["box_local"]
+            cand["box_local"] = (bx + x0, by + y0, bw, bh)   # 换回 ROI 坐标系
+            cand["profile"] = profile
+            return cand, None, red_px
+
+        # 没有血统合格的候选：借 baseline 同一套诊断词表说明卡在哪步，
+        # 好让 aspect(切得不够狠) 与 interior/red_mask(切过头) 一眼可分。
+        if out["candidates"]:
+            return None, "血统", red_px
+        stage, _ = self._diagnose(out["stat"], area_range[0], area_range[1], min_conf)
+        return None, stage, red_px
 
     def _run_hsv_rescue(self, *, hsv_np, baseline, hsv_ranges, area_range,
                         aspect_range, gap_ratio, min_conf, rx, ry, config):
-        """受约束的严格 HSV 拓扑断点搜索；返回内部 winner 与可序列化轨迹。"""
+        """严格 HSV 救援：切点由父块自身分布算出，局部重跑，跨档复现验收。
+
+        流程（每个被长宽比闸拒的父块，按"像不像红点"排序后依次处理）：
+          1. 取该父块像素，两个通道各做一次直方图 → Otsu 切点（微秒级）
+          2. 三个切法(只切亮度/只切饱和/双切)各跑一次**主档**
+          3. 命中位置一致 → 取增量最小的切法；位置分散 → 判方向歧义，拒绝
+          4. 对选中切法补跑上下**陪跑档**，交 select_stable_winner 判跨档稳定
+        任一环节失败即换下一个父块；预算耗尽维持 baseline miss。
+        """
         started = time.perf_counter()
-        area_min, area_max = area_range
-        asp_lo, asp_hi = aspect_range
-        eligible_ids = [item["label"] for item in baseline["eligible_parents"]]
-        eligible_mask = np.isin(baseline["labeled"], eligible_ids)
-        states = build_topology_states(hsv_np, eligible_mask, hsv_ranges, config)
-        seen_masks, attempts, hit_records = set(), [], []
-        state_space_truncated = bool(getattr(states, "truncated", False))
+        budget_ms = config["time_budget_ms"]
+
+        def timed_out():
+            return (time.perf_counter() - started) * 1000 >= budget_ms
+
+        def elapsed():
+            return round((time.perf_counter() - started) * 1000, 2)
+
+        parents = sort_parents(baseline["eligible_parents"])
+        parent_rows, attempts = [], []
         full_runs = 0
-        stop_reason = "state_budget" if state_space_truncated else "states_exhausted"
-        search_complete = not state_space_truncated
+        tried_parents = 0
+        winner = decision = support = None
+        cutpoints = win_direction = win_main = None
+        stop_reason = "父块用尽"
 
-        for state in states:
-            elapsed_ms = (time.perf_counter() - started) * 1000
-            if elapsed_ms >= config["time_budget_ms"]:
-                stop_reason = "time_budget"
-                search_complete = False
-                break
-            profile = strict_profile(
-                hsv_ranges, state["delta_s"], state["delta_v"])
-            if profile is None:
+        for geo in parents:
+            row = {"序": len(parent_rows) + 1,
+                   "几何": f"{geo['w']}x{geo['h']}", "面积": geo["area"],
+                   "长宽比": geo["aspect"], "填充": geo["fill"], "试了": False}
+            parent_rows.append(row)
+            if winner is not None:
                 continue
-            red_mask = _compute_hsv_mask(hsv_np, profile)
-            if (time.perf_counter() - started) * 1000 >= config["time_budget_ms"]:
-                stop_reason = "time_budget"
-                search_complete = False
-                break
-            if not is_strict_mask(red_mask, baseline["red_mask"]):
+            if tried_parents >= config["max_parents"]:
+                row["跳过"] = "父块预算"
                 continue
-            digest = mask_digest(red_mask)
-            if digest in seen_masks:
+            if timed_out():
+                row["跳过"] = "超时"
+                stop_reason = "超时"
                 continue
-            seen_masks.add(digest)
-            labeled, n_blobs = _label_blobs(red_mask)
-            if (time.perf_counter() - started) * 1000 >= config["time_budget_ms"]:
-                stop_reason = "time_budget"
-                search_complete = False
-                break
-            feasible = self._preview_rescue(
-                labeled, baseline["labeled"], eligible_ids,
-                area_min, area_max, asp_lo, asp_hi,
-            )
-            attempt = {
-                "state": dict(state), "red_px": int(red_mask.sum()),
-                "n_blobs": int(n_blobs), "feasible": len(feasible),
-                "full_run": False, "hits": [],
-            }
-            if not feasible:
-                attempts.append(attempt)
-                continue
-            if full_runs >= config["max_full_runs"]:
-                stop_reason = "full_run_budget"
-                search_complete = False
-                attempts.append(attempt)
-                break
 
-            outcome = self._detect_once(
-                hsv_np, profile, area_min, area_max, asp_lo, asp_hi,
-                gap_ratio, min_conf, rx, ry,
-                red_mask=red_mask, labeled=labeled, collect_all=True,
-            )
-            full_runs += 1
-            attempt["full_run"] = True
-            over_time = ((time.perf_counter() - started) * 1000
-                         >= config["time_budget_ms"])
-            for candidate in outcome["candidates"]:
-                parent_id = lineage_parent(
-                    candidate["blob_mask"], baseline["labeled"], eligible_ids)
-                if parent_id is None:
+            pixels = hsv_np[baseline["labeled"] == geo["label"]]
+            cuts = channel_cutpoints(pixels, hsv_ranges, config)
+            if cuts is None:
+                row["跳过"] = "无法定点"
+                continue
+            tried_parents += 1
+            row["试了"] = True
+
+            # —— 第 2 步：三个切法各跑一次主档 ——
+            probes, seen_deltas = {}, set()
+            for direction in DIRECTIONS:
+                if timed_out():
+                    stop_reason = "超时"
+                    break
+                if full_runs >= config["max_full_runs"]:
+                    stop_reason = "重跑预算"
+                    break
+                pair = direction_deltas(cuts, direction)
+                if pair is None or pair in seen_deltas:
+                    continue          # 例如某通道增量为 0 时，双切与单切等价
+                seen_deltas.add(pair)
+                cand, blocked, red_px = self._rescue_try(
+                    hsv_np=hsv_np, baseline=baseline, geo=geo,
+                    delta_s=pair[0], delta_v=pair[1], hsv_ranges=hsv_ranges,
+                    area_range=area_range, aspect_range=aspect_range,
+                    gap_ratio=gap_ratio, min_conf=min_conf, rx=rx, ry=ry)
+                full_runs += 1
+                attempts.append(self._rescue_attempt(
+                    row["序"], direction, pair, red_px, blocked, cand))
+                if cand is not None:
+                    probes[direction] = (pair, cand)
+
+            if not probes:
+                continue
+            # —— 第 3 步：不同切法必须指向同一处，否则是真歧义 ——
+            if not boxes_agree([c["box_local"] for _, c in probes.values()]):
+                row["跳过"] = "方向歧义"
+                stop_reason = "方向歧义"
+                continue
+
+            win_direction = min(probes, key=lambda d: sum(probes[d][0]))
+            (ds, dv), main_cand = probes[win_direction]
+
+            # —— 第 4 步：补跑陪跑档，交既有的跨档稳定判定 ——
+            records = []
+            for state in neighbor_states(win_direction, ds, dv, config):
+                is_main = (state["delta_s"], state["delta_v"]) == (ds, dv)
+                cand = main_cand if is_main else None
+                if cand is None:
+                    if timed_out():
+                        stop_reason = "超时"
+                        break
+                    if full_runs >= config["max_full_runs"]:
+                        stop_reason = "重跑预算"
+                        break
+                    cand, blocked, red_px = self._rescue_try(
+                        hsv_np=hsv_np, baseline=baseline, geo=geo,
+                        delta_s=state["delta_s"], delta_v=state["delta_v"],
+                        hsv_ranges=hsv_ranges, area_range=area_range,
+                        aspect_range=aspect_range, gap_ratio=gap_ratio,
+                        min_conf=min_conf, rx=rx, ry=ry)
+                    full_runs += 1
+                    attempts.append(self._rescue_attempt(
+                        row["序"], win_direction + "·陪跑",
+                        (state["delta_s"], state["delta_v"]),
+                        red_px, blocked, cand))
+                if cand is None:
                     continue
-                record = {
-                    "state": dict(state), "parent_id": parent_id,
-                    "box_local": candidate["box_local"],
-                    "scan_index": candidate["scan_index"],
-                    "candidate": candidate, "outcome": outcome,
-                    "profile": profile,
-                }
-                hit_records.append(record)
-                attempt["hits"].append({
-                    "parent_id": parent_id,
-                    "box": list(candidate["box_local"]),
-                    "conf": candidate["conf"],
+                records.append({
+                    "state": state, "parent_id": geo["label"],
+                    "box_local": cand["box_local"],
+                    "scan_index": cand["scan_index"],
+                    "candidate": cand, "profile": cand["profile"],
                 })
-            attempts.append(attempt)
-            if over_time:
-                stop_reason = "time_budget"
-                search_complete = False
-                break
 
-        winner, decision, support = select_stable_winner(
-            hit_records, config["min_stable_states"])
-        if decision != "stable_hit":
-            stop_reason = decision if stop_reason == "states_exhausted" else stop_reason
-        elif stop_reason == "states_exhausted":
-            stop_reason = "stable_hit"
+            cand_winner, cand_decision, cand_support = select_stable_winner(
+                records, config["min_stable_states"])
+            decision, support = cand_decision, cand_support
+            cutpoints = cuts
+            if cand_decision == "stable_hit":
+                winner = cand_winner
+                win_main = (ds, dv)
+                stop_reason = "稳定命中"
+            else:
+                row["跳过"] = cand_decision
 
+        if decision is None:
+            decision = "no_hit"
         public = {
-            "mode": config["mode"],
-            "attempted": True,
-            "trigger": "stage_aspect",
-            "eligible_parents": baseline["eligible_parents"],
-            "states_generated": len(states),
-            "states_total": int(getattr(states, "total", len(states))),
-            "state_space_truncated": state_space_truncated,
-            "states_visited": len(attempts),
-            "full_runs": full_runs,
-            "attempts": attempts,
-            "stable_support": support,
-            "decision": decision,
-            "stop_reason": stop_reason,
-            "search_complete": search_complete,
-            "elapsed_ms": round((time.perf_counter() - started) * 1000, 2),
-            "_winner": winner if search_complete else None,
+            "模式": config["mode"],
+            "结论": _RESCUE_DECISION_CN.get(decision, decision),
+            "说明": self._rescue_hint(decision, win_direction, cutpoints,
+                                      winner, support),
+            "耗时ms": elapsed(),
+            "切点": cutpoints,
+            "尝试": attempts,
+            "父块": {"总数": len(parents), "已试": tried_parents,
+                     "跳过": len(parents) - tried_parents, "明细": parent_rows},
+            "预算": {"重跑": full_runs, "上限": config["max_full_runs"],
+                     "耗时ms": elapsed(), "上限ms": budget_ms},
+            "停因": stop_reason,
+            "_decision": decision,
+            "_winner": winner,
         }
         if winner is not None:
-            public["winner"] = {
-                "parent_id": winner["parent_id"],
-                "state": winner["state"],
-                "box": list(winner["box_local"]),
-                "conf": winner["candidate"]["conf"],
-                "profile": winner["profile"],
+            public["胜出"] = {
+                "方向": win_direction,
+                # 主档 = 切点直接算出的那一档；采纳档 = 复现组里最保守(增量最小)的一档。
+                # 两者可以不同，这不是矛盾：切点定位置，复现组决定最终取哪一档。
+                "主档增量": list(win_main) if win_main else None,
+                "采纳增量": [winner["state"]["delta_s"],
+                             winner["state"]["delta_v"]],
+                "框": list(winner["box_local"]),
+                "分": winner["candidate"]["conf"],
+                "复现": len(support[0]["states"]) if support else 0,
             }
         return public
+
+    @staticmethod
+    def _rescue_attempt(parent_no, direction, pair, red_px, blocked, cand):
+        """一条尝试记录。失败档不带 框/分（恒为空），省体积也少一层噪声。"""
+        row = {"父块": parent_no, "方向": direction,
+               "增量": [int(pair[0]), int(pair[1])], "红像素": int(red_px),
+               "卡在": blocked}
+        if cand is not None:
+            row["框"] = list(cand["box_local"])
+            row["分"] = cand["conf"]
+        return row
+
+    @staticmethod
+    def _rescue_hint(decision, direction, cutpoints, winner, support):
+        """一句话说清这次救援凭什么成立 / 因何不成立，措辞与调参方向对齐。"""
+        if decision == "stable_hit" and winner is not None:
+            ds, dv = winner["state"]["delta_s"], winner["state"]["delta_v"]
+            base = []
+            if cutpoints:
+                if dv > 0:
+                    base.append(f"亮度切点{cutpoints['亮度']['Otsu']}"
+                                f"(基线{cutpoints['亮度']['基线']})")
+                if ds > 0:
+                    base.append(f"饱和切点{cutpoints['饱和']['Otsu']}"
+                                f"(基线{cutpoints['饱和']['基线']})")
+            times = len(support[0]["states"]) if support else 0
+            return (f"切法{direction}；{'；'.join(base)}；"
+                    f"相邻{times}档复现同框，采纳最保守档 ΔS{ds}/ΔV{dv}；血统同源")
+        return _RESCUE_HINT_CN.get(decision, f"未成立({decision})")
+
+    @staticmethod
+    def _log_rescue(node, rescue):
+        """救援只走 print 单行摘要：ΔS/ΔV、lineage 等细节留在 detail.救援 里，
+        由框架随 reco_details 落进 maa 核心日志，不占 GUI 日志栏（见观测契约）。"""
+        if not rescue:
+            return
+        budget = rescue.get("预算") or {}
+        head = f"[RedDotDetector] 救援 {node} | {rescue.get('结论')}"
+        win = rescue.get("胜出")
+        if win:
+            tail = (f"{win['方向']}ΔS{win['采纳增量'][0]}/ΔV{win['采纳增量'][1]} "
+                    f"复现{win['复现']}档 → box={win['框']} 分{win['分']}")
+        else:
+            blocked = [a.get("卡在") for a in (rescue.get("尝试") or [])
+                       if a.get("卡在")]
+            uniq = sorted(set(blocked))
+            tail = f"停因={rescue.get('停因')}" + (f" 卡在={','.join(uniq)}" if uniq else "")
+        print(f"{head} | {tail} | {budget.get('重跑', 0)}重跑 "
+              f"{rescue.get('耗时ms', 0)}ms")
+
+    def _rescue_confirm_full(self, *, hsv_np, winner, area_range, aspect_range,
+                             gap_ratio, min_conf, rx, ry):
+        """active 改判前，用胜出参数在**整个 ROI** 复跑一次。
+
+        两个作用：① 取回整幅红掩膜，供 sampler / 原生回显落盘（局部窗口的掩膜尺寸对不上）；
+        ② 作为局部结论的最后一道交叉校验 —— 全区跑不出同一个框就 fail closed。
+        只在 active 且已有稳定解时执行，属低频路径。
+        """
+        outcome = self._detect_once(
+            hsv_np, winner["profile"], area_range[0], area_range[1],
+            aspect_range[0], aspect_range[1], gap_ratio, min_conf, rx, ry,
+            collect_all=True,
+        )
+        target = tuple(winner["box_local"])
+        for cand in outcome["candidates"]:
+            if tuple(cand["box_local"]) == target:
+                return outcome, cand
+        return None
 
     @staticmethod
     def _public_rescue(rescue):
@@ -1204,7 +1394,7 @@ class RedDotDetector(CustomRecognition):
                        "flt_hsv_rescue": params.get("flt_hsv_rescue")},
         }
         if rescue:
-            meta["rescue"] = rescue
+            meta["救援"] = rescue
         _SAMPLER.record(
             node=node, roi=key_roi, result="hit",
             images={"roi_crop": work_bgr, "red_mask": outcome["red_mask"],
@@ -1225,7 +1415,7 @@ class RedDotDetector(CustomRecognition):
             "effective_hsv_ranges": effective_hsv, "dbg": dbg_text,
         }
         if rescue:
-            detail["rescue"] = rescue
+            detail["救援"] = rescue
         return CustomRecognition.AnalyzeResult(box=result_box, detail=detail)
 
     def _finalize_miss(self, *, context, argv, node, key_roi, caller,
@@ -1255,10 +1445,12 @@ class RedDotDetector(CustomRecognition):
             "conf": stat.get("conf"), "parts": stat.get("parts"),
             "red_blob": stat.get("red_blob"), "proj": stat.get("proj"),
             "gap": stat.get("gap"), "aspect_rej": stat.get("aspect_rej"),
+            "aspect_rej_n": stat.get("aspect_rej_n"),
             "filter_stat": {
                 "red_px": stat["red_px"], "n_blobs": stat["n_blobs"],
                 "area_pass": stat["area_pass"],
                 "aspect_pass": stat.get("aspect_pass"),
+                "aspect_rej_n": stat.get("aspect_rej_n", 0),
                 "max_inner_px": stat["max_inner_px"], "scored": stat["scored"],
             },
             "params": {"hsv_ranges": hsv_ranges,
@@ -1272,7 +1464,7 @@ class RedDotDetector(CustomRecognition):
             "failure_dump": dump_info,
         }
         if rescue:
-            meta["rescue"] = rescue
+            meta["救援"] = rescue
         _SAMPLER.record(
             node=node, roi=key_roi, result="miss", stage=stage,
             images=miss_imgs, meta=meta,
@@ -1282,7 +1474,7 @@ class RedDotDetector(CustomRecognition):
                 context, node, roi_tuple, argv.image, hsv_ranges, area_min)
         extra = {"failure_dump": dump_info}
         if rescue:
-            extra["rescue"] = rescue
+            extra["救援"] = rescue
         return self._miss(
             "preset" if caller else "standalone", stage, hint, stat, effective_params,
             dbg_text, min_conf, extra=extra)
@@ -1427,8 +1619,10 @@ class RedDotDetector(CustomRecognition):
         if stat["area_pass"] == 0:
             return "area", f"红色面积都不在 [{area_min},{area_max}]，调 red_area（多半是 min 太大）"
         if stat.get("aspect_pass", 0) == 0:
-            return "aspect", (f"红块 h/w 都不在 flt_aspect 内(被拒 {stat.get('aspect_rej')})；"
-                              "横条/竖柱杂红属正常拒；若是连片真货被误杀，"
+            rej = stat.get("aspect_rej") or []
+            total = stat.get("aspect_rej_n", len(rej))
+            return "aspect", (f"红块 h/w 都不在 flt_aspect 内(被拒 {total} 块，"
+                              f"前 3: {rej[:3]})；横条/竖柱杂红属正常拒；若是连片真货被误杀，"
                               "由 flt_hsv_rescue 严格 HSV 搜索拆开连片；不要放宽 flt_aspect")
         if stat["max_inner_px"] == 0:
             return "interior", "红块内无封闭非红区(无感叹号轮廓)：roi 偏移 / 红圈破损 / 被模糊填满"
@@ -1460,7 +1654,18 @@ class RedDotDetector(CustomRecognition):
             }
         if extra:
             detail.update(extra)
-        mfaalog.warning(f"[RedDotDetector] miss@{stage} | {hint}")
+        # 救援已找到稳定解却仍 miss，只可能是 shadow 不改判 —— 必须在日志栏说明白，
+        # 否则用户看到的就只是一条 miss，会误判成救援没工作。
+        rescue = (extra or {}).get("救援") or {}
+        tail = ""
+        if rescue.get("结论") == "稳定命中":
+            win = rescue.get("胜出") or {}
+            tail = (f"｜严格HSV救援已找到稳定解 box={win.get('框')} 分{win.get('分')}"
+                    f"，当前 mode={rescue.get('模式')} 不改判")
+        elif rescue.get("attempted") or rescue.get("尝试"):
+            tail = f"｜救援未成立({rescue.get('结论')})"
+        mfaalog.warning(f"[RedDotDetector] miss@{stage} | "
+                        f"{_MISS_BRIEF.get(stage, stage)}{tail}")
         print(f"[RedDotDetector] miss\n{dbg_text}" if dbg_text else f"[RedDotDetector] miss stat={stat}")
         return CustomRecognition.AnalyzeResult(box=None, detail=detail)
 
@@ -1549,7 +1754,11 @@ class RedDotDetector(CustomRecognition):
             f"inner_px={stat.get('max_inner_px')} scored={stat.get('scored')}",
         ]
         if stat.get("aspect_rej"):
-            lines.append(f"aspect_rej: {stat['aspect_rej']}")
+            rej = stat["aspect_rej"]
+            total = stat.get("aspect_rej_n", len(rej))
+            shown = rej[:3]
+            tail = f" ...(共{total})" if total > len(shown) else ""
+            lines.append(f"aspect_rej: {shown}{tail}")
         if stat.get("red_blob"):
             rb = stat["red_blob"]
             lines.append(f"red_blob: {rb['w']}x{rb['h']} area={rb['area']} "

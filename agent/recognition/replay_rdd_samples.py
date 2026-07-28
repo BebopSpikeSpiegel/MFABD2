@@ -33,6 +33,11 @@ def _load_crop(path):
     return np.array(Image.fromarray(bgr[..., ::-1]).convert("HSV"))
 
 
+def _recorded_rescue(entry):
+    """兼容两代键名：`救援`(现行，与 detail 金字塔同为中文键)与 `rescue`(2026-07 的 3 条旧记录)。"""
+    return entry.get("救援") or entry.get("rescue") or {}
+
+
 def _expected_local(entry):
     box = entry.get("box")
     if not box:
@@ -113,8 +118,7 @@ def replay(sample_dir, rescue=False, expected_rescue_nodes=()):
                 gap_ratio=gap_ratio, min_conf=min_conf, rx=0, ry=0,
                 config=rescue_cfg,
             )
-            stable = (rescue_result.get("decision") == "stable_hit"
-                      and rescue_result.get("search_complete"))
+            stable = rescue_result.get("_decision") == "stable_hit"
             if stable:
                 rescue_stable += 1
 
@@ -122,12 +126,16 @@ def replay(sample_dir, rescue=False, expected_rescue_nodes=()):
         if (expected_rescue is None and entry.get("node") in expected_rescue_nodes
                 and not outcome["hit"] and stage == "aspect"):
             expected_rescue = True
-        recorded_rescue = entry.get("rescue") or {}
-        recorded_active = (recorded_rescue.get("mode") == "active"
+        recorded_rescue = _recorded_rescue(entry)
+        recorded_mode = recorded_rescue.get("模式") or recorded_rescue.get("mode")
+        recorded_active = (recorded_mode == "active"
                            and expected_hit and not outcome["hit"])
-        if (expected_rescue is None and recorded_rescue.get("mode") == "active"
-                and not outcome["hit"]):
-            expected_rescue = expected_hit
+        # 只在"旧版 active 曾经救回过"时才要求新版也救回。反向不成立：
+        # 旧算法救不出，不等于新算法不该救出 —— 那正是迭代要改进的部分。
+        # （2026-07-11 的 2 条 active 记录即属此类：旧网格爬失败，新直方图定点成功。）
+        if (expected_rescue is None and recorded_mode == "active"
+                and not outcome["hit"] and expected_hit):
+            expected_rescue = True
         if expected_rescue is not None:
             rescue_checks += 1
             checked_rescue_nodes.add(entry.get("node"))
@@ -138,8 +146,8 @@ def replay(sample_dir, rescue=False, expected_rescue_nodes=()):
                     "line": index, "node": entry.get("node"),
                     "expected_rescue": bool(expected_rescue),
                     "actual_rescue": stable,
-                    "decision": (rescue_result or {}).get("decision"),
-                    "stop_reason": (rescue_result or {}).get("stop_reason"),
+                    "decision": (rescue_result or {}).get("_decision"),
+                    "stop_reason": (rescue_result or {}).get("停因"),
                 })
             if recorded_active and stable:
                 winner = rescue_result.get("_winner")

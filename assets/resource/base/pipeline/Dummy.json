@@ -123,11 +123,11 @@
             "sc_gap_ratio": 0.35,
             "flt_hsv_rescue": {
                 "mode": "shadow",
-                "max_delta_s": 48,
-                "max_delta_v": 64,
-                "max_states": 64,
-                "max_full_runs": 8,
+                "max_delta_s": 110,
+                "max_delta_v": 110,
+                "max_full_runs": 12,
                 "min_stable_states": 2,
+                "max_parents": 5,
                 "time_budget_ms": 40
             }
         }
@@ -168,11 +168,11 @@
             "sc_gap_ratio": 0.35,
             "flt_hsv_rescue": {
                 "mode": "shadow",
-                "max_delta_s": 48,
-                "max_delta_v": 64,
-                "max_states": 64,
-                "max_full_runs": 8,
+                "max_delta_s": 110,
+                "max_delta_v": 110,
+                "max_full_runs": 12,
                 "min_stable_states": 2,
+                "max_parents": 5,
                 "time_budget_ms": 40
             }
         }

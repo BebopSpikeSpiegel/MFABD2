@@ -1,8 +1,14 @@
 """RedDotDetector 严格 HSV 救援的纯算法工具。
 
 本模块不依赖 MaaFramework，也不负责识别副作用。它只处理：
-参数校验、严格 HSV profile、拓扑事件状态、父子 lineage 与跨状态稳定选择。
+参数校验、严格 HSV profile、切点计算、父块排序、父子 lineage 与跨档稳定选择。
 运行时和离线回放共用这里，避免出现两套救援算法。
+
+设计要点见 doc/agent/RedDotDetector/RedDotDetector_v3救援实施计划.md：
+  · 切点由被卡住的父块自身颜色分布**算出**（Otsu），不枚举参数空间；
+  · 亮度/饱和度两个维度都保留，三个方向（只切亮度/只切饱和/双切）先各跑一次主档，
+    位置一致才选增量最小者补跑陪跑档 —— 避免三组各自成稳定分量而互判歧义；
+  · 代码中不得出现来自样本的阈值常数，max_delta_* 只作安全护栏，不是工作点。
 """
 
 from __future__ import annotations
@@ -16,24 +22,31 @@ import numpy as np
 
 DEFAULT_RESCUE_CONFIG: Dict[str, Any] = {
     "mode": "off",
-    "max_delta_s": 48,
-    "max_delta_v": 64,
-    "max_states": 64,
-    "max_full_runs": 8,
+    "max_delta_s": 110,     # 护栏，非工作点
+    "max_delta_v": 110,     # 护栏，非工作点
+    "max_full_runs": 12,
     "min_stable_states": 2,
+    "max_parents": 5,
     "time_budget_ms": 40,
 }
 
 _MODES = {"off", "shadow", "active"}
 
+# 已废弃的配置键：出现时忽略而非报错，避免旧 pipeline 直接 fail closed。
+_OBSOLETE_KEYS = ("max_states",)
 
-class TopologyStates(list):
-    """携带状态空间是否因 max_states 被截断的信息。"""
+# 陪跑档与主档的间距 = 主档增量 × 该比例（下限 2）。这是"邻域"的定义，
+# 是结构参数而非从样本量出的工作点：无论界面怎么变，10% 的扰动都算相邻。
+_NEIGHBOR_RATIO = 0.10
+_NEIGHBOR_MIN_STEP = 2
 
-    def __init__(self, values=(), *, truncated=False, total=0):
-        super().__init__(values)
-        self.truncated = bool(truncated)
-        self.total = int(total)
+# 三个切法的尝试顺序。仅影响预算消耗先后，不影响判定：
+# 位置一致时取增量最小者，位置分散时一律拒绝，与顺序无关。
+DIRECTIONS = ("亮度", "饱和", "双切")
+
+# 主档在 (si, vi) 网格里的落点。同方向的 3 档 vi 相邻(差1)，
+# 不同方向 si 相隔 10 —— 保证 select_stable_winner 的 _adjacent 永不跨方向连通。
+_DIRECTION_SI = {"亮度": 0, "饱和": 10, "双切": 20}
 
 
 def normalize_rescue_config(raw: Any) -> Tuple[Dict[str, Any], Optional[str]]:
@@ -46,33 +59,33 @@ def normalize_rescue_config(raw: Any) -> Tuple[Dict[str, Any], Optional[str]]:
 
     cfg = dict(DEFAULT_RESCUE_CONFIG)
     cfg.update(raw)
+    for key in _OBSOLETE_KEYS:      # 旧 pipeline 残留键：忽略，不因此关闭救援
+        cfg.pop(key, None)
     try:
         cfg["mode"] = str(cfg["mode"]).strip().lower()
         if cfg["mode"] not in _MODES:
             raise ValueError("mode 仅支持 off/shadow/active")
 
-        for key in ("max_delta_s", "max_delta_v", "max_states",
-                    "max_full_runs", "min_stable_states", "time_budget_ms"):
+        for key in ("max_delta_s", "max_delta_v", "max_full_runs",
+                    "min_stable_states", "max_parents", "time_budget_ms"):
             cfg[key] = int(cfg[key])
 
         if cfg["max_delta_s"] <= 0 or cfg["max_delta_v"] <= 0:
             raise ValueError("max_delta_s/v 必须 > 0")
-        if cfg["max_states"] < 2:
-            raise ValueError("max_states 必须 >= 2")
-        if cfg["max_states"] < cfg["min_stable_states"]:
-            raise ValueError("max_states 必须 >= min_stable_states")
         if cfg["max_full_runs"] < cfg["min_stable_states"]:
             raise ValueError("max_full_runs 必须 >= min_stable_states")
         if cfg["min_stable_states"] < 2:
             raise ValueError("min_stable_states 必须 >= 2")
+        if cfg["max_parents"] < 1:
+            raise ValueError("max_parents 必须 >= 1")
         if cfg["time_budget_ms"] <= 0:
             raise ValueError("time_budget_ms 必须 > 0")
         if cfg["max_delta_s"] > 115 or cfg["max_delta_v"] > 135:
             raise ValueError("max_delta_s/v 超过安全上限")
-        if cfg["max_states"] > 256:
-            raise ValueError("max_states 超过安全上限 256")
         if cfg["max_full_runs"] > 32:
             raise ValueError("max_full_runs 超过安全上限 32")
+        if cfg["max_parents"] > 16:
+            raise ValueError("max_parents 超过安全上限 16")
         if cfg["time_budget_ms"] > 2000:
             raise ValueError("time_budget_ms 超过安全上限 2000")
     except (TypeError, ValueError) as exc:
@@ -120,63 +133,142 @@ def mask_digest(mask: np.ndarray) -> str:
     return hashlib.sha1(np.ascontiguousarray(mask).view(np.uint8)).hexdigest()
 
 
-def _events(values: np.ndarray, bases: Iterable[int], maximum: int) -> List[int]:
-    events = {0}
-    if values.size == 0:
-        return [0]
-    for base in bases:
-        margins = values.astype(np.int16) - int(base) + 1
-        for value in np.unique(margins):
-            ivalue = int(value)
-            if 0 < ivalue <= maximum:
-                events.add(ivalue)
-    return sorted(events)
+def otsu_threshold(values: np.ndarray) -> Optional[int]:
+    """大津法：在 0~255 上找使类间方差最大的切点，返回 t（>=t 归为"亮/饱和"的一类）。
+
+    不需要任何预设数值，切点完全由这一堆像素自己的分布决定 —— 这是"泛用"的前提。
+    已知失效条件：两类像素数悬殊会偏向大类；本来单峰时它照样给值。
+    因此切点只是候选，是否采纳由后续完整检测链与跨档复现决定，不在这里下结论。
+    """
+    v = np.asarray(values, dtype=np.int64).ravel()
+    if v.size < 8:
+        return None
+    hist = np.bincount(v, minlength=256).astype(np.float64)
+    total = hist.sum()
+    if total <= 0:
+        return None
+    prob = hist / total
+    idx = np.arange(256, dtype=np.float64)
+    omega = np.cumsum(prob)
+    mu = np.cumsum(prob * idx)
+    mu_total = mu[-1]
+    denom = omega * (1.0 - omega)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        sigma_b = (mu_total * omega - mu) ** 2 / denom
+    sigma_b[~np.isfinite(sigma_b)] = -1.0
+    if float(sigma_b.max()) <= 0.0:
+        return None                      # 完全没有可切之处（常量分布）
+    return int(np.argmax(sigma_b)) + 1
 
 
-def build_topology_states(
-    hsv_np: np.ndarray,
-    eligible_mask: np.ndarray,
-    ranges: Sequence[dict],
-    config: Dict[str, Any],
-) -> List[Dict[str, int]]:
-    """从父 blob 实际 S/V 值生成有界二维拓扑事件状态。"""
-    pixels = hsv_np[eligible_mask]
-    if pixels.size == 0:
-        return []
+def quantile_threshold(values: np.ndarray, q: float) -> Optional[int]:
+    """分位数切点。与 Otsu 相互独立，仅用于交叉验证定点是否可信，不参与判定。"""
+    v = np.asarray(values, dtype=np.int64).ravel()
+    if v.size < 8:
+        return None
+    return int(np.percentile(v, q))
 
-    s_bases, v_bases = [], []
+
+def _channel_base(ranges: Sequence[dict], index: int) -> Optional[int]:
+    """取各红色组在该通道上最松的 lower（收紧以它为基准，保证是严格子集）。"""
+    lows = []
     for item in ranges:
         lower = item.get("lower") or item.get("lower_hsv")
         if isinstance(lower, (list, tuple)) and len(lower) == 3:
-            s_bases.append(int(lower[1]))
-            v_bases.append(int(lower[2]))
-    if not s_bases:
-        return []
+            lows.append(int(lower[index]))
+    return min(lows) if lows else None
 
-    s_events = _events(pixels[:, 1], s_bases, config["max_delta_s"])
-    v_events = _events(pixels[:, 2], v_bases, config["max_delta_v"])
-    max_s = max(1, config["max_delta_s"])
-    max_v = max(1, config["max_delta_v"])
 
-    states = []
-    for si, ds in enumerate(s_events):
-        for vi, dv in enumerate(v_events):
-            if ds == 0 and dv == 0:
-                continue
-            # 先试最小的归一化收紧，再用总增量保证确定性。
-            cost = max(ds / max_s, dv / max_v)
-            states.append({
-                "si": si, "vi": vi, "delta_s": ds, "delta_v": dv,
-                "_cost": cost,
-            })
-    states.sort(key=lambda x: (x["_cost"], x["delta_s"] + x["delta_v"],
-                               x["delta_s"], x["delta_v"]))
-    total = len(states)
-    truncated = total > config["max_states"]
-    states = states[:config["max_states"]]
-    for state in states:
-        state.pop("_cost", None)
-    return TopologyStates(states, truncated=truncated, total=total)
+def channel_cutpoints(parent_pixels: np.ndarray,
+                      ranges: Sequence[dict],
+                      config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """对一个父块算出两个通道的切点与收紧增量，附 Otsu 与分位数的分歧度。
+
+    返回结构直接进回传字段 `救援.切点`，无需二次加工。
+    """
+    px = np.asarray(parent_pixels)
+    if px.ndim != 2 or px.shape[0] < 8 or px.shape[1] < 3:
+        return None
+    s_base = _channel_base(ranges, 1)
+    v_base = _channel_base(ranges, 2)
+    if s_base is None or v_base is None:
+        return None
+
+    out: Dict[str, Any] = {}
+    diverge = []
+    for name, col, base, cap in (("饱和", 1, s_base, config["max_delta_s"]),
+                                 ("亮度", 2, v_base, config["max_delta_v"])):
+        cut = otsu_threshold(px[:, col])
+        qcut = quantile_threshold(px[:, col], 45.0)
+        delta = 0 if cut is None else max(0, min(int(cap), cut - base))
+        out[name] = {"Otsu": cut, "分位": qcut, "基线": base, "增量": delta}
+        if cut is not None and qcut is not None:
+            diverge.append(abs(cut - qcut))
+    out["分歧"] = max(diverge) if diverge else None
+    return out
+
+
+def _neighbor_step(delta: int) -> int:
+    return max(_NEIGHBOR_MIN_STEP, int(round(delta * _NEIGHBOR_RATIO)))
+
+
+def direction_deltas(cutpoints: Dict[str, Any],
+                     direction: str) -> Optional[Tuple[int, int]]:
+    """把切点翻译成某个切法的 (delta_s, delta_v)；无效返回 None。"""
+    ds = int(cutpoints.get("饱和", {}).get("增量") or 0)
+    dv = int(cutpoints.get("亮度", {}).get("增量") or 0)
+    pair = {"亮度": (0, dv), "饱和": (ds, 0), "双切": (ds, dv)}.get(direction)
+    if pair is None or (pair[0] <= 0 and pair[1] <= 0):
+        return None
+    return pair
+
+
+def neighbor_states(direction: str, delta_s: int, delta_v: int,
+                    config: Dict[str, Any]) -> List[Dict[str, int]]:
+    """主档 + 上下两个陪跑档，落在同一 si 上、vi 相邻，供跨档复现判定。
+
+    陪跑档间距按主档增量的比例取，不引入绝对常数；越界或非正的档位自动剔除。
+    """
+    si = _DIRECTION_SI.get(direction, 0)
+    step = _neighbor_step(max(delta_s, delta_v))
+    cap_s, cap_v = config["max_delta_s"], config["max_delta_v"]
+    out = []
+    for vi, mult in ((0, -1), (1, 0), (2, 1)):
+        ns = delta_s + step * mult if delta_s > 0 else 0
+        nv = delta_v + step * mult if delta_v > 0 else 0
+        if (delta_s > 0 and not (0 < ns <= cap_s)) or \
+           (delta_v > 0 and not (0 < nv <= cap_v)):
+            continue
+        if ns <= 0 and nv <= 0:
+            continue
+        out.append({"si": si, "vi": vi, "delta_s": int(ns), "delta_v": int(nv)})
+    return out
+
+
+def sort_parents(parents: Sequence[dict]) -> List[dict]:
+    """按"像不像红点"排先后：短边降序，短边相同按面积降序。零参数，只排序不过滤。
+
+    真红点近似圆/菱形，短边与长边同量级；卡片上的杂红多是细横条或细竖条，短边很小。
+    实测 boss-adb 5 个被拒块中正主排第 1，boss-pc 3 个中正主并列第 1。
+    """
+    def key(p):
+        short = min(int(p.get("w", 0)), int(p.get("h", 0)))
+        return (-short, -int(p.get("area", 0)), int(p.get("label", 0)))
+    return sorted(parents, key=key)
+
+
+def boxes_agree(boxes: Sequence[Sequence[int]], min_iou: float = 0.5,
+                max_center_shift: float = 2.5) -> bool:
+    """多个切法命中的框是否指向同一处。分散即视为方向歧义，一律拒绝。"""
+    if len(boxes) <= 1:
+        return True
+    first = boxes[0]
+    for other in boxes[1:]:
+        if _box_iou(first, other) < min_iou:
+            return False
+        if _center_distance(first, other) > max_center_shift:
+            return False
+    return True
 
 
 def lineage_parent(
