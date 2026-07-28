@@ -1,4 +1,4 @@
-"""只读回放 RedDotDetector_samples/samples.jsonl。
+"""只读回放 RedDotDetector_samples 的台账(samples.jsonl.log，兼容旧名 samples.jsonl)。
 
 运行示例（从仓库根目录）：
     python agent/recognition/replay_rdd_samples.py assets/debug/RedDotDetector_samples
@@ -25,6 +25,25 @@ from recognition.binarymatch import (  # noqa: E402
     _FLT_ASPECT_DEFAULT,
 )
 from recognition.rdd_hsv_rescue import normalize_rescue_config  # noqa: E402
+from recognition.rdd_sampler import MANIFEST_NAMES  # noqa: E402
+
+
+def _load_entries(sample_dir):
+    """读齐目录内所有台账。旧名在前(产生更早)，同目录两名并存时合并而非二选一。"""
+    entries, used = [], []
+    for name in reversed(MANIFEST_NAMES):
+        path = os.path.join(sample_dir, name)
+        if not os.path.isfile(path):
+            continue
+        with open(path, "r", encoding="utf-8") as stream:
+            rows = [json.loads(line) for line in stream if line.strip()]
+        entries.extend(rows)
+        used.append(f"{name}({len(rows)})")
+    if not used:
+        raise SystemExit(
+            f"{sample_dir} 下没有台账，找过：{'、'.join(MANIFEST_NAMES)}")
+    print(f"台账：{'、'.join(used)}", file=sys.stderr)
+    return entries
 
 
 def _load_crop(path):
@@ -49,15 +68,13 @@ def _expected_local(entry):
 
 
 def replay(sample_dir, rescue=False, expected_rescue_nodes=()):
-    manifest = os.path.join(sample_dir, "samples.jsonl")
     detector = RedDotDetector()
     total = parity = box_parity = rescue_stable = rescue_trigger = 0
     rescue_checks = rescue_pass = skipped_no_crop = 0
     checked_rescue_nodes = set()
     mismatches = []
 
-    with open(manifest, "r", encoding="utf-8") as stream:
-        entries = [json.loads(line) for line in stream if line.strip()]
+    entries = _load_entries(sample_dir)
 
     fallback_rescue = {
         "mode": "shadow",
