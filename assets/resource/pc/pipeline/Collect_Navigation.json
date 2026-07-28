@@ -4,7 +4,7 @@
         "count": 3
     },
     "Collect_ClickTelepor_Abnormal_Overlap": {
-        "desc": "区域地图内点选重叠传送阵。|[PC覆盖·2026-07-27实录] 仅补 on_error,base 的识别/动作/next 全继承。实录(22:14:22~22:20:19):本节点每轮 Action.Succeeded(点击确实落下),但 5s 后 next 三候选(Collect_Skill_Start / Collect_ClickTelepor_TargetClass_White / [JumpBack]Global_WaitingForLoading)全 miss,约 25s 超时后因无自定义 on_error→走 MFA 默认 Global_Null 兜底(恒中且 next 空)→子任务结束→调用方 Collect_TargetMap* 的 next 再次选中本节点→**无声空转 7 轮共 6 分钟**,期间三次'探查'施放全部白费。挂 max_hit 2 的重试垫封顶:两次内先退出区域地图、把判定权交回上层,耗尽后不再命中→on_error 全 miss→流程以 FAILED 终止且 GUI 可见(自定义 on_error 覆盖默认 Null 兜底,MFA #1219 语义)。注:本节点属通用箱庭导航(Collect_TargetMap1-2/2/3/4 共用),故退路只用通用返回键,不写入任何业务链专属节点。",
+        "desc": "区域地图内点选重叠传送阵。|[PC覆盖·2026-07-27实录] 仅补 on_error,base 的识别/动作/next 全继承。实录(22:14:22~22:19:55,约27s/轮共12轮近6分钟):本节点每轮 Action.Succeeded(点击确实落下),多数轮 next 三候选(Collect_Skill_Start / Collect_ClickTelepor_TargetClass_White / [JumpBack]Global_WaitingForLoading)全 miss,约25s超时后因无自定义 on_error→走 MFA 默认 Global_Null 兜底(恒中且 next 空)→子任务结束→调用方 Collect_TargetMap* 的 next 再次选中本节点;另有3轮命中 Collect_Skill_Start(其中2次完成探查施放)后仍回到同一循环。挂 max_hit 2 的重试垫封顶:两次内先退出区域地图、把判定权交回上层,耗尽后不再命中→on_error 全 miss→流程以 FAILED 终止且 GUI 可见(自定义 on_error 覆盖默认 Null 兜底,MFA #1219 语义)。注:本节点属通用箱庭导航(Collect_TargetMap1-2/2/3/4 共用),故退路只用通用返回键,不写入任何业务链专属节点。",
         "on_error": [
             "Collect_Telepor_Retry_PC"
         ]

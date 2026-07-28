@@ -25,7 +25,7 @@
         "focus": "Arb.PC.插入PACK5卡带进箱庭"
     },
     "Arbitrage_OperationsMain_Sandplay": {
-        "desc": "[PC覆盖·2026-07-23] 仅补on_error(base的Or识别/any_of/next/anchor全继承):箱庭确认命中后,next的找商人/传送导航候选若全miss(10:19实录:SeeMerchant旧模板0.588),20s超时无自定义on_error→MFA默认Global_Null兜底→流程SUCCEEDED假成功。挂同一重试垫,2次内整链重试,仍败则响亮失败。|[07-29二修·直开寻路] 找商人四连失手根因=小地图未探明(灰底零POI,SeeMerchant的0.65~0.70全是灰箭头杂分),而SeeMerchant命中后干的事就是点寻路按钮=纯守门员,守的恰是不可靠的探明状态。PC覆盖next(base+SeeMerchant后插Arbitrage_NviGuide_Butt):寻路按钮不依赖探明(00:44失败帧实测0.898>阈0.7),直接开列表OCR商店;SeeMerchant命中时走原路等价,传送链留更后作fallback。前提假设=未探明时寻路列表仍列出商店,若假设错Merchant_Ocr会miss退回现状(已配套挂on_error防静默)。",
+        "desc": "[PC覆盖·2026-07-23] 仅补on_error(base的Or识别/any_of/next/anchor全继承):箱庭确认命中后,next的找商人/传送导航候选若全miss(10:19实录:SeeMerchant旧模板0.588),20s超时无自定义on_error→MFA默认Global_Null兜底→流程SUCCEEDED假成功。挂同一重试垫,2次内整链重试,仍败则响亮失败。|[07-29二修·直开寻路] 找商人三场任务失手(含重试6+轮)根因=小地图未探明(灰底零POI,SeeMerchant的0.65~0.70全是灰箭头杂分),而SeeMerchant命中后干的事就是点寻路按钮=纯守门员,守的恰是不可靠的探明状态。PC覆盖next(base+SeeMerchant后插Arbitrage_NviGuide_Butt):寻路按钮不依赖探明(00:44失败帧实测0.898>阈0.7),直接开列表OCR商店;SeeMerchant命中时走原路等价,传送链留更后作fallback。前提假设=未探明时寻路列表仍列出商店,若假设错Merchant_Ocr会miss退回现状(已配套挂on_error防静默)。",
         "on_error": [
             "Arbitrage_Chain_Retry_PC"
         ],
@@ -82,7 +82,7 @@
             292,
             301
         ],
-        "desc": "寻路列表OCR找商店。|[PC覆盖·2026-07-29] 补on_error:直开寻路腿落地后,若列表打开但无商店条目(图无商店/机制假设失效),本节点next轮询超时会走MFA默认Null兜底=假成功;挂同一重试垫整链重试,耗尽则响亮FAILED。roi为07-13实测PC值。",
+        "desc": "寻路列表OCR找商店。|[PC覆盖·2026-07-29] 补on_error:防的是「已点中商店后」next三候选(CKMsgBox确认框/行路循环/商人图标)全丢的断头——该场景原走MFA默认Null兜底=假成功,现挂重试垫整链重试、耗尽则响亮FAILED。注意on_error只在本节点已命中后触发,防不了「列表里无商店条目」(那时本节点恒miss不会成为当前节点,裸奔的是NviGuide_Butt自引用循环);该场景未加固=跑商固定进PACK5图必有商店+2026-07-29实证未探明态列表仍列商店,实际不可达,不为理论口子引入未实测覆盖。roi为07-13实测PC值。",
         "on_error": [
             "Arbitrage_Chain_Retry_PC"
         ]
