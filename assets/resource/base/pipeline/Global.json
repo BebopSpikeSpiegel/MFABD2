@@ -316,6 +316,15 @@
             1111,
             650
         ],
+        "post_wait_freezes": {
+            "time": 300,
+            "target": [
+                364,
+                13,
+                587,
+                73
+            ]
+        },
         "post_delay": 3000,
         "next": [
             "Global_BackToPve_CardMenu_Tp1",

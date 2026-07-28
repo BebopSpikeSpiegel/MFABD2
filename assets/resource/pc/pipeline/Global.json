@@ -1,4 +1,12 @@
 {
+    "Global_HomeButton_Once": {
+        "desc": "点击一次主页面图标。|[PC覆盖·2026-07-19] 追加竞技场准备界面右上Home药丸图标模板(Or语义,base两张保留):复位链被'返回战场'挂起块劫持进竞技场后,base安卓模板在该界面仅0.435/0.555<0.7全miss→逃生链断裂,20s超时任务死。MainHome_ArenaPrep_PC.png 26x26从07-18 19:51:53尸检帧裁,自匹配1.000/次日竞技场帧交叉0.847@(1184,27)/主页负样本0.366/图鉴负样本-0.044。与气泡守卫构成自愈组合:误入竞技场→无人抢答→本节点认出Home→点击回箱庭→链条重试。",
+        "template": [
+            "MainHomeIceGE.png",
+            "MainHomeRIceGE.png",
+            "MainHome_ArenaPrep_PC.png"
+        ]
+    },
     "Global_BackPageHub_Once": {
         "desc": "其他页面,返回按钮(一次性)。|[PC覆盖] 【2026-07-03实机】PC抽卡商店页(服装抽抽乐)左上返回箭头为暗色胶囊条细线'<'样式,base三张安卓模板实跑分仅0.14~0.25<阈0.7全miss→一键速抽后Global_ToHomePage回主页8s超时Exception,AREA2#装备池永远轮不到(装备免费抽漏抽根因)。从PC 720实帧裁BackBut_DarkCapsule_PC.png(36x32,自匹配0.0)追加进列表(Or语义,不影响其他页);base三张保留兼容其余页面。green_mask沿用(新模板无绿区不受影响)。|【2026-07-14实录】复发变体:PC点击后鼠标光标停驻在按钮正中,Win32截图带光标→模板区被光标箭头污染,干净模板0.98骤降0.654~0.686<0.7连miss(08:56:52~08:57:00逐秒实测)→回家链再死→装备池再漏。从当日on_error帧(08.57.00.307)裁同框'按钮+停驻光标'态BackBut_DarkCapsule_PC2.png(36x32,污染帧自匹配1.0)再追加;光标由点击落点决定,位置确定性强。",
         "template": [
@@ -23,7 +31,44 @@
         ],
         "focus": "G=1.餐馆场景,点Home退出"
     },
+    "Global_BackToPve_Anc": {
+        "desc": "【传统卡带识别链-标准入口】|[PC覆盖·2026-07-21] next前插段位结算弹窗确认(见Global_RankSettleModal_Confirm)。Anc是DirectHit纯路由节点,每轮复位必经→弹窗在则先OCR命中点确认、JumpBack回起点重走复位;弹窗不在则miss,照常走ToCardMenu。只前插一个识别分支,不碰锚点BackToPack逻辑。",
+        "next": [
+            "[JumpBack]Global_RankSettleModal_Confirm",
+            "Global_BackToPve_ToCardMenu",
+            "[JumpBack]Global_HomeButton_Once",
+            "[JumpBack]Global_WaitingForLoading"
+        ]
+    },
+    "Global_BackToPve_ToCardMenu": {
+        "desc": "[PC覆盖·2026-07-23] 防双击轮盘赌:base无post_delay,点击(1111,650)后~0.5s即复查Tp1,开卡集动画~1.2s实测必miss→~0.8s后二次点击。07-23 08:36实锤:首击已开卡集(Tp1隔帧0.951命中),次击压中右下挂起会话块→关卡集转进黄金竞技场。post_delay 2000让首击结果渲染完再复查;next整组重写=base两项+弹窗接手+竞技场逃生(它自己在异常场景超时也不再漏进Null假成功,on_error挂重试垫)。",
+        "target": [
+            1174,
+            650,
+            1,
+            1
+        ],
+        "post_wait_freezes": {
+            "target": [
+                364,
+                13,
+                587,
+                59
+            ]
+        },
+        "next": [
+            "Global_BackToPve_CardMenu_Tp1",
+            "[JumpBack]StartGame_Special",
+            "[JumpBack]Global_RankSettleModal_Confirm",
+            "Global_BackToPve_ToCardMenu"
+        ],
+        "on_error": [
+            "Global_ArenaEscape_PC",
+            "Global_ResetChain_Retry_PC"
+        ]
+    },
     "Global_BackToPve_CardMenu_Tp1": {
+        "desc": "判断在传统卡带界面。|[PC覆盖·2026-07-22] next 首位前插 Global_ArenaEscape_PC(误入竞技场逃生),base 原有三项原样保留在后。|[07-23] 再前插[JumpBack]StartGame_Special:竞技场里可叠赛季结算弹窗(黄金竞技场体验赛季奖励,#393场景,08:36 on_error帧实拍),全屏模态盖住Home药丸→ArenaEscape 21秒全miss是遮挡所致非模板问题;StartGame_Special(base已适配该弹窗,点(39,444)左缘安全区消除)先消弹窗,JumpBack回本循环后ArenaEscape接手。RankSettleModal_Confirm同插:劫持后若弹的是段位弹窗(带居中'确认',今晨08:26 PVP段实弹过)则由它接——该识别器原只挂Anc层,进Tp1子循环后不可达。on_error挂重试垫堵死默认Null假成功出口。",
         "roi": [
             150,
             4,
@@ -33,6 +78,17 @@
         "expected": [
             "游戏卡珍藏集",
             "^遊戲卡.收藏集"
+        ],
+        "next": [
+            "[JumpBack]StartGame_Special",
+            "[JumpBack]Global_RankSettleModal_Confirm",
+            "Global_ArenaEscape_PC",
+            "[JumpBack]Global_CardMenu_RewardBubble_TurnOFF",
+            "Global_BackToPve_CardMenu_Tp2",
+            "[JumpBack]Global_BackToPve_PVEBookSwipe"
+        ],
+        "on_error": [
+            "Global_ResetChain_Retry_PC"
         ]
     },
     "Global_BackToPve_CardMenu_Tp2": {
@@ -91,6 +147,37 @@
             254,
             377,
             214
+        ]
+    },
+    "Global_CardMenu_RewardBubble_TurnOFF": {
+        "desc": "检查QC,卡带奖励气泡,若黄则点击关闭。|[PC覆盖·2026-07-19] And追加'游戏卡珍藏集'标题OCR守卫(第三成员,尾插不改And box=首子项即点击落点):base裸判定=[1098,35,44,10]数黄像素>=10,竞技场准备界面右上阵形/补充次数面板实测53黄px假阳性(07-18 19:51实录)→复位链误入竞技场后本节点每轮抢答点(1122,42)空点25s,压制链条自带的HomeButton逃生,套利整任务静默零执行。守卫roi/expected与Tp1同源,气泡开关在右上与左上标题互不遮挡。",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "ColorMatch",
+                "roi": [
+                    1098,
+                    35,
+                    44,
+                    10
+                ],
+                "lower": [
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ],
+                "upper": [
+                    [
+                        255,
+                        255,
+                        255
+                    ]
+                ]
+            },
+            "Sub_SieveExpand_Yew_Clr",
+            "Global_BackToPve_CardMenu_Tp1"
         ]
     },
     "Global_BackToQC_StoryCor": {
@@ -189,11 +276,16 @@
         "count": 100
     },
     "Rec_SandBox_Pin_Tpl": {
+        "desc": "[PC覆盖·07-23追加] 商队城镇(PACK5)PC快捷栏重排:安卓pin.png在城镇箱庭实测0.604<0.7恒miss→Arbitrage_OperationsMain_Sandplay(Or pin/Run)双腿全断→Card5#_Goin超时走默认Null假成功,套利在正确卡带里'找不到商人'静默停(07-23 09:06/09:14两轮实录)。pin_PC_town.png从09:06 on_error帧(1199,660,30,28)裁,离线验:自match 1.000/09:14交叉1.000/主页负样0.307/竞技场负样0.448。Or语义追加,故事箱庭里原pin.png继续工作。",
         "roi": [
             1090,
             646,
             148,
             55
+        ],
+        "template": [
+            "pin.png",
+            "pin_PC_town.png"
         ],
         "green_mask": true
     },
@@ -259,6 +351,39 @@
             "格魯菲餐廳"
         ]
     },
+    "Global_ArenaEscape_PC": {
+        "desc": "[PC新增·2026-07-22] 复位链误入竞技场准备界面的逃生口。触发路径:主页右下QC区在竞技场会话挂起时会多出'返回战场'与'游戏中'两块(#394),base Global_BackToPve_ToCardMenu 的固定 target(1111,650)正落在'游戏中'卡带块上→点下去回到竞技场准备界面(07-18 19:51 / 07-22 10:14 两次实录),此后复位链所有识别在该界面全 miss 空转至超时,套利整任务静默 SUCCEEDED。|挂点说明:PR#396 曾把 Home 逃生挂在 Global_BackToPve_Anc.next,但链条一旦进入 CardMenu_Tp1 的 JumpBack 子循环,候选集就固定为{Tp1,RewardBubble,Tp2,PVEBookSwipe}再不回 Anc 层——07-22 实录 23 秒内 HomeButton_Once 一次都没被评估。故本节点改挂 Tp1.next 首位,进入真正在轮询的候选集。|模板 MainHome_ArenaPrep_PC.png 为竞技场准备界面右上 Home 药丸(07-18 尸检帧裁,自匹配1.000/次日竞技场帧0.847/主页负样本0.366/图鉴页-0.04),阈0.75 两侧余量充足,珍藏集正常态不误伤。max_hit:3 防止挂起会话未清导致'逃生→再误入'无限循环。",
+        "max_hit": 3,
+        "recognition": "TemplateMatch",
+        "roi": [
+            1132,
+            4,
+            122,
+            77
+        ],
+        "template": [
+            "MainHome_ArenaPrep_PC.png"
+        ],
+        "threshold": [
+            0.75
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "[JumpBack]Global_WaitingForLoading",
+            "Global_BackToPve_Anc"
+        ],
+        "focus": "G=1.误入竞技场,点Home逃生"
+    },
+    "Global_ResetChain_Retry_PC": {
+        "desc": "[PC新增·2026-07-23] 复位链超时救援垫。08:36实锤:Tp1的next耗尽20s超时后无自定义on_error→MFA默认Global_Null兜底恒命中且next空→流程以SUCCEEDED结束——竞技场劫持被翻译成'任务完成',买货零执行仍报成功。本节点DirectHit恒中,整链重回Anc再试;max_hit 2耗尽后不再命中→on_error全miss→流程以失败终止,GUI可见,绝不再假成功(自定义on_error覆盖默认Null兜底,MFA #1219语义)。",
+        "max_hit": 2,
+        "post_delay": 1000,
+        "next": [
+            "Global_BackToPve_Anc"
+        ],
+        "focus": "G=1.复位链超时!重回Anc整链重试"
+    },
     "Global_BackToPve2#_CardMenu": {
         "recognition": "DirectHit",
         "roi": [
@@ -306,6 +431,21 @@
             112,
             34
         ]
+    },
+    "Global_RankSettleModal_Confirm": {
+        "desc": "[PC新增·2026-07-21] 竞技场段位结算弹窗(段位下滑/晋升)确认。竞技场打完只要段位有变动即弹,非赛季一次性事件(07-20蓝宝石I/07-21蓝宝石II连日实录)。base StartGame_SeasonSet(挂在ToHomePage的on_error兜底)OCR roi[781,520,325,84]只罩赛季更新弹窗右下'开始游戏'按钮,而段位弹窗的'确认'在正中央下方(约640,670)完全在其roi之外→漏接→复位链在此全屏modal上所有识别(Tp1游戏卡珍藏集标题/Tp2店长游戏卡/PVEBookSwipe翻书)全miss空转至超时,套利进图失败、整任务静默SUCCEEDED(07-18/07-20/07-21连三次29秒速通,商人/购买/出售全没跑)。本节点OCR居中确认按钮并点命中框中心;roi[500,640,280,60]经蓝宝石I/II两帧渲染验证稳罩'确认'两字,正常主页/珍藏集该位置无按钮故不误伤。",
+        "recognition": "OCR",
+        "roi": [
+            500,
+            640,
+            280,
+            60
+        ],
+        "expected": [
+            "确认",
+            "確認"
+        ],
+        "action": "Click"
     },
     "Rec_「Global_WaitingForLoading」_05": {
         "desc": "[识别]转场等待03,大色块-黑"

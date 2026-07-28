@@ -39,7 +39,18 @@
             "red_area": [
                 30,
                 1200
-            ]
+            ],
+            "sc_min_conf": 0.55,
+            "sc_gap_ratio": 0.35,
+            "flt_hsv_rescue": {
+                "mode": "shadow",
+                "max_delta_s": 110,
+                "max_delta_v": 110,
+                "max_full_runs": 12,
+                "min_stable_states": 2,
+                "max_parents": 5,
+                "time_budget_ms": 40
+            }
         }
     }
 }
