@@ -11,8 +11,8 @@
     },
     "Collect_Telepor_Retry_PC": {
         "desc": "[PC新增·2026-07-27] 区域地图选点空转救援垫。同 Global_ResetChain_Retry_PC / Arbitrage_Chain_Retry_PC 哲学:无自定义 on_error 的节点超时会走 MFA 默认 Global_Null 兜底,表现为无声空转或假成功。本节点 DirectHit 恒中,先点通用返回键退出区域地图,把控制权交回上层链重新判定(跑商侧即可重新评估 Arbitrage_Sandplay_SeeMerchant——'探查'揭示地图后原本没有任何路径回去重评,这正是 07-27 空转 6 分钟的放大器);max_hit 2 耗尽后不再命中→流程以失败终止,绝不再无声空转。",
-        "recognition": "DirectHit",
         "max_hit": 2,
+        "recognition": "DirectHit",
         "post_delay": 1000,
         "next": [
             "[JumpBack]Global_BackPageHub_Once"
