@@ -159,7 +159,8 @@
             "[JumpBack]Global_HomeButton_Once",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ]
+        ],
+        "focus": "GO.复位到主菜单-开始"
     },
     "Global_ToHomePage_HomeButton": {
         "desc": "找到run-点击返回主页",
@@ -221,10 +222,11 @@
         "all_of": [
             "Rec_HomePage_GA_Ocr",
             "Rec_HomePage_GA_Clr"
-        ]
+        ],
+        "focus": "GO.复位到主菜单-已确认"
     },
     "Global_ToSandBox": {
-        "desc": "[通用复位]复位到主界面模块,开始,中继调用",
+        "desc": "[通用复位]复位到箱庭模块,开始,中继调用",
         "recognition": "Or",
         "any_of": ["Global_ToSandBox_Enter"],
         "inverse": true,
@@ -244,7 +246,8 @@
             "[JumpBack]Global_ToHomePage_Crash",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ]
+        ],
+        "focus": "GO.复位到箱庭-开始"
     },
     "Global_ToSandBox_Reset": {
         "desc": "其他页面，返回按钮",
@@ -267,7 +270,7 @@
             "Rec_SandBox_Pin_Tpl",
             "Rec_SandBox_Run_Tpl"
         ],
-        "focus": "G.已复位到箱庭"
+        "focus": "GO.复位到箱庭-已确认"
     },
     "Global_BackToPve_1#": {
         "desc": "【传统卡带识别链-预设入口.预设pve1#】",
