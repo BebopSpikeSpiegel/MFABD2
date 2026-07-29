@@ -2685,28 +2685,20 @@
     "Arbitrage_Cooking_MenuPatch": {
         "desc": "借用setup管路,从技能菜单进入烹饪菜单",
         "action": "Custom",
-        "custom_action": "PatchByRegex",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "rules": [
-                {
-                    "pattern": [
-                        "^Setup_SetSkill_tab3_Ck$"
-                    ],
-                    "patch": {
-                        "next": [
-                            "[JumpBack]Setup_SetSkill_tab3_ReLift",
-                            "Arbitrage_Cooking_SetupToSkill",
-                            "[JumpBack]Setup_SetSkill_3-1_Swip"
-                        ]
-                    },
-                    "origin": {
-                        "next": [
-                            "[JumpBack]Setup_SetSkill_tab3_ReLift",
-                            "Setup_SetSkill_tab3_Reset5"
-                        ]
-                    }
-                }
-            ]
+            "target": {
+                "regex": [
+                    "^Setup_SetSkill_tab3_Ck$"
+                ]
+            },
+            "patch": {
+                "next": [
+                    "[JumpBack]Setup_SetSkill_tab3_ReLift",
+                    "Arbitrage_Cooking_SetupToSkill",
+                    "[JumpBack]Setup_SetSkill_3-1_Swip"
+                ]
+            }
         },
         "next": [
             "Setup_SetSkill_Per",
