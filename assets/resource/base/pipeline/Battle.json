@@ -463,17 +463,12 @@
     "QuickHunt_AdventureRouteReBackHuntingGrounds_Patch": {
         "desc": "重回狩猎场,最大max,Py方面操作",
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "QuickHunt_FastBattleMAXTouchHuntingGrounds",
+            "target": "QuickHunt_FastBattleMAXTouchHuntingGrounds",
             "patch": {
                 "expected": [
                     "MAX"
-                ]
-            },
-            "origin": {
-                "expected": [
-                    "MIN"
                 ]
             }
         },
@@ -1221,15 +1216,15 @@
         "focus": "BM.退回打狩猎场"
     },
     "QuickHunt_RiceRecheck_Hunt": {
-        "desc": "#327 兜底续打:先And复核复位正确(防前手异常退出),PatchNode强制覆写航线次数MAX(防'狩猎场MAX/双倍图x1'参数污染),再判当前关双倍图打MAX/切另一关找双倍/两关都无退狩猎场",
+        "desc": "#327 兜底续打:先And复核复位正确(防前手异常退出),PatchPipeline强制覆写航线次数MAX(防'狩猎场MAX/双倍图x1'参数污染),再判当前关双倍图打MAX/切另一关找双倍/两关都无退狩猎场",
         "recognition": "And",
         "all_of": [
             "QuickHunt_CollectMap_Initialize_Out_Ty2"
         ],
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "QuickHunt_FastBattleMAXTouchAdventureRoute",
+            "target": "QuickHunt_FastBattleMAXTouchAdventureRoute",
             "patch": {
                 "expected": [
                     "MAX"
