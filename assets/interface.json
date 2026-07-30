@@ -1399,7 +1399,7 @@
         "亲密度谈心等级筛选": {
             "description": "仅与亲密度等级低于所选阈值的对象谈心。",
             "type": "select",
-            "default_case": "Lv<20",
+            "default_case": "Lv<10",
             "cases": [
                 {
                     "name": "Lv<10",
