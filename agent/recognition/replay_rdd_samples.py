@@ -51,9 +51,9 @@ def _load_entries(sample_dir):
 
 
 def _load_crop(path):
-    rgb = np.array(Image.open(path).convert("RGB"))
-    bgr = rgb[..., ::-1]
-    return np.array(Image.fromarray(bgr[..., ::-1]).convert("HSV"))
+    # 落盘时 rdd_sampler._save_img 已经做过 BGR→RGB，盘上就是真 RGB，
+    # 按 RGB 语义直接转 HSV 即与运行侧一致 —— 别在这里"补"一次 BGR 翻转。
+    return np.array(Image.open(path).convert("RGB").convert("HSV"))
 
 
 def _recorded_rescue(entry):
