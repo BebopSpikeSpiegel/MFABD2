@@ -43,7 +43,7 @@
             "sc_min_conf": 0.55,
             "sc_gap_ratio": 0.35,
             "flt_hsv_rescue": {
-                "mode": "shadow",
+                "mode": "active",
                 "max_delta_s": 110,
                 "max_delta_v": 110,
                 "max_full_runs": 12,
