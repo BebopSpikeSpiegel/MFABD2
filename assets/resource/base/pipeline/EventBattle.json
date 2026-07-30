@@ -1585,10 +1585,10 @@
     "SeasonEvent_ReMamono_Enter": {
         "recognition": "OCR",
         "roi": [
-            825,
-            101,
-            207,
-            141
+            833,
+            132,
+            269,
+            235
         ],
         "expected": ["回归赛季"],
         "action": "Click",
