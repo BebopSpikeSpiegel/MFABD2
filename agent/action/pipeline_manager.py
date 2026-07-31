@@ -169,7 +169,7 @@ class ConfigError(Exception):
 # ------------------------------------------------------------------------------
 # 还原点账本
 # ------------------------------------------------------------------------------
-# 按 (tasker 实例, 任务号) 分桶：运行时改写本就随任务结束失效，账本必须同生共死，
+# 按 (tasker 句柄, 任务号) 分桶：运行时改写本就随任务结束失效，账本必须同生共死，
 # 否则下一个任务还原时会把陈旧的还原点灌进一个根本没被改过的节点。
 # 分桶同时让多账号并行互不串号。
 _LEDGERS: "dict[tuple[int, int], dict[str, dict]]" = {}
@@ -182,9 +182,42 @@ _MISSING = object()
 _ATOMIC_KEYS = frozenset({"custom_action_param", "custom_recognition_param"})
 
 
+_DEGRADED_KEY_WARNED = False
+
+
+def _tasker_key(context: Context) -> int:
+    """tasker 的稳定标识 —— 取框架侧的 C 句柄，不要用 id()。
+
+    binding 每次自定义动作回调都 `Context(c_context)` 新建上下文，而 Context.__init__
+    里又 `Tasker(handle=...)` 新建一个包装对象（maa/context.py::_init_tasker）。
+    `id(context.tasker)` 拿到的只是这个**短命包装**的内存地址：打补丁和还原是两次独立
+    回调，地址通常对不上 —— 还原会查到空账本，打一条 warning 然后静默变成空操作，节点
+    永远停在被改写的状态。顺带地，账本的陈旧桶清理条件也永远匹配不上，_LEDGERS 只增不减。
+
+    `_handle` 是 MaaContextGetTasker 的返回值，即框架侧 tasker 对象的地址，在该 tasker
+    的整个生命周期内恒定，才是真正的身份。它是 binding 的私有属性，但没有等价的公开
+    接口；一旦哪天取不到，下面会退化成单桶并告警，而不是悄悄退回不可靠的 id()。
+    """
+    global _DEGRADED_KEY_WARNED
+    handle = getattr(context.tasker, "_handle", None)
+    # restype 为 c_void_p 时 ctypes 直接给出 int；万一将来包成 ctypes 对象，取 .value
+    handle = getattr(handle, "value", handle)
+    try:
+        key = int(handle or 0)
+    except (TypeError, ValueError):
+        key = 0
+    if not key and not _DEGRADED_KEY_WARNED:
+        _DEGRADED_KEY_WARNED = True
+        utils.mfaalog.warning(
+            "[Py] ⚠️ 取不到 tasker 句柄，还原点账本退化为单桶"
+            "（一实例一 agent 进程下仍安全，多 tasker 共进程才会串号）"
+        )
+    return key
+
+
 def _ledger(context: Context, argv: CustomAction.RunArg) -> dict:
-    tasker_id = id(context.tasker)
-    task_id = getattr(getattr(argv, "task_detail", None), "task_id", 0)
+    tasker_id = _tasker_key(context)
+    task_id = argv.task_detail.task_id
     for stale in [k for k in _LEDGERS if k[0] == tasker_id and k[1] != task_id]:
         del _LEDGERS[stale]
     return _LEDGERS.setdefault((tasker_id, task_id), {})
