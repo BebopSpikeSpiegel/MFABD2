@@ -250,7 +250,8 @@
             "SetSimpleSkip": "Collect_FirstBootPack_To1_Sandbox_Dit"
         },
         "next": [
-            "Collect_QuickCart_SelectType_EventPack"
+            "Collect_QuickCart_SelectType_EventPack",
+            "[JumpBack]Global_QuickCart_SwipTo_2P"
         ]
     },
     "Collect_ManagerPack_SetSimpleSkip": {
