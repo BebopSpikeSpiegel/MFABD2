@@ -569,7 +569,7 @@
         "focus": "Set.检测技能5,通过"
     },
     "Rec_<Setup_SkillScan_Skill5>_Tpl": {
-        "desc": "[识别]'锻造'技能存在",
+        "desc": "[识别]'压制'技能存在",
         "recognition": "TemplateMatch",
         "roi": [
             1140,
@@ -593,8 +593,7 @@
             83
         ],
         "template": [
-            "Binary/Binary_skill5_Nol.png",
-            "Binary/Binary_skill5_Lgt.png"
+            "Binary/Binary_skill5_Nol.png"
         ],
         "green_mask": true,
         "threshold": 0.6
