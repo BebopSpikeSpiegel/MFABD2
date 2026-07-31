@@ -239,6 +239,8 @@
         "post_delay": 2000,
         "next": [
             "Collect_Skill3_3",
+            "Collect_Skill3_5_perOcr",
+            "Collect_Skill3_5",
             "Collect_Skill_TapReset"
         ],
         "focus": "CSB.施放'召集'技能,栏位3-3"
@@ -283,6 +285,8 @@
             "Collect_Skill3_3_perOcr",
             "Collect_Skill3_3_Nothing",
             "Collect_Skill3_3",
+            "Collect_Skill3_5_perOcr",
+            "Collect_Skill3_5",
             "Collect_Skill_TapReset"
         ],
         "focus": "CSB.'吸取'技能已无法使用(OCR耗尽已在Collect_Skill3_2_Depleted判定)"
@@ -318,6 +322,8 @@
         "only_rec": true,
         "timeout": 5000,
         "next": [
+            "Collect_Skill3_5_perOcr",
+            "Collect_Skill3_5",
             "Collect_Skill_TapReset"
         ],
         "focus": "CSB.施放次数已满,栏位3-3"
@@ -337,9 +343,9 @@
         "action": {
             "type": "Custom",
             "param": {
-                "custom_action": "PatchNode",
+                "custom_action": "PatchPipeline",
                 "custom_action_param": {
-                    "node": "Collect_Skill3_3",
+                    "target": "Collect_Skill3_3",
                     "patch": {
                         "max_hit": 1,
                         "next": "Collect_Skill_KillFocus"
@@ -370,6 +376,8 @@
         ],
         "timeout": 8000,
         "next": [
+            "Collect_Skill3_5_perOcr",
+            "Collect_Skill3_5",
             "Collect_Skill_TapReset"
         ],
         "focus": "CSB.无技能被设置，栏位3-3"
@@ -432,5 +440,70 @@
     "Collect_Skill_KillFocus": {
         "action": "StopTask",
         "focus": "CM.S. 技能配置不足-结束流程"
+    },
+    "Collect_Skill3_5_perOcr": {
+        "desc": "当3/3左边捕获与右边相同时,必定用完次数",
+        "recognition": "OCR",
+        "roi": [
+            1149,
+            491,
+            55,
+            29
+        ],
+        "expected": [
+            "(\\d+)\\s*[/:：|\\-~]?\\s*\\1(?!\\d)"
+        ],
+        "only_rec": true,
+        "timeout": 5000,
+        "next": [
+            "Collect_Skill_TapReset"
+        ],
+        "focus": "CSB.施放次数已满,栏位3-5"
+    },
+    "Collect_Skill3_5": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "TemplateMatch",
+                "roi": [
+                    1140,
+                    442,
+                    81,
+                    87
+                ],
+                "template": [
+                    "Skill3-5 GE.png"
+                ],
+                "green_mask": true
+            },
+            {
+                "recognition": "ColorMatch",
+                "roi": [
+                    1181,
+                    486,
+                    7,
+                    9
+                ],
+                "method": 40,
+                "lower": [
+                    0,
+                    0,
+                    240
+                ],
+                "upper": [
+                    30,
+                    3,
+                    255
+                ],
+                "count": 30
+            }
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Collect_Skill3_5",
+            "Collect_Skill_TapReset"
+        ],
+        "focus": "CSB.施放'压制'技能,栏位3-5"
     }
 }

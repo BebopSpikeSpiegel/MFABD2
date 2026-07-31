@@ -907,9 +907,9 @@
         "action": {
             "type": "Custom",
             "param": {
-                "custom_action": "PatchNode",
+                "custom_action": "PatchPipeline",
                 "custom_action_param": {
-                    "node": "Weekly_VisitCabin_TabChg",
+                    "target": "Weekly_VisitCabin_TabChg",
                     "patch": {
                         "next": [
                             "[Anchor]Daily_Cabin"
