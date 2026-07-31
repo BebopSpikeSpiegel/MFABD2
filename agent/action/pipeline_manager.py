@@ -470,13 +470,16 @@ class RestorePipeline(CustomAction):
 
             done, missing = [], []
             for node in targets:
-                payload = ledger.pop(node, None)
+                payload = ledger.get(node)
                 if payload is None:
                     # 没被改过 / 已还原过 / 是新建的节点 —— 还原是幂等的，不算失败
                     missing.append(node)
                     continue
                 if not context.override_pipeline({node: payload}):
                     raise ConfigError(f"节点 [{node}] 的还原被框架拒绝")
+                # 销账必须在还原成功之后：先 pop 再失败会让还原点永久丢失，
+                # 节点既停在被改写状态、又再也还原不回来（连 "*" 也查不到）
+                ledger.pop(node, None)
                 done.append(node)
 
             if done:
