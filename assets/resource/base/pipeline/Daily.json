@@ -1169,10 +1169,10 @@
         "desc": "谈心等级围栏",
         "recognition": "OCR",
         "roi": [
-            739,
-            131,
-            81,
-            42
+            719,
+            124,
+            151,
+            62
         ],
         "expected": ["^([1-9]|1[0-9])$"],
         "replace": [[
@@ -1324,7 +1324,11 @@
             "retry_times": 2,
             "threshold": 5.0
         },
-        "next": ["Daily_Intimacy_Swich_Reset"]
+        "next": ["Daily_Intimacy_Swich_Reset"],
+        "on_error": [
+            "Global_ToHomePage",
+            "Global_Null"
+        ]
     },
     "Daily_Intimacy_Swich_Reset": {
         "action": "Custom",
@@ -1332,7 +1336,7 @@
         "custom_action_param": {
             "tags": [
                 "Intimacy_Switch_Set",
-                "Intimacy_Switch_Set"
+                "Intimacy_Switch_Turn"
             ]
         },
         "next": ["Daily_Intimacy_CatalogCard"]
