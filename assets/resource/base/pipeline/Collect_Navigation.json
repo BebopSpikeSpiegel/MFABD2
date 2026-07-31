@@ -4,21 +4,18 @@
     },
     "Collect_OperationsMain_Sandplay": {
         "desc": "中断：章节内主要操作开始。找到图钉，确认进入箱庭",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "Custom",
         "custom_action": "ResetTag",
         "custom_action_param": {
             "tags": [
-                "LocPage_SmartSwip"
+                "LocPage_SmartSwip",
+                "Tab3_OnFoot",
+                "NviMap_Sub_Err"
             ]
         },
         "anchor": {"Pack_Click": ""},
@@ -35,6 +32,8 @@
         ],
         "on_error": [
             "[JumpBack]Collect_Tab3",
+            "[JumpBack]Global_ToSandBox",
+            "Global_QuickCart_MenuReset",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
@@ -1044,16 +1043,8 @@
         "post_delay": 2000
     },
     "Collect_QuickCart_FastUI": {
-        "recognition": "OCR",
-        "roi": [
-            32,
-            506,
-            306,
-            125
-        ],
-        "expected": [
-            "最近"
-        ],
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset_Ocr"],
         "next": [
             "Collect_PackEnd_Ck"
         ],

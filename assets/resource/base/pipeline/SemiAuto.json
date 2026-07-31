@@ -32,15 +32,10 @@
         "focus": "G=0.页面预期内，普通启动。M.箱庭地图run已确认"
     },
     "SemiAuto_HomePageHub1": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "post_delay": 2000,
         "next": [],
@@ -57,7 +52,8 @@
         ],
         "template": [
             "BackButGe.png",
-            "BackButGe2.png"
+            "BackButGe2.png",
+            "UI_qsback.png"
         ],
         "green_mask": true,
         "action": "Click",
@@ -70,86 +66,11 @@
             "SemiAuto_Evil_SemiautoTower_On"
         ]
     },
-    "SemiAuto_HomePage2": {
-        "desc": "识别左下抽抽乐-主页-点击选择章节",
-        "recognition": "And",
-        "all_of": [
-            "Rec_HomePage_GA_Ocr",
-            "Sub_HomePage_GA_Bright_Clr"
-        ],
-        "action": "Click",
-        "target": [
-            1111,
-            650
-        ],
-        "next": [
-            "SemiAuto_MoreBook_Evil",
-            "SemiAuto_HomePageSwipe"
-        ],
-        "focus": "PM.主页面"
-    },
-    "SemiAuto_HomePageSwipe": {
-        "recognition": "OCR",
-        "roi": [
-            99,
-            78,
-            212,
-            630
-        ],
-        "expected": [
-            "角色游戏卡"
-        ],
-        "pre_delay": 1000,
-        "action": "Swipe",
-        "begin": [
-            70,
-            640
-        ],
-        "end": [
-            70,
-            270
-        ],
-        "duration": 500,
-        "next": [
-            "SemiAuto_MoreBook_Evil"
-        ],
-        "focus": "PM.卡带界面垂直复位(一次性)"
-    },
-    "SemiAuto_MoreBook_Evil": {
-        "desc": "点击More本子",
-        "recognition": "OCR",
-        "roi": [
-            392,
-            469,
-            98,
-            40
-        ],
-        "expected": [
-            "挑战"
-        ],
-        "threshold": 0.9,
-        "action": "Click",
-        "target_offset": [
-            0,
-            -100,
-            0,
-            0
-        ],
-        "post_delay": 8000,
-        "next": [
-            "SemiAuto_Evil_Move"
-        ],
-        "focus": "PM.More卡带"
-    },
     "SemiAuto_Evil_Move": {
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "LongPress",
         "target": [
@@ -333,15 +254,10 @@
         ]
     },
     "SemiAuto_LastNight_Move": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "LongPress",
         "target": [

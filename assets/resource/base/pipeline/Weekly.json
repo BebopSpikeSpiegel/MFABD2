@@ -243,15 +243,10 @@
         "focus": "PM.More卡带"
     },
     "Weekly_LastNight_Move": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1108,
-            637,
-            65,
-            57
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "action": "LongPress",
         "target": [
@@ -345,16 +340,10 @@
         ]
     },
     "Weekly_LastNight_Pin": {
-        "desc": "",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1122,
-            646,
-            40,
-            38
-        ],
-        "template": [
-            "pin.png"
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
         "next": [
             "Weekly_LastNight_End"
@@ -722,10 +711,10 @@
         "desc": "进入街机页面,识别器参数困难,改为直接点击",
         "action": "Click",
         "target": [
-            284,
-            194,
-            23,
-            27
+            360,
+            188,
+            24,
+            28
         ],
         "post_delay": 3000,
         "next": [

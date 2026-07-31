@@ -474,7 +474,6 @@ agent_save_data.json
 agent_save_data.json.bak
 cartridge_history.json
 package-lock.json
-package.json
 prettier.config.mjs
 
 # macOS
