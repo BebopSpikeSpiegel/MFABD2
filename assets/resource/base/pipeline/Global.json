@@ -239,7 +239,6 @@
             "[JumpBack]Global_WaitingForLoading"
         ],
         "on_error": [
-            "Global_BackToQC1",
             "[JumpBack]StartGame_Special",
             "[JumpBack]StartGame_PVPSet",
             "[JumpBack]PVP_PerOperationsMain_Error",
@@ -248,7 +247,7 @@
             "[JumpBack]PVP_PVPMes2",
             "[JumpBack]Dummy_Err_GetProductsFail",
             "[JumpBack]StartGame_Error_API",
-            "[JumpBack]Global_HomeButton_Once",
+            "Global_BackToQC1",
             "[JumpBack]Global_ToHomePage_Crash",
             "Global_Null_Exception",
             "Global_Null_Panic"
@@ -277,7 +276,7 @@
             "[JumpBack]PVP_PVPMes2",
             "[JumpBack]Dummy_Err_GetProductsFail",
             "[JumpBack]StartGame_Error_API",
-            "[JumpBack]Global_HomeButton_Once",
+            "Global_BackToQC1",
             "[JumpBack]Global_ToHomePage_Crash",
             "Global_Null_Exception",
             "Global_Null_Panic"
