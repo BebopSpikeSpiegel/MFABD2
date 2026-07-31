@@ -1,4 +1,43 @@
 {
+    "Rec_<Setup_Entry1_Swich>_Tpl": {
+        "roi": [
+            95,
+            492,
+            203,
+            189
+        ]
+    },
+    "Setup_SkillScan_wasd_Bin": {
+        "roi": [
+            95,
+            492,
+            203,
+            189
+        ]
+    },
+    "Setup_Entry2": {
+        "roi": [
+            1135,
+            23,
+            8,
+            8
+        ]
+    },
+    "Setup_Entry3": {
+        "roi": [
+            1016,
+            18,
+            11,
+            13
+        ]
+    },
+    "Setup_Entry4": {
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ]
+    },
     "Rec_<Setup_SkillScan_Skill1>_Tpl": {
         "roi": [
             1017,
