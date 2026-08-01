@@ -86,7 +86,7 @@
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {
-            "hsv_ranges": [
+            "flt_red_hsv": [
                 {"lower": [
                         0,
                         140,
@@ -109,12 +109,21 @@
                     ]
                 }
             ],
-            "red_area": [
+            "flt_area": [
                 50,
                 1200
             ],
-            "min_confidence": 0.25,
-            "gap_ratio": 0.35
+            "sc_min_conf": 0.55,
+            "sc_gap_ratio": 0.35,
+            "flt_hsv_rescue": {
+                "mode": "active",
+                "max_delta_s": 110,
+                "max_delta_v": 110,
+                "max_full_runs": 12,
+                "min_stable_states": 2,
+                "max_parents": 5,
+                "time_budget_ms": 40
+            }
         }
     },
     "Agt_RedDot_Preset_Panoram": {
@@ -122,7 +131,7 @@
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {
-            "hsv_ranges": [
+            "flt_red_hsv": [
                 {"lower": [
                         0,
                         140,
@@ -145,12 +154,21 @@
                     ]
                 }
             ],
-            "red_area": [
+            "flt_area": [
                 50,
                 450
             ],
-            "min_confidence": 0.5,
-            "gap_ratio": 0.35
+            "sc_min_conf": 0.58,
+            "sc_gap_ratio": 0.35,
+            "flt_hsv_rescue": {
+                "mode": "active",
+                "max_delta_s": 110,
+                "max_delta_v": 110,
+                "max_full_runs": 12,
+                "min_stable_states": 2,
+                "max_parents": 5,
+                "time_budget_ms": 40
+            }
         }
     }
 }
