@@ -101,7 +101,7 @@
         },
         {
             "name": "[执行]白嫖抽卡",
-            "entry": "Gacha_HomePage",
+            "entry": "GachaADV_Start",
             "controller": [
                 "Adb",
                 "PlayCover"

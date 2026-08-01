@@ -613,6 +613,9 @@ _RESCUE_PAD = 2
 # select_stable_winner 的判定码 → 回传用中文，与金字塔风格一致。
 _RESCUE_DECISION_CN = {
     "stable_hit": "稳定命中",
+    # stable_hit 的后继态：局部窗口成立、但 active 改判前的全区复跑对不上。
+    # 只有 active 走得到（shadow 压根不做全区复核），别把它当成一种救援失败原因。
+    "unconfirmed": "复核不一致",
     "no_hit": "未命中",
     "unstable_hit": "命中不稳定",
     "ambiguous_split": "同档多解",
@@ -633,6 +636,7 @@ _MISS_BRIEF = {
 _RESCUE_HINT_CN = {
     "no_hit": "三个切法都没从该父块切出合格红点；看 尝试[].卡在 —— "
               "aspect=切得不够狠，interior/red_mask/area=切过头",
+    "unconfirmed": "局部结论未能在整幅 ROI 复现，已 fail closed",
     "unstable_hit": "只有单档命中、相邻档不复现；切点疑似落在悬崖边，不予采纳",
     "ambiguous_split": "同一档内该父块切出多个候选，无法认定唯一后代",
     "ambiguous_stable_hits": "出现多个互不相邻的稳定解，按 fail closed 一律拒绝",
@@ -925,8 +929,12 @@ class RedDotDetector(CustomRecognition):
                     aspect_range=(asp_lo, asp_hi), gap_ratio=gap_ratio,
                     min_conf=min_conf, rx=rx, ry=ry)
                 if confirmed is None:
+                    # 结论必须一起降级：否则下游 _finalize_miss 仍按"稳定命中"渲染，
+                    # 日志栏会把 fail closed 说成"mode 不改判"，把人引去查配置。
+                    rescue["结论"] = _RESCUE_DECISION_CN["unconfirmed"]
+                    rescue["说明"] = _RESCUE_HINT_CN["unconfirmed"]
                     rescue["停因"] = "全区复核不一致"
-                    rescue["说明"] = "局部结论未能在整幅 ROI 复现，已 fail closed"
+                    rescue["_decision"] = "unconfirmed"
                     print(f"[RedDotDetector] 救援 {node} | 全区复核不一致，维持 miss")
                 else:
                     outcome_full, candidate_full = confirmed
@@ -1655,14 +1663,20 @@ class RedDotDetector(CustomRecognition):
             }
         if extra:
             detail.update(extra)
-        # 救援已找到稳定解却仍 miss，只可能是 shadow 不改判 —— 必须在日志栏说明白，
-        # 否则用户看到的就只是一条 miss，会误判成救援没工作。
+        # 救援找到了解却仍 miss，有两种原因，日志栏必须分清楚 —— 否则用户看到的
+        # 只是一条 miss，会误判成救援没工作，或把 fail closed 错当成 mode 配置问题：
+        #   · 稳定命中   → shadow 只记录不改判，改 mode 即可生效
+        #   · 复核不一致 → active 已经想改判，是全区复跑对不上才主动放弃，与 mode 无关
         rescue = (extra or {}).get("救援") or {}
         tail = ""
         if rescue.get("结论") == "稳定命中":
             win = rescue.get("胜出") or {}
             tail = (f"｜严格HSV救援已找到稳定解 box={win.get('框')} 分{win.get('分')}"
                     f"，当前 mode={rescue.get('模式')} 不改判")
+        elif rescue.get("结论") == "复核不一致":
+            win = rescue.get("胜出") or {}
+            tail = (f"｜严格HSV救援局部解 box={win.get('框')} 未能在整幅 ROI 复现"
+                    f"，已 fail closed 维持 miss")
         elif rescue.get("attempted") or rescue.get("尝试"):
             tail = f"｜救援未成立({rescue.get('结论')})"
         mfaalog.warning(f"[RedDotDetector] miss@{stage} | "
