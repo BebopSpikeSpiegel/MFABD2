@@ -1,16 +1,44 @@
 {
     "GachaADV_GachaRed_Have": {
-        "roi": [
-            92,
-            617,
-            53,
-            52
+        "desc": "[PC覆盖] 由单一 Custom 识别改为 Or 分档:标准档优先,低饱和档兜底。base 的 recognition/custom_recognition/custom_recognition_param/roi 被本节点的 Or 接管(Or 只读 any_of,残留字段不生效,故未逐个清空);action/post_delay/next 仍继承 base。target 为绝对坐标,不依赖命中 box,两档共用。⚠️ 分档只为覆盖'亮背景压低红点饱和度'这一单点特例,不要把低饱和档扩散到其他检测点,理由见 Agt_RedDot_Preset_LowSat 的 desc。",
+        "recognition": "Or",
+        "any_of": [
+            "Agt_<GachaADV_GachaRed_Have>_Std",
+            "Agt_<GachaADV_GachaRed_Have>_LowSat"
         ],
         "target": [
             104,
             652,
             10,
             10
+        ]
+    },
+    "Agt_<GachaADV_GachaRed_Have>_Std": {
+        "desc": "[PC] 抽抽乐红点-标准档(S140)。绝大多数画面走这一档,19条语料里 base 11条 + PC 2条有红点样本全部由本档命中(conf 0.63~0.73)。参数即通用 Agt_RedDot_Preset,不做任何本地覆盖。",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {
+            "preset": "Agt_RedDot_Preset"
+        },
+        "roi": [
+            92,
+            617,
+            53,
+            52
+        ]
+    },
+    "Agt_<GachaADV_GachaRed_Have>_LowSat": {
+        "desc": "[PC] 抽抽乐红点-低饱和兜底档(S110)。仅在标准档 miss 后才跑,用于救回'图标叠明亮场景光→红点饱和度被压低→S140 红环破损漏检'的特例(实测该帧 S140 卡 area/28px,本档 conf 0.629)。ROI 与标准档一致(收窄到 17x17 实测无额外收益,红点位置锁定在绝对(119,635)11x11)。误命中风险见 Agt_RedDot_Preset_LowSat 的 desc③。",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {
+            "preset": "Agt_RedDot_Preset_LowSat"
+        },
+        "roi": [
+            92,
+            617,
+            53,
+            52
         ]
     },
     "GachaADV_GachaPage2": {
