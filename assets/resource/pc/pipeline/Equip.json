@@ -1,27 +1,4 @@
 {
-    "Equip_Skill3_5_Nothing": {
-        "roi": [
-            1164,
-            496,
-            69,
-            60
-        ]
-    },
-    "Equip_Skill3_5": {
-        "roi": [
-            1164,
-            496,
-            69,
-            60
-        ],
-        "green_mask": true,
-        "target": [
-            1193,
-            521,
-            5,
-            5
-        ]
-    },
     "Equip_EquipMakeGui": {
         "desc": "确认制作装备界面",
         "roi": [
@@ -96,7 +73,8 @@
         ],
         "expected": [
             "键强化",
-            "鍵強化"
+            "鍵強化",
+            "键強化"
         ]
     },
     "Equip_EquipUp": {
@@ -515,6 +493,24 @@
         "expected": [
             "装备",
             "裝備"
+        ]
+    },
+    "Equip_Skill3_5_Nothing": {
+        "recognition": "DirectHit",
+        "roi": [
+            1164,
+            496,
+            69,
+            60
+        ]
+    },
+    "Equip_Skill3_5": {
+        "recognition": "DirectHit",
+        "roi": [
+            1164,
+            496,
+            69,
+            60
         ]
     }
 }
