@@ -171,12 +171,18 @@
             "[JumpBack]Global_WaitingForLoading"
         ],
         "on_error": [
-            "Global_BackToQC1",
+            ,
             "[JumpBack]StartGame_SeasonSet",
             "[JumpBack]StartGame_Special",
             "[JumpBack]StartGame_PVPSet",
             "[JumpBack]PVP_PerOperationsMain_Error",
             "[JumpBack]Global_ERR_AtFish",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]Weekly_LastNight_MaybeNew",
+            "[JumpBack]Dummy_Err_GetProductsFail",
+            "[JumpBack]StartGame_Error_API",
+            "Global_BackToQC1",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ]
@@ -193,6 +199,20 @@
             "[JumpBack]Global_WaitingForLoading",
             "Global_ToSandBox_Enter",
             "Global_ToSandBox_Reset"
+        ],
+        "on_error": [
+            "[JumpBack]StartGame_Special",
+            "[JumpBack]StartGame_PVPSet",
+            "[JumpBack]PVP_PerOperationsMain_Error",
+            "[JumpBack]Global_ERR_AtFish",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]Weekly_LastNight_MaybeNew",
+            "[JumpBack]Dummy_Err_GetProductsFail",
+            "[JumpBack]StartGame_Error_API",
+            "Global_BackToQC1",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ],
         "focus": "G=1.页面非预期，点击返回按钮"
     },
