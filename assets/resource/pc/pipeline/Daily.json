@@ -575,5 +575,9 @@
             "settle_delay": 500,
             "threshold": 5.0
         }
+    },
+    "Daily_Square_Hub": {
+        "desc": "广场枢纽。|[PC覆盖·2026-08-01实录] base max_hit:1 在锚点被援救链消费后成永动机:谈心退场画面使 Global_ToSandBox 首判失败→err落入 Global_BackToQC1 援救→QCPack 锚被覆写(21:05:12 TouchQC1Pack)并按链尾契约清除→GameplayCor 的 [Anchor]QCPack 解析 anchor not set(maafw实锤)且该节点无 on_error→默认Null→ToSandBox腿'成功'刷新轮询→hub因 max_hit 1 永不再注册锚,13秒/圈烧了20+分钟。max_hit 提到3:援救链消费锚后 hub 重命中即重注册,自愈;3次预算防真异常时无限重入。",
+        "max_hit": 3
     }
 }
