@@ -189,7 +189,7 @@
             138,
             265
         ],
-        "post_delay": 1000,
+        "post_delay": 2000,
         "next": [
             "GachaADV_AREA2#_Enter",
             "GachaADV_AREA2#"
@@ -219,11 +219,11 @@
         "lower": [
             0,
             0,
-            248
+            240
         ],
         "upper": [
             180,
-            15,
+            10,
             255
         ],
         "count": 40,

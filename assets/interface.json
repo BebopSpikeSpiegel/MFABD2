@@ -6,6 +6,11 @@
             "type": "Adb"
         },
         {
+            "name": "PlayCover",
+            "label": "PlayCover(iOS)",
+            "type": "PlayCover"
+        },
+        {
             "name": "PC客户端",
             "label": "PC客户端",
             "type": "Win32",
@@ -53,7 +58,8 @@
             "name": "[执行]快速狩猎扫荡",
             "entry": "QuickHunt_Start",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "default_check": true,
             "option": [
@@ -67,7 +73,8 @@
             "name": "[执行]地图采集[单章]",
             "entry": "Collect_StartGame_HomePage_OnlyOnce",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "default_check": true,
             "description": "<地图采集[完整]>的单卡带模式，满足日常任务所需即停止。",
@@ -80,7 +87,8 @@
             "name": "[执行]装备制作&炼制日常",
             "entry": "Equip_HomePage",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "default_check": true,
             "description": "依次执行：<b>N稀有短剑打造</b> → <b>强化</b>与<b>分解</b> → <b>精炼</b>。<br>精炼仅以 SR 或 UR 稀有度装备为对象；首次运行无需提前锁定装备，非正常锁定的装备可能导致流程失败。<br><span style=\"background-color:rgba(255,160,0,0.2)\"><b>组合技：</b>同时启用<精炼等级上限过滤>与<精炼排序>，可构造低等级优先强化队列——当前首位装备超出等级限制后，自动推进到下一优先装备。</span>",
@@ -94,7 +102,10 @@
         {
             "name": "[执行]白嫖抽卡",
             "entry": "GachaADV_Start",
-            "controller": ["Adb"],
+            "controller": [
+                "Adb",
+                "PlayCover"
+            ],
             "default_check": true,
             "option": [
                 "一键速抽"
@@ -105,7 +116,8 @@
             "name": "[执行]竞技场",
             "entry": "PVP_TaskStart",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "default_check": true,
             "option": [
@@ -117,7 +129,8 @@
             "name": "[执行]赛季活动快速战斗",
             "entry": "Event_HomePage",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "option": [
                 "赛季活动快速战斗难度",
@@ -129,7 +142,8 @@
             "name": "[执行]肉鸽塔每日快速战斗",
             "entry": "Redemption_HomePage",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "description": "刷取每期强化代币（黑晶石），用于点亮修改器辅助高难关卡。自动选取当前可用最高难度，打完每日3次免费AP。<br><b>注意：</b>强化代币与强化效果期内累计，跨期清零不继承。"
         },
@@ -137,7 +151,8 @@
             "name": "[执行]周常任务",
             "entry": "Weekly_Start",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "option": [
                 "末日之书",
@@ -150,21 +165,24 @@
             "default_check": true,
             "entry": "Daily_HomePage",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "option": [
                 "餐馆领装饰币",
                 "餐馆自动升级",
-                "广场每日祈求"
+                "广场每日祈求",
+                "亲密度谈心"
             ],
-            "description": "依次执行：<code>公会每日签到</code>、<code>餐馆-格鲁费之星</code>、<code>广场-神像许愿抽奖</code>。<br>进入餐馆领取每日<code>常客圣石</code>。"
+            "description": "依次执行：<code>公会每日签到</code>、<code>餐馆-格鲁费之星</code>、<code>亲密度谈心</code>、<code>广场-神像许愿抽奖</code>。<br>进入餐馆领取每日<code>常客圣石</code>。"
         },
         {
             "name": "[领取]任务页(每日/每周)",
             "default_check": true,
             "entry": "RewardsDaily_Start",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "description": "领取主界面<code>任务</code>页内的每日与每周任务奖励。"
         },
@@ -173,7 +191,8 @@
             "default_check": true,
             "entry": "Activities_Start",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "option": [
                 "进入前先领取邮件"
@@ -185,7 +204,8 @@
             "default_check": true,
             "entry": "Pass_HomePage",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "description": "领取主界面<code>通行证</code>页内的可领奖励。"
         },
@@ -194,7 +214,8 @@
             "default_check": true,
             "entry": "Mail_HomePage",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "description": "领取主界面<code>邮件</code>内的全部邮件奖励（含一般与商品类）。<br>无未读红点时自动跳过，不进入邮件页面。"
         },
@@ -203,7 +224,8 @@
             "entry": "Collect_StartGame_HomePage",
             "default_check": true,
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "description": "进入卡带，对含传送阵的地图依次执行探查、吸取、召集。<br><span style=\"background-color:rgba(255,160,0,0.2)\"><b>前提：</b>传送阵须已激活，且周围箱庭迷雾已探明，使区域地图能完整显示传送阵图标。</span><br><b>周常CD：</b>自动跳过本周已刷卡带，进度记录于 <code>agent_save_data.json</code>，可手动迁移。刷取顺序：卡带框从左到右，依故事→角色→活动大类推进。",
             "option": [
@@ -216,7 +238,8 @@
             "name": "[执行]商店套利",
             "entry": "Arbitrage_Start",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "description": "卡带商店跑商套利：逐卡带扫购低价原料收藏一键购买，按每日最高价择机出售；同时制作高利润料理待出售变现。<br>三个环节均可独立开关，按需组合。",
             "option": [
@@ -240,7 +263,8 @@
         {
             "name": "[全局]结束游戏",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "entry": "Close_HomePage"
         },
@@ -249,7 +273,8 @@
             "description": "手动触发生活技能刷级流程。目前支持<code>砍价</code>技能，更多技能待后续扩展。",
             "entry": "Practise_Start",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "option": [
                 "选择要刷取的技能"
@@ -259,7 +284,8 @@
             "name": "[特殊]半自动操作",
             "entry": "SemiAuto_HomePage",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "option": [
                 "半自动作业"
@@ -1312,6 +1338,56 @@
                     "pipeline_override": {
                         "Daily_Square_Hub": {
                             "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
+        "亲密度谈心": {
+            "description": "在亲密度目录中依次与符合等级条件且仍有次数的对象谈心。",
+            "type": "switch",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {},
+                    "option": ["亲密度谈心等级筛选"]
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "Daily_Intimacy_HUB": {
+                            "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
+        "亲密度谈心等级筛选": {
+            "description": "仅与亲密度等级低于所选阈值的对象谈心。",
+            "type": "select",
+            "default_case": "Lv<20",
+            "cases": [
+                {
+                    "name": "Lv<10",
+                    "pipeline_override": {
+                        "Sub_Intimacy_LV": {
+                            "expected": ["^[1-9]$"]
+                        }
+                    }
+                },
+                {
+                    "name": "Lv<15",
+                    "pipeline_override": {
+                        "Sub_Intimacy_LV": {
+                            "expected": ["^([1-9]|1[0-4])$"]
+                        }
+                    }
+                },
+                {
+                    "name": "Lv<20",
+                    "pipeline_override": {
+                        "Sub_Intimacy_LV": {
+                            "expected": ["^([1-9]|1[0-9])$"]
                         }
                     }
                 }

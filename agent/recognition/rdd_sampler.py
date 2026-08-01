@@ -3,8 +3,13 @@
 # ================================================================
 # 作用：把每次识别(命中/未命中)的小图 + 完整识别信息落成"语料即回归集"：
 #   · 小图：roi_crop / red_mask / inner，唯一命名(时间戳)累积，不覆盖；
-#   · samples.jsonl：一行一事件(时间/节点/roi/box/conf 四项分解/红块几何/生效参数/关联图)。
+#   · samples.jsonl.log：一行一事件(时间/节点/roi/box/conf 四项分解/红块几何/生效参数/关联图)。
 #   事后整个文件夹拿走，即可离线回放：改任何参数先过旧语料，再上真机。
+#
+# 台账为什么叫 .jsonl.log(别改回去)：UI 的"导出日志"按扩展名白名单收集文件，.jsonl
+#   不在名单内会被静默丢掉——2026-07 收到的四个用户回流包共 688 张图全部没有台账，
+#   根因即此(图是 .png 在名单内，台账不在)。没有台账的图对回放器等于零价值：roi /
+#   params / result / box 全在台账里。补一个 .log 后缀即可随包带出，内容仍是 JSONL。
 #
 # 开关(模式)：RDD_SAMPLE 环境变量(off/fail/all) > maa_option.json 的 rdd_sample > 默认 all。
 #   env 穿透运行侧一切配置；fail=只采未命中；off=完全关闭(零开销)。
@@ -30,6 +35,12 @@ import time
 
 import numpy as np
 from PIL import Image
+
+
+# 台账文件名。第一个是现行写入名；其余是历史名，只读端(回放器)须一并识别——
+# 存量语料与用户手上的旧包都还是旧名，改名不能让它们作废。
+MANIFEST_NAME = "samples.jsonl.log"
+MANIFEST_NAMES = (MANIFEST_NAME, "samples.jsonl")
 
 
 class RddSampler:
@@ -87,7 +98,7 @@ class RddSampler:
                     "roi": [int(v) for v in roi]}
             line.update(meta or {})
             line["files"] = files
-            with open(os.path.join(out_dir, "samples.jsonl"), "a", encoding="utf-8") as f:
+            with open(os.path.join(out_dir, MANIFEST_NAME), "a", encoding="utf-8") as f:
                 f.write(json.dumps(line, ensure_ascii=False, default=self._jsonable) + "\n")
 
             self._last_ts[key] = now
