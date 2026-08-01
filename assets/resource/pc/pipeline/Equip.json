@@ -1,0 +1,516 @@
+{
+    "Equip_EquipMakeGui": {
+        "desc": "确认制作装备界面",
+        "roi": [
+            1054,
+            652,
+            129,
+            38
+        ],
+        "expected": [
+            "立刻前往装备",
+            "立即前往装備"
+        ],
+        "target": [
+            836,
+            22,
+            21,
+            21
+        ]
+    },
+    "Equip_EquipSelect": {
+        "roi": [
+            473,
+            414,
+            355,
+            120
+        ]
+    },
+    "Equip_EquipMake": {
+        "roi": [
+            894,
+            636,
+            150,
+            71
+        ],
+        "expected": [
+            "制作",
+            "製作"
+        ]
+    },
+    "Equip_EquipMakeClose": {
+        "roi": [
+            934,
+            201,
+            26,
+            28
+        ]
+    },
+    "Equip_EquipMakeBack": {
+        "recognition": "And",
+        "all_of": [
+            "Equip_EquipMake"
+        ],
+        "target": [
+            102,
+            21,
+            14,
+            16
+        ]
+    },
+    "Equip_ToEquipGui": {
+        "recognition": "And",
+        "all_of": [
+            "Equip_EquipMakeGui"
+        ]
+    },
+    "Equip_EquipGui": {
+        "roi": [
+            955,
+            656,
+            79,
+            27
+        ],
+        "expected": [
+            "键强化",
+            "鍵強化",
+            "键強化"
+        ]
+    },
+    "Equip_EquipUp": {
+        "roi": [
+            1061,
+            653,
+            37,
+            35
+        ],
+        "template": [
+            "Equip_more.png"
+        ]
+    },
+    "Equip_EquipUp_CK": {
+        "roi": [
+            741,
+            351,
+            64,
+            57
+        ],
+        "expected": [
+            "级别",
+            "等级"
+        ],
+        "replace": [
+            [
+                "級",
+                "级"
+            ]
+        ]
+    },
+    "Equip_EquipUpSelectN": {
+        "roi": [
+            856,
+            352,
+            106,
+            57
+        ],
+        "template": [
+            "Equip_N.png"
+        ]
+    },
+    "Equip_EquipUpSelectN_Confirm": {
+        "roi": [
+            856,
+            352,
+            106,
+            57
+        ]
+    },
+    "Equip_EquipUpSelect": {
+        "roi": [
+            1175,
+            661,
+            23,
+            18
+        ]
+    },
+    "Equip_EquipUp_EnterLV": {
+        "roi": [
+            395,
+            234,
+            24,
+            26
+        ]
+    },
+    "Equip_EquipUp_AndDec": {
+        "roi": [
+            847,
+            460,
+            40,
+            21
+        ]
+    },
+    "Equip_EquipUp_SetLv_Entry": {
+        "roi": [
+            771,
+            186,
+            145,
+            120
+        ]
+    },
+    "Equip_EquipUp_SetLv_SetLv_-1": {
+        "target": [
+            543,
+            227,
+            5,
+            6
+        ]
+    },
+    "Equip_Processing": {
+        "roi": [
+            564,
+            298,
+            147,
+            169
+        ],
+        "expected": [
+            "进行中",
+            "進行中",
+            "\\d+/\\d+"
+        ]
+    },
+    "Equip_EquipUpSelect_Err": {
+        "expected": [
+            "请选择装备后重新尝试",
+            "請選擇裝備後重新嘗試"
+        ]
+    },
+    "Equip_EquipUp_Action": {
+        "roi": [
+            653,
+            490,
+            96,
+            128
+        ]
+    },
+    "Equip_EquipUpResult": {
+        "roi": [
+            575,
+            491,
+            133,
+            88
+        ],
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "Equip_Refine_filter": {
+        "roi": [
+            1125,
+            51,
+            33,
+            32
+        ],
+        "green_mask": true
+    },
+    "Equip_filter_SubMenu": {
+        "expected": [
+            "装备筛选",
+            "裝備筛選"
+        ],
+        "replace": [
+            [
+                "篩",
+                "筛"
+            ]
+        ]
+    },
+    "Equip_filterSR": {
+        "threshold": [
+            0.7
+        ]
+    },
+    "Equip_filterUR": {
+        "roi": [
+            559,
+            388,
+            56,
+            35
+        ],
+        "threshold": [
+            0.7
+        ]
+    },
+    "Equip_SRColorCk": {
+        "roi": [
+            474,
+            386,
+            68,
+            40
+        ]
+    },
+    "Equip_URColorCk": {
+        "roi": [
+            568,
+            392,
+            39,
+            27
+        ]
+    },
+    "Equip_filter+9": {
+        "roi": [
+            891,
+            234,
+            51,
+            26
+        ]
+    },
+    "Equip_+9ColorCk": {
+        "roi": [
+            889,
+            234,
+            51,
+            26
+        ]
+    },
+    "Equip_filter<C17": {
+        "roi": [
+            795,
+            316,
+            34,
+            14
+        ]
+    },
+    "Equip_filter<C17Ck": {
+        "roi": [
+            787,
+            308,
+            54,
+            29
+        ]
+    },
+    "Equip_filter<C10": {
+        "target": [
+            689,
+            312,
+            41,
+            20
+        ]
+    },
+    "Equip_filter<C10Ck": {
+        "roi": [
+            689,
+            312,
+            41,
+            20
+        ]
+    },
+    "Equip_filterON": {
+        "roi": [
+            872,
+            523,
+            95,
+            36
+        ],
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "Equip_Sequen_Menu": {
+        "roi": [
+            1165,
+            49,
+            44,
+            37
+        ]
+    },
+    "Equip_Sequen_MenuOpenCk": {
+        "roi": [
+            956,
+            73,
+            208,
+            207
+        ]
+    },
+    "Equip_Sequen_MenuSwipDown": {
+        "begin": [
+            986,
+            269,
+            3,
+            3
+        ],
+        "end": [
+            986,
+            68,
+            3,
+            3
+        ]
+    },
+    "Equip_Sequen_MenuFind": {
+        "roi": [
+            904,
+            174,
+            294,
+            117
+        ],
+        "expected": [
+            "自定义标记",
+            "自訂標記",
+            "自订標記"
+        ],
+        "replace": [
+            [
+                "訂",
+                "订"
+            ]
+        ]
+    },
+    "Equip_Sequen_CKAndExt": {
+        "roi": [
+            1100,
+            189,
+            41,
+            94
+        ]
+    },
+    "Equip_FindRefining": {
+        "target": [
+            513,
+            131,
+            10,
+            10
+        ]
+    },
+    "Equip_Refining_Menu=24": {
+        "roi": [
+            920,
+            419,
+            24,
+            18
+        ]
+    },
+    "Equip_filter_SubMenu_Mamono": {
+        "roi": [
+            443,
+            313,
+            55,
+            32
+        ]
+    },
+    "Rec_<Equip_Overdrive_RefLvMax_Second_Clr>_Clr_01": {
+        "roi": [
+            341,
+            312,
+            54,
+            32
+        ]
+    },
+    "Rec_<Equip_Overdrive_RefLvMax_Second_Clr>_Clr_02": {
+        "roi": [
+            544,
+            315,
+            66,
+            27
+        ]
+    },
+    "Equip_Overdrive_RefLvMax_OCR": {
+        "roi": [
+            324,
+            309,
+            293,
+            38
+        ],
+        "expected": [
+            "专\\S*",
+            "\\S*用",
+            "制作",
+            "製作"
+        ]
+    },
+    "Equip_Refining": {
+        "roi": [
+            880,
+            477,
+            58,
+            27
+        ],
+        "expected": [
+            "精炼",
+            "煉製"
+        ]
+    },
+    "Equip_Overdrive_RefLvMax": {
+        "expected": [
+            "达到最大强化级别",
+            "達成最高強化等級"
+        ]
+    },
+    "Equip_TouchRefining": {
+        "roi": [
+            997,
+            654,
+            138,
+            38
+        ],
+        "expected": [
+            "精炼",
+            "煉製"
+        ]
+    },
+    "Rec_<Equip_Backpack_Full>_Ocr_01": {
+        "roi": [
+            1112,
+            11,
+            33,
+            16
+        ]
+    },
+    "Rec_<Equip_Backpack_Full>_Ocr_02": {
+        "roi": [
+            226,
+            621,
+            41,
+            22
+        ]
+    },
+    "Equip_Backpack_Full_Enter": {
+        "roi": [
+            75,
+            60,
+            85,
+            296
+        ],
+        "green_mask": true
+    },
+    "Equip_Backpack_Equip_Enter": {
+        "roi": [
+            186,
+            15,
+            51,
+            36
+        ],
+        "expected": [
+            "装备",
+            "裝備"
+        ]
+    },
+    "Equip_Skill3_5_Nothing": {
+        "recognition": "DirectHit",
+        "roi": [
+            1164,
+            496,
+            69,
+            60
+        ]
+    },
+    "Equip_Skill3_5": {
+        "recognition": "DirectHit",
+        "roi": [
+            1164,
+            496,
+            69,
+            60
+        ]
+    }
+}

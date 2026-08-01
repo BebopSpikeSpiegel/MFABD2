@@ -1,0 +1,377 @@
+{
+    "PVP_Sandplay": {
+        "desc": "确认在竞技场沙盒(认顶栏奖牌图标)。|[PC覆盖·2026-07-09] base pvp_Medals.png(安卓25x25)在PC 720实测0.72~0.75<阈0.8恒miss→Sandplay认不到→AutoBattle永远轮不到(MFA实录:进场后Sandplay连败23次空转,一场没打)。从maa-mcp今日沙盒帧(INTER_AREA降720)裁pvp_Medals_PC.png(26x26金徽章),三帧交叉验0.915/0.938/0.932全过0.8、roi内唯一命中。追加进template(Or语义,base保留),阈沿base 0.8。|[07-16实录] 维护后QC1剧情箱庭顶栏货币图标在roi内打0.712,踩过遗留的[0.7]阈(desc与实值矛盾的历史遗留)→(1/2)在QC1假阳性→卡带导航被跳过→竞技场整场空跑。阈回0.8(PC奖牌真身0.915~0.938余量充足,0.712冒牌被挡)。",
+        "roi": [
+            503,
+            14,
+            161,
+            47
+        ]
+    },
+    "Rec_PVP_Drill_Ocr": {
+        "roi": [
+            57,
+            620,
+            137,
+            54
+        ],
+        "expected": [
+            "阵形设置",
+            "設定陣形"
+        ]
+    },
+    "Rec_PVP_Drill_Tmp": {
+        "roi": [
+            1064,
+            638,
+            70,
+            41
+        ]
+    },
+    "PVP_Results": {
+        "roi": [
+            255,
+            55,
+            167,
+            48
+        ],
+        "expected": [
+            "结算中",
+            "結算"
+        ]
+    },
+    "PVP_InsandboxAndlocAbnormal": {
+        "desc": "位置异常复位(点红⚔位置标记回擂台)。|[PC覆盖·2026-07-13实录·禁用] PC上角色站在擂台旁时该⚔标记同样可见(pvplocreset实测0.84~0.94两轮开局均误命中)→每轮误判'位置异常',点击+offset(0,100)落在围观NPC上(等同进阵型设置)→自己把位置破坏→NoFindSrena游走不收敛(21:38/21:48两轮实录)。正常站位下PVPStart擂台识别0.991直接可用,此防错节点PC上弊大于利,禁用;真异常兜底仍有NoFindSrena。",
+        "enabled": false
+    },
+    "PVP_PVPMes": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "PVP_Errmsg1#_Clear": {
+        "roi": [
+            215,
+            179,
+            123,
+            34
+        ],
+        "expected": [
+            "战场角色设置",
+            "場域角色設定"
+        ]
+    },
+    "PVP_PVPStart": {
+        "desc": "进入PVP舞台(点池面)。|[PC覆盖·2026-07-13三轮实录校准] base固定target[529,414]高出池沿框53px,常落在池后观众小人上→误开阵型(22:00实录);首修target:true点框中心(池沿476)→角色走到沿上站定不进池,还挡住模板自己(22:05实录24秒全败)。终修:target:true+offset[0,-30]=点池面下半(530,446),避小人(y<420)避池沿(y>467),真正落在可进入的池面上。匹配本身始终0.991准确。",
+        "roi": [
+            190,
+            238,
+            900,
+            420
+        ],
+        "target_offset": [
+            0,
+            -30,
+            0,
+            0
+        ]
+    },
+    "PVP_AutoBattle": {
+        "desc": "预备屏点'自动战斗'(齿轮图标,BATTLE左侧)。|[PC覆盖·2026-07-13破案] #355原有此覆盖但上游收编重构时被丢→回退base roi[918,622,88,71],其右缘x1006把'自动战斗'切成'自动'(22:00实录OCR读数),OCR恒miss→轮到NoFind(阈0.6)点中棋盘小人→误开阵形死循环。补回七月实机校准值:roi[970,632,96,64]罩全文字(实测987-1035,669-681),target点图标(base固定target[953,631]在PC落在'切换画面'上,同样必须覆盖)。",
+        "roi": [
+            970,
+            632,
+            96,
+            64
+        ],
+        "expected": [
+            "自动战斗",
+            "自動戰鬥"
+        ],
+        "target": [
+            1006,
+            645,
+            14,
+            14
+        ],
+        "next": [
+            "PVP_SeasonSettling",
+            "PVP_AutoBattle_SucCK",
+            "PVP_AutoBattle",
+            "[JumpBack]PVP_Errmsg2#_Clear"
+        ]
+    },
+    "PVP_AutoBattle_SucCK": {
+        "expected": [
+            "鲜血鸡尾酒",
+            "血之雞尾酒"
+        ]
+    },
+    "PVP_SeasonSettling": {
+        "expected": [
+            "结算完成后确认",
+            "结算完成后",
+            "赛季结算",
+            "结算中",
+            "当前并非赛季",
+            "結算"
+        ]
+    },
+    "PVP_JustUseFree": {
+        "desc": "免费鸡尾酒开关锚点。|[PC覆盖·2026-07-09 MFA实录+配置弹窗帧实测] 本节点roi即anchor'SliderSwitchColor',子判定To_On(灰off)/OK(黄on)在此区内检色;base roi[895,252,37,20]在PC配置弹窗落在暗底没罩住开关(实测'仅使用免费'开关黄条+白钮在720 x852-882,y268-287)→灰黄都检不到→To_On/OK各连败10次死循环、on_error走BackToQC复位绕圈(04:17实录).roi修为罩全开关.",
+        "roi": [
+            846,
+            260,
+            44,
+            34
+        ]
+    },
+    "PVP_AutoBattleMAX": {
+        "desc": "点MAX拉满自动战斗次数。|[PC覆盖·2026-07-09卡帧实测] base roi[826,421,70,34]左缘正好把'MAX'切成'AX'(OCR恒miss,实录42连败卡配置弹窗);PC实测MAX字在720 x803-847,y415-435。roi罩全字;base target[865,435]落在按钮块外右侧,改点字中心.",
+        "roi": [
+            790,
+            408,
+            80,
+            36
+        ],
+        "target": [
+            819,
+            419,
+            12,
+            12
+        ]
+    },
+    "PVP_AutoBattleMAX_BackUp": {
+        "desc": "MAX重试备份。|[PC覆盖·2026-07-09] 同PVP_AutoBattleMAX修正roi/target.",
+        "roi": [
+            790,
+            408,
+            80,
+            36
+        ],
+        "target": [
+            819,
+            419,
+            12,
+            12
+        ]
+    },
+    "PVP_AutoBattleMAX_CK": {
+        "roi": [
+            805,
+            473,
+            32,
+            43
+        ],
+        "method": 40,
+        "lower": [
+            [
+                0,
+                0,
+                174
+            ]
+        ],
+        "upper": [
+            [
+                40,
+                24,
+                255
+            ]
+        ],
+        "count": 300
+    },
+    "PVP_Multiplier_Verify": {
+        "desc": "确认倍数=40。|[PC覆盖·2026-07-09配置弹窗帧实测] '40倍'蓝字在720约(830-873,223-243),base roi[844,186,96,36](y186-222)偏上漏读→会误走Adjust调倍数流程.roi下移罩实测位置.",
+        "roi": [
+            815,
+            212,
+            120,
+            42
+        ]
+    },
+    "PVP_Multiplier_Adjust_Gomenu": {
+        "target": [
+            855,
+            228,
+            11,
+            11
+        ]
+    },
+    "PVP_Multiplier_Adjust_Set": {
+        "expected": [
+            "^(?=.*[设置])(?=.*[鲜血鸡尾酒])(?=.*[消耗量]).{4,12}$",
+            "^(?=.*[血之雞尾酒])(?=.*[消耗量])(?=.*[設定]).{6,12}$"
+        ]
+    },
+    "PVP_Multiplier_Adjust_Enter": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "PVP_AutoBattleStart": {
+        "desc": "点'40倍战斗开始'按钮。|[PC覆盖·2026-07-09卡帧实测] 按钮'40倍战斗开始🍷40'在720 (600-793,525-559),base roi[614,552,180,55](y552-607)只与按钮交叠~7px基本错过。roi修为罩全按钮,OCR命中'战斗开始'点字即点按钮.|[2026-07-13追加] 游戏版本更新后该按钮文案变为英文全大写'BATTLE'(用户实见),expected补入;中文词保留兼容旧版/回滚。",
+        "roi": [
+            600,
+            515,
+            200,
+            52
+        ],
+        "expected": [
+            "战斗开始",
+            "開始戰鬥",
+            "BATTLE"
+        ]
+    },
+    "PVP_AutoBattle_Battling": {
+        "roi": [
+            44,
+            591,
+            204,
+            70
+        ],
+        "expected": [
+            "正在进行",
+            "之中進行"
+        ]
+    },
+    "PVP_BattleResult": {
+        "roi": [
+            542,
+            187,
+            202,
+            79
+        ],
+        "expected": [
+            "反复战斗结果",
+            "重複戰鬥結果"
+        ]
+    },
+    "PVP_BattleWaitingLoad": {
+        "roi": [
+            1076,
+            21,
+            112,
+            31
+        ]
+    },
+    "PVP_BattleLeave": {
+        "roi": [
+            1095,
+            655,
+            97,
+            44
+        ],
+        "expected": [
+            "离开",
+            "離開"
+        ]
+    },
+    "PVP_BattleFaildLeave": {
+        "roi": [
+            676,
+            635,
+            73,
+            55
+        ],
+        "expected": [
+            "离开",
+            "離開"
+        ]
+    },
+    "PVP_PVPMes_Back": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "PVP_AutoBattle_APShortage": {
+        "desc": "出现Ap不足(弹窗标题)应对一套,入口",
+        "roi": [
+            540,
+            225,
+            191,
+            66
+        ]
+    },
+    "PVP_AutoBattle_APShortage_Depleted": {
+        "roi": [
+            1072,
+            25,
+            120,
+            27
+        ],
+        "replace": [
+            [
+                "o",
+                "0"
+            ],
+            [
+                "O",
+                "0"
+            ],
+            [
+                "\\+.*$",
+                ""
+            ]
+        ]
+    },
+    "PVP_AutoBattle_APShortage_Remaining": {
+        "roi": [
+            1072,
+            25,
+            120,
+            27
+        ],
+        "replace": [
+            [
+                "o",
+                "0"
+            ],
+            [
+                "O",
+                "0"
+            ],
+            [
+                "\\+.*$",
+                ""
+            ]
+        ]
+    },
+    "PVP_PerOperationsMain_Error_Processing": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "PVP_Sandplay_NoFindSrena": {
+        "desc": "找不到舞台时点地标换位。|[PC覆盖·2026-07-13实录·禁用] pc阈0.6下七个地标模板在满屏观众NPC场景大面积误匹(0.60~0.63),点中小人即误开阵型设置,且转场加载期点击落点竞速二次破坏(21:38/21:48/22:00三轮实录游走不收敛)。PC上位置破坏源(PerPetTask/locreset/PVPStart高位点击)已逐一禁用/修正,正常链路不再需要游走;真找不到台宁可走on_error干净收尾,不做0.6阈瞎点。",
+        "enabled": false
+    },
+    "PVP_Errmsg2#_Clear": {
+        "desc": "误进阵形界面的逃生门(认左上标题,点返回箭头)。|[PC覆盖·2026-07-13实录] 误点观众小人会进'防御阵形'界面,该界面内竞技场全链识别死锁,唯一出口=左上返回(用户实证)。base认安卓文案'战场角色设置'roi[134,143]与PC不符;PC实测标题'防御阵形/攻击阵形'在720(87-170,30-47),返回箭头(77,38)。expected兼容新旧文案,target改点箭头实位(base[1,1]角点在PC点不到按钮)。",
+        "recognition": "OCR",
+        "roi": [
+            70,
+            20,
+            170,
+            40
+        ],
+        "expected": [
+            "防御阵形",
+            "防禦陣形",
+            "攻击阵形",
+            "攻擊陣形",
+            "阵形设置"
+        ],
+        "action": "Click",
+        "target": [
+            70,
+            30,
+            16,
+            16
+        ],
+        "post_delay": 2000
+    }
+}

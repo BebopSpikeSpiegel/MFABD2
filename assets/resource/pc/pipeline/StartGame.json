@@ -1,15 +1,153 @@
 {
-    "StartGame_7dAD_Check": {
+    "StartGame_Start": {
+        "next": [
+            "[JumpBack]Env_AccountSave_Switch",
+            "StartGame_Check_App_Alive",
+            "StartGame_Check_Win32_SetSize"
+        ]
+    },
+    "StartGame_Check_App_Alive": {
+        "enabled": false
+    },
+    "StartGame_RunApp": {
+        "desc": "启动游戏",
+        "enabled": false
+    },
+    "StartGame_Update_PGM": {
+        "desc": "[PC程式更新外置,此逻辑关闭]游戏程序更新.'商店'特征词是防错预判加入的",
+        "enabled": false
+    },
+    "StartGame_UpdateCloseGame": {
+        "enabled": false
+    },
+    "StartGame_Update_Data": {
         "expected": [
-            "7天内不再显示",
-            "7日期間不再觀看"
+            "所需资料",
+            "所需資料"
+        ]
+    },
+    "StartGame_Update_Data_Click": {
+        "expected": [
+            "下载",
+            "下載"
+        ]
+    },
+    "StartGame_Update_Data_DownLoading": {
+        "expected": [
+            "正在下载",
+            "下载中"
         ],
+        "replace": [
+            [
+                "載",
+                "载"
+            ]
+        ],
+        "next": [
+            "StartGame_Update_Data_DownLoading",
+            "[JumpBack]StartGame_PayFailed",
+            "StartGame_TouchStart"
+        ]
+    },
+    "StartGame_GameIsMaint": {
+        "expected": [
+            "维护和更新",
+            "无法连接和使用游戏",
+            "維護和更新",
+            "無法連線和使用遊戲"
+        ]
+    },
+    "StartGame_Loading": {
+        "roi": [
+            808,
+            433,
+            332,
+            73
+        ],
+        "expected": [
+            "游戏启动中",
+            "啟動遊戲中"
+        ]
+    },
+    "StartGame_TouchStart": {
+        "roi": [
+            787,
+            442,
+            121,
+            57
+        ]
+    },
+    "StartGame_7dAD_Check": {
         "roi": [
             846,
             143,
             142,
             36
         ],
-        "desc": "查找并点击 7天内不再显示此广告"
+        "expected": [
+            "7天内不再显示",
+            "7日期間不再觀看"
+        ]
+    },
+    "StartGame_PerPetTask": {
+        "desc": "宠物派遣领取(认宠物头顶'!'气泡)。|[PC审阅·2026-07-17] 如原base模板误识别,就改用PC专门模板。",
+        "template": [
+            "PetMidGe_PC.png"
+        ],
+        "threshold": [
+            0.8
+        ]
+    },
+    "StartGame_Special": {
+        "desc": "另类赛季奖励接收[已适配,黄金竞技场]",
+        "expected": [
+            "赛季奖励",
+            "奖励已发放至",
+            "奖励已通过",
+            "邮件发放",
+            "獎勵已透過郵件發放"
+        ]
+    },
+    "StartGame_LinkDown_TouchCk": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "StartGame_Setup_SoundTurnOff_Start": {
+        "desc": "[PC端改设置影响游玩]在下载前关闭游戏声音,节省资源和流量",
+        "roi": [
+            168,
+            126,
+            56,
+            53
+        ]
+    },
+    "StartGame_Check_Win32_SetSize": {
+        "desc": "[PC覆盖] 先调整窗口大小到1280x720，再截图验证窗口可用",
+        "action": "Custom",
+        "custom_action": "PC_ResizeWindow",
+        "next": [
+            "StartGame_Logo",
+            "StartGame_LoadingPage",
+            "StartGame_Update_Data",
+            "StartGame_TouchStart",
+            "StartGame_SandPlayPage",
+            "StartGame_MainMsgBox_Remove"
+        ],
+        "on_error": [
+            "StartGame_RunApp"
+        ],
+        "focus": {
+            "Node.Action.Failed": "[color:red]PC窗口未找到或调整失败[/color]",
+            "Node.Action.Succeeded": "[color:green]PC窗口已就绪（1280x720）[/color]"
+        }
+    },
+    "Global_BackToQC_TouchQC1Pack": {
+        "desc": "任意门出口:点剧情页签第1槽卡带回主线箱庭。|[PC覆盖·2026-07-09实录] base KadaiGe.png=卡带右上图钉按钮的安卓渲染(金底白钉),PC端同一按钮渲染为灰底白钉→实测0.352<0.7恒miss→启动脚本落在黄金竞技场箱庭时BackToQC复位链死循环(20:25/20:31两轮实录,本节点每轮连败20+后JumpBack绕回)。从on_error帧(2026.07.09-20.42.50)裁KadaiGe_PC.png(25x25,徽章圆外r>11绿蒙版),追加进template(Or语义,base金钉保留不影响安卓)。三帧离线验:槽1徽章0.99~1.0且横序最左+分数最高双保险指向QC1,余卡徽章0.72~0.86不抢位(order_by默认Horizontal取最左)。注:暂置于pc/StartGame.json避让#322对pc/Global.json的重构,节点命名空间全局合并不影响生效。",
+        "template": [
+            "KadaiGe.png",
+            "KadaiGe_PC.png"
+        ]
     }
 }

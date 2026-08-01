@@ -1,0 +1,257 @@
+{
+    "AutoBattle_Entry": {
+        "desc": "[模块入口]检测是否存在自动战斗界面",
+        "recognition": "Or",
+        "any_of": [
+            "AutoBattle_Is_Auto",
+            "AutoBattle_TabTo_Auto"
+        ],
+        "next": [
+            "AutoBattle_Is_Auto",
+            "AutoBattle_TabTo_Auto"
+        ]
+    },
+    "AutoBattle_Is_Auto": {
+        "recognition": "Or",
+        "any_of": [
+            "Rec_<AutoBattle_Is_Auto>_Ocr_01",
+            "Rec_<AutoBattle_Is_Auto>_Ocr_02"
+        ],
+        "post_delay": 5000,
+        "next": [
+            "AutoBattle_Settlement_Victory",
+            "AutoBattle_Settlement_Defeat",
+            "AutoBattle_Is_Auto"
+        ],
+        "focus": "自动战斗中..."
+    },
+    "Rec_<AutoBattle_Is_Auto>_Ocr_01": {
+        "desc": "[识别]自动战斗判定,位置1-右下",
+        "recognition": "OCR",
+        "roi": [
+            1102,
+            639,
+            109,
+            31
+        ],
+        "expected": ["自动战斗中"],
+        "only_rec": true
+    },
+    "Rec_<AutoBattle_Is_Auto>_Ocr_02": {
+        "desc": "[识别]自动战斗判定,位置2-左下",
+        "recognition": "OCR",
+        "roi": [
+            28,
+            576,
+            182,
+            96
+        ],
+        "expected": ["自动战斗中"]
+    },
+    "AutoBattle_TabTo_Auto": {
+        "desc": "当前在非自动战斗界面",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_<AutoBattle_TabTo_Auto>_Ocr_01",
+            "Rec_<AutoBattle_TabTo_Auto>_Ocr_02"
+        ],
+        "next": ["AutoBattle_ClickAutoButt"]
+    },
+    "Rec_<AutoBattle_TabTo_Auto>_Ocr_01": {
+        "desc": "[识别]手动战斗界面,位置01",
+        "recognition": "OCR",
+        "roi": [
+            1126,
+            629,
+            73,
+            29
+        ],
+        "expected": ["BATTLE"],
+        "only_rec": true
+    },
+    "Rec_<AutoBattle_TabTo_Auto>_Ocr_02": {
+        "desc": "[识别]手动战斗界面,位置02",
+        "recognition": "OCR",
+        "roi": [
+            1034,
+            629,
+            60,
+            29
+        ],
+        "expected": ["TURN"],
+        "only_rec": true
+    },
+    "AutoBattle_ClickAutoButt": {
+        "desc": "模板点击自动战斗图标",
+        "recognition": "TemplateMatch",
+        "roi": [
+            712,
+            2,
+            348,
+            81
+        ],
+        "template": ["UI_AutoBattle.png"],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 2000,
+        "next": ["AutoBattle_Is_Auto"]
+    },
+    "AutoBattle_Settlement_Victory": {
+        "recognition": "OCR",
+        "roi": [
+            847,
+            26,
+            134,
+            63
+        ],
+        "expected": ["VICTORY"],
+        "only_rec": true,
+        "next": [
+            "AutoBattle_Egress_Next",
+            "AutoBattle_Egress_TurnBack",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "战斗结果-胜利"
+    },
+    "AutoBattle_Settlement_Defeat": {
+        "recognition": "OCR",
+        "roi": [
+            559,
+            8,
+            515,
+            358
+        ],
+        "expected": [
+            "DEFEAT",
+            "END"
+        ],
+        "next": [
+            "AutoBattle_Egress_TurnBack",
+            "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "战斗结果-失利"
+    },
+    "AutoBattle_Egress_Next": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    778,
+                    615,
+                    478,
+                    91
+                ],
+                "expected": [
+                    "前往下一个战斗",
+                    "挑战下一级"
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ],
+        "action": "Click",
+        "post_delay": 2000,
+        "timeout": 5000,
+        "next": [
+            "[JumpBack]AutoBattle_Egress_Next_Submenu",
+            "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk",
+            "AutoBattle_Egress_Next_NoAP",
+            "AutoBattle_Egress_Next",
+            "AutoBattle_Entry"
+        ]
+    },
+    "AutoBattle_Egress_Next_Submenu": {
+        "recognition": "OCR",
+        "roi": [
+            630,
+            352,
+            173,
+            132
+        ],
+        "expected": ["确认"],
+        "action": "Click",
+        "post_delay": 5000
+    },
+    "AutoBattle_Egress_Next_NoAP": {
+        "recognition": "OCR",
+        "roi": [
+            450,
+            345,
+            378,
+            111
+        ],
+        "expected": ["AP不足"],
+        "next": ["AutoBattle_Egress_Next_NoAP_Cancel"]
+    },
+    "AutoBattle_Egress_Next_NoAP_Cancel": {
+        "recognition": "OCR",
+        "roi": [
+            453,
+            425,
+            378,
+            111
+        ],
+        "expected": ["取消"],
+        "action": "Click",
+        "post_delay": 3000,
+        "timeout": 10000,
+        "next": [
+            "AutoBattle_Egress_TurnBack",
+            "[JumpBack]Global_WaitingForLoading"
+        ]
+    },
+    "AutoBattle_Egress_TurnBack": {
+        "recognition": "OCR",
+        "roi": [
+            438,
+            566,
+            818,
+            140
+        ],
+        "expected": ["返回"],
+        "action": "Click",
+        "post_delay": 5000,
+        "timeout": 5000,
+        "next": [
+            "[JumpBack]AutoBattle_Egress_TurnBack_SkipTalk",
+            "[JumpBack]Global_WaitingForLoading",
+            "AutoBattle_Egress_TurnBack"
+        ]
+    },
+    "AutoBattle_Egress_TurnBack_SkipTalk": {
+        "desc": "场景转换,可能出现对话的跳过。战斗失败后,进旅馆。",
+        "recognition": "TemplateMatch",
+        "roi": [
+            796,
+            2,
+            455,
+            93
+        ],
+        "template": ["Chaga_ProductNext.png"],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "[JumpBack]AutoBattle_Egress_TurnBack_Msg",
+            "AutoBattle_Egress_TurnBack_SkipTalk",
+            "Global_Null"
+        ]
+    },
+    "AutoBattle_Egress_TurnBack_Msg": {
+        "desc": "可能的再确认,跳过对话",
+        "recognition": "OCR",
+        "roi": [
+            440,
+            353,
+            423,
+            342
+        ],
+        "expected": [
+            "确认"
+        ],
+        "action": "Click",
+        "post_delay": 2000
+    }
+}

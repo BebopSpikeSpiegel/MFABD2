@@ -16,7 +16,8 @@
             "type": "Win32",
             "win32": {
                 "class_regex": "UnityWndClass",
-                "screencap": "FramePool",
+                "window_regex": "BrownDust II",
+                "screencap": "PrintWindow",
                 "mouse": "PostMessageWithWindowPos",
                 "keyboard": "PostMessageWithWindowPos"
             },
@@ -48,10 +49,26 @@
             "name": "[全局]启动脚本(置顶)",
             "entry": "StartGame_Start",
             "default_check": true,
-            "description": "<b>最新版探测 &amp; 下载渠道：</b><br>[![正式版](https://img.shields.io/github/v/release/sunyink/MFABD2?label=仓库源·正式版&color=green&logo=github)](https://github.com/sunyink/MFABD2/releases/latest)<br>[![公测版](https://img.shields.io/github/v/tag/sunyink/MFABD2?include_prereleases&filter=%2Abeta%2A&label=仓库源·公测版&color=blue&logo=github)](https://github.com/sunyink/MFABD2/releases?q=beta)<br>[![Mirror酱](https://img.shields.io/badge/Mirror%E9%85%B1-镜像源·高速下载-%239af3f6?logo=countingworkspro&logoColor=4f46e5)](https://mirrorchyan.com/zh/projects?rid=MFABD2)<br>自动判断游戏运行状态，按需启动；处理更新弹框、支付失败等异常提示；完成后领取<b>主界面</b>奖励并执行<b>宠物派遣</b>。<br><b>注意：</b>网络环境请提前解决，脚本不处理网络问题。<br><b>首次运行前，务必查看 <code>使用帮助</code> 卡片！</b><br><br>PC端控制器（720P窗口化）资源适配尚不完整，仅供探索。",
+            "description": "<b>最新版探测&下载渠道:</b><br>[![正式版](https://img.shields.io/github/v/release/sunyink/MFABD2?label=仓库源·正式版&color=green&logo=github)](https://github.com/sunyink/MFABD2/releases/latest)<br>[![公测版](https://img.shields.io/github/v/tag/sunyink/MFABD2?include_prereleases&filter=%2Abeta%2A&label=仓库源·公测版&color=blue&logo=github)](https://github.com/sunyink/MFABD2/releases?q=beta)<br>[![Mirror酱](https://img.shields.io/badge/Mirror%E9%85%B1-镜像源·高速下载-%239af3f6?logo=countingworkspro&logoColor=4f46e5)](https://mirrorchyan.com/zh/projects?rid=MFABD2)<br><span style=\"color:Crimson;font-size:10px\">框架有PC端控制器(720P窗口化)，但资源来不及适配仅供探索。</span><br><b>启动游戏</b>：<br><span style=\"color:Crimson;font-size:16px\"><b>多存档：多实例启动时自动加载自定义存档号；游戏开启后中途更改存档号的，再次运行`任务启动`会瞬间完成并使变更生效。</b></span><br>自动判断游戏运行情况，注入全局变量。按需启动游戏，包含更新、支付失败等一些异常框点击，领取`主界面`奖励、`宠物派遣`。<br><b><span style=\"color:Crimson;font-size:12px\">注意：网络环境需提前解决。</span></b><br>【<b>首次运行前，务必至少查看</b>`使用帮助`<b>卡片！</b>】",
             "option": [
                 "前置助手",
                 "多存档"
+            ],
+            "controller": [
+                "Adb"
+            ]
+        },
+        {
+            "name": "[全局]启动脚本(置顶)PC",
+            "entry": "StartGame_Start",
+            "default_check": true,
+            "description": "<b>最新版探测&下载渠道:</b><br>[![正式版](https://img.shields.io/github/v/release/sunyink/MFABD2?label=仓库源·正式版&color=green&logo=github)](https://github.com/sunyink/MFABD2/releases/latest)<br>[![公测版](https://img.shields.io/github/v/tag/sunyink/MFABD2?include_prereleases&filter=%2Abeta%2A&label=仓库源·公测版&color=blue&logo=github)](https://github.com/sunyink/MFABD2/releases?q=beta)<br>[![Mirror酱](https://img.shields.io/badge/Mirror%E9%85%B1-镜像源·高速下载-%239af3f6?logo=countingworkspro&logoColor=4f46e5)](https://mirrorchyan.com/zh/projects?rid=MFABD2)<br><span style=\"color:Crimson;font-size:10px\">框架有PC端控制器(720P窗口化)，：需手动启动游戏；部分功能如遇模板匹配失败，可能需补充PC端截图资源。</span><br><b>启动游戏</b>：<br><span style=\"color:Crimson;font-size:16px\"><b>多存档：多实例启动时自动加载自定义存档号；游戏开启后中途更改存档号的，再次运行`任务启动`会瞬间完成并使变更生效。</b></span><br>自动判断游戏运行情况，注入全局变量。按需启动游戏，包含更新、支付失败等一些异常框点击，领取`主界面`奖励、`宠物派遣`。<br><b><span style=\"color:Crimson;font-size:12px\">注意：网络环境需提前解决。</span></b><br>【<b>首次运行前，务必至少查看</b>`使用帮助`<b>卡片！</b>】",
+            "option": [
+                "前置助手",
+                "多存档"
+            ],
+            "controller": [
+                "PC客户端"
             ]
         },
         {
@@ -59,6 +76,7 @@
             "entry": "QuickHunt_Start",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "default_check": true,
@@ -88,6 +106,7 @@
             "entry": "Equip_HomePage",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "default_check": true,
@@ -104,6 +123,7 @@
             "entry": "GachaADV_Start",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "default_check": true,
@@ -117,6 +137,7 @@
             "entry": "PVP_TaskStart",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "default_check": true,
@@ -152,10 +173,12 @@
             "entry": "Weekly_Start",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "option": [
                 "末日之书",
+                "小屋点赞",
                 "周常钓鱼"
             ],
             "description": "每周执行：访问<code>街机页面</code>、在<code>我的小屋</code>对随机访客点赞4次、打1轮<code>末日之书</code>、<code>钓鱼</code>1条。<br>周期触发器已实装，同周期内不会重复执行。"
@@ -166,6 +189,7 @@
             "entry": "Daily_HomePage",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "option": [
@@ -182,6 +206,7 @@
             "entry": "RewardsDaily_Start",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "description": "领取主界面<code>任务</code>页内的每日与每周任务奖励。"
@@ -192,6 +217,7 @@
             "entry": "Activities_Start",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "option": [
@@ -205,6 +231,7 @@
             "entry": "Pass_HomePage",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "description": "领取主界面<code>通行证</code>页内的可领奖励。"
@@ -215,6 +242,7 @@
             "entry": "Mail_HomePage",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "description": "领取主界面<code>邮件</code>内的全部邮件奖励（含一般与商品类）。<br>无未读红点时自动跳过，不进入邮件页面。"
@@ -239,6 +267,7 @@
             "entry": "Arbitrage_Start",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "description": "卡带商店跑商套利：逐卡带扫购低价原料收藏一键购买，按每日最高价择机出售；同时制作高利润料理待出售变现。<br>三个环节均可独立开关，按需组合。",
@@ -264,6 +293,7 @@
             "name": "[全局]结束游戏",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "entry": "Close_HomePage"
@@ -1259,6 +1289,24 @@
                 }
             ]
         },
+        "小屋点赞": {
+            "type": "switch",
+            "description": "在<code>我的小屋</code>对随机访客点赞4次。账号未解锁小屋时请关闭。",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {}
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "Weekly_VisitCabin_Hub": {
+                            "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
         "周常钓鱼": {
             "description": "钓鱼1条，满足每周任务计数。关闭后跳过此项。",
             "type": "switch",
@@ -1526,11 +1574,17 @@
                     "name": "No",
                     "pipeline_override": {
                         "Arbitrage_Cooking_NubMenu_Max": {
-                            "action": "Click",
-                            "target": [
-                                576,
-                                563
-                            ]
+                            "recognition": "OCR",
+                            "roi": [
+                                415,
+                                520,
+                                220,
+                                100
+                            ],
+                            "expected": [
+                                "MAX"
+                            ],
+                            "action": "Click"
                         }
                     }
                 }

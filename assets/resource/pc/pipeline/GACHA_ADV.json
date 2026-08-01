@@ -1,0 +1,490 @@
+{
+    "GachaADV_GachaRed_Have": {
+        "desc": "[PC覆盖] 由单一 Custom 识别改为 Or 分档:标准档优先,低饱和档兜底。base 的 recognition/custom_recognition/custom_recognition_param/roi 被本节点的 Or 接管(Or 只读 any_of,残留字段不生效,故未逐个清空);action/post_delay/next 仍继承 base。target 为绝对坐标,不依赖命中 box,两档共用。⚠️ 分档只为覆盖'亮背景压低红点饱和度'这一单点特例,不要把低饱和档扩散到其他检测点,理由见 Agt_RedDot_Preset_LowSat 的 desc。",
+        "recognition": "Or",
+        "any_of": [
+            "Agt_<GachaADV_GachaRed_Have>_Std",
+            "Agt_<GachaADV_GachaRed_Have>_LowSat"
+        ],
+        "target": [
+            104,
+            652,
+            10,
+            10
+        ]
+    },
+    "Agt_<GachaADV_GachaRed_Have>_Std": {
+        "desc": "[PC] 抽抽乐红点-标准档(S140)。绝大多数画面走这一档,19条语料里 base 11条 + PC 2条有红点样本全部由本档命中(conf 0.63~0.73)。参数即通用 Agt_RedDot_Preset,不做任何本地覆盖。",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {
+            "preset": "Agt_RedDot_Preset"
+        },
+        "roi": [
+            92,
+            617,
+            53,
+            52
+        ]
+    },
+    "Agt_<GachaADV_GachaRed_Have>_LowSat": {
+        "desc": "[PC] 抽抽乐红点-低饱和兜底档(S110)。仅在标准档 miss 后才跑,用于救回'图标叠明亮场景光→红点饱和度被压低→S140 红环破损漏检'的特例(实测该帧 S140 卡 area/28px,本档 conf 0.629)。ROI 与标准档一致(收窄到 17x17 实测无额外收益,红点位置锁定在绝对(119,635)11x11)。误命中风险见 Agt_RedDot_Preset_LowSat 的 desc③。",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {
+            "preset": "Agt_RedDot_Preset_LowSat"
+        },
+        "roi": [
+            92,
+            617,
+            53,
+            52
+        ]
+    },
+    "GachaADV_GachaPage2": {
+        "roi": [
+            966,
+            398,
+            134,
+            98
+        ],
+        "expected": [
+            "兑换",
+            "兌换"
+        ]
+    },
+    "GachaADV_PageEnter_1#": {
+        "roi": [
+            882,
+            178,
+            216,
+            314
+        ],
+        "expected": [
+            "查看概率",
+            "兑换",
+            "必得.*服装",
+            "每个账号限购1次",
+            "查看机率",
+            "兌换",
+            "每個帳號可購買1次",
+            "必出.*服装"
+        ],
+        "replace": [
+            [
+                "機",
+                "机"
+            ]
+        ]
+    },
+    "GachaADV_AREA1#": {
+        "roi": [
+            94,
+            187,
+            49,
+            60
+        ],
+        "target": [
+            115,
+            211,
+            4,
+            3
+        ]
+    },
+    "GachaADV_AREA1#_Enter": {
+        "roi": [
+            115,
+            202,
+            3,
+            6
+        ]
+    },
+    "GachaADV_AREA2#": {
+        "roi": [
+            97,
+            260,
+            37,
+            56
+        ],
+        "target": [
+            115,
+            280,
+            3,
+            6
+        ]
+    },
+    "GachaADV_AREA2#_Enter": {
+        "desc": "[PC覆盖·2026-07-14] 装备页签选中白核count 35/50仍边缘化:7-13实录连miss 14轮(1.35s/轮,共约19s逼近20s超时)才过闸,前日同点直接哑火。on_error帧实测负样本(装备未选中态)纯白像素0/50,区分度绝对,count降10(20%)终结循环;参照AREA1#_Enter基准count 6/18=33%同哲学。",
+        "roi": [
+            112,
+            274,
+            10,
+            5
+        ],
+        "count": 10
+    },
+    "GachaADV_Location1": {
+        "roi": [
+            279,
+            157,
+            28,
+            43
+        ]
+    },
+    "GachaADV_Location1_Ck": {
+        "roi": [
+            921,
+            607,
+            299,
+            44
+        ]
+    },
+    "GachaADV_Location1_90LotPost": {
+        "roi": [
+            406,
+            180,
+            696,
+            320
+        ]
+    },
+    "GachaADV_Location2": {
+        "roi": [
+            269,
+            203,
+            48,
+            81
+        ]
+    },
+    "GachaADV_Location3": {
+        "roi": [
+            273,
+            270,
+            34,
+            83
+        ]
+    },
+    "GachaADV_Location4": {
+        "roi": [
+            277,
+            339,
+            36,
+            83
+        ]
+    },
+    "GachaADV_Location5": {
+        "roi": [
+            279,
+            407,
+            27,
+            96
+        ]
+    },
+    "GachaADV_Location2_NoPool_Clr": {
+        "roi": [
+            160,
+            206,
+            133,
+            66
+        ]
+    },
+    "GachaADV_Location3_NoPool_Clr": {
+        "roi": [
+            160,
+            278,
+            134,
+            66
+        ]
+    },
+    "GachaADV_Location4_NoPool_Clr": {
+        "roi": [
+            160,
+            347,
+            134,
+            70
+        ]
+    },
+    "GachaADV_Location5_NoPool_Clr": {
+        "roi": [
+            160,
+            418,
+            134,
+            76
+        ]
+    },
+    "GachaADV_Location2_NoPool_Tmp": {
+        "roi": [
+            152,
+            197,
+            149,
+            93
+        ]
+    },
+    "GachaADV_Location3_NoPool_Tmp": {
+        "roi": [
+            152,
+            266,
+            149,
+            93
+        ]
+    },
+    "GachaADV_Location4_NoPool_Tmp": {
+        "roi": [
+            152,
+            333,
+            148,
+            94
+        ]
+    },
+    "GachaADV_Location5_NoPool_Tmp": {
+        "roi": [
+            152,
+            406,
+            148,
+            93
+        ]
+    },
+    "Rec_<GachaADV_Special_ReservedRights>_Ocr": {
+        "roi": [
+            818,
+            441,
+            50,
+            27
+        ]
+    },
+    "Rec_<GachaADV_Special_ReservedRights>_Tpl": {
+        "roi": [
+            706,
+            231,
+            392,
+            268
+        ]
+    },
+    "GachaADV_Special_SaveGuaranteed": {
+        "roi": [
+            744,
+            397,
+            67,
+            31
+        ]
+    },
+    "GachaADV_Slip": {
+        "roi": [
+            185,
+            15,
+            233,
+            41
+        ],
+        "expected": [
+            "抽抽乐",
+            "抽抽樂"
+        ]
+    },
+    "GachaADV_Slip_Action": {
+        "begin": [
+            174,
+            435,
+            1,
+            1
+        ],
+        "end": [
+            174,
+            142,
+            1,
+            1
+        ]
+    },
+    "GachaADV_SkipPV": {
+        "roi": [
+            913,
+            399,
+            186,
+            94
+        ],
+        "expected": [
+            "兑换",
+            "兌换"
+        ]
+    },
+    "GachaADV_PaidDiamond_90LotFind_Tp1": {
+        "roi": [
+            755,
+            569,
+            129,
+            97
+        ]
+    },
+    "GachaADV_PaidDiamond_90LotFind_Tp2": {
+        "roi": [
+            953,
+            381,
+            239,
+            147
+        ]
+    },
+    "GachaADV_PaidDiamond_90LotFind_Tp3": {
+        "roi": [
+            953,
+            381,
+            239,
+            147
+        ],
+        "expected": [
+            "付费抽抽乐",
+            "付费抽抽樂"
+        ]
+    },
+    "GachaADV_TouchFreeGacha": {
+        "expected": [
+            "免费1次",
+            "免費1次"
+        ]
+    },
+    "GachaADV_TouchFreeGachaConfirmMenu": {
+        "roi": [
+            536,
+            227,
+            201,
+            130
+        ],
+        "expected": [
+            "确认抽抽乐",
+            "確認抽抽樂"
+        ]
+    },
+    "GachaADV_TouchFreeGachaBuy": {
+        "roi": [
+            633,
+            393,
+            171,
+            88
+        ],
+        "expected": [
+            "购买",
+            "購買"
+        ]
+    },
+    "GachaADV_TouchFreeGachaSkip": {
+        "roi": [
+            1147,
+            15,
+            70,
+            50
+        ],
+        "template": [
+            "UI_TalkSkip.png"
+        ],
+        "green_mask": true
+    },
+    "GachaADV_5X": {
+        "expected": [
+            "艾莉诺",
+            "艾莉諾",
+            "這是不用多說的巨作"
+        ],
+        "target": [
+            1175,
+            37,
+            16,
+            7
+        ]
+    },
+    "GachaADV_5X2": {
+        "target": [
+            1175,
+            37,
+            16,
+            7
+        ]
+    },
+    "GachaADV_5XResuNew": {
+        "target": [
+            1175,
+            37,
+            16,
+            7
+        ]
+    },
+    "GachaADV_GachaResultBack": {
+        "roi": [
+            93,
+            650,
+            178,
+            47
+        ],
+        "expected": [
+            "抽抽乐点数",
+            "抽抽樂點数",
+            "抽抽樂點數"
+        ],
+        "target": [
+            108,
+            29,
+            10,
+            5
+        ]
+    },
+    "GachaADV_FinGacha": {
+        "target": [
+            108,
+            29,
+            10,
+            5
+        ]
+    },
+    "Gacha_Quick_All": {
+        "roi": [
+            140,
+            608,
+            185,
+            78
+        ],
+        "expected": [
+            "所有免费抽抽乐",
+            "全部免费抽取"
+        ]
+    },
+    "Gacha_Quick_All_SubMsg_Ck": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "Gacha_Quick_5X": {
+        "target": [
+            1173,
+            37,
+            6,
+            5
+        ]
+    },
+    "Rec_<Gacha_Quick_Briefing>_Tmp": {
+        "roi": [
+            101,
+            615,
+            42,
+            43
+        ],
+        "template": [
+            "Gacha_Briefing.png",
+            "Gacha_Briefing2.png"
+        ]
+    },
+    "Rec_<Gacha_Quick_Briefing>_Ocr": {
+        "roi": [
+            135,
+            624,
+            66,
+            25
+        ]
+    },
+    "GachaADV_NoFindFreeAndInEnd": {
+        "desc": "拖动后无免费红点且识别到底部普池\\判定未完成",
+        "recognition": "DirectHit",
+        "roi": [
+            157,
+            175,
+            137,
+            329
+        ]
+    }
+}

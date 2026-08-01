@@ -1,0 +1,579 @@
+{
+    "Daily_EnterUnion": {
+        "desc": "主菜单公会红点存在则进入。|[PC覆盖] 公会按钮在主页左上,红点在按钮右上角720(267,92)(native(400,138)),base roi[298,88,29,28]按安卓→[250,80,30,24]。红点为清晰红点沿用Agt_RedDot_Preset;target_offset继承base[-5,5]。实机验证有红点→点击进公会。",
+        "roi": [
+            250,
+            72,
+            30,
+            32
+        ],
+        "target_offset": [
+            -15,
+            10,
+            0,
+            0
+        ]
+    },
+    "Daily_UnionGUI": {
+        "desc": "公会签到页确认(OCR'公会')。|[PC覆盖] 720标题'公会'在box(156,19,103,28)中心(207,33),base roi[180,13,135,61]→[150,10,120,46]。#322 sunyink建议补繁体'公會'(expected数组整体替换,须含简体原值)。",
+        "roi": [
+            150,
+            10,
+            120,
+            46
+        ],
+        "expected": [
+            "公会",
+            "公會"
+        ]
+    },
+    "Daily_Union_Intnet_Err": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "Daily_UnionReward": {
+        "desc": "公会奖励领取(OCR'奖励已发放至邮箱')。|[PC覆盖] 720提示在box(571,485,127,20)中心(634,495),base roi[523,490,233,69]按安卓→[565,478,140,32]。action点(1,1)关弹窗继承base。实机验证:进公会自动签到成功、提示出现。",
+        "roi": [
+            565,
+            478,
+            140,
+            32
+        ],
+        "expected": [
+            "奖励已发放至邮箱",
+            "獎勵已發送至"
+        ]
+    },
+    "Daily_UnionBack": {
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    150,
+                    10,
+                    120,
+                    46
+                ],
+                "expected": [
+                    "公会",
+                    "公會"
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ]
+    },
+    "Rec_<Daily_Busin_Claim>_Ocr": {
+        "desc": "[识别]主页左侧'经营管理'按钮(进餐馆结算)。|[PC覆盖] 720实测'经营管理'在box(84,193,56,15)中心(112,200)(native(126,289)),base roi[85,228,91,29]偏下→[80,190,70,25]。#322 sunyink建议补繁体'經营管理'。",
+        "roi": [
+            80,
+            190,
+            70,
+            25
+        ],
+        "expected": [
+            "经营管理",
+            "經营管理"
+        ]
+    },
+    "Rec_<Daily_Busin_Claim>_Tpl": {
+        "desc": "主页左侧'经营管理'按钮模板兜底(Or的另一支,OCR为主)。|[PC覆盖] base roi[87,174,98,81]按安卓,经前半段OCR实测PC'经营管理'标签720(112,200)/native(126,289),按钮图标在标签上方→PC roi[78,152,78,66]罩图标+标签。模板MainBotmBusinGE/_F_GE已降采样58×39→39×26存PC/image自动覆盖,匹配度待MFA验。",
+        "roi": [
+            72,
+            139,
+            79,
+            67
+        ]
+    },
+    "Daily_Busin_SubMenu": {
+        "desc": "确认餐馆经营子菜单已弹出。|[PC覆盖] 720实测子菜单'Lv.X餐馆营业额现状'(473,190)/'立刻前往'(777,200)/'累计奖励'(450,234),base roi[394,161,493,199]按安卓→[450,180,370,130]。#322 sunyink建议补繁体(expected数组整体替换,含简体原值+繁体)。",
+        "roi": [
+            450,
+            180,
+            396,
+            130
+        ],
+        "expected": [
+            "餐馆营业额",
+            "立刻前往",
+            "累计奖励",
+            "餐廳營業額",
+            "立即前往",
+            "累計獎勵"
+        ]
+    },
+    "Daily_GetBusin_SubMenu_Claim": {
+        "desc": "子菜单OCR点击'一键获得'一键领取+色核。|[PC覆盖] #322 sunyink:应点底部'一键获得'(非'结算')。720实机OCR det实测'一键获得'在box(703,532,49,18);原PC误识别'结算'(roi[640,180,260,260]仅到y440,框不到y532的一键获得)。改roi[660,505,180,60]罩底部一键获得,expected'键获得'(det易丢'一',与base #322一致)。action/Sub_Ocr_Enable_Clr继承base。",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    660,
+                    505,
+                    180,
+                    60
+                ],
+                "expected": [
+                    "键获得",
+                    "鍵獲得"
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ]
+    },
+    "Daily_Busin_Enter": {
+        "desc": "餐馆结算页'立刻前往'进入餐馆世界场景。|[PC覆盖] base roi[699,170,190,106]按安卓。【2026-06-24修复seam真空】结算领完后子菜单上移,'立刻前往'从结算前的y193移到结算后的实测[773,160,65,18];原roi[740,185,90,30]在y185起、漏掉y160的文字→Enter失败9次→撞逻辑真空。改roi上扩罩结算前后两布局(y160与y193)。【2026-07-02实机】x起760切掉'立刻前往'左'立'字(OCR det实测box x746)→无识别;x左扩到745、宽120罩全x746-802。",
+        "roi": [
+            745,
+            150,
+            120,
+            70
+        ],
+        "expected": [
+            "立刻前往",
+            "立即前往"
+        ]
+    },
+    "Daily_Busin_Entered": {
+        "desc": "已进入餐馆确认(OCR'格鲁菲餐厅')。|[PC覆盖] 720实测'格鲁菲餐厅'在box(83,26,104,24)中心(135,38)(native(124,39)),base roi[87,20,146,50]接近→[80,22,115,30]。",
+        "roi": [
+            80,
+            22,
+            115,
+            30
+        ],
+        "expected": [
+            "^(?=.*[格鲁菲])(?=.*[餐厅]).{3,6}$",
+            "^(?=.*[格魯菲])(?=.*[餐廳]).{3,6}$"
+        ]
+    },
+    "Daily_Busin_GiftGet": {
+        "desc": "圣石领取。|PC偏移",
+        "roi": [
+            67,
+            122,
+            277,
+            117
+        ]
+    },
+    "Daily_Busin_DecorCoin_Exists": {
+        "desc": "【假孤立勿删】装饰币每日计数OCR(每日x/20)。|[PC覆盖] 实机计数器在1080[1142,73,86,28](右上,与base[769,57]位置不同)→720 roi[758,46,75,28]。供Nothing_Binary HSV target_node引用。",
+        "roi": [
+            758,
+            46,
+            75,
+            28
+        ]
+    },
+    "Daily_Busin_DecorCoin_IsFull": {
+        "desc": "【假孤立勿删】装饰币满OCR(x/x正则)。|[PC覆盖] 同Exists,1080[1142,73,86,28]→720 roi[758,46,75,28]。供IsFull_Binary HSV target_node引用。",
+        "roi": [
+            758,
+            46,
+            75,
+            28
+        ]
+    },
+    "Rec_<Daily_Busin_DecorCoin_PickUp>_Tpl_01": {
+        "desc": "装饰币探查区01-中央(重划)。|[PC覆盖] 【2026-07-03】实跑90s超时0拾取+40帧24点气泡分布实测(x29~1183,y38~417,遍布用餐区),原三区(base×0.667直缩)只罩中左、大片漏(#322 :202/:263实锤)。按分布包围盒重划左/中/右三区全覆盖,交界重叠≥30px(模板宽)防跨界气泡。中央x205-940。模板UI_BusinCoin.png(30×27)经SQDIFF实测可识别各图案外观气泡,不动。",
+        "roi": [
+            309,
+            72,
+            977,
+            634
+        ]
+    },
+    "Rec_<Daily_Busin_DecorCoin_PickUp>_Tpl_02": {
+        "desc": "装饰币探查区02-右侧(原下方,重划)。|[PC覆盖] 覆盖右上/右下实测气泡点(872,38)(1170~1183,367~417)。x910-1270。",
+        "roi": [
+            105,
+            293,
+            259,
+            402
+        ]
+    },
+    "Rec_<Daily_Busin_DecorCoin_PickUp>_Tpl_03": {
+        "desc": "装饰币探查区03-左侧(重划)。|[PC覆盖] 覆盖左缘实测气泡点(29,89)(228,220)。x9-239。",
+        "roi": [
+            2,
+            50,
+            88,
+            587
+        ]
+    },
+    "Daily_Busin_DecorCoin_LocReset": {
+        "desc": "餐厅视图复位:点'常客笔记'。|[PC覆盖] 720实测主视图'常客笔记'按钮在1080[124,182](720[83,121]),base roi[91,139,94,35]→PC roi[80,118,80,28]。实机验证:CursorPos点击(100,119)成功进常客笔记页。target_offset base[0,-5]×0.667=[0,-3]。",
+        "roi": [
+            80,
+            118,
+            66,
+            28
+        ],
+        "expected": [
+            "常客笔记",
+            "熟客錄"
+        ],
+        "target_offset": [
+            0,
+            -3,
+            0,
+            0
+        ]
+    },
+    "Daily_Busin_DecorCoin_LocReset_SubUI": {
+        "desc": "常客笔记子页确认(OCR'常客笔记'标题)。|[PC覆盖] 720实测标题在1080[272,31,136,36]中心(340,49)(720[181,21,91,24]),base roi[215,16,122,51]→PC roi[178,16,100,32]。实机验证:子页已进。",
+        "roi": [
+            178,
+            16,
+            100,
+            32
+        ],
+        "expected": [
+            "常客笔记",
+            "熟客錄"
+        ]
+    },
+    "Daily_Busin_DiaDetour": {
+        "desc": "常客钻石旁路(OCR'全部获得')。|[PC覆盖] 实机'全部获得'在常客笔记页右下角1080[1646,992,78,22]中心(1685,1003)(720[1097,661,52,15]),PC宽屏布局与base[1012,636]位置完全不同→PC子roi[1090,655,75,30]。action/Sub_Ocr_Enable_Clr沿用base。",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    1090,
+                    655,
+                    75,
+                    30
+                ],
+                "expected": [
+                    "全部获得",
+                    "全部獲得"
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ]
+    },
+    "Daily_Busin_DecorCoin_Move_1": {
+        "begin": [
+            1270,
+            89,
+            1,
+            1
+        ],
+        "end": [
+            0,
+            614,
+            1,
+            1
+        ]
+    },
+    "Daily_Busin_DecorCoin_Move_2": {
+        "begin": [
+            426,
+            97,
+            1,
+            1
+        ],
+        "end": [
+            979,
+            705,
+            1,
+            1
+        ]
+    },
+    "Daily_Busin_DecorCoin_Move_3": {
+        "begin": [
+            1262,
+            709,
+            1,
+            1
+        ],
+        "end": [
+            0,
+            94,
+            1,
+            1
+        ]
+    },
+    "Daily_Busin_NoGift": {
+        "desc": "无圣石情况(OCR'常客')。|[PC覆盖] base roi[71,176,276,116]→PC roi[45,150,185,85]。2026-07-03版本更新复核:新'常客'标签(169,209)-(196,223)仍在本roi内,继续有效;y150起点避开第一行'常客笔记'(y124-135)/'格鲁TALK'(y125-136)标签防误匹配。本节点是GiftGet后的出口探测(按钮常驻恒真),顺序在Entered.next中排GiftGet之后。",
+        "roi": [
+            45,
+            197,
+            185,
+            38
+        ],
+        "expected": [
+            "常客",
+            "熟客"
+        ]
+    },
+    "Daily_Busin_StageUp": {
+        "desc": "餐厅星级'下一阶段'升级。|[PC覆盖] base sub roi[1155,937,158,81]×0.667=[770,625,105,54];实机进成长视图见升级花费区约1080(1150-1260,994)(720~803,663),按钮略低→PC sub roi[760,635,120,55]。默认关(餐馆自动升级),无可升状态未触发实按钮,待MFA验。",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    760,
+                    635,
+                    120,
+                    55
+                ],
+                "expected": [
+                    "^(?=.*[下])(?=.*[一])(?=.*[阶段]).{2,5}$"
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ]
+    },
+    "Daily_Busin_LevelUp": {
+        "desc": "餐厅等级'升级'。|[PC覆盖] 同StageUp区域,base sub roi[1155,937,158,81]→PC sub roi[760,635,120,55]。默认关,待MFA验。",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "OCR",
+                "roi": [
+                    760,
+                    621,
+                    135,
+                    69
+                ],
+                "expected": [
+                    "升级"
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ]
+    },
+    "Daily_Busin_LevelUp_Ck": {
+        "desc": "升级动画'点击画面关闭'。|[PC覆盖] base roi[834,761,252,221]×0.667→[555,505,170,150](中下区通用点击关闭)。待MFA验。",
+        "roi": [
+            555,
+            505,
+            170,
+            150
+        ]
+    },
+    "Daily_Busin_Quick_BackPVEPage_Str": {
+        "desc": "快速卡带离开餐馆(TemplateMatch BusinQuickIcoGE绿播放键)。|[PC覆盖] base roi[74,81,285,197]×0.667→[49,54,190,131];模板已降采样62×49→41×33存PC/image自动覆盖。注:实机左上默认视图未见该绿播放键(可能离开步才出现),roi/模板按缩放给出,离开链路待实机验证。",
+        "roi": [
+            171,
+            65,
+            133,
+            84
+        ]
+    },
+    "Daily_Square_ToSquare": {
+        "desc": "卡带菜单选广场卡进入梦幻广场(TemplateMatch Qcard_Square)。|[PC覆盖·2026-06-30重做] 上一版两错:①模板从MaaMCP整帧cv2缩720裁,但MFA实截客户端区、尺度差~2%→实机仅0.34-0.377;②roi被误设[1110,395,180,110](右上角餐厅背景),而玩法游戏卡行实在底部y~616(以MFA on_error帧Daily_Square_Menu_Cor为准)→在背景里瞎匹配。修法:直接用MFA自存on_error 720帧,在最右FANTASIA SQUARE卡裁彩虹+金字标art 64×46存PC/image;roi指回底部卡带行[10,600,1260,90];green_mask关(卡是彩色art非绿UI)。同帧自匹配1.000、次峰(他卡)0.565、阈0.7唯一命中。target_offset[0,10]落卡中心。",
+        "roi": [
+            10,
+            600,
+            1260,
+            90
+        ],
+        "green_mask": false,
+        "target_offset": [
+            0,
+            10,
+            0,
+            0
+        ]
+    },
+    "Daily_FantasiaSquare": {
+        "desc": "确认已进入梦幻广场(TemplateMatch Mirror_FantasiaSquare_Ico)。|[PC覆盖·2026-06-30修] ①上一版roi[560,860,780,120]误用1080坐标→y860掉出720帧外→确认恒失败、整条许愿不跑。改roi[640,628,120,72]罩住地面mirror图标(MFA实帧稳定命中box[665,646])。②MFA实帧维护者PC模板仅0.647<默认0.7阈值→闸门仍关,而真位置峰值0.647、异位置仅0.47→降threshold到0.55(高于误匹配地板、低于真峰,选择性安全),不动维护者模板。FantasiaSquare是总闸,过后才接DailyIco(点'移动至女神像'日常自动寻路)→Daily_Pray许愿。|[2026-07-13追加] 广场日夜/状态变化下镜面按钮渲染漂移,维护者模板MFA帧实测0.647(6月)→0.510(今晚)<0.55闸死→ToSquare反复重进死循环。从今晚MFA on_error帧重裁PC2版(40x40),其余广场MFA帧1.000x3、负样本≤0.26,追加进template(Or语义)。",
+        "roi": [
+            640,
+            628,
+            120,
+            72
+        ],
+        "template": [
+            "Mirror_FantasiaSquare_Ico.png",
+            "Mirror_FantasiaSquare_Ico_PC2.png"
+        ],
+        "threshold": [
+            0.55
+        ]
+    },
+    "Daily_DailyIco_1": {
+        "desc": "梦幻广场每日奖励绿勾(TemplateMatch Square_DailyIco)。|[PC覆盖·2026-07-13实机重裁] 旧20x20重裁版(标'待MFA验')实测0.31~0.55恒miss→寻路触发器哑火,人不在女神像旁时祈愿死循环(07-13 00:27实录,用户手点介入)。从实机720帧重裁16x16(圆外r>7.5绿蒙版,列表底为草地绿故必须蒙版),实测命中1.000唯一、任务完成态帧0.622/营地帧0.335不误报。roi[1015,120,60,45]经实机帧核验正确(绿勾中心720(1041,144))。target_offset继承base[3,0]。",
+        "roi": [
+            1015,
+            120,
+            60,
+            45
+        ]
+    },
+    "Daily_DailyIco_2": {
+        "desc": "每日奖励OCR兜底(识别'移动至艾力克史温女')。|[PC覆盖] 720实测在box(1052,154,125,17)(native[1578,231,188,26]),base roi[968,76,203,256]→[1010,148,180,30]。target_offset继承base[3,0]。实机验证:点击后角色自动寻路到女神像。",
+        "roi": [
+            1010,
+            148,
+            180,
+            30
+        ],
+        "expected": [
+            "^(?=.*[移动至])(?=.*[艾力克史])(?=.*[温女]).{5,12}$",
+            "^(?=.*[移動至])(?=.*[艾力克史])(?=.*[温女]).{5,12}$"
+        ]
+    },
+    "Daily_OnFoot_LoopFoot": {
+        "desc": "导航中等待(TemplateMatch Square_misstion_Nvi)。|[PC覆盖] PC实测寻路时小地图右上'+'号变为蓝色循环箭头图标(同安卓蓝箭头,DoNothing+post_delay等待),720图标在'+'位置约[1200,140,30,30](native(1819,228));base roi[1168,106,69,247]→[1195,135,40,40]。模板Square_misstion_Nvi已按720重裁(28x28循环箭头+播放三角,待MFA验)。实机验证:点码头/任务点寻路时该图标出现。",
+        "roi": [
+            1195,
+            135,
+            40,
+            40
+        ]
+    },
+    "Daily_Pray": {
+        "desc": "向女神像许愿(OCR'向女神像许愿')。|[PC覆盖] 720实测在box(902,146,136,28)中心(647,107),base roi[545,75,201,91]中心(645,120)PC基本一致,微调[540,72,210,95]。实机验证:点击触发许愿动画、按钮消失=许愿完成。",
+        "roi": [
+            540,
+            72,
+            210,
+            95
+        ],
+        "expected": [
+            "向女神像许愿",
+            "對女神像許願"
+        ]
+    },
+    "Sub_Intimacy_Ctm": {
+        "roi": [
+            247,
+            141,
+            23,
+            26
+        ]
+    },
+    "Rec_Intimacy_Tpl": {
+        "roi": [
+            206,
+            128,
+            138,
+            168
+        ]
+    },
+    "Daily_Intimacy_Enter": {
+        "roi": [
+            173,
+            16,
+            92,
+            35
+        ],
+        "expected": [
+            "亲密度",
+            "親密度"
+        ]
+    },
+    "Daily_Intimacy_TalkClear": {
+        "focus": "[WRN]需要消除亲密度教程(PC缺素材图)"
+    },
+    "Daily_Intimacy_RedHeart": {
+        "roi": [
+            89,
+            195,
+            1053,
+            222
+        ]
+    },
+    "Daily_Intimacy_CatalogCard": {
+        "roi": [
+            180,
+            50,
+            83,
+            28
+        ],
+        "expected": [
+            "亲密度增益",
+            "親密度加成"
+        ]
+    },
+    "Daily_Intimacy_Set_FirstPerson": {
+        "roi": [
+            103,
+            155,
+            12,
+            11
+        ]
+    },
+    "Sub_Intimacy_Number": {
+        "roi": [
+            1031,
+            649,
+            37,
+            25
+        ]
+    },
+    "Sub_Intimacy_LV": {
+        "roi": [
+            601,
+            104,
+            110,
+            50
+        ]
+    },
+    "Daily_Intimacy_Up_MSG": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "Daily_Intimacy_Turn_NextPerson": {
+        "max_hit": 8,
+        "roi_offset": [
+            0,
+            75,
+            0,
+            0
+        ]
+    },
+    "Daily_Intimacy_Exhausted": {
+        "roi": [
+            1075,
+            22,
+            23,
+            28
+        ]
+    },
+    "Daily_Intimacy_Swip": {
+        "roi": [
+            70,
+            641,
+            78,
+            76
+        ],
+        "custom_action_param": {
+            "action": "Swipe",
+            "begin": [
+                108,
+                654,
+                1,
+                1
+            ],
+            "detect_roi": [
+                98,
+                652,
+                22,
+                22
+            ],
+            "duration": 800,
+            "end": [
+                108,
+                155,
+                1,
+                1
+            ],
+            "end_hold": 1000,
+            "proxy_node": "Custom_Proxy_Swipe",
+            "retry_times": 2,
+            "settle_delay": 500,
+            "threshold": 5.0
+        }
+    }
+}

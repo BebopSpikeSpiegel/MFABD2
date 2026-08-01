@@ -1,0 +1,597 @@
+{
+    "Redemption_HomePage": {
+        "next": [
+            "Redemption_Menu",
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_ToSandBox"
+        ]
+    },
+    "Redemption_Menu": {
+        "recognition": "OCR",
+        "roi": [
+            542,
+            535,
+            149,
+            42
+        ],
+        "expected": [
+            "玩法游戏卡"
+        ],
+        "action": "Click",
+        "next": [
+            "Redemption_Menu_Cor",
+            "Redemption_Menu"
+        ],
+        "focus": "GO.快速卡带-菜单模式"
+    },
+    "Redemption_Menu_Cor": {
+        "recognition": "ColorMatch",
+        "roi": "Redemption_Menu",
+        "lower": [
+            203,
+            203,
+            202
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 200,
+        "next": [
+            "Redemption_ToPack"
+        ],
+        "focus": "GO.菜单模式-色核通过"
+    },
+    "Redemption_ToPack": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            28,
+            585,
+            1214,
+            97
+        ],
+        "template": [
+            "Cartridges_EvilCas.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "target_offset": [
+            -30,
+            25,
+            0,
+            0
+        ],
+        "post_delay": 4000,
+        "next": [
+            "[JumpBack]Global_WaitingForLoading",
+            "Redemption_Mapck",
+            "Redemption_Evil_Settlement",
+            "Redemption_ToPack"
+        ]
+    },
+    "Redemption_MoreBook_Evil": {
+        "desc": "点击More本子",
+        "recognition": "OCR",
+        "roi": [
+            392,
+            469,
+            98,
+            40
+        ],
+        "expected": [
+            "挑战"
+        ],
+        "threshold": 0.9,
+        "action": "Click",
+        "target_offset": [
+            0,
+            -100,
+            0,
+            0
+        ],
+        "post_delay": 8000,
+        "next": [
+            "Redemption_Mapck",
+            "Redemption_Evil_Settlement",
+            "Redemption_MoreBook_Evil"
+        ],
+        "focus": "PM.More卡带"
+    },
+    "Redemption_Evil_Settlement": {
+        "recognition": "OCR",
+        "roi": [
+            817,
+            157,
+            191,
+            124
+        ],
+        "expected": [
+            "赛季奖励"
+        ],
+        "action": "Click",
+        "next": [
+            "Redemption_Mapck",
+            "Redemption_Evil_Settlement"
+        ]
+    },
+    "Redemption_Mapck": {
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "next": [
+            "Redemption_Evil_Move"
+        ],
+        "focus": "RM.已复位到箱庭"
+    },
+    "Redemption_Evil_Move": {
+        "roi": [
+            1108,
+            637,
+            65,
+            57
+        ],
+        "template": [
+            "pin.png"
+        ],
+        "action": "LongPress",
+        "target": [
+            651,
+            171
+        ],
+        "duration": 5000,
+        "post_delay": 3000,
+        "next": [
+            "Redemption_Evil_Redemption_Start"
+        ],
+        "focus": "MM.向上行走。BM.箱庭地图pin确认"
+    },
+    "Redemption_Evil_Redemption_Start": {
+        "next": [
+            "Redemption_Evil_Redemption_In"
+        ]
+    },
+    "Redemption_Evil_Redemption_In": {
+        "recognition": "OCR",
+        "roi": [
+            524,
+            391,
+            190,
+            78
+        ],
+        "expected": [
+            "^(?=.*[救赎])(?=.*[之塔]).{3,5}$"
+        ],
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "Redemption_Evil_Redemption_ExistingOpening",
+            "Redemption_Evil_Redemption_ListLast"
+        ]
+    },
+    "Redemption_Evil_Redemption_ExistingOpening": {
+        "recognition": "OCR",
+        "roi": [
+            865,
+            586,
+            283,
+            106
+        ],
+        "expected": "继续第",
+        "focus": "REB.[ERROR]发现已存在的开局，退出流程"
+    },
+    "Redemption_Evil_Redemption_ListLast": {
+        "recognition": "OCR",
+        "roi": [
+            181,
+            640,
+            157,
+            73
+        ],
+        "expected": [
+            "[Ll][vV]\\D?\\d?"
+        ],
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "Redemption_Evil_Redemption_DetPassLv",
+            "Redemption_Evil_Redemption_Lv1",
+            "[JumpBack]Redemption_Evil_Redemption_SelLv-1"
+        ]
+    },
+    "Redemption_Evil_Redemption_DetPassLv": {
+        "recognition": "TemplateMatch",
+        "template": [
+            "RglikeGouGe.png"
+        ],
+        "green_mask": true,
+        "next": [
+            "Redemption_Evil_Redemption_QuickBattUnable",
+            "Redemption_Evil_Redemption_QuickBatt"
+        ]
+    },
+    "Redemption_Evil_Redemption_Lv1": {
+        "recognition": "ColorMatch",
+        "roi": [
+            225,
+            109,
+            38,
+            35
+        ],
+        "lower": [
+            255,
+            255,
+            255
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 20,
+        "next": [
+            "Redemption_Evil_Redemption_QuickBattUnable",
+            "Redemption_Evil_Redemption_QuickBatt"
+        ]
+    },
+    "Redemption_Evil_Redemption_SelLv-1": {
+        "max_hit": 30,
+        "recognition": "TemplateMatch",
+        "roi": [
+            172,
+            66,
+            180,
+            653
+        ],
+        "template": [
+            "LV.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "target_offset": [
+            8,
+            -95,
+            0,
+            0
+        ],
+        "post_delay": 500
+    },
+    "Redemption_Evil_Redemption_QuickBatt": {
+        "recognition": "OCR",
+        "roi": [
+            832,
+            621,
+            134,
+            46
+        ],
+        "expected": [
+            "快速战斗"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "Redemption_Evil_Redemption_JustFree_Ok",
+            "Redemption_Evil_Redemption_JustFree_No"
+        ]
+    },
+    "Redemption_Evil_Redemption_JustFree_No": {
+        "desc": "检测free关,做开动作",
+        "max_hit": 3,
+        "recognition": "ColorMatch",
+        "roi": [
+            846,
+            263,
+            52,
+            29
+        ],
+        "method": 40,
+        "lower": [
+            105,
+            64,
+            39
+        ],
+        "upper": [
+            108,
+            70,
+            40
+        ],
+        "count": 150,
+        "action": "Click",
+        "post_delay": 2000,
+        "timeout": 5000,
+        "next": [
+            "Redemption_Evil_Redemption_JustFree_Ok",
+            "Redemption_Evil_Redemption_JustFree_No"
+        ],
+        "on_error": [
+            "Redemption_Evil_Redemption_JustFree_Err",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "REM.免费AP未勾选"
+    },
+    "Redemption_Evil_Redemption_JustFree_Ok": {
+        "desc": "检测free开,通过",
+        "recognition": "ColorMatch",
+        "roi": [
+            846,
+            263,
+            52,
+            29
+        ],
+        "method": 40,
+        "lower": [
+            21,
+            192,
+            166
+        ],
+        "upper": [
+            21,
+            194,
+            172
+        ],
+        "count": 150,
+        "next": [
+            "Redemption_Evil_Redemption_MAX",
+            "Redemption_Evil_Redemption_QuickBattNoAP"
+        ],
+        "focus": "REM.免费AP已勾选"
+    },
+    "Redemption_Evil_Redemption_JustFree_Err": {
+        "recognition": "OCR",
+        "roi": [
+            474,
+            540,
+            81,
+            63
+        ],
+        "expected": [
+            "取消"
+        ],
+        "action": "Click",
+        "next": [
+            "Redemption_Evil_Redemption_PageBackHub"
+        ],
+        "focus": "REM.免费Ap切换识别,退出"
+    },
+    "Redemption_Evil_Redemption_QuickBattUnable": {
+        "recognition": "ColorMatch",
+        "roi": [
+            834,
+            637,
+            15,
+            13
+        ],
+        "method": 4,
+        "lower": [
+            84,
+            84,
+            82
+        ],
+        "upper": [
+            84,
+            84,
+            82
+        ],
+        "count": 150,
+        "next": [
+            "Redemption_Evil_Redemption_PageBackHub"
+        ],
+        "focus": "REM.无法快速战斗"
+    },
+    "Redemption_Evil_Redemption_QuickBattNoAP": {
+        "recognition": "OCR",
+        "roi": [
+            512,
+            206,
+            255,
+            88
+        ],
+        "expected": [
+            "钥匙不足"
+        ],
+        "target": [
+            568,
+            479
+        ],
+        "post_delay": 2000,
+        "next": [
+            "Redemption_Evil_Redemption_PageBackHub",
+            "Redemption_Evil_Redemption_QuickBattNoAP"
+        ]
+    },
+    "Redemption_Evil_Redemption_MAX": {
+        "recognition": "OCR",
+        "roi": [
+            769,
+            340,
+            85,
+            47
+        ],
+        "expected": [
+            "MAX"
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "Redemption_Evil_Redemption_On"
+        ]
+    },
+    "Redemption_Evil_Redemption_On": {
+        "recognition": "OCR",
+        "roi": [
+            618,
+            566,
+            176,
+            29
+        ],
+        "expected": [
+            "战斗"
+        ],
+        "action": "Click",
+        "post_delay": 8000,
+        "next": [
+            "Redemption_Evil_Redemption_Result",
+            "Redemption_Evil_Redemption_On"
+        ]
+    },
+    "Redemption_Evil_Redemption_Result": {
+        "recognition": "OCR",
+        "roi": [
+            800,
+            597,
+            212,
+            85
+        ],
+        "expected": [
+            "点击画面继续"
+        ],
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "Redemption_Evil_Redemption_PageBackHub",
+            "Redemption_Evil_Redemption_Result"
+        ]
+    },
+    "Redemption_Evil_Redemption_PageBackHub": {
+        "desc": "其他页面，返回按钮",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1,
+            1,
+            231,
+            124
+        ],
+        "template": [
+            "BackButGe.png",
+            "BackButGe2.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 2500,
+        "next": [
+            "Global_ToHomePage"
+        ],
+        "focus": "G=1.页面非预期，点击返回按钮"
+    },
+    "Redemption_BackPVEPage": {
+        "desc": "找到图钉-点击返回主页",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1122,
+            646,
+            40,
+            38
+        ],
+        "template": [
+            "pin.png"
+        ],
+        "action": "Click",
+        "target": [
+            1186,
+            46
+        ],
+        "post_delay": 3000,
+        "next": [
+            "Redemption_BackHomePage2",
+            "Redemption_BackPVEPage"
+        ],
+        "focus": "PM.开始离开PVP卡带"
+    },
+    "Redemption_BackHomePage2": {
+        "desc": "识别左下抽抽乐-主页-点击选择章节",
+        "recognition": "OCR",
+        "roi": [
+            98,
+            656,
+            66,
+            32
+        ],
+        "expected": [
+            "抽抽乐"
+        ],
+        "action": "Click",
+        "target": [
+            1111,
+            650
+        ],
+        "post_delay": 2000,
+        "next": [
+            "Redemption_PVEBookSwipe",
+            "Redemption_BackHomePage2"
+        ]
+    },
+    "Redemption_PVEBookSwipe": {
+        "desc": "识别活动游戏卡-上划",
+        "recognition": "OCR",
+        "roi": [
+            118,
+            505,
+            95,
+            42
+        ],
+        "expected": [
+            "活动游戏卡"
+        ],
+        "action": "Swipe",
+        "begin": [
+            1400,
+            300
+        ],
+        "end": [
+            1400,
+            700
+        ],
+        "post_delay": 1000,
+        "next": [
+            "Redemption_TouchPVEBook",
+            "Redemption_PVEBookSwipe"
+        ]
+    },
+    "Redemption_TouchPVEBook": {
+        "desc": "点击PVE本子2",
+        "recognition": "TemplateMatch",
+        "roi": [
+            405,
+            157,
+            78,
+            38
+        ],
+        "template": [
+            "pve2.png"
+        ],
+        "action": "Click",
+        "target_offset": [
+            -20,
+            25,
+            0,
+            0
+        ],
+        "post_delay": 5000,
+        "next": [
+            "Redemption_FinBackMapPage",
+            "Redemption_TouchPVEBook"
+        ],
+        "focus": "PM.复位用卡带已找到"
+    },
+    "Redemption_FinBackMapPage": {
+        "desc": "识别右下图钉-章节主页",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1122,
+            646,
+            40,
+            38
+        ],
+        "template": [
+            "pin.png"
+        ],
+        "next": [
+            "Redemption_Evil_Redemption_End"
+        ],
+        "focus": "PM.PVP复位完成，结束~"
+    },
+    "Redemption_Evil_Redemption_End": {}
+}

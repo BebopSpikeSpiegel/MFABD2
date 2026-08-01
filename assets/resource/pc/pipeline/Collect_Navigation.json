@@ -1,0 +1,21 @@
+{
+    "Collect_ClickTelepor_Abnormal_Overlap": {
+        "desc": "区域地图内点选重叠传送阵。|[PC覆盖·2026-07-27实录] 仅补 on_error,base 的识别/动作/next 全继承。实录(22:14:22~22:19:55,约27s/轮共12轮近6分钟):本节点每轮 Action.Succeeded(点击确实落下),多数轮 next 三候选(Collect_Skill_Start / Collect_ClickTelepor_TargetClass_White / [JumpBack]Global_WaitingForLoading)全 miss,约25s超时后因无自定义 on_error→走 MFA 默认 Global_Null 兜底(恒中且 next 空)→子任务结束→调用方 Collect_TargetMap* 的 next 再次选中本节点;另有3轮命中 Collect_Skill_Start(其中2次完成探查施放)后仍回到同一循环。挂 max_hit 2 的重试垫封顶:两次内先退出区域地图、把判定权交回上层,耗尽后不再命中→on_error 全 miss→流程以 FAILED 终止且 GUI 可见(自定义 on_error 覆盖默认 Null 兜底,MFA #1219 语义)。注:本节点属通用箱庭导航(Collect_TargetMap1-2/2/3/4 共用),故退路只用通用返回键,不写入任何业务链专属节点。",
+        "on_error": [
+            "Collect_Telepor_Retry_PC"
+        ]
+    },
+    "Collect_FindTeleporCircle": {
+        "desc": "箱庭内找传送阵物件(FeatureMatch)。|[PC覆盖·2026-07-13实录] base count:9在PC时够时不够:23:24一轮命中,23:34同位置圈只匹到4个特征点(box(250,318)定位正确,受相机角度/特效遮挡影响)→filtered空→找商人五路全灭静默。count降3留余量;ratio沿base 0.5。若后续出现误匹再从MFA帧重裁PC特征模板。",
+        "count": 3
+    },
+    "Collect_Telepor_Retry_PC": {
+        "desc": "[PC新增·2026-07-27] 区域地图选点空转救援垫。同 Global_ResetChain_Retry_PC / Arbitrage_Chain_Retry_PC 哲学:无自定义 on_error 的节点超时会走 MFA 默认 Global_Null 兜底,表现为无声空转或假成功。本节点 DirectHit 恒中,先点通用返回键退出区域地图,把控制权交回上层链重新判定(跑商侧即可重新评估 Arbitrage_Sandplay_SeeMerchant——'探查'揭示地图后原本没有任何路径回去重评,这正是 07-27 空转 6 分钟的放大器);max_hit 2 耗尽后不再命中→流程以失败终止,绝不再无声空转。",
+        "max_hit": 2,
+        "post_delay": 1000,
+        "next": [
+            "[JumpBack]Global_BackPageHub_Once"
+        ],
+        "focus": "CTB.[WRN]PC.区域地图选点空转,退出重试(上限2次)"
+    }
+}
