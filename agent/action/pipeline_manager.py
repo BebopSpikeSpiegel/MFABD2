@@ -12,10 +12,10 @@ from maa.context import Context
 import utils
 from recognition.counter import TAG_STORE
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 # ==============================================================================
-# Pipeline 动态管理器  v2.0.0
+# Pipeline 动态管理器  v2.0.1
 # ==============================================================================
 # 提供两个 Custom Action：
 #
@@ -184,14 +184,26 @@ class ConfigError(Exception):
 # ------------------------------------------------------------------------------
 # 还原点账本
 # ------------------------------------------------------------------------------
-# 按 (tasker 句柄, 任务号) 分桶：运行时改写本就随任务结束失效，隔离靠的就是这个键 ——
-# 任务号单调递增不复用，别的任务的桶根本查不到，不会把陈旧的还原点灌进一个没被改过的
-# 节点。分桶同时让多账号并行互不串号。
+# 按**任务号**分桶：运行时改写本就随任务结束失效，隔离靠的就是这个键 —— 任务号由框架
+# 的全局计数器发放（2000xxxxx 一路递增，跨 tasker 也不复用），别的任务的桶根本查不到，
+# 不会把陈旧的还原点灌进一个没被改过的节点。
+#
+# ⚠️ 键里**不能**掺任何指针/地址。tasker 在这里没有可用的稳定身份：
+#   - id(context.tasker)：binding 每次回调都新建 Context，Context.__init__ 又新建一个
+#     Tasker 包装对象（maa/context.py::_init_tasker），拿到的是短命包装的地址；
+#   - Tasker._handle：agent 模式下这是 MaaAgentServer 每次 MaaContextGetTasker 现分配的
+#     **本地代理**地址，同样一次一变（宿主日志里那个恒定的 tasker_id 是宿主进程的指针，
+#     不是 agent 侧的 _handle，别拿它当证据）。
+# 两者都是小对象，地址会被回收复用 —— 于是绝大多数时候账本查不到、偶尔又撞上一个旧桶
+# 还原出中间态，症状飘忽极难查。实测一次运行里同一任务连续拿到
+# 9880 / 9c90 / 9f60 / a190 / 9f60 / 9880 / 95b0 七个不同的键。
+#
+# 多账号并行不需要在键里区分 tasker：每个实例是独立的 agent 进程，_LEDGERS 天然隔离。
 #
 # 注意 _LEDGERS 是 agent 进程里的普通全局 dict，框架不知道它的存在、也不会替我们清理：
 # 框架只丢弃它自己那一半（任务结束时撤销 override）。所以任务一结束，对应的桶就变成了
 # 谁也查不到的死数据，得靠 _ledger() 里那次清理回收，否则一直留到进程退出。
-_LEDGERS: "dict[tuple[int, int], dict[str, dict]]" = {}
+_LEDGERS: "dict[int, dict[str, dict]]" = {}
 
 _MISSING = object()
 
@@ -201,50 +213,16 @@ _MISSING = object()
 _ATOMIC_KEYS = frozenset({"custom_action_param", "custom_recognition_param"})
 
 
-_DEGRADED_KEY_WARNED = False
-
-
-def _tasker_key(context: Context) -> int:
-    """tasker 的稳定标识 —— 取框架侧的 C 句柄，不要用 id()。
-
-    binding 每次自定义动作回调都 `Context(c_context)` 新建上下文，而 Context.__init__
-    里又 `Tasker(handle=...)` 新建一个包装对象（maa/context.py::_init_tasker）。
-    `id(context.tasker)` 拿到的只是这个**短命包装**的内存地址：打补丁和还原是两次独立
-    回调，地址通常对不上 —— 还原会查到空账本，打一条 warning 然后静默变成空操作，节点
-    永远停在被改写的状态。顺带地，账本的陈旧桶清理条件也永远匹配不上，_LEDGERS 只增不减。
-
-    `_handle` 是 MaaContextGetTasker 的返回值，即框架侧 tasker 对象的地址，在该 tasker
-    的整个生命周期内恒定，才是真正的身份。它是 binding 的私有属性，但没有等价的公开
-    接口；一旦哪天取不到，下面会退化成单桶并告警，而不是悄悄退回不可靠的 id()。
-    """
-    global _DEGRADED_KEY_WARNED
-    handle = getattr(context.tasker, "_handle", None)
-    # restype 为 c_void_p 时 ctypes 直接给出 int；万一将来包成 ctypes 对象，取 .value
-    handle = getattr(handle, "value", handle)
-    try:
-        key = int(handle or 0)
-    except (TypeError, ValueError):
-        key = 0
-    if not key and not _DEGRADED_KEY_WARNED:
-        _DEGRADED_KEY_WARNED = True
-        utils.mfaalog.warning(
-            "[Py] ⚠️ 取不到 tasker 句柄，还原点账本退化为单桶"
-            "（一实例一 agent 进程下仍安全，多 tasker 共进程才会串号）"
-        )
-    return key
-
-
-def _ledger(context: Context, argv: CustomAction.RunArg) -> dict:
-    tasker_id = _tasker_key(context)
+def _ledger(argv: CustomAction.RunArg) -> dict:
     task_id = argv.task_detail.task_id
     # 只清任务号**比自己大**的桶。task_id 单调递增，所以"比我大"必然是我（或我的兄弟）
     # 派出去、且已经跑完的子任务 —— context.run_task() 每调一次就开一个新任务号。
     # 反过来写成 != 会让子任务把父任务的桶删掉：父任务只是在等子任务返回，并没有结束，
-    # 它登记的还原点还要用。代价是同一 tasker 下先后两个顶层任务之间不再即时回收，
-    # 旧桶留到 agent 进程退出 —— 只有调过本模块的任务才建桶，量级可忽略。
-    for stale in [k for k in _LEDGERS if k[0] == tasker_id and k[1] > task_id]:
+    # 它登记的还原点还要用。代价是先后两个顶层任务之间不再即时回收，旧桶留到 agent
+    # 进程退出 —— 只有调过本模块的任务才建桶，量级可忽略。
+    for stale in [k for k in _LEDGERS if k > task_id]:
         del _LEDGERS[stale]
-    return _LEDGERS.setdefault((tasker_id, task_id), {})
+    return _LEDGERS.setdefault(task_id, {})
 
 
 def _diff(before, after, prefix=()):
@@ -415,7 +393,7 @@ class PatchPipeline(CustomAction):
             create = bool(params.get("create", False))
             caller = params.get("caller", "")
             box = _box_of(argv)
-            ledger = _ledger(context, argv)
+            ledger = _ledger(argv)
 
             patched, created, recorded = [], [], 0
             for node, raw_patch in plan:
@@ -481,7 +459,7 @@ class RestorePipeline(CustomAction):
             if "target" not in params:
                 raise ConfigError("缺少 target（节点名 / 数组 / \"*\"）")
 
-            ledger = _ledger(context, argv)
+            ledger = _ledger(argv)
             spec = params["target"]
             if spec == "*":
                 targets = list(ledger.keys())
