@@ -12,10 +12,10 @@ from maa.context import Context
 import utils
 from recognition.counter import TAG_STORE
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 # ==============================================================================
-# Pipeline 动态管理器  v2.0.0
+# Pipeline 动态管理器  v2.0.1
 # ==============================================================================
 # 提供两个 Custom Action：
 #
@@ -101,6 +101,21 @@ __version__ = "2.0.0"
 #
 # 还原本身是幂等的 —— 目标不在账本里（没被改过 / 已经还原过）只发一条告警，不算失败。
 #
+# 如果某次改写是一次性的、压根不打算还原，可以在 PatchPipeline 一侧关掉登记：
+#
+# "custom_action_param": {
+#     "target": "Battle_Entry",
+#     "patch":  { "timeout": 30000 },
+#     "backup": false                        // 默认 true。false = 不登记还原点
+# }
+#
+# ⚠️ backup: false 的节点不进账本 —— RestorePipeline 点名还原它，会落到「账本中无还原点，
+#    已跳过」那条告警；"*" 批量还原也不会覆盖它。它只随任务结束由框架自动失效。
+#    这个开关只影响账本，不影响补丁本身，补丁照打不误。
+#
+# （注意别和旧版 RestoreNode 的同名参数搞混：那个 backup 是「还原时手工传一份备份数据
+#  进来」，语义相反，已随旧 API 一并废弃，迁移脚本遇到会丢弃并告警。）
+#
 # ------------------------------------------------------------------------------
 # 5. 旁作用：顺手清计数器、顺手点一下
 # ------------------------------------------------------------------------------
@@ -169,10 +184,26 @@ class ConfigError(Exception):
 # ------------------------------------------------------------------------------
 # 还原点账本
 # ------------------------------------------------------------------------------
-# 按 (tasker 实例, 任务号) 分桶：运行时改写本就随任务结束失效，账本必须同生共死，
-# 否则下一个任务还原时会把陈旧的还原点灌进一个根本没被改过的节点。
-# 分桶同时让多账号并行互不串号。
-_LEDGERS: "dict[tuple[int, int], dict[str, dict]]" = {}
+# 按**任务号**分桶：运行时改写本就随任务结束失效，隔离靠的就是这个键 —— 任务号由框架
+# 的全局计数器发放（2000xxxxx 一路递增，跨 tasker 也不复用），别的任务的桶根本查不到，
+# 不会把陈旧的还原点灌进一个没被改过的节点。
+#
+# ⚠️ 键里**不能**掺任何指针/地址。tasker 在这里没有可用的稳定身份：
+#   - id(context.tasker)：binding 每次回调都新建 Context，Context.__init__ 又新建一个
+#     Tasker 包装对象（maa/context.py::_init_tasker），拿到的是短命包装的地址；
+#   - Tasker._handle：agent 模式下这是 MaaAgentServer 每次 MaaContextGetTasker 现分配的
+#     **本地代理**地址，同样一次一变（宿主日志里那个恒定的 tasker_id 是宿主进程的指针，
+#     不是 agent 侧的 _handle，别拿它当证据）。
+# 两者都是小对象，地址会被回收复用 —— 于是绝大多数时候账本查不到、偶尔又撞上一个旧桶
+# 还原出中间态，症状飘忽极难查。实测一次运行里同一任务连续拿到
+# 9880 / 9c90 / 9f60 / a190 / 9f60 / 9880 / 95b0 七个不同的键。
+#
+# 多账号并行不需要在键里区分 tasker：每个实例是独立的 agent 进程，_LEDGERS 天然隔离。
+#
+# 注意 _LEDGERS 是 agent 进程里的普通全局 dict，框架不知道它的存在、也不会替我们清理：
+# 框架只丢弃它自己那一半（任务结束时撤销 override）。所以任务一结束，对应的桶就变成了
+# 谁也查不到的死数据，得靠 _ledger() 里那次清理回收，否则一直留到进程退出。
+_LEDGERS: "dict[int, dict[str, dict]]" = {}
 
 _MISSING = object()
 
@@ -182,12 +213,16 @@ _MISSING = object()
 _ATOMIC_KEYS = frozenset({"custom_action_param", "custom_recognition_param"})
 
 
-def _ledger(context: Context, argv: CustomAction.RunArg) -> dict:
-    tasker_id = id(context.tasker)
-    task_id = getattr(getattr(argv, "task_detail", None), "task_id", 0)
-    for stale in [k for k in _LEDGERS if k[0] == tasker_id and k[1] != task_id]:
+def _ledger(argv: CustomAction.RunArg) -> dict:
+    task_id = argv.task_detail.task_id
+    # 只清任务号**比自己大**的桶。task_id 单调递增，所以"比我大"必然是我（或我的兄弟）
+    # 派出去、且已经跑完的子任务 —— context.run_task() 每调一次就开一个新任务号。
+    # 反过来写成 != 会让子任务把父任务的桶删掉：父任务只是在等子任务返回，并没有结束，
+    # 它登记的还原点还要用。代价是先后两个顶层任务之间不再即时回收，旧桶留到 agent
+    # 进程退出 —— 只有调过本模块的任务才建桶，量级可忽略。
+    for stale in [k for k in _LEDGERS if k > task_id]:
         del _LEDGERS[stale]
-    return _LEDGERS.setdefault((tasker_id, task_id), {})
+    return _LEDGERS.setdefault(task_id, {})
 
 
 def _diff(before, after, prefix=()):
@@ -358,7 +393,7 @@ class PatchPipeline(CustomAction):
             create = bool(params.get("create", False))
             caller = params.get("caller", "")
             box = _box_of(argv)
-            ledger = _ledger(context, argv)
+            ledger = _ledger(argv)
 
             patched, created, recorded = [], [], 0
             for node, raw_patch in plan:
@@ -424,7 +459,7 @@ class RestorePipeline(CustomAction):
             if "target" not in params:
                 raise ConfigError("缺少 target（节点名 / 数组 / \"*\"）")
 
-            ledger = _ledger(context, argv)
+            ledger = _ledger(argv)
             spec = params["target"]
             if spec == "*":
                 targets = list(ledger.keys())
@@ -437,13 +472,16 @@ class RestorePipeline(CustomAction):
 
             done, missing = [], []
             for node in targets:
-                payload = ledger.pop(node, None)
+                payload = ledger.get(node)
                 if payload is None:
                     # 没被改过 / 已还原过 / 是新建的节点 —— 还原是幂等的，不算失败
                     missing.append(node)
                     continue
                 if not context.override_pipeline({node: payload}):
                     raise ConfigError(f"节点 [{node}] 的还原被框架拒绝")
+                # 销账必须在还原成功之后：先 pop 再失败会让还原点永久丢失，
+                # 节点既停在被改写状态、又再也还原不回来（连 "*" 也查不到）
+                ledger.pop(node, None)
                 done.append(node)
 
             if done:
