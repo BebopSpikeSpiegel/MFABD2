@@ -23,6 +23,7 @@
         "focus": "公共复用节点目录。开发整理用，别真引用此节点"
     },
     "Global_HomeButton_Once": {
+        "desc": "点击一次主页面图标",
         "recognition": "TemplateMatch",
         "roi": [
             1132,
@@ -75,6 +76,23 @@
         ],
         "focus": "GO.调出快速卡带"
     },
+    "Global_QuickCart_MenuReset_2P": {
+        "desc": "调出快速卡带1/2,操作",
+        "recognition": "TemplateMatch",
+        "template": [
+            "QuickCartGeadai.png",
+            "UI_QuickPack_GE.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "anchor": {"QC_CallMenu_Out": "Global_QuickCart_SwipTo_2P"},
+        "post_delay": 1000,
+        "next": [
+            "Global_QuickCart_MenuReset_Ocr",
+            "Global_QuickCart_MenuReset"
+        ],
+        "focus": "GO.调出快速卡带-Page2"
+    },
     "Global_QuickCart_MenuReset_Ocr": {
         "desc": "[识别]快速卡带-最近OCR.调出快速卡带2/2,核对",
         "recognition": "OCR",
@@ -87,7 +105,34 @@
         "expected": [
             "最近"
         ],
+        "next": ["[Anchor]QC_CallMenu_Out"],
         "focus": "GO.快速卡带调出成功"
+    },
+    "Global_QuickCart_SwipTo_2P": {
+        "desc": "QC滑动到第二页,同时复位锚点",
+        "recognition": "Or",
+        "any_of": ["Global_QuickCart_MenuReset_Ocr"],
+        "action": "Swipe",
+        "begin": [
+            905,
+            554
+        ],
+        "end": [
+            50,
+            554
+        ],
+        "end_hold": 500,
+        "duration": 600,
+        "anchor": {"QC_CallMenu_Out": ""},
+        "timeout": 5000,
+        "next": [
+            "Global_QuickCart_SwipTo_2P_Enter",
+            "Global_QuickCart_SwipTo_2P"
+        ]
+    },
+    "Global_QuickCart_SwipTo_2P_Enter": {
+        "recognition": "Or",
+        "any_of": ["Collect_QuickCart_SelectType_EventPack"]
     },
     "Global_ToHomePage": {
         "desc": "[通用复位]复位到主界面模块,开始,中继调用",
@@ -101,6 +146,7 @@
         "next": [
             "Global_ToHomePage_Enter",
             "Global_ToHomePage_HomeButton",
+            "[JumpBack]StartGame_7dAD_Check",
             "Global_ToHomePage_Reset"
         ],
         "on_error": [
@@ -110,6 +156,7 @@
             "[JumpBack]PVP_PerOperationsMain_Error",
             "[JumpBack]Global_ERR_AtFish",
             "[JumpBack]Dummy_Err_GetProductsFail",
+            "[JumpBack]Global_HomeButton_Once",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ]
@@ -151,6 +198,23 @@
         ],
         "focus": "G=1.页面非预期，点击返回按钮"
     },
+    "Global_ToHomePage_Crash": {
+        "desc": "返回箱庭兜底策略,点主页图标-调传统卡带复位",
+        "recognition": "TemplateMatch",
+        "roi": [
+            1135,
+            5,
+            133,
+            82
+        ],
+        "template": [
+            "MainHomeRIceGE.png"
+        ],
+        "action": "Click",
+        "post_delay": 3000,
+        "next": ["Global_BackToPve_1#"],
+        "focus": "G=1.点Home退出"
+    },
     "Global_ToHomePage_Enter": {
         "desc": "[通用复位]复位到主界面模块,结束,中继调用",
         "recognition": "And",
@@ -183,6 +247,7 @@
             "[JumpBack]Dummy_Err_GetProductsFail",
             "[JumpBack]StartGame_Error_API",
             "Global_BackToQC1",
+            "[JumpBack]Global_ToHomePage_Crash",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ]
@@ -232,7 +297,8 @@
         "next": [
             "Global_BackToPve_ToCardMenu",
             "[JumpBack]Global_HomeButton_Once",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]StartGame_7dAD_Check"
         ],
         "focus": "G.复位卡带开始.预设1#"
     },
@@ -244,7 +310,8 @@
         "next": [
             "Global_BackToPve_ToCardMenu",
             "[JumpBack]Global_HomeButton_Once",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "[JumpBack]StartGame_7dAD_Check"
         ],
         "focus": "G.复位卡带开始.预设2#"
     },
@@ -287,6 +354,7 @@
             "游戏卡珍藏集"
         ],
         "next": [
+            "[JumpBack]Global_CardMenu_RewardBubble_TurnOFF",
             "Global_BackToPve_CardMenu_Tp2",
             "[JumpBack]Global_BackToPve_PVEBookSwipe"
         ]
@@ -364,8 +432,8 @@
         "any_of": ["Global_BackToPve_CardMenu_Tp3"],
         "action": "Click",
         "target_offset": [
-            -20,
-            25,
+            -45,
+            30,
             0,
             0
         ],
@@ -392,8 +460,8 @@
         ],
         "action": "Click",
         "target_offset": [
-            -20,
-            25,
+            -45,
+            30,
             0,
             0
         ],
@@ -420,7 +488,6 @@
         "max_hit": 50,
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
-        "action": "Click",
         "anchor": {
             "QCPack": "Global_BackToQC_TouchQC1Pack"
         },
@@ -431,13 +498,16 @@
         "focus": "GO.快速卡带-复位到QC1"
     },
     "Global_BackToQC1_Menu": {
-        "desc": "【快速卡带识别链-预设入口.菜单已起→QC1】守卫:剧情页签可见.不点击,交给走位链",
+        "desc": "【快速卡带识别链-预设入口.菜单已起→QC1】(不规范/少用)守卫:剧情页签可见.不点击,交给走位链",
         "recognition": "Or",
         "any_of": ["Collect_QuickCart_SelectType_StoryPack"],
         "anchor": {
             "QCPack": "Global_BackToQC_TouchQC1Pack"
         },
         "next": [
+            "Global_BackToQC_SelectStory",
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "[JumpBack]Global_WaitingForLoading",
             "Global_BackToQC_Story_Anc"
         ],
         "focus": "GO.快速卡带离开-菜单模式"
@@ -449,6 +519,7 @@
         "action": "Click",
         "post_delay": 2500,
         "next": [
+            "[JumpBack]Global_BackToQC_RewardBubble_TurnOFF",
             "Global_BackToQC_SelectStory",
             "[JumpBack]Global_QuickCart_MenuReset",
             "[JumpBack]Global_WaitingForLoading",
@@ -463,6 +534,7 @@
         "action": "Click",
         "post_delay": 1500,
         "next": [
+            "[JumpBack]Global_BackToQC_RewardBubble_TurnOFF",
             "Global_BackToQC_SelectCharacter",
             "[JumpBack]Global_QuickCart_MenuReset",
             "[JumpBack]Global_WaitingForLoading",
@@ -477,6 +549,7 @@
         "action": "Click",
         "post_delay": 1500,
         "next": [
+            "[JumpBack]Global_BackToQC_RewardBubble_TurnOFF",
             "Global_BackToQC_SelectEvent",
             "[JumpBack]Global_QuickCart_MenuReset",
             "[JumpBack]Global_WaitingForLoading",
@@ -491,6 +564,7 @@
         "action": "Click",
         "post_delay": 1500,
         "next": [
+            "[JumpBack]Global_BackToQC_RewardBubble_TurnOFF",
             "Global_BackToQC_SelectManager",
             "[JumpBack]Global_QuickCart_MenuReset",
             "[JumpBack]Global_WaitingForLoading",
@@ -505,6 +579,7 @@
         "action": "Click",
         "post_delay": 1500,
         "next": [
+            "[JumpBack]Global_BackToQC_RewardBubble_TurnOFF",
             "Global_BackToQC_SelectGameplay",
             "[JumpBack]Global_WaitingForLoading",
             "Global_BackToQC_Gameplay_Anc"
@@ -570,6 +645,64 @@
             "Global_BackToQC_SelectGameplay"
         ],
         "focus": "GO.QC.玩法页签"
+    },
+    "Global_BackToQC_RewardBubble_TurnOFF": {
+        "desc": "检查QC,卡带奖励气泡,若黄则点击关闭",
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "ColorMatch",
+                "roi": [
+                    1135,
+                    551,
+                    35,
+                    13
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Sub_SieveExpand_Yew_Clr"
+        ],
+        "action": "Click",
+        "post_delay": 2000
+    },
+    "Global_CardMenu_RewardBubble_TurnOFF": {
+        "desc": "检查QC,卡带奖励气泡,若黄则点击关闭",
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "ColorMatch",
+                "roi": [
+                    1098,
+                    35,
+                    44,
+                    10
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Sub_SieveExpand_Yew_Clr"
+        ],
+        "action": "Click",
+        "post_delay": 2000
     },
     "Global_BackToQC_StoryCor": {
         "desc": "【快速卡带识别链-结束.】剧情页签色核.出口由锚点QCPack决定,未设锚会停在此处",
