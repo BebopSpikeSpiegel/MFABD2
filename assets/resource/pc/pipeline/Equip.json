@@ -1,4 +1,16 @@
 {
+    "Equip_Skill": {
+        "roi": [
+            76,
+            601,
+            1138,
+            34
+        ],
+        "expected": [
+            "装备制作",
+            "製作装備"
+        ]
+    },
     "Equip_EquipMakeGui": {
         "desc": "确认制作装备界面",
         "roi": [
@@ -190,6 +202,10 @@
             490,
             96,
             128
+        ],
+        "expected": [
+            "强化",
+            "強化"
         ]
     },
     "Equip_EquipUpResult": {
