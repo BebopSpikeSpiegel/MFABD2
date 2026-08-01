@@ -1,4 +1,121 @@
 {
+    "Weekly_Fishing_Back": {
+        "roi": [
+            1167,
+            14,
+            65,
+            57
+        ]
+    },
+    "Weekly_Fishing_Back_Msg": {
+        "roi": [
+            665,
+            370,
+            124,
+            179
+        ],
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "Weekly_LastNight_Pack": {
+        "roi": [
+            0,
+            580,
+            1280,
+            114
+        ],
+        "target_offset": [
+            -15,
+            15,
+            0,
+            0
+        ]
+    },
+    "Weekly_LastNight_Ind": {
+        "roi": [
+            190,
+            31,
+            213,
+            101
+        ],
+        "expected": [
+            "最高伤害",
+            "最高傷害",
+            "战斗分布",
+            "戰鬥分佈"
+        ]
+    },
+    "Weekly_LastNight_MenuPage": {
+        "expected": [
+            "末日之书",
+            "末日之書"
+        ]
+    },
+    "Weekly_LastNight_GoBattle": {
+        "roi": [
+            1012,
+            640,
+            151,
+            45
+        ],
+        "expected": [
+            "去战斗",
+            "去戰鬥"
+        ]
+    },
+    "Weekly_LastNight_InBattle": {
+        "desc": "[PC覆盖·2026-07-24] 战斗中监视。base expected含硬编码'20次中'(写死数字,版本改次数即失效),去除之,保留稳定片段+繁体。盲点target[1017,40]待下周一战斗段实测重标。",
+        "expected": [
+            "还剩",
+            "還剩",
+            "次攻击中",
+            "次攻擊中"
+        ],
+        "target": [
+            1060,
+            33,
+            1,
+            1
+        ]
+    },
+    "Weekly_LastNight_LeavButt": {
+        "roi": [
+            1078,
+            653,
+            123,
+            39
+        ],
+        "expected": [
+            "离开",
+            "離開"
+        ]
+    },
+    "Weekly_LastNight_MaybeNew": {
+        "expected": [
+            "创造新纪录",
+            "創造新紀錄",
+            "最高伤害",
+            "最高傷害"
+        ]
+    },
+    "Rec_<Weekly_VisitCabin_GoIn>_Tpl": {
+        "roi": [
+            16,
+            57,
+            343,
+            242
+        ]
+    },
+    "Rec_<Weekly_VisitCabin_GoIn>_Ocr": {
+        "roi": [
+            16,
+            57,
+            343,
+            242
+        ]
+    },
     "Weekly_VisitCabin_TabChg": {
         "target": [
             116,
@@ -38,5 +155,38 @@
             3,
             3
         ]
+    },
+    "Weekly_Arcade_GoIn": {
+        "desc": "[PC覆盖·2026-07-24实测] 街机图标盲点重标:base[360,188,24,28]按安卓布局,PC主页图标实测在720(309,181)(标签'街机游戏'物理[431,300]→720中心(309,203),图标居标签上方~22px),偏差~55px点空。MaaMCP实测(309,181)一击进入街机页。",
+        "target": [
+            303,
+            175,
+            12,
+            12
+        ]
+    },
+    "Weekly_Arcade_InCk": {
+        "desc": "[PC覆盖·2026-07-24实测] 街机页标题'街机游戏'(PC简体)实测720(197-277,27-43),base roi[171,12,222,68]原生罩住零改动;expected补繁体防御。",
+        "expected": [
+            "街机游戏",
+            "街機遊戲"
+        ]
+    },
+    "Weekly_LastNight_HomePageSwipe": {
+        "desc": "[PC覆盖·2026-07-24] 卡集内滚动找角色游戏卡区。base swipe begin/end x=70在PC落在列表外死区(07-03珍藏集滑动x30同款病,实录连划页面纹丝不动),先验移进货架列x150;expected补繁体。待Phase B实测微调。",
+        "next": [
+            "Weekly_LastNight_Pack",
+            "Weekly_LastNight_HomePageSwipe"
+        ]
+    },
+    "Weekly_Chain_Retry_PC": {
+        "desc": "[PC新增·2026-07-24] 周常链超时救援垫。同复位链Global_ResetChain_Retry_PC哲学:无自定义on_error的节点超时走MFA默认Global_Null兜底=流程SUCCEEDED假成功;本节点DirectHit恒中,回主页重试入口;max_hit 2耗尽后不再命中→流程以失败终止(自定义on_error覆盖默认Null,MFA #1219语义)。自包含不依赖PR#396节点,保证本PR独立可加载。",
+        "max_hit": 2,
+        "post_delay": 1000,
+        "next": [
+            "[JumpBack]Global_ToHomePage",
+            "Weekly_LastNight_GoTo"
+        ],
+        "focus": "W.周常链超时!回主页重试"
     }
 }

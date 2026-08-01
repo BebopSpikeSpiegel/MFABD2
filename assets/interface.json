@@ -173,10 +173,12 @@
             "entry": "Weekly_Start",
             "controller": [
                 "Adb",
+                "PC客户端",
                 "PlayCover"
             ],
             "option": [
                 "末日之书",
+                "小屋点赞",
                 "周常钓鱼"
             ],
             "description": "每周执行：访问<code>街机页面</code>、在<code>我的小屋</code>对随机访客点赞4次、打1轮<code>末日之书</code>、<code>钓鱼</code>1条。<br>周期触发器已实装，同周期内不会重复执行。"
@@ -1281,6 +1283,24 @@
                     "name": "No",
                     "pipeline_override": {
                         "Weekly_LastNight_Hub": {
+                            "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
+        "小屋点赞": {
+            "type": "switch",
+            "description": "在<code>我的小屋</code>对随机访客点赞4次。账号未解锁小屋时请关闭。",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {}
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "Weekly_VisitCabin_Hub": {
                             "enabled": false
                         }
                     }
