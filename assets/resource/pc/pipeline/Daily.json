@@ -577,7 +577,31 @@
         }
     },
     "Daily_Square_Hub": {
-        "desc": "广场枢纽。|[PC覆盖·2026-08-01实录] base max_hit:1 在锚点被援救链消费后成永动机:谈心退场画面使 Global_ToSandBox 首判失败→err落入 Global_BackToQC1 援救→QCPack 锚被覆写(21:05:12 TouchQC1Pack)并按链尾契约清除→GameplayCor 的 [Anchor]QCPack 解析 anchor not set(maafw实锤)且该节点无 on_error→默认Null→ToSandBox腿'成功'刷新轮询→hub因 max_hit 1 永不再注册锚,13秒/圈烧了20+分钟。max_hit 提到3:援救链消费锚后 hub 重命中即重注册,自愈;3次预算防真异常时无限重入。",
-        "max_hit": 3
+        "desc": "广场枢纽。|[PC覆盖·2026-08-01两轮实录] 病灶=next轮询永不终结:两条JumpBack援救腿(快速卡带复位/复位到箱庭)永远'成功'刷新轮询计时器,而Daily_FantasiaSquare在'人已在广场卡带内+QC菜单开合'状态下恒miss(已激活卡带点击=空操作不转场;菜单关闭间隙里人站林区角落底部中央无镜子图标),13秒/圈永动。第一轮(21:05)另叠加QCPack锚被QC1援救链消费清除(anchor not set,maafw实锤)。修=援救腿换成本地限次包装:预算耗尽→全miss→轮询超时→FAILED响亮收场。max_hit 3 保留(锚点重注册仍需要)。",
+        "max_hit": 3,
+        "next": [
+            "Daily_FantasiaSquare",
+            "Daily_Square_QCReset_PC",
+            "Daily_Square_ToSandBox_PC",
+            "[JumpBack]Global_WaitingForLoading"
+        ]
+    },
+    "Daily_Square_QCReset_PC": {
+        "desc": "[PC新增·2026-08-01] 快速卡带复位援救腿的限次包装:JumpBack进Global_BackToQC_Gameplay_Anc,max_hit 2 耗尽后本腿不再命中,把'永远成功刷新轮询'变成有限预算。",
+        "max_hit": 2,
+        "recognition": "DirectHit",
+        "next": [
+            "[JumpBack]Global_BackToQC_Gameplay_Anc"
+        ],
+        "focus": "DM.[WRN]PC.广场枢纽卡带复位援救(限2次)"
+    },
+    "Daily_Square_ToSandBox_PC": {
+        "desc": "[PC新增·2026-08-01] 复位到箱庭援救腿的限次包装,同上,max_hit 2。两垫全部耗尽后枢纽next仅剩FantasiaSquare与WaitingForLoading,恒miss则轮询超时→流程FAILED,绝不再无声空转。",
+        "max_hit": 2,
+        "recognition": "DirectHit",
+        "next": [
+            "[JumpBack]Global_ToSandBox"
+        ],
+        "focus": "DM.[WRN]PC.广场枢纽箱庭复位援救(限2次)"
     }
 }
