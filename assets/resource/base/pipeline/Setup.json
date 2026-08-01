@@ -144,17 +144,11 @@
     "Setup_Entry4": {
         "desc": "进入页面为箱庭",
         "max_hit": 1,
-        "recognition": "TemplateMatch",
-        "roi": [
-            1047,
-            516,
-            107,
-            110
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
-        "template": [
-            "Run.png"
-        ],
-        "green_mask": true,
         "timeout": 3000,
         "next": [
             "[JumpBack]Setup_Main_Switch"
@@ -870,14 +864,9 @@
     "Setup_Main_Into_Pre": {
         "recognition": "Or",
         "any_of": [
-            "Rec_SandBox_Pin_Tpl",
-            "Rec_SandBox_Run_Tpl"
+            "Global_HomeButton_Once"
         ],
         "action": "Click",
-        "target": [
-            1186,
-            46
-        ],
         "post_delay": 3000,
         "next": [
             "Setup_Main_Into",
@@ -1564,8 +1553,14 @@
         "focus": "背包"
     },
     "Setup_Equip": {
-        "recognition": "And",
-        "all_of": ["Equip_EquipUp_CK"],
+        "recognition": "OCR",
+        "roi": [
+            218,
+            17,
+            65,
+            45
+        ],
+        "expected": ["装备"],
         "anchor": "Setup_EquipUp",
         "next": [
             "Setup_EquipUp",
@@ -2253,25 +2248,8 @@
         ]
     },
     "Setup_SetSkill_3-2_Pre": {
-        "recognition": "ColorMatch",
-        "roi": [
-            110,
-            503,
-            23,
-            9
-        ],
-        "method": 40,
-        "lower": [
-            18,
-            50,
-            80
-        ],
-        "upper": [
-            26,
-            255,
-            255
-        ],
-        "count": 50,
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_LiftYew_ReLiftEnd"],
         "next": [
             "Setup_SetSkill_3-2",
             "[JumpBack]Setup_SetSkill_SwipMini",
@@ -2358,25 +2336,8 @@
         ]
     },
     "Setup_SetSkill_3-3_Pre": {
-        "recognition": "ColorMatch",
-        "roi": [
-            110,
-            503,
-            23,
-            9
-        ],
-        "method": 40,
-        "lower": [
-            18,
-            50,
-            80
-        ],
-        "upper": [
-            26,
-            255,
-            255
-        ],
-        "count": 50,
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_LiftYew_ReLiftEnd"],
         "next": [
             "Setup_SetSkill_3-3",
             "[JumpBack]Setup_SetSkill_SwipMini",
@@ -2463,25 +2424,8 @@
         ]
     },
     "Setup_SetSkill_3-4_Pre": {
-        "recognition": "ColorMatch",
-        "roi": [
-            110,
-            503,
-            23,
-            9
-        ],
-        "method": 40,
-        "lower": [
-            18,
-            50,
-            80
-        ],
-        "upper": [
-            26,
-            255,
-            255
-        ],
-        "count": 50,
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_LiftYew_ReLiftEnd"],
         "next": [
             "Setup_SetSkill_3-4",
             "[JumpBack]Setup_SetSkill_SwipMini",
@@ -2568,25 +2512,8 @@
         ]
     },
     "Setup_SetSkill_3-5_Pre": {
-        "recognition": "ColorMatch",
-        "roi": [
-            110,
-            503,
-            23,
-            9
-        ],
-        "method": 40,
-        "lower": [
-            18,
-            50,
-            80
-        ],
-        "upper": [
-            26,
-            255,
-            255
-        ],
-        "count": 50,
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_LiftYew_ReLiftEnd"],
         "next": [
             "Setup_SetSkill_3-5",
             "[JumpBack]Setup_SetSkill_SwipMini",
