@@ -12,10 +12,10 @@ from maa.context import Context
 import utils
 from recognition.counter import TAG_STORE
 
-__version__ = "2.0.1"
+__version__ = "2.1.0"
 
 # ==============================================================================
-# Pipeline 动态管理器  v2.0.1
+# Pipeline 动态管理器  v2.1.0
 # ==============================================================================
 # 提供两个 Custom Action：
 #
@@ -79,8 +79,18 @@ __version__ = "2.0.1"
 #     "target": "[Anchor]CurCard",
 #     "patch":  { "enabled": false }
 # }
-# 锚点没指向任何节点时跳过该目标（不算失败）—— 与正则零命中的硬失败不同，因为锚点
-# 为空是流程的正常状态，而正则写错了是配置错误。
+#
+# ── 目标选择器的三种写法，按序判定一次、选中即定，不能既要还要 ──
+#   ① 固定节点名   "Node_A" / ["Node_A", "Node_B"]
+#   ② 锚点         "[Anchor]锚点名"   ← 单个名字，运行时才知道是谁
+#   ③ 节点名正则   {"regex": "..."}   ← 在已加载节点名里搜一批
+# 锚点不支持正则：锚点名里写正则不会被当正则解释，只会拿去当锚点名查，查不到即跳过。
+#
+# 三者对「没选中任何节点」的处置也不同，别混：
+#   · 锚点没指向任何节点  → 跳过该目标，发一条日志，不算失败（流程的正常状态）
+#   · 正则零命中          → 硬失败（配置错误）
+#   · target 写成空字符串 → 硬失败（写了 target 却没写值，同样是配置错误，
+#                            会落到下面「节点不存在」那条报错上）
 #
 # ------------------------------------------------------------------------------
 # 3. 打补丁：每个节点各自不同的补丁
@@ -89,10 +99,14 @@ __version__ = "2.0.1"
 #
 # "custom_action_param": {
 #     "patches": {
-#         "Node_A": { "next": ["Node_X"] },
-#         "Node_B": { "timeout": 3000 }
+#         "Node_A":          { "next": ["Node_X"] },
+#         "[Anchor]CurCard": { "enabled": false },   // 键同样认锚点
+#         "Node_B":          { "timeout": 3000 }
 #     }
 # }
+#
+# 键的解析规则与 target 完全一致（固定节点名 / 锚点二选一）—— 唯一的差别是 patches
+# 的键**不支持正则**：正则是"一个补丁打一批节点"，那正是 target+patch 的活。
 #
 # 之所以要有这个形态：一个节点只能有一种 action，没法靠"多写几个节点"来表达。
 # target+patch 与 patches 同时出现 = 硬失败（意图不明，不猜）。
@@ -152,6 +166,11 @@ __version__ = "2.0.1"
 # }
 #
 # 新建的节点没有"原状"可还原，因此不进账本；任务结束时框架会自动清掉它。
+#
+# ⚠️ create 对**锚点目标一律无效**（写了也不生效，直接报错）。锚点指向的必然是流程里
+#    刚跑过的既有节点，解析出来却查无此节点，只能是上游 anchor 登记的名字写错了 ——
+#    此时若允许 create，就会凭空造一个同名空节点把错误盖住：补丁打在谁也不引用的
+#    节点上，动作还返回成功，你想改的那个节点毫发无损。这类问题极难查，故禁掉。
 #
 # ------------------------------------------------------------------------------
 # 7. 占位符：$box / $self / $caller
@@ -339,14 +358,35 @@ def _resolve_anchor(context: Context, name: str) -> "str | None":
     return resolved
 
 
-def _targets(context: Context, spec, *, allow_regex: bool) -> "list[str]":
+def _resolve_targets(context: Context, spec, *, allow_regex: bool) -> "list[tuple[str, bool]]":
+    """解析目标选择器 → [(节点名, 是否由锚点解析而来), ...]。
+
+    三种写法**按序判定一次、选中即定**，不能既要还要：
+      ① 固定节点名     "Node_A" / ["Node_A", "Node_B"]
+      ② 锚点           "[Anchor]锚点名"（可出现在数组元素里；不支持正则）
+      ③ 节点名正则     {"regex": "^Shop_.*$"}
+    锚点是「运行时才知道是谁」的单个名字，正则是「在已加载节点名里搜一批」，两者语义
+    互斥 —— 锚点名里写正则不会被当正则解释，只会拿去当锚点名查，查不到即跳过。
+
+    第二个返回值标记来源，供上游禁止「锚点目标 + create 新建节点」。
+
+    空字符串**不在这里吞掉**：它是配置错误（写了 target 却没写值），原样放行到下游
+    的「节点不存在」检查去报错。只有锚点未命中（_resolve_anchor 返回 None）才过滤，
+    那是流程的正常状态。两者语义不同，别再用真值判断混为一谈。
+    """
     if isinstance(spec, str):
         hit = _resolve_anchor(context, spec)
-        return [hit] if hit else []
+        return [] if hit is None else [(hit, spec.startswith(ANCHOR_PREFIX))]
     if isinstance(spec, list):
         if not spec:
             raise ConfigError("target 是空数组")
-        return [n for n in (_resolve_anchor(context, str(x)) for x in spec) if n]
+        out = []
+        for x in spec:
+            raw = str(x)
+            hit = _resolve_anchor(context, raw)
+            if hit is not None:
+                out.append((hit, raw.startswith(ANCHOR_PREFIX)))
+        return out
     if isinstance(spec, dict) and "regex" in spec:
         if not allow_regex:
             raise ConfigError("RestorePipeline 的 target 不支持 regex，请写节点名或 \"*\"")
@@ -359,8 +399,13 @@ def _targets(context: Context, spec, *, allow_regex: bool) -> "list[str]":
         hit = [n for n in context.tasker.resource.node_list if any(c.search(n) for c in compiled)]
         if not hit:
             raise ConfigError(f"target.regex {patterns} 没有匹配到任何节点")
-        return hit
+        return [(n, False) for n in hit]
     raise ConfigError(f"target 必须是节点名 / 数组 / {{\"regex\": ...}}，实际是 {spec!r}")
+
+
+def _targets(context: Context, spec, *, allow_regex: bool) -> "list[str]":
+    """只取节点名。RestorePipeline 用 —— 它按账本还原，不关心目标是怎么解析出来的。"""
+    return [n for n, _ in _resolve_targets(context, spec, allow_regex=allow_regex)]
 
 
 # ------------------------------------------------------------------------------
@@ -416,7 +461,16 @@ class PatchPipeline(CustomAction):
                 pairs = params["patches"]
                 if not isinstance(pairs, dict) or not pairs:
                     raise ConfigError("patches 必须是非空的 {节点名: 补丁} 对象")
-                plan = list(pairs.items())
+                # 键同样过锚点解析 —— 与 target 写法保持一致的能力，别让两种写法一个
+                # 认 "[Anchor]xxx" 一个不认（不解析的话，配上 create 会静默新建一个
+                # 名字真就叫 "[Anchor]xxx" 的垃圾节点，补丁全打空）。
+                plan = []
+                for raw_name, sub in pairs.items():
+                    raw_name = str(raw_name)
+                    hit = _resolve_anchor(context, raw_name)
+                    if hit is None:
+                        continue        # 锚点没指向任何节点 → 跳过该目标（已在解析处告警）
+                    plan.append((hit, sub, raw_name.startswith(ANCHOR_PREFIX)))
             else:
                 if "target" not in params:
                     raise ConfigError("缺少 target（或改用 patches）")
@@ -425,7 +479,8 @@ class PatchPipeline(CustomAction):
                 patch = params["patch"]
                 if not isinstance(patch, dict):
                     raise ConfigError(f"patch 必须是对象，实际是 {type(patch).__name__}")
-                plan = [(n, patch) for n in _targets(context, params["target"], allow_regex=True)]
+                plan = [(n, patch, from_anchor) for n, from_anchor
+                        in _resolve_targets(context, params["target"], allow_regex=True)]
 
             backup = params.get("backup", True)
             create = bool(params.get("create", False))
@@ -434,12 +489,21 @@ class PatchPipeline(CustomAction):
             ledger = _ledger(argv)
 
             patched, created, recorded = [], [], 0
-            for node, raw_patch in plan:
+            for node, raw_patch, from_anchor in plan:
                 before = context.get_node_data(node)
-                if before is None and not create:
-                    raise ConfigError(
-                        f"节点 [{node}] 不存在（名字拼错？若确实想新建，请加 \"create\": true）"
-                    )
+                if before is None:
+                    # 锚点目标一律不许新建：锚点指向的必然是流程里跑过的既有节点，解析
+                    # 出来却查无此节点 = 上游 anchor 登记写错了。此时 create 会凭空造一个
+                    # 同名空节点把错误盖住，补丁打在谁也不引用的节点上，返回还是成功。
+                    if from_anchor:
+                        raise ConfigError(
+                            f"锚点解析到的节点 [{node}] 不存在。锚点只能指向已有节点，"
+                            f"不允许借 create 新建 —— 请检查上游 anchor 字段登记的节点名"
+                        )
+                    if not create:
+                        raise ConfigError(
+                            f"节点 [{node}] 不存在（名字拼错？若确实想新建，请加 \"create\": true）"
+                        )
 
                 payload = _resolve(copy.deepcopy(raw_patch), node, caller, box)
                 if not context.override_pipeline({node: payload}):
