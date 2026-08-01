@@ -1,807 +1,502 @@
+# -*- coding: utf-8 -*-
+"""Pipeline 动态管理器 —— 运行时改写 / 还原 MaaFramework 管线节点。"""
+
+import copy
 import json
 import re
-import os
-import copy
-import random
-from pathlib import Path
+
 from maa.agent.agent_server import AgentServer
 from maa.custom_action import CustomAction
 from maa.context import Context
+
 import utils
 from recognition.counter import TAG_STORE
 
+__version__ = "2.0.1"
+
 # ==============================================================================
-# 🔧 Pipeline 动态管理器 (Python 扩展)
+# Pipeline 动态管理器  v2.0.1
 # ==============================================================================
-# 本脚本实现了“影子账本 (Shadow Ledger)”机制：
-#   支持自动记录节点原值、单点精准还原、批量重置。防止由于动态修改导致管线永久性污染。
+# 提供两个 Custom Action：
 #
-# 本脚本集成了“旁作用 (Side Effect)”机制：
-#   所有 Custom Action 均支持传入 "reset_tags" 数组，在执行动作的同时顺手重置计数器。
-# ==============================================================================
-# ------------------------------------------------------------------------------
-#
-#  # 警告:当前版本的origin影子账本机制，使用先到先得方法，写入即锁定。故，当多层替换时，新的origin会不生效。未来可能增加可控合并、替换、保留等行为分化。
+#   PatchPipeline    运行时改写节点参数，并自动登记还原点
+#   RestorePipeline  把改过的节点还原回去
 #
 # ------------------------------------------------------------------------------
-# 1. PatchNode (单点打补丁 + 自动注册备份 + 旁作用重置)
+# 设计要点：为什么不用手写 origin
+# ------------------------------------------------------------------------------
+# 旧版要求调用方在 JSON 里手抄一份 "origin"（原值）用于还原。这有三个问题：抄错了
+# 无人校验；抄的是磁盘上的静态值，而运行时真实生效的值还叠加了 UI 选项覆盖；节点改了
+# 之后 origin 不会跟着改。
+#
+# 本版改为：打补丁前后各向框架查询一次节点的**当前定义**，两次结果做差，差出来的部分
+# 就是还原点。框架是唯一权威 —— 取值、V1/V2 格式转译、字段合并全部由它完成，本模块
+# 只做纯字典比较。调用方一个字都不用写。
+#
+# ------------------------------------------------------------------------------
+# 关于写法：V1 / V2 都行
+# ------------------------------------------------------------------------------
+# 下面的示例用 V1 扁平写法（recognition / action 直接是字符串，参数摊在节点顶层），
+# 因为这是本项目的习惯。但**两种写法本模块都吃**：
+#
+#   V1  "action": "Custom", "custom_action": "PatchPipeline", "custom_action_param": {...}
+#   V2  "action": { "type": "Custom", "param": { "custom_action": "PatchPipeline",
+#                                                "custom_action_param": {...} } }
+#
+# patch 内容同理 —— 写 V1 的 "expected": [...]，或写 V2 的
+# "recognition": {"param": {"expected": [...]}}，都可以。框架自己完成转译，本模块
+# 不解析这些字段，只把补丁原样交给框架。
+#
+# ------------------------------------------------------------------------------
+# 1. 打补丁：一个节点
 # ------------------------------------------------------------------------------
 # "action": "Custom",
-# "custom_action": "PatchNode",
+# "custom_action": "PatchPipeline",
 # "custom_action_param": {
-#     "node": "Battle_Node",                                  // [必填] 目标节点名
-#     "patch": { "next": ["Boss_Win"], "timeout": 30000 },    // [必填] 要覆盖/修改的参数字典
-#     "origin": { "next": ["Normal_Win"], "timeout": 10000 }, // [选填] 原版数据备份。若缺省，首次运行时不会记录备份，导致后续无法还原。
-#     "reset_tags": ["Battle_Count", "Win_Count"]             // [选填] 旁作用：顺手重置这些计数器标签。
+#     "target": "Battle_Entry",              // [必填] 目标节点名
+#     "patch":  { "timeout": 30000 }         // [必填] 要改的字段，按平时写节点的写法写
 # }
-
-# ------------------------------------------------------------------------------
-# 2. PatchBatch (多点批量修改 + 自动注册备份 + 旁作用重置)
-# ------------------------------------------------------------------------------
-# "action": "Custom",
-# "custom_action": "PatchBatch",
-# "custom_action_param": {                             
-#     "patches": {                                            // [必填] 补丁字典 {目标节点: 参数字典}
-#         "Battle_Node": { "next": ["Boss_Win"], "timeout": 30000 },
-#         "Swipe_Common": { "duration": 500 }
-#     },
-#     "origins": {                                            // [选填] 原版字典 {目标节点: 参数字典}。登记影子账本用。
-#         "Battle_Node": { "next": ["Normal_Win"], "timeout": 10000 },
-#         "Swipe_Common": { "duration": 1000 }
-#     },
-#     "reset_tags": ["Daily_Loop_Count"]                      // [选填] 旁作用：顺手清零。
-# }
-
-# ------------------------------------------------------------------------------
-# 3. PatchAndClick (魔改 + 偏移点击 + 旁作用重置)
-# ------------------------------------------------------------------------------
-# 场景：识别到某个入口后 -> 先修改后续节点参数 -> 再点击当前识别到的位置(支持自定义偏移)。
-# "action": "Custom",
-# "custom_action": "PatchAndClick",
-# "custom_action_param": {
-#     "node": "Battle_Logic",                                 // [选填] 目标节点。若缺省：不执行Patch，仅执行点击。
-#     "patch": { "next": ["Boss_Win"] },                      // [选填] 修改内容。
-#     "origin": { "next": ["Common_Win"] },                   // [选填] 原版备份。
-#     "target_offset": [100, 50, 0, 0],                       // [选填] 🎯 精确点击偏移 [dx, dy, w, h]。计算公式: X=原x+dx+(w/2)。若缺省：点击原识别框中心。
-#     "reset_tags": ["Click_Count"]                           // [选填] 旁作用。
-# }
-
-# ------------------------------------------------------------------------------
-# 4. RestoreNode & 4-2. RestoreBatch (精准还原)
-# ------------------------------------------------------------------------------
-# 场景：只还原指定的单个或几个节点，其他被改过的节点保持不变。
-# "action": "Custom",
-# "custom_action": "RestoreNode",  // 批量还原请填 "RestoreBatch"
-# "custom_action_param": {
-#     "node": "Battle_Node",       // 单点还原用法 (系统会自动去影子账本里找它的 origin 数据)
-#     // "nodes": ["Node_A", "Node_B"], // 批量还原用法 (RestoreBatch 专属)
-#     // "reset_tags": ["TagA"]    // [选填] 顺手重置计数器
-# }
-
-# ------------------------------------------------------------------------------
-# 5. ResetAll (一键全部还原)
-# ------------------------------------------------------------------------------
-# 场景：任务跑完了，把所有改过的节点全部重置回最初的状态，并清空影子账本。
-# "action": "Custom",
-# "custom_action": "ResetAll"      // <-- 无需 param 参数，直接调用即可。
-
-# ------------------------------------------------------------------------------
-# 6. RunTask (调用子任务/带参注入 + 旁作用重置)
-# ------------------------------------------------------------------------------
-# 场景：运行另一个独立流程，支持传入临时参数覆盖。运行结束后，参数自动失效，不污染全局。
-# "action": "Custom",
-# "custom_action": "RunTask",
-# "custom_action_param": {
-#     "entry": "Swipe_Common_Node",           // [必填] 想要调用的入口节点名
-#     "param": {                              // [选填] 临时参数注入 (仅在本次子任务中生效)
-#         "Swipe_Common_Node": {              
-#             "begin": [100, 200, 0, 0],
-#             "duration": 500
-#         }
-#     },
-#     "reset_tags": ["SubTask_Counter"]       // [选填] 启动子任务前，先清零特定计数器。
-# }
-# ==============================================================================
-# 7. PatchByRegex (正则批量覆写 - 增强账本支持版)
-# ------------------------------------------------------------------------------
-# 场景：通过正则表达式一次性修改大批节点。完全支持影子账本、多规则并发和动态占位符。
-#
-# 🪄 魔法占位符速查（可以在 patch 或 value 中使用）：
-#   $box    : 动态获取当前 MAA 识别成功时的目标框坐标 [x, y, w, h]。
-#             - 在 patch (浅层) 模式下：硬编码绑定，只能写成 `"roi": "$box"`。
-#             - 在 target_path (深层) 模式下：无限制，可以替换任何指定路径的值。
-#   $self   : 动态替换为当前正在被正则修改的“目标节点真名”。
-#   $caller : 动态替换为发起本次调用的“起始节点真名”（需在配置中主动声明 "caller"）。
 #
 # ------------------------------------------------------------------------------
-# 【情况一：单套规则简写】（如果只想执行一条规则，可省略 "rules" 数组，直接写在外层）
+# 2. 打补丁：一批节点用同一份补丁
 # ------------------------------------------------------------------------------
-# "action": {
-#     "type": "Custom",
-#     "param": {
-#         "custom_action": "PatchByRegex",
-#         "custom_action_param": {
-#             "caller": "My_Start_Node",              // [选填] 声明我是谁，供后文 $caller 使用
-#             "reset_tags": ["Some_Tag"],             // [选填] 旁作用：顺手重置计数器
-#             "pattern": "^Enemy_.*_Swip$",           // [必填] 要匹配的节点正则 (支持字符串或数组)
-#             "patch": {                              // [方案A] 浅层合并覆盖 (适合修改顶层属性)
-#                 "timeout": 5000,                    //         直接写死修改超时时间
-#                 "roi": "$box"                       //         使用魔法变量抓取真实识别坐标
-#             },
-#             "origin": {                             // [关键]  影子账本：为所有匹配到的节点统一登记还原数据
-#                 "timeout": 15000,
-#                 "roi": [0,0,0,0]
-#             }
-#         }
+# "custom_action_param": {
+#     "target": ["Node_A", "Node_B"],        // 数组
+#     "patch":  { "enabled": false }
+# }
+#
+# 也可以用正则选目标（在框架已加载的节点名里搜，支持字符串或数组）：
+# "custom_action_param": {
+#     "target": { "regex": "^Shop_Buy_Item_\\d+$" },
+#     "patch":  { "timeout": 5000 }
+# }
+#
+# ⚠️ 正则零命中 = 硬失败。宁可报错，也不要让"以为改了其实没改"悄悄溜过去。
+#
+# ------------------------------------------------------------------------------
+# 3. 打补丁：每个节点各自不同的补丁
+# ------------------------------------------------------------------------------
+# target + patch 是「同一份补丁打到一批节点」。如果每个节点要改的东西不一样，用 patches：
+#
+# "custom_action_param": {
+#     "patches": {
+#         "Node_A": { "next": ["Node_X"] },
+#         "Node_B": { "timeout": 3000 }
 #     }
 # }
 #
-# ------------------------------------------------------------------------------
-# 【情况二：多套规则混合的高阶实战】（使用 "rules" 数组，支持独立互不干涉的多宇宙操作）
-# ------------------------------------------------------------------------------
-# {
-#     "💡模板_多套规则_高级独立账本与动态跳转": {                //←节点名
-#         "action": "Custom",
-#         "custom_action": "PatchByRegex",
-#         "custom_action_param": {
-#             "caller": "💡模板_多套规则_高级独立账本与动态跳转", // 告诉系统本次动作的发起者是谁
-#             "rules": [
-#                 // --- 规则 1：深度路径精准替换 ($box 的高阶用法) ---
-#                 // 适用场景：只想改数组里某一个元素的属性，不想破坏数组里的其他内容。
-#                 {
-#                     "pattern": "^Collect_Pack_(Story|Event)_\\d+$", 
-#                     "target_path": ["all_of", 0, "roi"], // [方案B] 游标寻址：修改 "all_of" 数组第 0 个元素的 "roi"
-#                     "value": "$box",                     // 必须与 target_path 成对出现。将识别框赋值过去。
-#                     "origin": {                          // 登记账本的结构必须与原始节点结构对应
-#                         "all_of": [ { "roi": [1183, 603, 51, 56] } ] 
-#                     }
-#                 },
-#                 // --- 规则 2：动态跳转与自我引用 ($caller 和 $self 配合) ---
-#                 // 适用场景：让一批节点执行完某事后，统一跳回发起者，或者跳回它们自己。
-#                 {
-#                     "pattern": "^Collect_LocatePackFrame_Loc[2-9]$",
-#                     "patch": {
-#                         "next": [
-#                             "Do_Something_Else",
-#                             "[JumpBack]$caller"          // 运行时会自动变成 "[JumpBack]💡模板_多套规则_高级..."
-#                             // 💡 扩展思路：如果这里写 "[JumpBack]$self"，遇到 Loc5 时就会变成 "[JumpBack]Collect_LocatePackFrame_Loc5"
-#                         ]
-#                     }
-#                 },
-#                 // --- 规则 3：写死固定值的浅层修改 ---
-#                 // 适用场景：大面积覆盖常规属性
-#                 {
-#                     "pattern": "^Shop_Buy_Item_.*$",
-#                     "patch": {
-#                         "timeout": 5000,                 
-#                         "next": ["Shop_Out"]
-#                     },
-#                     "origin": {
-#                         "timeout": 15000,
-#                         "next": ["Shop_Continue"]
-#                     }
-#                 }
-#             ]
-#         },
-#         "doc": "用法：每个 rule 是独立的宇宙。各路规则根据 pattern 寻找目标，互不干涉地执行深度修改或浅层合并。"
-#     },
+# 之所以要有这个形态：一个节点只能有一种 action，没法靠"多写几个节点"来表达。
+# target+patch 与 patches 同时出现 = 硬失败（意图不明，不猜）。
 #
 # ------------------------------------------------------------------------------
-# 【配套动作：精准单点还原】
+# 4. 还原
 # ------------------------------------------------------------------------------
-#     "💡模板_单点还原_精准恢复某个特定节点": {
-#         "action": "Custom",
-#         "custom_action": "RestoreNode",
-#         "custom_action_param": {
-#             "node": "Shop_Buy_Item_3"
-#         },
-#         "next": [
-#             "Next_Pipeline_Node"
-#         ],
-#         "doc": "高阶运用：上面的规则 3 虽然改了所有的 Shop_Buy_Item，但我现在觉得 3 号买完了，我单独对 3 号调用 RestoreNode，把它从影子账本里单独拉出来恢复。"
-#     }
+# "custom_action": "RestorePipeline",
+# "custom_action_param": { "target": "Battle_Entry" }      // 单个
+# "custom_action_param": { "target": ["Node_A","Node_B"] } // 多个
+# "custom_action_param": { "target": "*" }                 // 本次任务改过的全部
+#
+# 还原点由 PatchPipeline 自动登记，采用「先到先得」：同一节点被反复打补丁时，还原点
+# 始终是**第一次打补丁之前**的状态。
+#
+# 还原本身是幂等的 —— 目标不在账本里（没被改过 / 已经还原过）只发一条告警，不算失败。
+#
+# 如果某次改写是一次性的、压根不打算还原，可以在 PatchPipeline 一侧关掉登记：
+#
+# "custom_action_param": {
+#     "target": "Battle_Entry",
+#     "patch":  { "timeout": 30000 },
+#     "backup": false                        // 默认 true。false = 不登记还原点
 # }
+#
+# ⚠️ backup: false 的节点不进账本 —— RestorePipeline 点名还原它，会落到「账本中无还原点，
+#    已跳过」那条告警；"*" 批量还原也不会覆盖它。它只随任务结束由框架自动失效。
+#    这个开关只影响账本，不影响补丁本身，补丁照打不误。
+#
+# （注意别和旧版 RestoreNode 的同名参数搞混：那个 backup 是「还原时手工传一份备份数据
+#  进来」，语义相反，已随旧 API 一并废弃，迁移脚本遇到会丢弃并告警。）
+#
+# ------------------------------------------------------------------------------
+# 5. 旁作用：顺手清计数器、顺手点一下
+# ------------------------------------------------------------------------------
+# 两个动作都支持。同样是因为一个节点只能有一种 action —— 想「改参数 + 点一下 +
+# 清计数器」，不做成参数就得拆三个节点。
+#
+# "custom_action_param": {
+#     "target": "Battle_Entry",
+#     "patch":  { "timeout": 30000 },
+#     "reset_tags": ["Battle_Count"],            // 把这些计数器清零
+#     "click": {}                                // 点当前识别框中心
+#     // "click": { "offset": [10, 20, 40, 40] } // 或点 [识别框左上角+dx+dy] 起、w×h 的区域中心
+# }
+#
+# ------------------------------------------------------------------------------
+# 6. 新建节点
+# ------------------------------------------------------------------------------
+# 补丁也可以凭空造一个资源里不存在的节点，但必须显式声明 —— 因为「节点名拼错」和
+# 「打算新建」在接口层长得一模一样，不声明就无从区分：
+#
+# "custom_action_param": {
+#     "target": "Tmp_Node",
+#     "create": true,                        // 不写 = 节点不存在即报错
+#     "patch":  { "recognition": "DirectHit", "action": "Click", "target": [1,2,3,4] }
+# }
+#
+# 新建的节点没有"原状"可还原，因此不进账本；任务结束时框架会自动清掉它。
+#
+# ------------------------------------------------------------------------------
+# 7. 占位符：$box / $self / $caller
+# ------------------------------------------------------------------------------
+# 可以出现在 patch 里的任意位置（不限于某个字段）：
+#
+#   "$box"     整条替换成当前识别框 [x, y, w, h]
+#   "$self"    子串替换成"正在被改的那个节点的名字"（配合正则选择器时有用）
+#   "$caller"  子串替换成 caller 参数的值，需要在参数里显式写 "caller": "本节点名"
+#
+# "custom_action_param": {
+#     "caller": "My_Entry_Node",
+#     "target": { "regex": "^Enemy_.*$" },
+#     "patch":  { "roi": "$box", "next": ["[JumpBack]$caller"] }
+# }
+#
+# ------------------------------------------------------------------------------
+# 8. 三个容易踩的坑
+# ------------------------------------------------------------------------------
+# (1) 数组是整体替换，不是逐元素合并。
+#     想改 "all_of" 里第 0 个元素的 roi，必须把整个 all_of 数组写全，只写第 0 个会
+#     让其余元素消失。（把条件写成外置节点、在 all_of 里只放节点名，就能绕开这点 ——
+#     那时 roi 是被引用节点的一级字段，直接 patch 即可。）
+#
+# (2) custom_action_param / custom_recognition_param 是整体替换。
+#     框架不理解这两个字段的内部结构，所以不做合并。补丁里带上它们就必须写全量，
+#     只写想改的那一个键会让其余键丢失。
+#
+# (3) 补丁的作用范围是**单次任务**。
+#     任务结束后框架会自动丢弃所有运行时改写，还原点账本也随之失效 —— 不需要、也
+#     无法跨任务还原。
 # ==============================================================================
-# --- 全局影子账本 ---
-# 格式: { "NodeName": { "original_key": "original_value" } }
-NODE_BACKUPS = {}          # 影子账本：记录被修改节点的原值
-ALL_NODES_CACHE = {} 
-CACHE_LOADED = False
 
-def parse_json_arg(argv: CustomAction.RunArg) -> dict:
-    """通用参数解析器"""
+
+class ConfigError(Exception):
+    """调用方在 JSON 里写错了。硬失败走 on_error，不静默降级。"""
+
+
+# ------------------------------------------------------------------------------
+# 还原点账本
+# ------------------------------------------------------------------------------
+# 按**任务号**分桶：运行时改写本就随任务结束失效，隔离靠的就是这个键 —— 任务号由框架
+# 的全局计数器发放（2000xxxxx 一路递增，跨 tasker 也不复用），别的任务的桶根本查不到，
+# 不会把陈旧的还原点灌进一个没被改过的节点。
+#
+# ⚠️ 键里**不能**掺任何指针/地址。tasker 在这里没有可用的稳定身份：
+#   - id(context.tasker)：binding 每次回调都新建 Context，Context.__init__ 又新建一个
+#     Tasker 包装对象（maa/context.py::_init_tasker），拿到的是短命包装的地址；
+#   - Tasker._handle：agent 模式下这是 MaaAgentServer 每次 MaaContextGetTasker 现分配的
+#     **本地代理**地址，同样一次一变（宿主日志里那个恒定的 tasker_id 是宿主进程的指针，
+#     不是 agent 侧的 _handle，别拿它当证据）。
+# 两者都是小对象，地址会被回收复用 —— 于是绝大多数时候账本查不到、偶尔又撞上一个旧桶
+# 还原出中间态，症状飘忽极难查。实测一次运行里同一任务连续拿到
+# 9880 / 9c90 / 9f60 / a190 / 9f60 / 9880 / 95b0 七个不同的键。
+#
+# 多账号并行不需要在键里区分 tasker：每个实例是独立的 agent 进程，_LEDGERS 天然隔离。
+#
+# 注意 _LEDGERS 是 agent 进程里的普通全局 dict，框架不知道它的存在、也不会替我们清理：
+# 框架只丢弃它自己那一半（任务结束时撤销 override）。所以任务一结束，对应的桶就变成了
+# 谁也查不到的死数据，得靠 _ledger() 里那次清理回收，否则一直留到进程退出。
+_LEDGERS: "dict[int, dict[str, dict]]" = {}
+
+_MISSING = object()
+
+# 框架对这两个字段是整体替换，不做合并 —— 它不理解里面的结构，所以不敢合并。
+# 因此求差时**绝不能递归进去**：只改了其中一个键，也必须把整份旧值记下来，
+# 否则还原时会把没改过的兄弟键一起抹掉。
+_ATOMIC_KEYS = frozenset({"custom_action_param", "custom_recognition_param"})
+
+
+def _ledger(argv: CustomAction.RunArg) -> dict:
+    task_id = argv.task_detail.task_id
+    # 只清任务号**比自己大**的桶。task_id 单调递增，所以"比我大"必然是我（或我的兄弟）
+    # 派出去、且已经跑完的子任务 —— context.run_task() 每调一次就开一个新任务号。
+    # 反过来写成 != 会让子任务把父任务的桶删掉：父任务只是在等子任务返回，并没有结束，
+    # 它登记的还原点还要用。代价是先后两个顶层任务之间不再即时回收，旧桶留到 agent
+    # 进程退出 —— 只有调过本模块的任务才建桶，量级可忽略。
+    for stale in [k for k in _LEDGERS if k > task_id]:
+        del _LEDGERS[stale]
+    return _LEDGERS.setdefault(task_id, {})
+
+
+def _diff(before, after, prefix=()):
+    """列出 before -> after 变化的叶子路径，返回 [(路径, 旧值)]。
+
+    字典递归下去，其余类型（含数组）整体比较 —— 框架对数组就是整体替换。
+    原子字段（见 _ATOMIC_KEYS）同样整体比较，不递归。
+    """
+    out = []
+    atomic = bool(prefix) and prefix[-1] in _ATOMIC_KEYS
+    if not atomic and isinstance(before, dict) and isinstance(after, dict):
+        for key in set(before) | set(after):
+            out += _diff(before.get(key, _MISSING), after.get(key, _MISSING), prefix + (key,))
+    elif before is not _MISSING or after is not _MISSING:
+        if before != after:
+            out.append((prefix, before))
+    return out
+
+
+def _build_restore(before: dict, after: dict):
+    """把 diff 结果反推成最小还原载荷。返回 (载荷, 被跳过的新增路径)。"""
+    payload: dict = {}
+    skipped = []
+    for path, old in _diff(before, after):
+        if old is _MISSING:
+            # 补丁新增了原本不存在的字段 —— 没有"原状"可回退，交给任务结束时自动失效
+            skipped.append(".".join(str(p) for p in path))
+            continue
+        cursor = payload
+        for seg in path[:-1]:
+            cursor = cursor.setdefault(seg, {})
+        cursor[path[-1]] = old
+    return payload, skipped
+
+
+# ------------------------------------------------------------------------------
+# 参数与占位符
+# ------------------------------------------------------------------------------
+
+def _parse_param(argv: CustomAction.RunArg) -> dict:
+    raw = argv.custom_action_param
+    if not raw:
+        return {}
+    if isinstance(raw, dict):
+        return raw
     try:
-        if not argv.custom_action_param: return {}
-        if isinstance(argv.custom_action_param, dict): return argv.custom_action_param
-        return json.loads(str(argv.custom_action_param).strip())
-    except: return {}
+        parsed = json.loads(str(raw).strip())
+    except json.JSONDecodeError as exc:
+        raise ConfigError(f"custom_action_param 不是合法 JSON：{exc}") from None
+    if not isinstance(parsed, dict):
+        raise ConfigError(f"custom_action_param 必须是对象，实际是 {type(parsed).__name__}")
+    return parsed
 
-def _ensure_cache_loaded(force_refresh=False):
-    """建立本地节点配置数据库 (Deep Cache)"""
-    global ALL_NODES_CACHE, CACHE_LOADED
-    if CACHE_LOADED and not force_refresh: return
 
-    # 每次重建前先复位状态，避免"空缓存 + 已加载"脏状态（force_refresh 场景）
-    CACHE_LOADED = False
-    ALL_NODES_CACHE = {}
-    utils.mfaalog.info("[Py] 💾 正在建立节点数据库 (Deep Cache)...")
+def _box_of(argv: CustomAction.RunArg):
+    box = getattr(argv, "box", None)
+    if not box or int(getattr(box, "w", 0)) <= 0 or int(getattr(box, "h", 0)) <= 0:
+        return None
+    return [int(box.x), int(box.y), int(box.w), int(box.h)]
 
-    # 用 __file__ 反推项目根目录，规避 CWD 不可靠的问题
-    # pipeline_manager.py: agent/action/ -> agent/ -> project_root/
-    _project_root = Path(__file__).resolve().parent.parent.parent
-    target_path = _project_root / "assets" / "resource" / "base" / "pipeline"
 
-    # fallback：路径结构调整时的保底
-    if not target_path.exists() or not any(target_path.rglob("*.json")):
-        _fallback_candidates = [
-            _project_root / "resource" / "base" / "pipeline",  # 当前主流部署结构
-            _project_root / "resource" / "pipeline",           # 旧版结构（注意：更新器可能残留空目录）
-        ]
-        resolved = False
-        for _fallback in _fallback_candidates:
-            if _fallback.exists() and any(_fallback.rglob("*.json")):
-                target_path = _fallback
-                resolved = True
-                break
-        if not resolved:
-            # 最终兜底：全局搜索，优先 base/pc 父目录，且必须含 json
-            _preferred_parents = ["base", "pc"]
-            found = [p for p in _project_root.rglob("pipeline") if p.is_dir() and any(p.rglob("*.json"))]
-            found.sort(key=lambda p: _preferred_parents.index(p.parent.name) if p.parent.name in _preferred_parents else len(_preferred_parents))
-            if found:
-                target_path = found[0]
+def _resolve(data, node: str, caller: str, box):
+    """把 patch 里的占位符替换掉。"""
+    if isinstance(data, str):
+        if data == "$box":
+            if box is None:
+                raise ConfigError(f"节点 [{node}] 的补丁用了 $box，但当前没有有效识别框")
+            return list(box)
+        if "$caller" in data and not caller:
+            raise ConfigError(f"节点 [{node}] 的补丁用了 $caller，但参数里没写 caller")
+        out = data.replace("$self", node)
+        return out.replace("$caller", caller) if caller else out
+    if isinstance(data, list):
+        return [_resolve(x, node, caller, box) for x in data]
+    if isinstance(data, dict):
+        return {k: _resolve(v, node, caller, box) for k, v in data.items()}
+    return data
 
-    if not target_path.exists():
-        utils.mfaalog.error(f"[Py] ❌ 找不到 pipeline 目录，project_root={_project_root}")
-        return
 
-    count = 0
-    for file_path in target_path.rglob("*.json"):
+def _targets(context: Context, spec, *, allow_regex: bool) -> "list[str]":
+    if isinstance(spec, str):
+        return [spec]
+    if isinstance(spec, list):
+        if not spec:
+            raise ConfigError("target 是空数组")
+        return [str(x) for x in spec]
+    if isinstance(spec, dict) and "regex" in spec:
+        if not allow_regex:
+            raise ConfigError("RestorePipeline 的 target 不支持 regex，请写节点名或 \"*\"")
+        raw = spec["regex"]
+        patterns = [raw] if isinstance(raw, str) else list(raw)
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                content_str = f.read()
-                content_str = re.sub(r"//.*", "", content_str)
-                data = json.loads(content_str)
-            if isinstance(data, dict):
-                for node_name, node_config in data.items():
-                    ALL_NODES_CACHE[node_name] = node_config
-                    count += 1
-        except Exception as e:
-            utils.mfaalog.warning(f"[Py] 读取跳过 {file_path.name}: {e}")
+            compiled = [re.compile(p) for p in patterns]
+        except re.error as exc:
+            raise ConfigError(f"target.regex 不是合法正则：{exc}") from None
+        hit = [n for n in context.tasker.resource.node_list if any(c.search(n) for c in compiled)]
+        if not hit:
+            raise ConfigError(f"target.regex {patterns} 没有匹配到任何节点")
+        return hit
+    raise ConfigError(f"target 必须是节点名 / 数组 / {{\"regex\": ...}}，实际是 {spec!r}")
 
-    if count > 0:
-        CACHE_LOADED = True
-        utils.mfaalog.info(f"[Py] 💾 数据库构建完成！已索引 {count} 个节点的原始配置。")
+
+# ------------------------------------------------------------------------------
+# 旁作用
+# ------------------------------------------------------------------------------
+
+def _side_reset_tags(params: dict) -> None:
+    raw = params.get("reset_tags")
+    if not raw:
+        return
+    tags = raw if isinstance(raw, list) else [raw]
+    for tag in tags:
+        TAG_STORE[tag] = 0
+    utils.mfaalog.info(f"[Py] 🧹 [旁作用] 计数器已清零: {list(tags)}")
+
+
+def _side_click(context: Context, argv: CustomAction.RunArg, spec) -> None:
+    if spec is None:
+        return
+    box = _box_of(argv)
+    if box is None:
+        raise ConfigError("声明了 click 旁作用，但当前没有有效识别框")
+    x, y, w, h = box
+    offset = (spec or {}).get("offset") if isinstance(spec, dict) else None
+    if offset:
+        if not isinstance(offset, list) or len(offset) != 4:
+            raise ConfigError(f"click.offset 必须是 4 元数组 [dx, dy, w, h]，实际是 {offset!r}")
+        dx, dy, ow, oh = (int(v) for v in offset)
+        cx, cy = x + dx + ow / 2, y + dy + oh / 2
     else:
-        CACHE_LOADED = False
-        utils.mfaalog.error(f"[Py] ❌ 数据库构建异常：索引到 0 个节点！请检查 pipeline 目录: {target_path}")
+        cx, cy = x + w / 2, y + h / 2
+    context.tasker.controller.post_click(int(cx), int(cy))
+    utils.mfaalog.info(f"[Py] 🖱️ [旁作用] 点击 ({int(cx)}, {int(cy)})")
 
-def _process_reset_tags(params: dict):
-    """
-    [新增] 通用旁作用：处理标签重置
-    在任何 Action 里调用这个函数，就能顺手把计数器清了
-    """
-    global TAG_STORE
-    raw_tags = params.get("reset_tags") # 统一参数名: reset_tags
-    
-    if not raw_tags:
-        return
 
-    target_list = raw_tags if isinstance(raw_tags, list) else [raw_tags]
-    reset_logs = []
-    
-    for tag in target_list:
-        # 只要 TAG_STORE 里有这个键，或者你想强制初始化为0，都可以
-        # 这里为了安全，只重置已存在的
-        if tag in TAG_STORE or True: # 这里的 True 表示允许初始化新tag
-            if TAG_STORE.get(tag, 0) != 0:
-                TAG_STORE[tag] = 0
-                reset_logs.append(tag)
+# ------------------------------------------------------------------------------
+# PatchPipeline
+# ------------------------------------------------------------------------------
+
+@AgentServer.custom_action("PatchPipeline")
+class PatchPipeline(CustomAction):
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        try:
+            params = _parse_param(argv)
+            _side_reset_tags(params)
+
+            has_pairs = "patches" in params
+            has_single = "target" in params or "patch" in params
+            if has_pairs and has_single:
+                raise ConfigError("target/patch 与 patches 不能同时出现，请二选一")
+
+            if has_pairs:
+                pairs = params["patches"]
+                if not isinstance(pairs, dict) or not pairs:
+                    raise ConfigError("patches 必须是非空的 {节点名: 补丁} 对象")
+                plan = list(pairs.items())
             else:
-                # 已经是0了，确保存在即可
-                TAG_STORE[tag] = 0
-                
-    if reset_logs:
-        utils.mfaalog.info(f"[Py] 🧹 [旁作用] 顺手清零了标签: {reset_logs}")
+                if "target" not in params:
+                    raise ConfigError("缺少 target（或改用 patches）")
+                if "patch" not in params:
+                    raise ConfigError("缺少 patch（或改用 patches）")
+                patch = params["patch"]
+                if not isinstance(patch, dict):
+                    raise ConfigError(f"patch 必须是对象，实际是 {type(patch).__name__}")
+                plan = [(n, patch) for n in _targets(context, params["target"], allow_regex=True)]
 
-@AgentServer.custom_action("PatchNode")
-class PatchNode(CustomAction):
-    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        global NODE_BACKUPS
-        params = parse_json_arg(argv)
-        
-        # 1. [旁作用] 处理计数器重置
-        _process_reset_tags(params)
+            backup = params.get("backup", True)
+            create = bool(params.get("create", False))
+            caller = params.get("caller", "")
+            box = _box_of(argv)
+            ledger = _ledger(argv)
 
-        # 2. 主逻辑
-        target_node = params.get("node")
-        patch_data = params.get("patch")
-        origin_data = params.get("origin") # 用户手动提供的原版数据
+            patched, created, recorded = [], [], 0
+            for node, raw_patch in plan:
+                before = context.get_node_data(node)
+                if before is None and not create:
+                    raise ConfigError(
+                        f"节点 [{node}] 不存在（名字拼错？若确实想新建，请加 \"create\": true）"
+                    )
 
-        if not target_node or not patch_data:
-            utils.mfaalog.error("[Py] PatchNode 缺参数 (node/patch)")
-            return False
+                payload = _resolve(copy.deepcopy(raw_patch), node, caller, box)
+                if not context.override_pipeline({node: payload}):
+                    raise ConfigError(f"节点 [{node}] 的补丁被框架拒绝，请检查字段名与取值")
 
-        try:
-            # 如果用户提供了原版数据，且账本里还没有记录，就记下来
-            if origin_data and target_node not in NODE_BACKUPS:
-                NODE_BACKUPS[target_node] = origin_data
-                utils.mfaalog.info(f"[Py] 📖 已登记节点备份: {target_node}")
+                if before is None:
+                    created.append(node)
+                    continue
+                patched.append(node)
 
-            # 执行魔改
-            context.override_pipeline({target_node: patch_data})
-            utils.mfaalog.info(f"[Py] 🔧 节点 [{target_node}] 已打补丁")
-            return True
-        except Exception as e:
-            utils.mfaalog.error(f"[Py] PatchNode 失败: {e}")
-            return False
+                # 先到先得：还原点永远是第一次打补丁之前的状态
+                if backup and node not in ledger:
+                    after = context.get_node_data(node) or {}
+                    restore, skipped = _build_restore(before, after)
+                    if restore:
+                        ledger[node] = restore
+                        recorded += 1
+                    if skipped:
+                        utils.mfaalog.info(
+                            f"[Py] ℹ️ [{node}] 新增字段无原状可还原，随任务结束自动失效: {skipped}"
+                        )
 
-@AgentServer.custom_action("RestoreNode")
-class RestoreNode(CustomAction):
-    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        """
-        将指定节点的配置还原为先前保存的备份或调用时提供的备份数据。
-        
-        尝试按优先级从内部备份账本中读取目标节点的备份；如果不存在，则使用参数中 `backup` 字段（兼容旧写法）。如果既没有备份也未提供 `backup`，记录警告并作为无操作返回成功状态；如果恢复过程中发生异常则返回失败。
-        Returns:
-            True 如果成功应用恢复或在无备份时作为无操作完成，False 如果缺少必需的 `node` 参数或恢复过程中发生错误。
-        """
-        global NODE_BACKUPS
-        params = parse_json_arg(argv)
-        target_node = params.get("node")
+            if patched:
+                utils.mfaalog.info(
+                    f"[Py] 🔧 已改写 {len(patched)} 个节点（登记还原点 {recorded} 个）: "
+                    f"{patched if len(patched) <= 6 else patched[:6] + ['...']}"
+                )
+            if created:
+                utils.mfaalog.info(f"[Py] ✨ 新建节点 {len(created)} 个（不进账本）: {created}")
 
-        if not target_node:
-            return False
-
-        # 1. 优先从账本里找
-        backup_data = NODE_BACKUPS.get(target_node)
-        
-        # 2. 如果账本里没有，看看用户有没有临时传 backup 参数 (兼容旧写法)
-        if not backup_data:
-            backup_data = params.get("backup")
-
-        if not backup_data:
-            utils.mfaalog.warning(f"[Py] ⚠️ 无法还原 [{target_node}]：未在Patch时登记origin，也未传入backup参数")
+            _side_click(context, argv, params.get("click"))
             return True
 
-        try:
-            context.override_pipeline({target_node: backup_data})
-            utils.mfaalog.info(f"[Py] 🔙 节点 [{target_node}] 已还原")
-            
-            # 还原后，从账本里移除？通常建议保留，方便反复修改。
-            return True
-        except Exception as e:
-            utils.mfaalog.error(f"[Py] RestoreNode 失败: {e}")
+        except ConfigError as exc:
+            utils.mfaalog.error(f"[Py] ❌ PatchPipeline 配置错误: {exc}")
             return False
-
-@AgentServer.custom_action("RestoreBatch")
-class RestoreBatch(CustomAction):
-    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        """
-        根据备份账本（NODE_BACKUPS）将参数中指定的节点批量还原到管线上下文。
-        
-        函数会处理 params 中的重置标签（reset_tags）作为一项副作用。params 需包含 "nodes" 字段且为节点名列表；函数将从全局备份中挑选存在的节点并通过 context.override_pipeline 应用还原。若列表中有未找到的备份会记录警告并忽略之；当没有有效还原项时视为无操作并返回成功。
-        
-        Parameters:
-            argv (CustomAction.RunArg): 运行时参数，解析后应包含 "nodes" 键，对应要还原的节点名列表。
-        
-        Returns:
-            bool: `True` 如果还原已完成或没有需要还原的节点（包括内部异常被抑制的情况），`False` 如果输入参数无效（例如 "nodes" 缺失或不是列表）。
-        """
-        global NODE_BACKUPS
-        params = parse_json_arg(argv)
-        
-        # 1. [旁作用] 处理计数器重置
-        _process_reset_tags(params)
-
-        # 2. 获取目标节点列表
-        target_nodes = params.get("nodes")
-        
-        if not target_nodes or not isinstance(target_nodes, list):
-            utils.mfaalog.warning("[Py] RestoreBatch 参数错误: 'nodes' 必须是列表")
-            return False
-
-        # 3. 构建还原字典
-        restore_dict = {}
-        missing_nodes = []
-
-        for node in target_nodes:
-            if node in NODE_BACKUPS:
-                restore_dict[node] = NODE_BACKUPS[node]
-            else:
-                missing_nodes.append(node)
-
-        # 记录一下没找到的（可能是还没被Patch过，或者拼写错误）
-        if missing_nodes:
-            utils.mfaalog.warning(f"[Py] ⚠️ RestoreBatch: 账本中未找到以下节点的备份 (忽略): {missing_nodes}")
-
-        if not restore_dict:
-            utils.mfaalog.warning("[Py] ⚠️ RestoreBatch: 没有可还原的有效节点")
-            return True
-
-        try:
-            # 4. 执行批量还原
-            context.override_pipeline(restore_dict)
-            utils.mfaalog.info(f"[Py] 🔙 批量还原成功: {list(restore_dict.keys())}")
-            return True
-        except Exception as e:
-            # 发生未知代码异常？打印堆栈，然后返回 ....# 有待讨论，如果复位失败可能意外中断整个节点链
-            utils.mfaalog.error(f"[Py] 💥 RestoreBatch 发生严重异常 (已抑制): {e}")
+        except Exception as exc:
             import traceback
+            utils.mfaalog.error(f"[Py] 💥 PatchPipeline 运行异常: {exc}")
             utils.mfaalog.error(traceback.format_exc())
             return False
 
-@AgentServer.custom_action("ResetAll")
-class ResetAll(CustomAction):
+
+# ------------------------------------------------------------------------------
+# RestorePipeline
+# ------------------------------------------------------------------------------
+
+@AgentServer.custom_action("RestorePipeline")
+class RestorePipeline(CustomAction):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        """
-        将所有已保存的节点备份批量还原到管线并清空备份账本。
-        
-        在有备份时调用管线的 override_pipeline 来恢复所有节点配置，随后清空 NODE_BACKUPS 以移除已应用的备份记录；如果没有备份则立即返回成功。
-        
-        Returns:
-            True 如果所有备份已成功还原或没有需要重置的节点，False 如果在还原过程中发生错误。
-        """
-        global NODE_BACKUPS
-        
-        if not NODE_BACKUPS:
-            utils.mfaalog.info("[Py] 🧹 没有需要重置的节点")
-            return True
-            
         try:
-            utils.mfaalog.info(f"[Py] 🧹 正在批量重置 {len(NODE_BACKUPS)} 个节点...")
-            
-            # 批量还原
-            context.override_pipeline(NODE_BACKUPS)
-            
-            utils.mfaalog.info("[Py] ✅ 所有热更改已清除，节点已复原")
-            
-            # 清空账本
-            NODE_BACKUPS.clear()
-            return True
-        except Exception as e:
-            utils.mfaalog.error(f"[Py] ResetAll 异常: {e}")
-            return False
+            params = _parse_param(argv)
+            _side_reset_tags(params)
 
-@AgentServer.custom_action("RunTask")
-class RunTask(CustomAction):
-    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        params = parse_json_arg(argv)
-        
-        # 1. [旁作用] 处理计数器重置
-        _process_reset_tags(params)
+            if "target" not in params:
+                raise ConfigError("缺少 target（节点名 / 数组 / \"*\"）")
 
-        # 2. 主逻辑
-        entry_node = params.get("entry")
-        # 新增：读取 override 参数
-        override_data = params.get("param", {}) 
-        
-        if not entry_node:
-            return False
-
-        try:
-            if override_data:
-                utils.mfaalog.info(f"[Py] 🚀 Call Sub: [{entry_node}] (带参数注入)")
-                # 第二个参数就是 运行时覆盖，它只在这次运行中生效，不污染全局
-                context.run_task(entry_node, override_data)
-            else:
-                utils.mfaalog.info(f"[Py] 🚀 Call Sub: [{entry_node}]")
-                context.run_task(entry_node)
-                
-            utils.mfaalog.info(f"[Py] ✅ Return: 子任务结束")
-            return True
-        except Exception as e:
-            utils.mfaalog.error(f"[Py] RunTask 异常: {e}")
-            return False
-        
-@AgentServer.custom_action("PatchAndClick")
-class PatchAndClick(CustomAction):
-    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        global NODE_BACKUPS
-        
-        try:
-            params = parse_json_arg(argv)
-            
-            # 1. [旁作用] 处理计数器重置
-            _process_reset_tags(params)
-            
-            # --- 步骤 1: 解析参数 & 执行 Patch 逻辑 ---
-            target_node = params.get("node")
-            patch_data = params.get("patch")
-            origin_data = params.get("origin")
-            
-            # [读取] 偏移量
-            user_offset = params.get("target_offset") 
-
-            if target_node and patch_data:
-                # 1.1 登记备份
-                if origin_data and target_node not in NODE_BACKUPS:
-                    NODE_BACKUPS[target_node] = origin_data
-                    utils.mfaalog.info(f"[Py] 📖 (P&C) 已登记节点备份: {target_node}")
-
-                # 1.2 执行魔改
-                context.override_pipeline({target_node: patch_data})
-                print(f"[Py] 🔧 (P&C) 节点 [{target_node}] 参数已动态替换")
-            else:
-                print("[Py] PatchAndClick 缺少 patch 参数，仅执行点击逻辑")
-
-            # --- 步骤 2: 执行点击逻辑 (Click) ---
-            box = argv.box
-            
-            if box:
-                # 兼容属性获取
-                w = getattr(box, 'w', getattr(box, 'width', 0))
-                h = getattr(box, 'h', getattr(box, 'height', 0))
-                
-                # 只有当识别到了东西，或者用户想盲点（虽然通常必须有box）
-                if w > 0 and h > 0:
-                    # 默认点击识别区域的中心
-                    final_x = box.x + w / 2
-                    final_y = box.y + h / 2
-                    
-                    # [核心逻辑] 处理自定义偏移
-                    if user_offset:
-                        # 🔒 严格模式：必须是 4 位数组 [dx, dy, w, h]
-                        if not isinstance(user_offset, list) or len(user_offset) != 4:
-                            print(f"[Py] ❌ 参数错误: target_offset 必须包含 4 个值 [dx, dy, w, h]。当前: {user_offset}")
-                            return False
-                        
-                        off_dx = int(user_offset[0])
-                        off_dy = int(user_offset[1])
-                        off_w  = int(user_offset[2])
-                        off_h  = int(user_offset[3])
-                        
-                        # 计算新区域的左上角
-                        target_x = box.x + off_dx
-                        target_y = box.y + off_dy
-                        
-                        # 计算新区域的中心点 (如果是 0,0 则就是左上角本身)
-                        final_x = target_x + off_w / 2
-                        final_y = target_y + off_h / 2
-                        
-                        utils.mfaalog.info(f"[Py] 🎯 应用精确偏移: 基准({box.x},{box.y}) -> 偏移[{off_dx},{off_dy},{off_w},{off_h}]")
-
-                    # 移除随机微调，相信作者的设定
-                    click_x = int(final_x)
-                    click_y = int(final_y)
-                    
-                    # 2.4 执行点击
-                    context.tasker.controller.post_click(click_x, click_y)
-                    utils.mfaalog.info(f"[Py] 🖱️ (P&C) 点击坐标: ({click_x}, {click_y})")
+            ledger = _ledger(argv)
+            spec = params["target"]
+            if spec == "*":
+                targets = list(ledger.keys())
+                if not targets:
+                    utils.mfaalog.info("[Py] 🧹 本次任务没有需要还原的节点")
+                    _side_click(context, argv, params.get("click"))
                     return True
-            
-            print("[Py] ⚠️ Patch 成功，但没有有效的识别区域(Box)，无法点击。")
-            return True
+            else:
+                targets = _targets(context, spec, allow_regex=False)
 
-        except Exception as e:
-            utils.mfaalog.error(f"[Py] PatchAndClick 异常: {e}")
-            return False
-        
-@AgentServer.custom_action("PatchBatch")
-class PatchBatch(CustomAction):
-    """
-    V2: 批量打补丁
-    支持格式:
-    {
-        "patches": { 
-            "NodeA": { "param": "val" },
-            "NodeB": { "param": "val" }
-        },
-        "origins": {
-            "NodeA": { "param": "old_val" },
-            "NodeB": { "param": "old_val" }
-        },
-        "reset_tags": ["TagA"]
-    }
-    """
-    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        global NODE_BACKUPS
-        params = parse_json_arg(argv)
-        
-        
-
-        # 1. [旁作用] 处理计数器重置
-        _process_reset_tags(params)
-
-        # 2. 主逻辑
-        # 获取整个补丁字典 { "NodeName": {data}, ... }
-        patches_dict = params.get("patches", {})
-        origins_dict = params.get("origins", {})
-
-        if not patches_dict:
-            utils.mfaalog.warning("[Py] PatchBatch: 未提供 patches 数据")
-            return False
-
-        try:
-            # 批量登记备份 (仅当账本中不存在时)
-            for node_name, origin_data in origins_dict.items():
-                if node_name not in NODE_BACKUPS:
-                    NODE_BACKUPS[node_name] = origin_data
-                    utils.mfaalog.info(f"[Py] 📖 (Batch) 已登记备份: {node_name}")
-
-            # 批量执行魔改
-            context.override_pipeline(patches_dict)
-            
-            utils.mfaalog.info(f"[Py] 🔧 (Batch) 已同时修改 {len(patches_dict)} 个节点")
-            return True
-        except Exception as e:
-            utils.mfaalog.error(f"[Py] PatchBatch 失败: {e}")
-            return False
-        
-# PatchByRegex (正则批量覆写)
-# ==============================================================================
-@AgentServer.custom_action("PatchByRegex")
-class PatchByRegex(CustomAction):
-    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        global NODE_BACKUPS 
-        
-        params = parse_json_arg(argv)
-
-        # 提取调用者名称 (如果在 JSON 中未提供，则默认为空字符串)
-        caller_name = params.get("caller", "")
-
-        _process_reset_tags(params)
-
-        _ensure_cache_loaded()
-        if not ALL_NODES_CACHE:
-            return False
-
-        # 获取当前识别到的框
-        current_roi = [0,0,0,0]
-        if argv.box and getattr(argv.box, 'w', 0) > 0:
-            current_roi = [int(argv.box.x), int(argv.box.y), int(argv.box.w), int(argv.box.h)]
-        
-        override_dict = {}
-        matched_count = 0
-        
-        # 兼容性处理：如果没有 rules 数组，把外层参数当作单条规则处理
-        rules = params.get("rules")
-        if rules is None:
-            rules = [params]
-
-        # ==========================================
-        # 💡 [新增] 动态替换 $self 的辅助函数
-        # 它可以钻进字典或数组的最深处，把 "$self" 换成节点真名
-        # ==========================================
-
-        # --- 内部辅助函数：深度合并字典 (防止 simple_patch 抹除原有属性) ---
-        def deep_merge(tgt, src):
-            for k, v in src.items():
-                if isinstance(v, dict) and k in tgt and isinstance(tgt[k], dict):
-                    deep_merge(tgt[k], v)
-                else:
-                    tgt[k] = copy.deepcopy(v)
-            return tgt
-
-        # --- 内部辅助函数：动态替换 $self 占位符 ---
-        def replace_placeholders(data, node_name, caller): 
-            if isinstance(data, str):
-                # 拦截定时炸弹：如果字符串里有 $caller 但没传 caller 参数，直接报错
-                if "$caller" in data and not caller:
-                    raise ValueError(f"配置错误: 节点 [{node_name}] 的动作使用了 $caller，但未提供 caller 参数！")
-                # 先替换 $self
-                res = data.replace("$self", node_name)
-                # 再替换 $caller
-                if caller:
-                    res = res.replace("$caller", caller)
-                return res
-            elif isinstance(data, list):
-                # 递归调用时，也把 caller 传下去
-                return [replace_placeholders(item, node_name, caller) for item in data]
-            elif isinstance(data, dict):
-                # 递归调用时，也把 caller 传下去
-                return {k: replace_placeholders(v, node_name, caller) for k, v in data.items()}
-            return data
-        
-        try:
-            for rule in rules:
-                patterns = rule.get("pattern")
-                if not patterns: 
+            done, missing = [], []
+            for node in targets:
+                payload = ledger.get(node)
+                if payload is None:
+                    # 没被改过 / 已还原过 / 是新建的节点 —— 还原是幂等的，不算失败
+                    missing.append(node)
                     continue
-                if isinstance(patterns, str): 
-                    patterns = [patterns]
-                
-                target_path = rule.get("target_path") 
-                deep_value = rule.get("value") 
-                simple_patch = rule.get("patch") 
-                origin_data = rule.get("origin") 
-                
-                final_deep_value = deep_value
-                
-                for pat in patterns:
-                    regex = re.compile(pat)
-                    for node_name, original_config in ALL_NODES_CACHE.items():
-                        # 每次都基于原配置，把已有的极简补丁“临时合并”上来，模拟出完整的当前状态
-                        base_config = copy.deepcopy(original_config)
-                        
-                        if node_name in override_dict:
-                            deep_merge(base_config, override_dict[node_name])
-                            
-                        if regex.search(node_name):
-                            # ------------------------------------------------------
-                            # [逻辑警告] 影子账本登记：先到先得原则
-                            # ------------------------------------------------------
-                            # 只有当该节点尚未在账本中时，才记录 origin。
-                            # 这意味着如果多个规则都试图设定 origin，只有第一条生效。
-                            # 设计意图：防止多次修改导致“原始还原点”被后续规则污染。
-                            # ------------------------------------------------------
-                            if origin_data and node_name not in NODE_BACKUPS:
-                                NODE_BACKUPS[node_name] = copy.deepcopy(origin_data)
-                            
-                            # === 模式 1: 深度路径替换 ===
-                            if target_path:
-                                new_config = copy.deepcopy(base_config)
-                                cursor = new_config
-                                try:
-                                    for key in target_path[:-1]:
-                                        cursor = cursor[key]
-                                    
-                                    # 处理 $box
-                                    actual_val = final_deep_value
-                                    if actual_val == "$box":
-                                        # 无效 ROI 直接跳过本次修改，防止注入 [0,0,0,0]
-                                        if not current_roi or current_roi == [0,0,0,0]:
-                                            utils.mfaalog.warning(f"[Py] ⚠️ [PatchRegex] 规则试图注入 $box 但无有效 ROI，跳过此节点: {node_name}")
-                                            continue 
-                                        actual_val = current_roi
-                                    
-                                    # 处理 $self 和 $caller
-                                    actual_val = replace_placeholders(actual_val, node_name, caller_name)
-                                    
-                                    cursor[target_path[-1]] = actual_val
-                                    override_dict[node_name] = new_config
-                                    matched_count += 1
-                                except Exception as e:
-                                    utils.mfaalog.warning(f"[Py] 深度路径修改失败 [{node_name}]: {e}")
-                                    continue
-                                    
-                            # === 模式 2: 浅层补丁合并 ===
-                            elif simple_patch:
-                                new_config = override_dict.get(node_name, {})
-                                patch_copy = copy.deepcopy(simple_patch)
-                                
-                                # 处理 $box
-                                if patch_copy.get("roi") == "$box":
-                                    # [修正] 无效 ROI 只删字段，保留 timeout/next 等其他修改
-                                    if not current_roi or current_roi == [0,0,0,0]:
-                                        utils.mfaalog.warning(f"[Py] ⚠️ [PatchRegex] 规则试图注入 $box 但无有效 ROI，已移除该 ROI 字段，其他参数继续生效: {node_name}")
-                                        del patch_copy["roi"]
-                                    else:
-                                        patch_copy["roi"] = current_roi
-                                
-                                # 处理 $self 和 $caller
-                                patch_copy = replace_placeholders(patch_copy, node_name, caller_name)
-                                
-                                # 使用 deep_merge 安全合并，防止抹除原节点其他属性
-                                deep_merge(new_config, patch_copy)
-                                
-                                override_dict[node_name] = new_config
-                                matched_count += 1
+                if not context.override_pipeline({node: payload}):
+                    raise ConfigError(f"节点 [{node}] 的还原被框架拒绝")
+                # 销账必须在还原成功之后：先 pop 再失败会让还原点永久丢失，
+                # 节点既停在被改写状态、又再也还原不回来（连 "*" 也查不到）
+                ledger.pop(node, None)
+                done.append(node)
 
-            if override_dict:
-                context.override_pipeline(override_dict)
-                utils.mfaalog.info(f"[Py] ⚡ [PatchRegex] 注入 {matched_count} 个节点的修改。")
+            if done:
+                utils.mfaalog.info(f"[Py] 🔙 已还原 {len(done)} 个节点: {done}")
+            if missing:
+                utils.mfaalog.warning(f"[Py] ⚠️ 账本中无还原点，已跳过（不算失败）: {missing}")
+
+            _side_click(context, argv, params.get("click"))
             return True
-        except Exception as e:
-            utils.mfaalog.error(f"[Py] PatchByRegex 整体异常: {e}")
-            return False
 
-# ------------------------------------------------------------------------------
-# Log (直接输出日志)
-# ------------------------------------------------------------------------------
-# 场景：在 pipeline 任意节点插入一条固定日志，方便调试流程走向。
-# "action": "Custom",
-# "custom_action": "Log",
-# "custom_action_param": {
-#     "level": "debug",   // [选填] 日志级别: debug / info / warning / error，默认 info
-#     "msg": "到达这里了" // [必填] 要输出的内容
-# }
-@AgentServer.custom_action("Log")
-class Log(CustomAction):
-    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        params = parse_json_arg(argv)
-        level = params.get("level", "info").lower()
-        msg = params.get("msg", "")
-        getattr(utils.mfaalog, level, utils.mfaalog.info)(msg)
-        _process_reset_tags(params)
-        return True
+        except ConfigError as exc:
+            utils.mfaalog.error(f"[Py] ❌ RestorePipeline 配置错误: {exc}")
+            return False
+        except Exception as exc:
+            import traceback
+            utils.mfaalog.error(f"[Py] 💥 RestorePipeline 运行异常: {exc}")
+            utils.mfaalog.error(traceback.format_exc())
+            return False

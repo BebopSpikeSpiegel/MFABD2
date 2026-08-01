@@ -704,7 +704,7 @@
         "desc": "类Anchor实现,偷取吸取导航节点链,注入修改路进较多,注意复位",
         "max_hit": 1,
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
             "patches": {
                 "Collect_OperationsMain_ToAreaMap": {
@@ -743,69 +743,6 @@
                     "timeout": 5000,
                     "max_hit": 5
                 }
-            },
-            "origins": {
-                "Collect_OperationsMain_ToAreaMap": {
-                    "next": [
-                        "Collect_TargetMap1-1",
-                        "[JumpBack]Collect_MapLift"
-                    ]
-                },
-                "Collect_TargetMap1-2": {
-                    "expected": [
-                        "达普雷镇",
-                        "雷瓦汀基地",
-                        "拉勒凯镇",
-                        "罗戴夫镇",
-                        "科库托斯圣域",
-                        "学校1楼",
-                        "安全"
-                    ],
-                    "next": [
-                        "Collect_TargetMap1_Special_Right",
-                        "Collect_TargetMap2",
-                        "Collect_TargetMap3",
-                        "Collect_TargetMap4",
-                        "[JumpBack]Collect_ClickTelepor_ButNotActive",
-                        "[JumpBack]Collect_TargetMap_Special_ClickTpCircleIco",
-                        "[JumpBack]Collect_ClickTeleporCircleIco",
-                        "[JumpBack]Collect_ClickBackOnSecureMap",
-                        "[JumpBack]Collect_ClickTelepor_Abnormal_Overlap",
-                        "Collect_QuickCart_FastUI",
-                        "[JumpBack]Collect_TeleporNotFind"
-                    ]
-                },
-                "Collect_ClickBackOnSecureMap": {
-                    "next": [
-                        "Collect_Skill_Start",
-                        "Collect_ClickBackOnSecureMap"
-                    ],
-                    "expected": [
-                        "达普雷镇",
-                        "雷瓦汀基地",
-                        "拉勒凯镇",
-                        "罗戴夫镇",
-                        "安全"
-                    ]
-                },
-                "Collect_ClickTelepor_TargetClass_PurpleProcess": {
-                    "next": [
-                        "[Anchor]Arbitrage5",
-                        "Collect_Skill_Start",
-                        "Collect_ClickTelepor_TargetClass_PurpleProcess"
-                    ],
-                    "timeout": 20000,
-                    "max_hit": -1
-                },
-                "Collect_ClickTelepor_TargetClass_White": {
-                    "next": [
-                        "[Anchor]Arbitrage5",
-                        "Collect_Skill_Start",
-                        "Collect_ClickTelepor_TargetClass_White"
-                    ],
-                    "timeout": 20000,
-                    "max_hit": -1
-                }
             }
         },
         "next": [
@@ -839,9 +776,9 @@
     "Setup_Patch_Reset": {
         "max_hit": 1,
         "action": "Custom",
-        "custom_action": "RestoreBatch",
+        "custom_action": "RestorePipeline",
         "custom_action_param": {
-            "nodes": [
+            "target": [
                 "Global_BackToPve_TouchPVE2#Pack",
                 "Collect_OperationsMain_ToAreaMap",
                 "Collect_TargetMap1-2",
