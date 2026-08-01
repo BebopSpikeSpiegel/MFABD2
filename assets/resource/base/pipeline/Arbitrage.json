@@ -409,14 +409,11 @@
     "Arbitrage_Buy_SharedEnd": {
         "desc": "购买选卡:成功买完后关掉刚处理的卡带([Anchor]CurCard),防节点A重复分发;origin登账供ResetAll复位",
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "[Anchor]CurCard",
+            "target": "[Anchor]CurCard",
             "patch": {
                 "enabled": false
-            },
-            "origin": {
-                "enabled": true
             }
         }
     },
