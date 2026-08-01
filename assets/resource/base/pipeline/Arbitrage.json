@@ -2481,31 +2481,6 @@
             "Arbitrage_ItemList_Sorting_Type_Not"
         ]
     },
-    "Arbitrage_ItemList_Sorting_AllRight": {
-        "desc": "确认排序模式完全正确=%模式与降序[2026-7-22错误]条件在不打开下拉时永不满足,业务错误,不用修,准备删除",
-        "recognition": "And",
-        "all_of": [
-            "Arbitrage_ItemList_Sorting_Type_Ent",
-            "Arbitrage_ItemList_Sorting_Reverse"
-        ],
-        "next": [
-            "Arbitrage_Sell_Item_ListTraverse",
-            "Arbitrage_ItemList_Swip"
-        ]
-    },
-    "Arbitrage_ItemList_Sorting_Type_Ent": {
-        "desc": "【非孤立节点】由And调用",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1138,
-            29,
-            40,
-            41
-        ],
-        "template": [
-            "UI_Selltype_0.png"
-        ]
-    },
     "Arbitrage_ItemList_Sorting_Type_Not": {
         "desc": "商店内,排序类型错误,切换(删除价格排序图像,因为除了价格图标,%图标但升序也是不对的)",
         "action": "Click",
