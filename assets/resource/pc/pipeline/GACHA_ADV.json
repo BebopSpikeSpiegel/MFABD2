@@ -13,34 +13,6 @@
             10
         ]
     },
-    "Agt_<GachaADV_GachaRed_Have>_Std": {
-        "desc": "[PC] 抽抽乐红点-标准档(S140)。绝大多数画面走这一档,19条语料里 base 11条 + PC 2条有红点样本全部由本档命中(conf 0.63~0.73)。参数即通用 Agt_RedDot_Preset,不做任何本地覆盖。",
-        "recognition": "Custom",
-        "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {
-            "preset": "Agt_RedDot_Preset"
-        },
-        "roi": [
-            92,
-            617,
-            53,
-            52
-        ]
-    },
-    "Agt_<GachaADV_GachaRed_Have>_LowSat": {
-        "desc": "[PC] 抽抽乐红点-低饱和兜底档(S110)。仅在标准档 miss 后才跑,用于救回'图标叠明亮场景光→红点饱和度被压低→S140 红环破损漏检'的特例(实测该帧 S140 卡 area/28px,本档 conf 0.629)。ROI 与标准档一致(收窄到 17x17 实测无额外收益,红点位置锁定在绝对(119,635)11x11)。误命中风险见 Agt_RedDot_Preset_LowSat 的 desc③。",
-        "recognition": "Custom",
-        "custom_recognition": "RedDotDetector",
-        "custom_recognition_param": {
-            "preset": "Agt_RedDot_Preset_LowSat"
-        },
-        "roi": [
-            92,
-            617,
-            53,
-            52
-        ]
-    },
     "GachaADV_GachaPage2": {
         "roi": [
             966,
@@ -440,7 +412,8 @@
         ],
         "expected": [
             "所有免费抽抽乐",
-            "全部免费抽取"
+            "全部免费抽取",
+            "全部免費抽取"
         ]
     },
     "Gacha_Quick_All_SubMsg_Ck": {
@@ -475,6 +448,34 @@
             624,
             66,
             25
+        ]
+    },
+    "Agt_<GachaADV_GachaRed_Have>_Std": {
+        "desc": "[PC] 抽抽乐红点-标准档(S140)。绝大多数画面走这一档,19条语料里 base 11条 + PC 2条有红点样本全部由本档命中(conf 0.63~0.73)。参数即通用 Agt_RedDot_Preset,不做任何本地覆盖。",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {
+            "preset": "Agt_RedDot_Preset"
+        },
+        "roi": [
+            92,
+            617,
+            53,
+            52
+        ]
+    },
+    "Agt_<GachaADV_GachaRed_Have>_LowSat": {
+        "desc": "[PC] 抽抽乐红点-低饱和兜底档(S110)。仅在标准档 miss 后才跑,用于救回'图标叠明亮场景光→红点饱和度被压低→S140 红环破损漏检'的特例(实测该帧 S140 卡 area/28px,本档 conf 0.629)。ROI 与标准档一致(收窄到 17x17 实测无额外收益,红点位置锁定在绝对(119,635)11x11)。误命中风险见 Agt_RedDot_Preset_LowSat 的 desc③。",
+        "recognition": "Custom",
+        "custom_recognition": "RedDotDetector",
+        "custom_recognition_param": {
+            "preset": "Agt_RedDot_Preset_LowSat"
+        },
+        "roi": [
+            92,
+            617,
+            53,
+            52
         ]
     },
     "GachaADV_NoFindFreeAndInEnd": {

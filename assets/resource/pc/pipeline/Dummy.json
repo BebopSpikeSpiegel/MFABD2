@@ -58,6 +58,19 @@
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {
+            "flt_area": [
+                30,
+                1200
+            ],
+            "flt_hsv_rescue": {
+                "max_delta_s": 110,
+                "max_delta_v": 110,
+                "max_full_runs": 12,
+                "max_parents": 5,
+                "min_stable_states": 2,
+                "mode": "active",
+                "time_budget_ms": 40
+            },
             "flt_red_hsv": [
                 {
                     "lower": [
@@ -84,21 +97,8 @@
                     ]
                 }
             ],
-            "flt_area": [
-                30,
-                1200
-            ],
             "sc_gap_ratio": 0.35,
-            "sc_min_conf": 0.55,
-            "flt_hsv_rescue": {
-                "mode": "active",
-                "max_delta_s": 110,
-                "max_delta_v": 110,
-                "max_full_runs": 12,
-                "max_parents": 5,
-                "min_stable_states": 2,
-                "time_budget_ms": 40
-            }
+            "sc_min_conf": 0.55
         }
     }
 }
