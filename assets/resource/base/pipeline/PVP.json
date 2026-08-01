@@ -792,7 +792,7 @@
         "desc": "patch成1倍重开,只执行一次,有很多转向改动,后期维护注意",
         "max_hit": 1,
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
             "patches": {
                 "PVP_Multiplier_Verify": {

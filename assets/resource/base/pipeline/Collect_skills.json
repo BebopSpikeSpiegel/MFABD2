@@ -337,9 +337,9 @@
         "action": {
             "type": "Custom",
             "param": {
-                "custom_action": "PatchNode",
+                "custom_action": "PatchPipeline",
                 "custom_action_param": {
-                    "node": "Collect_Skill3_3",
+                    "target": "Collect_Skill3_3",
                     "patch": {
                         "max_hit": 1,
                         "next": "Collect_Skill_KillFocus"

@@ -1150,14 +1150,11 @@
     },
     "Equip_Overdrive_RefLvMax_Forwarding": {
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Equip_filter<C17",
+            "target": "Equip_filter<C17",
             "patch": {
                 "enabled": true
-            },
-            "origin": {
-                "enabled": false
             }
         },
         "next": [
