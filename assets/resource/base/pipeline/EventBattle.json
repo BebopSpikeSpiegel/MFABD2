@@ -150,11 +150,13 @@
             0
         ],
         "post_delay": 3000,
+        "timeout": 10000,
         "next": [
             "SeasonEvent_Battle_Recon_AP_Full",
             "SeasonEvent_Battle_Recon_AP_Empty",
             "[JumpBack]Global_WaitingForLoading"
         ],
+        "on_error": ["Event_Battle_IsMenu"],
         "focus": "EM.活动.难度:普通"
     },
     "SeasonEvent_EnterlBattle_Challenge": {
@@ -177,11 +179,13 @@
             0
         ],
         "post_delay": 3000,
+        "timeout": 10000,
         "next": [
             "SeasonEvent_Battle_Recon_AP_Full",
             "SeasonEvent_Battle_Recon_AP_Empty",
             "[JumpBack]Global_WaitingForLoading"
         ],
+        "on_error": ["Event_Battle_IsMenu"],
         "focus": "EM.活动.难度:挑战"
     },
     "SeasonEvent_Battle_Recon_AP_Full": {
@@ -291,10 +295,10 @@
         "desc": "无自动战斗时,常规战斗会出现在ROI中被识别.注意普通战斗点击无AP确认框,直接进入战斗",
         "recognition": "OCR",
         "roi": [
-            952,
-            634,
-            37,
-            26
+            891,
+            635,
+            38,
+            27
         ],
         "expected": "战斗",
         "only_rec": true,
@@ -1585,10 +1589,10 @@
     "SeasonEvent_ReMamono_Enter": {
         "recognition": "OCR",
         "roi": [
-            825,
-            101,
-            207,
-            141
+            833,
+            132,
+            269,
+            235
         ],
         "expected": ["回归赛季"],
         "action": "Click",

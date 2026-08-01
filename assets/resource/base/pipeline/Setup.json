@@ -144,17 +144,11 @@
     "Setup_Entry4": {
         "desc": "进入页面为箱庭",
         "max_hit": 1,
-        "recognition": "TemplateMatch",
-        "roi": [
-            1047,
-            516,
-            107,
-            110
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
         ],
-        "template": [
-            "Run.png"
-        ],
-        "green_mask": true,
         "timeout": 3000,
         "next": [
             "[JumpBack]Setup_Main_Switch"
@@ -569,7 +563,7 @@
         "focus": "Set.检测技能5,通过"
     },
     "Rec_<Setup_SkillScan_Skill5>_Tpl": {
-        "desc": "[识别]'锻造'技能存在",
+        "desc": "[识别]'压制'技能存在",
         "recognition": "TemplateMatch",
         "roi": [
             1140,
@@ -593,8 +587,7 @@
             83
         ],
         "template": [
-            "Binary/Binary_skill5_Nol.png",
-            "Binary/Binary_skill5_Lgt.png"
+            "Binary/Binary_skill5_Nol.png"
         ],
         "green_mask": true,
         "threshold": 0.6
@@ -704,7 +697,7 @@
         "desc": "类Anchor实现,偷取吸取导航节点链,注入修改路进较多,注意复位",
         "max_hit": 1,
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
             "patches": {
                 "Collect_OperationsMain_ToAreaMap": {
@@ -743,69 +736,6 @@
                     "timeout": 5000,
                     "max_hit": 5
                 }
-            },
-            "origins": {
-                "Collect_OperationsMain_ToAreaMap": {
-                    "next": [
-                        "Collect_TargetMap1-1",
-                        "[JumpBack]Collect_MapLift"
-                    ]
-                },
-                "Collect_TargetMap1-2": {
-                    "expected": [
-                        "达普雷镇",
-                        "雷瓦汀基地",
-                        "拉勒凯镇",
-                        "罗戴夫镇",
-                        "科库托斯圣域",
-                        "学校1楼",
-                        "安全"
-                    ],
-                    "next": [
-                        "Collect_TargetMap1_Special_Right",
-                        "Collect_TargetMap2",
-                        "Collect_TargetMap3",
-                        "Collect_TargetMap4",
-                        "[JumpBack]Collect_ClickTelepor_ButNotActive",
-                        "[JumpBack]Collect_TargetMap_Special_ClickTpCircleIco",
-                        "[JumpBack]Collect_ClickTeleporCircleIco",
-                        "[JumpBack]Collect_ClickBackOnSecureMap",
-                        "[JumpBack]Collect_ClickTelepor_Abnormal_Overlap",
-                        "Collect_QuickCart_FastUI",
-                        "[JumpBack]Collect_TeleporNotFind"
-                    ]
-                },
-                "Collect_ClickBackOnSecureMap": {
-                    "next": [
-                        "Collect_Skill_Start",
-                        "Collect_ClickBackOnSecureMap"
-                    ],
-                    "expected": [
-                        "达普雷镇",
-                        "雷瓦汀基地",
-                        "拉勒凯镇",
-                        "罗戴夫镇",
-                        "安全"
-                    ]
-                },
-                "Collect_ClickTelepor_TargetClass_PurpleProcess": {
-                    "next": [
-                        "[Anchor]Arbitrage5",
-                        "Collect_Skill_Start",
-                        "Collect_ClickTelepor_TargetClass_PurpleProcess"
-                    ],
-                    "timeout": 20000,
-                    "max_hit": -1
-                },
-                "Collect_ClickTelepor_TargetClass_White": {
-                    "next": [
-                        "[Anchor]Arbitrage5",
-                        "Collect_Skill_Start",
-                        "Collect_ClickTelepor_TargetClass_White"
-                    ],
-                    "timeout": 20000,
-                    "max_hit": -1
-                }
             }
         },
         "next": [
@@ -839,9 +769,9 @@
     "Setup_Patch_Reset": {
         "max_hit": 1,
         "action": "Custom",
-        "custom_action": "RestoreBatch",
+        "custom_action": "RestorePipeline",
         "custom_action_param": {
-            "nodes": [
+            "target": [
                 "Global_BackToPve_TouchPVE2#Pack",
                 "Collect_OperationsMain_ToAreaMap",
                 "Collect_TargetMap1-2",
@@ -870,14 +800,9 @@
     "Setup_Main_Into_Pre": {
         "recognition": "Or",
         "any_of": [
-            "Rec_SandBox_Pin_Tpl",
-            "Rec_SandBox_Run_Tpl"
+            "Global_HomeButton_Once"
         ],
         "action": "Click",
-        "target": [
-            1186,
-            46
-        ],
         "post_delay": 3000,
         "next": [
             "Setup_Main_Into",
@@ -1564,8 +1489,14 @@
         "focus": "背包"
     },
     "Setup_Equip": {
-        "recognition": "And",
-        "all_of": ["Equip_EquipUp_CK"],
+        "recognition": "OCR",
+        "roi": [
+            218,
+            17,
+            65,
+            45
+        ],
+        "expected": ["装备"],
         "anchor": "Setup_EquipUp",
         "next": [
             "Setup_EquipUp",
@@ -1964,12 +1895,17 @@
             "Rec_SandBox_Pin_Tpl",
             "Rec_SandBox_Run_Tpl"
         ],
+        "anchor": {
+            "SetSkill": "Setup_SetSkill_tab3_Reset5",
+            "SkillList_ReLift": "",
+            "SkillList_Right": ""
+        },
         "next": [
             "Setup_SetSkill_Per"
         ]
     },
     "Setup_SetSkill_Per": {
-        "desc": "准备安放技能",
+        "desc": "准备安放技能 | 用Setup调用技能的接这里,需要外部写好锚点,参考Setup_SetSkill_Switch → Setup_SetSkill_tab3_Ck",
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Pin_Tpl",
@@ -2000,6 +1936,7 @@
     },
     "Setup_SetSkill_SwipMini": {
         "desc": "小幅度滑动,使黄色消失",
+        "enabled": false,
         "recognition": "ColorMatch",
         "roi": [
             110,
@@ -2074,12 +2011,12 @@
             55
         ],
         "next": [
-            "[JumpBack]Setup_SetSkill_tab3_ReLift",
-            "Setup_SetSkill_tab3_Reset5"
+            "[JumpBack][Anchor]SkillList_ReLift",
+            "[Anchor]SetSkill",
+            "[JumpBack][Anchor]SkillList_Right"
         ]
     },
-    "Setup_SetSkill_tab3_ReLift": {
-        "max_hit": 3,
+    "Setup_SetSkill_ReLift": {
         "recognition": "OCR",
         "roi": [
             87,
@@ -2103,9 +2040,32 @@
             1,
             1
         ],
-        "end_hold": 800,
+        "end_hold": 500,
         "duration": 500,
-        "post_delay": 1500
+        "post_delay": 1500,
+        "focus": "将技能列表复位"
+    },
+    "Setup_SetSkill_ReLift_Maxhit": {
+        "max_hit": 3,
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_ReLift"],
+        "action": "Swipe",
+        "begin": [
+            115,
+            590,
+            1,
+            1
+        ],
+        "end": [
+            1134,
+            592,
+            1,
+            1
+        ],
+        "end_hold": 500,
+        "duration": 500,
+        "post_delay": 1500,
+        "focus": "将技能列表复位"
     },
     "Setup_SetSkill_tab3_Reset5": {
         "action": "Click",
@@ -2197,16 +2157,8 @@
     },
     "Setup_SetSkill_3-1_Swip": {
         "max_hit": 2,
-        "recognition": "OCR",
-        "roi": [
-            87,
-            371,
-            97,
-            99
-        ],
-        "expected": [
-            "天赋技能"
-        ],
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_ReLift"],
         "action": "Swipe",
         "begin": [
             1134,
@@ -2253,25 +2205,8 @@
         ]
     },
     "Setup_SetSkill_3-2_Pre": {
-        "recognition": "ColorMatch",
-        "roi": [
-            110,
-            503,
-            23,
-            9
-        ],
-        "method": 40,
-        "lower": [
-            18,
-            50,
-            80
-        ],
-        "upper": [
-            26,
-            255,
-            255
-        ],
-        "count": 50,
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_LiftYew_ReLiftEnd"],
         "next": [
             "Setup_SetSkill_3-2",
             "[JumpBack]Setup_SetSkill_SwipMini",
@@ -2303,16 +2238,8 @@
     },
     "Setup_SetSkill_2to3_Swip": {
         "max_hit": 2,
-        "recognition": "OCR",
-        "roi": [
-            87,
-            371,
-            97,
-            99
-        ],
-        "expected": [
-            "天赋技能"
-        ],
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_ReLift"],
         "action": "Swipe",
         "begin": [
             1134,
@@ -2358,25 +2285,8 @@
         ]
     },
     "Setup_SetSkill_3-3_Pre": {
-        "recognition": "ColorMatch",
-        "roi": [
-            110,
-            503,
-            23,
-            9
-        ],
-        "method": 40,
-        "lower": [
-            18,
-            50,
-            80
-        ],
-        "upper": [
-            26,
-            255,
-            255
-        ],
-        "count": 50,
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_LiftYew_ReLiftEnd"],
         "next": [
             "Setup_SetSkill_3-3",
             "[JumpBack]Setup_SetSkill_SwipMini",
@@ -2407,16 +2317,8 @@
     },
     "Setup_SetSkill_3to4_Swip": {
         "max_hit": 2,
-        "recognition": "OCR",
-        "roi": [
-            87,
-            371,
-            97,
-            99
-        ],
-        "expected": [
-            "天赋技能"
-        ],
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_ReLift"],
         "action": "Swipe",
         "begin": [
             1134,
@@ -2463,25 +2365,8 @@
         ]
     },
     "Setup_SetSkill_3-4_Pre": {
-        "recognition": "ColorMatch",
-        "roi": [
-            110,
-            503,
-            23,
-            9
-        ],
-        "method": 40,
-        "lower": [
-            18,
-            50,
-            80
-        ],
-        "upper": [
-            26,
-            255,
-            255
-        ],
-        "count": 50,
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_LiftYew_ReLiftEnd"],
         "next": [
             "Setup_SetSkill_3-4",
             "[JumpBack]Setup_SetSkill_SwipMini",
@@ -2512,16 +2397,8 @@
     },
     "Setup_SetSkill_4to5_Swip": {
         "max_hit": 2,
-        "recognition": "OCR",
-        "roi": [
-            87,
-            371,
-            97,
-            99
-        ],
-        "expected": [
-            "天赋技能"
-        ],
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_ReLift"],
         "action": "Swipe",
         "begin": [
             1134,
@@ -2568,25 +2445,8 @@
         ]
     },
     "Setup_SetSkill_3-5_Pre": {
-        "recognition": "ColorMatch",
-        "roi": [
-            110,
-            503,
-            23,
-            9
-        ],
-        "method": 40,
-        "lower": [
-            18,
-            50,
-            80
-        ],
-        "upper": [
-            26,
-            255,
-            255
-        ],
-        "count": 50,
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_LiftYew_ReLiftEnd"],
         "next": [
             "Setup_SetSkill_3-5",
             "[JumpBack]Setup_SetSkill_SwipMini",
@@ -2602,7 +2462,7 @@
             33
         ],
         "expected": [
-            "装备制作"
+            "制伏"
         ],
         "action": "Click",
         "target_offset": [
@@ -2659,16 +2519,8 @@
     "Setup_SetSkill_1to2_Swip": {
         "desc": "当页找不到,向后滑动,限定次数",
         "max_hit": 2,
-        "recognition": "OCR",
-        "roi": [
-            87,
-            371,
-            97,
-            99
-        ],
-        "expected": [
-            "天赋技能"
-        ],
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_ReLift"],
         "action": "Swipe",
         "begin": [
             1134,
@@ -2707,34 +2559,5 @@
             255
         ],
         "count": 50
-    },
-    "Setup_SetSkill_ReLift": {
-        "recognition": "OCR",
-        "roi": [
-            87,
-            371,
-            97,
-            99
-        ],
-        "expected": [
-            "天赋技能"
-        ],
-        "action": "Swipe",
-        "begin": [
-            115,
-            590,
-            1,
-            1
-        ],
-        "end": [
-            1134,
-            592,
-            1,
-            1
-        ],
-        "end_hold": 600,
-        "duration": 500,
-        "post_delay": 1500,
-        "focus": "将技能列表复位"
     }
 }
