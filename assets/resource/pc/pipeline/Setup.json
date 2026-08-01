@@ -1,4 +1,52 @@
 {
+    "Rec_<Setup_Entry1_Swich>_Tpl": {
+        "roi": [
+            95,
+            492,
+            203,
+            189
+        ]
+    },
+    "Setup_SkillScan_wasd_Bin": {
+        "roi": [
+            95,
+            492,
+            203,
+            189
+        ]
+    },
+    "Setup_Entry2": {
+        "roi": [
+            1135,
+            23,
+            8,
+            8
+        ]
+    },
+    "Setup_Entry3": {
+        "roi": [
+            1016,
+            18,
+            11,
+            13
+        ]
+    },
+    "Setup_EquipUp_Swich": {
+        "custom_action_param": {
+            "card_name": "EquipUpSet_PC",
+            "cycle_type": "g_daily"
+        }
+    },
+    "Setup_EquipDec_Swich": {
+        "custom_recognition_param": {
+            "card_name": "EquipDecSet_PC",
+            "cycle_type": "g_daily"
+        },
+        "custom_action_param": {
+            "card_name": "EquipDecSet_PC",
+            "cycle_type": "g_daily"
+        }
+    },
     "Rec_<Setup_SkillScan_Skill1>_Tpl": {
         "roi": [
             1017,
@@ -69,6 +117,197 @@
             459,
             64,
             65
+        ]
+    },
+    "Setup_SkillScan_Success": {
+        "custom_action_param": {
+            "card_name": "SetSkill_PC",
+            "cycle_type": "g_daily"
+        }
+    },
+    "Setup_ResetLoc_JumpBackUse": {
+        "custom_action_param": {
+            "patches": {
+                "Collect_ClickBackOnSecureMap": {
+                    "expected": [
+                        "卢戈森林",
+                        "盧戈森林"
+                    ],
+                    "next": []
+                },
+                "Collect_ClickTelepor_TargetClass_PurpleProcess": {
+                    "max_hit": 5,
+                    "next": [
+                        "Collect_ClickTelepor_TargetClass_PurpleProcess"
+                    ],
+                    "timeout": 5000
+                },
+                "Collect_ClickTelepor_TargetClass_White": {
+                    "max_hit": 5,
+                    "next": [
+                        "Collect_ClickTelepor_TargetClass_White"
+                    ],
+                    "timeout": 5000
+                },
+                "Collect_OperationsMain_ToAreaMap": {
+                    "next": [
+                        "Collect_TargetMap1-2",
+                        "[JumpBack]Setup_ResetLoc_JumpBackUse_Mod",
+                        "[JumpBack]Collect_MapLift"
+                    ]
+                },
+                "Collect_TargetMap1-2": {
+                    "expected": [
+                        "卢戈森林",
+                        "盧戈森林"
+                    ],
+                    "next": [
+                        "Collect_ClickTeleporCircleIco",
+                        "Collect_ClickBackOnSecureMap"
+                    ]
+                }
+            }
+        }
+    },
+    "Setup_Main_Into": {
+        "target": [
+            1172,
+            30,
+            16,
+            15
+        ]
+    },
+    "Setup_Main": {
+        "roi": [
+            183,
+            15,
+            74,
+            39
+        ]
+    },
+    "Setup_MainSetup_Into": {
+        "roi": [
+            535,
+            62,
+            188,
+            609
+        ],
+        "expected": [
+            "设置",
+            "設定"
+        ]
+    },
+    "Setup_Main_Move": {
+        "expected": [
+            "点击地面",
+            "點擊地板"
+        ]
+    },
+    "Setup_Main_Tab_2": {
+        "roi": [
+            141,
+            82,
+            95,
+            364
+        ],
+        "expected": [
+            "图像",
+            "圖像"
+        ]
+    },
+    "Setup_Main_Resolution": {
+        "roi": [
+            456,
+            224,
+            230,
+            79
+        ]
+    },
+    "Setup_Main_StartUI": {
+        "roi": [
+            420,
+            301,
+            350,
+            107
+        ],
+        "expected": [
+            "主界面",
+            "主畫面"
+        ]
+    },
+    "Setup_Main_StartUI_Ck": {
+        "next": [
+            "Setup_Main_Tab_4"
+        ]
+    },
+    "Setup_Main_Tab_4": {
+        "roi": [
+            141,
+            82,
+            95,
+            364
+        ]
+    },
+    "Setup_Main_YellowPin": {
+        "roi": [
+            823,
+            86,
+            344,
+            84
+        ]
+    },
+    "Setup_Main_ClothingChange": {
+        "roi": [
+            819,
+            209,
+            344,
+            88
+        ]
+    },
+    "Setup_Equip_Into": {
+        "target": [
+            245,
+            653,
+            1,
+            1
+        ]
+    },
+    "Setup_Equip_Per": {
+        "roi": [
+            183,
+            13,
+            74,
+            39
+        ],
+        "target": [
+            116,
+            163,
+            1,
+            1
+        ]
+    },
+    "Setup_Equip": {
+        "roi": [
+            184,
+            16,
+            54,
+            36
+        ],
+        "expected": [
+            "装备",
+            "裝備"
+        ]
+    },
+    "Setup_EquipUp": {
+        "roi": [
+            741,
+            344,
+            57,
+            70
+        ],
+        "expected": [
+            "级别",
+            "等級"
         ]
     },
     "Setup_EquipUp_MJ": {
@@ -222,6 +461,10 @@
             648,
             45,
             43
+        ],
+        "next": [
+            "Setup_EquipUp_MenuQuit",
+            "Global_ToSandBox"
         ]
     },
     "Setup_SetSkill_OpenSklMenu": {
@@ -262,29 +505,203 @@
             26
         ]
     },
-    "Setup_SetSkill_tab3_ReLift": {
-        "desc": "技能行右滑复位(回列表头部)。|[PC覆盖·2026-07-14用户实证] '料理'在列表头部,右滑即见;base拖拽起点x115在PC列表外死区(同sunyink 2#链x30死区记录)→复位拖空,流程被3-1_Swip带右后永回不到头部→误诊'无料理技能'。起点移进卡区x260,终点沿base。|[07-14二修] 识别与tab3同源(OCR'天赋技能'),同步修竖切roi→[70,438,110,52]。",
+    "Setup_SetSkill_ReLift": {
         "roi": [
-            70,
-            438,
-            110,
-            52
+            66,
+            410,
+            98,
+            100
         ],
         "expected": [
             "天赋技能",
             "天賦技能"
-        ],
-        "begin": [
-            260,
-            590,
-            1,
-            1
         ]
     },
-    "Setup_SetSkill_3-1_Swip": {
-        "expected": [
-            "天赋技能",
-            "天賦技能"
+    "Setup_SetSkill_tab3_Reset5": {
+        "target": [
+            1154,
+            448,
+            14,
+            30
         ]
+    },
+    "Setup_SetSkill_tab3_Reset4": {
+        "target": [
+            1087,
+            455,
+            9,
+            12
+        ]
+    },
+    "Setup_SetSkill_tab3_Reset3": {
+        "target": [
+            1021,
+            460,
+            8,
+            7
+        ]
+    },
+    "Setup_SetSkill_tab3_Reset2": {
+        "target": [
+            951,
+            460,
+            5,
+            4
+        ]
+    },
+    "Setup_SetSkill_tab3_Reset1": {
+        "target": [
+            880,
+            460,
+            11,
+            4
+        ]
+    },
+    "Setup_SetSkill_3-1": {
+        "roi": [
+            68,
+            601,
+            1146,
+            34
+        ],
+        "expected": [
+            "探查",
+            "搜索"
+        ]
+    },
+    "Setup_SetSkill_3-1_Shake1": {
+        "target": [
+            255,
+            459,
+            9,
+            9
+        ]
+    },
+    "Setup_SetSkill_3-1_Shake2": {
+        "target": [
+            314,
+            459,
+            12,
+            9
+        ]
+    },
+    "Setup_SetSkill_3-2": {
+        "roi": [
+            68,
+            601,
+            1146,
+            34
+        ]
+    },
+    "Setup_SetSkill_3-2_Shake1": {
+        "target": [
+            255,
+            459,
+            9,
+            9
+        ]
+    },
+    "Setup_SetSkill_3-2_Shake2": {
+        "target": [
+            314,
+            459,
+            12,
+            9
+        ]
+    },
+    "Setup_SetSkill_3-3": {
+        "roi": [
+            68,
+            601,
+            1146,
+            34
+        ]
+    },
+    "Setup_SetSkill_3-3_Shake1": {
+        "target": [
+            255,
+            459,
+            9,
+            9
+        ]
+    },
+    "Setup_SetSkill_3-3_Shake2": {
+        "target": [
+            314,
+            459,
+            12,
+            9
+        ]
+    },
+    "Setup_SetSkill_3-4": {
+        "roi": [
+            68,
+            601,
+            1146,
+            34
+        ],
+        "expected": [
+            "生成魔法阵",
+            "創建魔法陣"
+        ]
+    },
+    "Setup_SetSkill_3-4_Shake1": {
+        "target": [
+            255,
+            459,
+            9,
+            9
+        ]
+    },
+    "Setup_SetSkill_3-4_Shake2": {
+        "target": [
+            314,
+            459,
+            12,
+            9
+        ]
+    },
+    "Setup_SetSkill_3-5": {
+        "roi": [
+            68,
+            601,
+            1146,
+            34
+        ],
+        "expected": [
+            "制伏",
+            "壓制"
+        ]
+    },
+    "Setup_SetSkill_3-5_Shake1": {
+        "target": [
+            255,
+            459,
+            9,
+            9
+        ]
+    },
+    "Setup_SetSkill_3-5_Shake2": {
+        "target": [
+            314,
+            459,
+            12,
+            9
+        ]
+    },
+    "Setup_End": {
+        "custom_action_param": {
+            "card_name": "SetSkill_PC",
+            "cycle_type": "g_daily"
+        }
+    },
+    "Setup_SetSkill_LiftYew_ReLiftEnd": {
+        "roi": [
+            89,
+            539,
+            24,
+            10
+        ],
+        "count": 30
     }
 }
