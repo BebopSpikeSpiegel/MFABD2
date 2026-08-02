@@ -577,8 +577,9 @@
         }
     },
     "Daily_Square_Hub": {
-        "desc": "广场枢纽。|[PC覆盖·2026-08-02 v3,吸收#424评审] 病灶=next轮询无终止(JumpBack援救腿恒成功刷新计时器),08-01实录两轮共150+圈13秒/圈。v3改法:①max_hit回归base的1——评审指出成功后余额会致重进2次;且锚重注册需求已被上游QCPack_Regress独立优先锚(fix/patch0801)根治,预算无存在必要;②两条援救腿保留限次包装(各2次);③新增GiveUp标记腿:预算耗尽后响亮打点并经Global_Null_Exception终止子流,退栈返回Daily_HomePage轮询继续其余日常段(hub经JumpBack被调,base anchor QCPack照常继承)。",
+        "desc": "广场枢纽。|[PC覆盖·2026-08-02 v3,吸收#424评审] 病灶=next轮询无终止(JumpBack援救腿恒成功刷新计时器),08-01实录两轮共150+圈13秒/圈。v3改法:①max_hit回归base的1——评审指出成功后余额会致重进2次;且锚重注册需求已被上游QCPack_Regress独立优先锚(fix/patch0801)根治,预算无存在必要;②两条援救腿保留限次包装(各2次);③新增GiveUp标记腿:预算耗尽后响亮打点并经Global_Null_Exception终止子流,退栈返回Daily_HomePage轮询继续其余日常段(hub经JumpBack被调,base anchor QCPack照常继承)。|v4(08-02):前置 Daily_Square_CassetteHome_PC 一发归位——谈心退场点不定,镜子(FantasiaSquare)只在标准箱庭视图存在,先QC1归位再找镜子=恢复base流程的历史前提,广场业务对开局卡带位置免疫。",
         "next": [
+            "Daily_Square_CassetteHome_PC",
             "Daily_FantasiaSquare",
             "Daily_Square_QCReset_PC",
             "Daily_Square_ToSandBox_PC",
@@ -634,5 +635,14 @@
             "[JumpBack]Global_BackToQC1"
         ],
         "focus": "DM.PC.日常收尾卡带归位(QC1)"
+    },
+    "Daily_Square_CassetteHome_PC": {
+        "desc": "[PC新增·2026-08-02 v4] 广场段业务前卡带归位:DirectHit一发,JumpBack快速卡带复位到QC1。归位后FantasiaSquare(箱庭镜子)方可见,后续援救腿降为纯纵深。",
+        "max_hit": 1,
+        "recognition": "DirectHit",
+        "next": [
+            "[JumpBack]Global_BackToQC1"
+        ],
+        "focus": "DM.PC.广场段前卡带归位(QC1)"
     }
 }
