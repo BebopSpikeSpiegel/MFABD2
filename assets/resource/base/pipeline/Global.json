@@ -1,6 +1,6 @@
 {
     "Global_Index": {
-        "desc": "依次为:回到主页面|回到箱庭|调出快速卡带菜单|回到快速卡带1(预设入口x2)|快速卡带任意门(类型入口x5,Anc出口QCPack-R)|回到传统卡带(预设入口x2+Anc入口)|点一次返回按钮|卡带读取界面循环等待",
+        "desc": "依次为:回到主页面|回到箱庭|调出快速卡带菜单|回到快速卡带1(预设入口x2)|快速卡带任意门(类型入口x5,Anc出口QCPack)|回到传统卡带(预设入口x2+Anc入口)|点一次返回按钮|卡带读取界面循环等待",
         "on_error": [
             "Global_ToHomePage",
             "Global_ToSandBox",
@@ -296,7 +296,7 @@
         "focus": "G.复位卡带开始.预设2#"
     },
     "Global_BackToPve_Anc": {
-        "desc": "【传统卡带识别链-标准入口_必须先声明Anc出口'BackToPack_Regress' & Anc出口记得复位锚点'BackToPack_Regress'】不许Patch。",
+        "desc": "【传统卡带识别链-标准入口_必须先声明Anc出口'BackToPack' & Anc出口记得复位锚点'BackToPack'】不许Patch。('BackToPack_Regress'为预设复位链专用优先锚,业务方勿声明)",
         "next": [
             "Global_BackToPve_ToCardMenu",
             "[JumpBack]Global_HomeButton_Once",
@@ -358,7 +358,7 @@
         ]
     },
     "Global_BackToPve_CardMenu_Tp3": {
-        "desc": "【传统卡带识别链-结束. 出口由锚点 'BackToPack_Regress' 决定，未设锚会停在此处】固定位置识别pack1#=传统卡带界面已左划到首部",
+        "desc": "【传统卡带识别链-结束. 出口优先由锚点 'BackToPack_Regress'(预设复位链专用) 决定，其次 'BackToPack'(业务)，均未设锚会停在此处】固定位置识别pack1#=传统卡带界面已左划到首部",
         "recognition": "TemplateMatch",
         "roi": [
             109,
@@ -495,7 +495,7 @@
         "focus": "GO.快速卡带离开-菜单模式"
     },
     "Global_BackToQC_Story_Anc": {
-        "desc": "【快速卡带识别链-剧情页签入口_必须先声明Anc出口'QCPack-R' & Anc出口记得复位锚点'QCPack-R'】不许Patch。",
+        "desc": "【快速卡带识别链-剧情页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。('QCPack-Regress'为预设复位链专用优先锚,业务方勿声明)",
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
         "action": "Click",
@@ -510,7 +510,7 @@
         "focus": "GO.快速卡带复位开始"
     },
     "Global_BackToQC_Character_Anc": {
-        "desc": "【快速卡带识别链-角色页签入口_必须先声明Anc出口'QCPack-R' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "desc": "【快速卡带识别链-角色页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。('QCPack-Regress'为预设复位链专用优先锚,业务方勿声明)",
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
         "action": "Click",
@@ -525,7 +525,7 @@
         "focus": "GO.快速卡带复位开始"
     },
     "Global_BackToQC_Event_Anc": {
-        "desc": "【快速卡带识别链-活动页签入口_必须先声明Anc出口'QCPack-R' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "desc": "【快速卡带识别链-活动页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。('QCPack-Regress'为预设复位链专用优先锚,业务方勿声明)",
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
         "action": "Click",
@@ -540,7 +540,7 @@
         "focus": "GO.快速卡带复位开始"
     },
     "Global_BackToQC_Manager_Anc": {
-        "desc": "【快速卡带识别链-店长页签入口_必须先声明Anc出口'QCPack-R' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "desc": "【快速卡带识别链-店长页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。('QCPack-Regress'为预设复位链专用优先锚,业务方勿声明)",
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
         "action": "Click",
@@ -555,7 +555,7 @@
         "focus": "GO.快速卡带复位开始"
     },
     "Global_BackToQC_Gameplay_Anc": {
-        "desc": "【快速卡带识别链-玩法页签入口_必须先声明Anc出口'QCPack-R' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "desc": "【快速卡带识别链-玩法页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。('QCPack-Regress'为预设复位链专用优先锚,业务方勿声明)",
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
         "action": "Click",
@@ -687,7 +687,7 @@
         "post_delay": 2000
     },
     "Global_BackToQC_StoryCor": {
-        "desc": "【快速卡带识别链-结束.】剧情页签色核.出口由锚点QCPack决定,未设锚会停在此处",
+        "desc": "【快速卡带识别链-结束.】剧情页签色核.出口优先由锚点QCPack-Regress(预设复位链专用)决定,其次QCPack(业务),均未设锚会停在此处",
         "recognition": "ColorMatch",
         "roi": "Global_BackToQC_SelectStory",
         "lower": [
@@ -708,7 +708,7 @@
         "focus": "GO.QC.剧情页签-色核通过"
     },
     "Global_BackToQC_CharacterCor": {
-        "desc": "【快速卡带识别链-结束.】角色页签色核.出口由锚点QCPack决定,未设锚会停在此处",
+        "desc": "【快速卡带识别链-结束.】角色页签色核.出口优先由锚点QCPack-Regress(预设复位链专用)决定,其次QCPack(业务),均未设锚会停在此处",
         "recognition": "ColorMatch",
         "roi": "Global_BackToQC_SelectCharacter",
         "lower": [
@@ -729,7 +729,7 @@
         "focus": "GO.QC.角色页签-色核通过"
     },
     "Global_BackToQC_EventCor": {
-        "desc": "【快速卡带识别链-结束.】活动页签色核.出口由锚点QCPack决定,未设锚会停在此处",
+        "desc": "【快速卡带识别链-结束.】活动页签色核.出口优先由锚点QCPack-Regress(预设复位链专用)决定,其次QCPack(业务),均未设锚会停在此处",
         "recognition": "ColorMatch",
         "roi": "Global_BackToQC_SelectEvent",
         "lower": [
@@ -750,7 +750,7 @@
         "focus": "GO.QC.活动页签-色核通过"
     },
     "Global_BackToQC_ManagerCor": {
-        "desc": "【快速卡带识别链-结束.】店长页签色核.出口由锚点QCPack决定,未设锚会停在此处",
+        "desc": "【快速卡带识别链-结束.】店长页签色核.出口优先由锚点QCPack-Regress(预设复位链专用)决定,其次QCPack(业务),均未设锚会停在此处",
         "recognition": "ColorMatch",
         "roi": "Global_BackToQC_SelectManager",
         "lower": [
@@ -771,7 +771,7 @@
         "focus": "GO.QC.店长页签-色核通过"
     },
     "Global_BackToQC_GameplayCor": {
-        "desc": "【快速卡带识别链-结束.】玩法页签色核.出口由锚点QCPack决定,未设锚会停在此处",
+        "desc": "【快速卡带识别链-结束.】玩法页签色核.出口优先由锚点QCPack-Regress(预设复位链专用)决定,其次QCPack(业务),均未设锚会停在此处",
         "recognition": "ColorMatch",
         "roi": "Global_BackToQC_SelectGameplay",
         "lower": [
