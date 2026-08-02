@@ -576,44 +576,6 @@
             "threshold": 5.0
         }
     },
-    "Daily_Square_Hub": {
-        "desc": "广场枢纽。|[PC覆盖·2026-08-02 v3,吸收#424评审] 病灶=next轮询无终止(JumpBack援救腿恒成功刷新计时器),08-01实录两轮共150+圈13秒/圈。v3改法:①max_hit回归base的1——评审指出成功后余额会致重进2次;且锚重注册需求已被上游QCPack_Regress独立优先锚(fix/patch0801)根治,预算无存在必要;②两条援救腿保留限次包装(各2次);③新增GiveUp标记腿:预算耗尽后响亮打点并经Global_Null_Exception终止子流,退栈返回Daily_HomePage轮询继续其余日常段(hub经JumpBack被调,base anchor QCPack照常继承)。|v4(08-02):前置 Daily_Square_CassetteHome_PC 一发归位——谈心退场点不定,镜子(FantasiaSquare)只在标准箱庭视图存在,先QC1归位再找镜子=恢复base流程的历史前提,广场业务对开局卡带位置免疫。",
-        "next": [
-            "Daily_Square_CassetteHome_PC",
-            "Daily_FantasiaSquare",
-            "Daily_Square_QCReset_PC",
-            "Daily_Square_ToSandBox_PC",
-            "Daily_Square_GiveUp_PC",
-            "[JumpBack]Global_WaitingForLoading"
-        ]
-    },
-    "Daily_Square_QCReset_PC": {
-        "desc": "[PC新增·2026-08-01] 快速卡带复位援救腿的限次包装:JumpBack进Global_BackToQC_Gameplay_Anc,max_hit 2 耗尽后本腿不再命中,把'援救永远成功刷新轮询'变成有限预算。",
-        "max_hit": 2,
-        "recognition": "DirectHit",
-        "next": [
-            "[JumpBack]Global_BackToQC_Gameplay_Anc"
-        ],
-        "focus": "DM.[WRN]PC.广场枢纽卡带复位援救(限2次)"
-    },
-    "Daily_Square_ToSandBox_PC": {
-        "desc": "[PC新增·2026-08-01] 复位到箱庭援救腿的限次包装,同上,max_hit 2。",
-        "max_hit": 2,
-        "recognition": "DirectHit",
-        "next": [
-            "[JumpBack]Global_ToSandBox"
-        ],
-        "focus": "DM.[WRN]PC.广场枢纽箱庭复位援救(限2次)"
-    },
-    "Daily_Square_GiveUp_PC": {
-        "desc": "[PC新增·2026-08-02,回应#424评审'失败退栈须可区分'] 广场援救预算(2+2)全耗尽后的响亮放弃标记:独立focus供运营区分失败模态,经 Global_Null_Exception 终止子流并计入异常;退栈状态=经QC1复位收敛(卡带停QC1、菜单关闭),JumpBack返回Daily_HomePage继续其余日常段。max_hit 1保证只打点一次。",
-        "max_hit": 1,
-        "recognition": "DirectHit",
-        "next": [
-            "Global_Null_Exception"
-        ],
-        "focus": "DM.[ERR]PC.广场援救预算耗尽,放弃本段(已收敛到QC1复位态)"
-    },
     "Daily_HomePage": {
         "desc": "日常枢纽。|[PC覆盖·2026-08-02] 广场段成功后卡带留驻广场→次日开局派遣静默丢领/锻造哑死(当日实录)。在Global_Hub_End前插一发QC1归位腿:六个子枢纽全部消耗后触发,日常无论成败收尾时卡带必回QC1,次日开局天然安全,零手动。base六腿原序照抄。",
         "next": [
@@ -647,50 +609,6 @@
             "[JumpBack]Global_BackToQC1"
         ],
         "focus": "DM.PC.收尾检测到留驻广场,归位QC1"
-    },
-    "Daily_Square_CassetteHome_PC": {
-        "desc": "[PC v6·2026-08-02] 广场段前条件归位:仅身处广场(右上'创建队伍'OCR)才进;next首位为反相出口——复位成功后不再在广场,出口先命中接回业务,[JumpBack]回跳腿不再被评,结构性终止(v4/v5实录:JumpBack回跳后轮询继续而BackToQC1入口恒可识→复位成功再复位14秒/圈)。",
-        "max_hit": 1,
-        "recognition": "OCR",
-        "roi": [
-            1035,
-            80,
-            220,
-            60
-        ],
-        "expected": [
-            "创建队伍",
-            "創建隊伍"
-        ],
-        "timeout": 3000,
-        "next": [
-            "Daily_Square_CassetteHome_Done_PC",
-            "[JumpBack]Global_BackToQC1"
-        ],
-        "focus": "DM.PC.检测到身处广场,归位QC1"
-    },
-    "Daily_Square_CassetteHome_Done_PC": {
-        "desc": "[PC v6] 归位完成反相出口:不在广场时命中,接回镜子识别。",
-        "recognition": "OCR",
-        "roi": [
-            1035,
-            80,
-            220,
-            60
-        ],
-        "expected": [
-            "创建队伍",
-            "創建隊伍"
-        ],
-        "inverse": true,
-        "next": [
-            "Daily_FantasiaSquare",
-            "Daily_Square_QCReset_PC",
-            "Daily_Square_ToSandBox_PC",
-            "Daily_Square_GiveUp_PC",
-            "[JumpBack]Global_WaitingForLoading"
-        ],
-        "focus": "DM.PC.已离开广场,继续广场业务"
     },
     "Daily_End_CassetteHome_Done_PC": {
         "desc": "[PC v6] 收尾归位反相出口:接Global_Hub_End正常收队。",
