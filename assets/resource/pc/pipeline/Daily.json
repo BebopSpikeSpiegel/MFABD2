@@ -628,7 +628,7 @@
         ]
     },
     "Daily_End_CassetteHome_PC": {
-        "desc": "[PC新增·2026-08-02 v5条件化] 日常收尾卡带归位:六枢纽耗尽后仅当仍留驻广场才复位——保次日开局派遣/锻造安全;正常日miss让路。",
+        "desc": "[PC v6] 日常收尾条件归位:六枢纽耗尽后仍留驻广场才复位,保次日开局安全;结构同上反相出口终止。",
         "max_hit": 1,
         "recognition": "OCR",
         "roi": [
@@ -643,12 +643,13 @@
         ],
         "timeout": 3000,
         "next": [
+            "Daily_End_CassetteHome_Done_PC",
             "[JumpBack]Global_BackToQC1"
         ],
         "focus": "DM.PC.收尾检测到留驻广场,归位QC1"
     },
     "Daily_Square_CassetteHome_PC": {
-        "desc": "[PC新增·2026-08-02 v5条件化] 广场段前卡带归位:仅当身处梦幻广场(右上'创建队伍'OCR命中)才JumpBack复位QC1;不在广场则3秒miss让路零成本。响应'没必要复位那么多次'的反馈,无条件版(v4)废弃。",
+        "desc": "[PC v6·2026-08-02] 广场段前条件归位:仅身处广场(右上'创建队伍'OCR)才进;next首位为反相出口——复位成功后不再在广场,出口先命中接回业务,[JumpBack]回跳腿不再被评,结构性终止(v4/v5实录:JumpBack回跳后轮询继续而BackToQC1入口恒可识→复位成功再复位14秒/圈)。",
         "max_hit": 1,
         "recognition": "OCR",
         "roi": [
@@ -663,8 +664,51 @@
         ],
         "timeout": 3000,
         "next": [
+            "Daily_Square_CassetteHome_Done_PC",
             "[JumpBack]Global_BackToQC1"
         ],
         "focus": "DM.PC.检测到身处广场,归位QC1"
+    },
+    "Daily_Square_CassetteHome_Done_PC": {
+        "desc": "[PC v6] 归位完成反相出口:不在广场时命中,接回镜子识别。",
+        "recognition": "OCR",
+        "roi": [
+            1035,
+            80,
+            220,
+            60
+        ],
+        "expected": [
+            "创建队伍",
+            "創建隊伍"
+        ],
+        "inverse": true,
+        "next": [
+            "Daily_FantasiaSquare",
+            "Daily_Square_QCReset_PC",
+            "Daily_Square_ToSandBox_PC",
+            "Daily_Square_GiveUp_PC",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "DM.PC.已离开广场,继续广场业务"
+    },
+    "Daily_End_CassetteHome_Done_PC": {
+        "desc": "[PC v6] 收尾归位反相出口:接Global_Hub_End正常收队。",
+        "recognition": "OCR",
+        "roi": [
+            1035,
+            80,
+            220,
+            60
+        ],
+        "expected": [
+            "创建队伍",
+            "創建隊伍"
+        ],
+        "inverse": true,
+        "next": [
+            "Global_Hub_End"
+        ],
+        "focus": "DM.PC.收尾归位完成"
     }
 }

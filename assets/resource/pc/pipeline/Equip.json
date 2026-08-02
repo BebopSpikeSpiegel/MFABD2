@@ -538,7 +538,7 @@
         ]
     },
     "Equip_CassetteHome_PC": {
-        "desc": "[PC新增·2026-08-02 v5条件化] 锻造前卡带归位:仅当身处梦幻广场才复位(广场无技能坞,OpenSklMenu必死);正常开局miss让路零成本。",
+        "desc": "[PC v6] 锻造前条件归位:仅身处广场才复位(广场无技能坞);反相出口接回锻造链,结构性终止。",
         "max_hit": 1,
         "recognition": "OCR",
         "roi": [
@@ -553,8 +553,28 @@
         ],
         "timeout": 3000,
         "next": [
+            "Equip_CassetteHome_Done_PC",
             "[JumpBack]Global_BackToQC1"
         ],
         "focus": "EM.PC.检测到身处广场,归位QC1"
+    },
+    "Equip_CassetteHome_Done_PC": {
+        "desc": "[PC v6] 锻造前归位反相出口:接Equip_Skill_Call。",
+        "recognition": "OCR",
+        "roi": [
+            1035,
+            80,
+            220,
+            60
+        ],
+        "expected": [
+            "创建队伍",
+            "創建隊伍"
+        ],
+        "inverse": true,
+        "next": [
+            "Equip_Skill_Call"
+        ],
+        "focus": "EM.PC.归位完成,开始锻造"
     }
 }
