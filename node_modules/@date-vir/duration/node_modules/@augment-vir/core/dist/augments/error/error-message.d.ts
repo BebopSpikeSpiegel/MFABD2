@@ -1,0 +1,17 @@
+/**
+ * Tries its hardest to extract an error message from the input, which may be anything (not even an
+ * Error instance).
+ *
+ * @category Error
+ * @category Package : @augment-vir/common
+ * @package [`@augment-vir/common`](https://www.npmjs.com/package/@augment-vir/common)
+ */
+export declare function extractErrorMessage(maybeError: unknown): string;
+/**
+ * Combines multiple error messages into a single error message.
+ *
+ * @category Error
+ * @category Package : @augment-vir/common
+ * @package [`@augment-vir/common`](https://www.npmjs.com/package/@augment-vir/common)
+ */
+export declare function combineErrorMessages(...rawMessages: ReadonlyArray<unknown>): string;

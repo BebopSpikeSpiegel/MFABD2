@@ -1,0 +1,11 @@
+/**
+ * Makes a pretty diff output.
+ *
+ * @category Internal
+ * @category Package : @augment-vir/common
+ * @package [`@augment-vir/common`](https://www.npmjs.com/package/@augment-vir/common)
+ */
+export declare function prettyDiff({ actual, expected, }: Readonly<{
+    actual: unknown;
+    expected: unknown;
+}>): string;
