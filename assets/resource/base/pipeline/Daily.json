@@ -777,6 +777,7 @@
             0,
             0
         ],
+        "anchor": {"QCPack": ""},
         "post_delay": 2000,
         "timeout": 3000,
         "next": ["Daily_Square_ToSquare"]
