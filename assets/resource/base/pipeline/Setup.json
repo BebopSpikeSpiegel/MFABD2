@@ -1501,16 +1501,8 @@
         "focus": "背包"
     },
     "Setup_Equip": {
-        "recognition": "OCR",
-        "roi": [
-            217,
-            21,
-            73,
-            38
-        ],
-        "expected": [
-            "装备"
-        ],
+        "recognition": "And",
+        "all_of": ["Equip_EquipUp_CK"],
         "anchor": "Setup_EquipUp",
         "next": [
             "Setup_EquipUp",
@@ -1539,109 +1531,144 @@
         ]
     },
     "Setup_EquipUp_MJ": {
-        "recognition": "ColorMatch",
-        "roi": [
-            1145,
-            378,
-            10,
-            17
-        ],
-        "lower": [
-            162,
-            122,
-            31
-        ],
-        "upper": [
-            182,
-            142,
-            51
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    1145,
+                    378,
+                    10,
+                    17
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Rec_SliderSwitch_YewOn_Clr"
         ],
         "action": "Click",
         "post_delay": 1500
     },
     "Setup_EquipUp_CheckBox_L1": {
-        "recognition": "ColorMatch",
-        "roi": [
-            784,
-            441,
-            16,
-            13
-        ],
-        "lower": [
-            31,
-            34,
-            40
-        ],
-        "upper": [
-            35,
-            37,
-            42
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    784,
+                    441,
+                    16,
+                    13
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
         ],
         "action": "Click",
         "post_delay": 1500,
         "focus": "[Set.N1]"
     },
     "Setup_EquipUp_CheckBox_L2": {
-        "recognition": "ColorMatch",
-        "roi": [
-            990,
-            440,
-            17,
-            16
-        ],
-        "lower": [
-            31,
-            34,
-            40
-        ],
-        "upper": [
-            35,
-            37,
-            42
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    990,
+                    440,
+                    17,
+                    16
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
         ],
         "action": "Click",
         "post_delay": 1500,
         "focus": "[Set.N2]"
     },
     "Setup_EquipUp_CheckBox_L3": {
-        "recognition": "ColorMatch",
-        "roi": [
-            784,
-            481,
-            17,
-            16
-        ],
-        "lower": [
-            31,
-            34,
-            40
-        ],
-        "upper": [
-            35,
-            37,
-            42
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    784,
+                    481,
+                    17,
+                    16
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
         ],
         "action": "Click",
         "post_delay": 1500,
         "focus": "[Set.N3]"
     },
     "Setup_EquipUp_CheckBox_L4": {
-        "recognition": "ColorMatch",
-        "roi": [
-            1006,
-            482,
-            17,
-            16
-        ],
-        "lower": [
-            31,
-            34,
-            40
-        ],
-        "upper": [
-            35,
-            37,
-            42
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    1006,
+                    482,
+                    17,
+                    16
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
         ],
         "action": "Click",
         "post_delay": 1500,
@@ -1682,8 +1709,24 @@
         "anchor": "Setup_EquipDec",
         "next": [
             "Setup_EquipDec",
-            "Equip_EquipDec"
+            "[JumpBack]Equip_EquipDec"
         ]
+    },
+    "Equip_EquipDec": {
+        "desc": "点击一键分解",
+        "recognition": "OCR",
+        "roi": [
+            1017,
+            599,
+            174,
+            121
+        ],
+        "expected": [
+            "键分解"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "focus": "装备分解"
     },
     "Setup_EquipDec": {
         "recognition": "OCR",

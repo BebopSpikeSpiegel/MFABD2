@@ -1,5 +1,6 @@
 {
     "RewardsDaily_Start": {
+        "desc": "主页按钮区,任务奖励领取",
         "next": [
             "RewardsDaily_DailyReward",
             "[JumpBack]Global_ToHomePage"
@@ -83,36 +84,15 @@
     "RewardsDaily_Get": {
         "recognition": "And",
         "all_of": [
-            {
-                "sub_name": "OCR",
-                "recognition": "OCR",
-                "roi": [
-                    1045,
-                    645,
-                    93,
-                    31
-                ],
-                "expected": [
-                    "全部获得"
-                ]
-            },
-            "Sub_Ocr_Enable_Clr"
+            "Mail_GetAll"
         ],
         "action": "Click",
         "post_delay": 3000
     },
     "RewardsDaily_GetDailyRewardBack": {
         "desc": "点击领取全部返回",
-        "recognition": "OCR",
-        "roi": [
-            558,
-            630,
-            147,
-            34
-        ],
-        "expected": [
-            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-        ],
+        "recognition": "And",
+        "all_of": ["Rec_Reward_Ocr"],
         "action": "Click",
         "post_delay": 3000
     },

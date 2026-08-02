@@ -101,7 +101,7 @@
         },
         {
             "name": "[执行]白嫖抽卡",
-            "entry": "Gacha_HomePage",
+            "entry": "GachaADV_Start",
             "controller": [
                 "Adb",
                 "PlayCover"
@@ -792,21 +792,23 @@
                     "name": "UR",
                     "pipeline_override": {
                         "Equip_filterSR": {
-                            "roi": [
-                                548,
-                                399,
-                                55,
-                                34
-                            ],
-                            "template": [
-                                "filterUR.png"
-                            ]
+                            "enabled": false
+                        },
+                        "Equip_filterUR": {
+                            "enabled": true
                         }
                     }
                 },
                 {
                     "name": "SR",
-                    "pipeline_override": {}
+                    "pipeline_override": {
+                        "Equip_filterSR": {
+                            "enabled": true
+                        },
+                        "Equip_filterUR": {
+                            "enabled": false
+                        }
+                    }
                 }
             ]
         },
@@ -913,10 +915,22 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "Gacha_FindFreeGacha": {
+                        "GachaADV_Location1": {
                             "enabled": false
                         },
-                        "Gacha_Slip": {
+                        "GachaADV_Location2": {
+                            "enabled": false
+                        },
+                        "GachaADV_Location3": {
+                            "enabled": false
+                        },
+                        "GachaADV_Location4": {
+                            "enabled": false
+                        },
+                        "GachaADV_Location5": {
+                            "enabled": false
+                        },
+                        "GachaADV_Slip": {
                             "enabled": false
                         }
                     }
@@ -929,31 +943,8 @@
                         }
                     },
                     "option": [
-                        "高级抽卡-按需|强制",
+                        "5星必出保留",
                         "付费钻-总开关"
-                    ]
-                }
-            ]
-        },
-        "高级抽卡-按需|强制": {
-            "description": "关：默认流程检测到问题时自动启用。<br>开：从头调用高级抽卡流程，可配合<5星必出保留>使用。",
-            "type": "switch",
-            "cases": [
-                {
-                    "name": "No",
-                    "pipeline_override": {}
-                },
-                {
-                    "name": "Yes",
-                    "pipeline_override": {
-                        "Gacha_HomePage": {
-                            "next": [
-                                "GachaADV_Start"
-                            ]
-                        }
-                    },
-                    "option": [
-                        "5星必出保留"
                     ]
                 }
             ]
@@ -991,6 +982,21 @@
                     ],
                     "pipeline_override": {
                         "Gacha_PaidDiamond_CustomField": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location1_90LotPost": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location2_90LotPost": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location3_90LotPost": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location4_90LotPost": {
+                            "enabled": true
+                        },
+                        "GachaADV_Location5_90LotPost": {
                             "enabled": true
                         }
                     }
@@ -1056,46 +1062,6 @@
                     ]
                 },
                 "GachaADV_Location1_90LotPost": {
-                    "expected": [
-                        "{目标池1}",
-                        "{目标池2}",
-                        "{目标池3}",
-                        "{目标池4}",
-                        "{目标池5}",
-                        "{目标池6}"
-                    ]
-                },
-                "GachaADV_Location2_90LotPost": {
-                    "expected": [
-                        "{目标池1}",
-                        "{目标池2}",
-                        "{目标池3}",
-                        "{目标池4}",
-                        "{目标池5}",
-                        "{目标池6}"
-                    ]
-                },
-                "GachaADV_Location3_90LotPost": {
-                    "expected": [
-                        "{目标池1}",
-                        "{目标池2}",
-                        "{目标池3}",
-                        "{目标池4}",
-                        "{目标池5}",
-                        "{目标池6}"
-                    ]
-                },
-                "GachaADV_Location4_90LotPost": {
-                    "expected": [
-                        "{目标池1}",
-                        "{目标池2}",
-                        "{目标池3}",
-                        "{目标池4}",
-                        "{目标池5}",
-                        "{目标池6}"
-                    ]
-                },
-                "GachaADV_Location5_90LotPost": {
                     "expected": [
                         "{目标池1}",
                         "{目标池2}",
@@ -1456,6 +1422,9 @@
                         "Arbitrage_BuyItem": {
                             "enabled": false
                         },
+                        "Arbitrage_Favorit_Buy": {
+                            "enabled": false
+                        },
                         "Arbitrage_Bargaining_SkillList": {
                             "recognition": "DirectHit",
                             "target": [
@@ -1647,10 +1616,17 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "Arbitrage_Sell_Item_Number": {
-                            "target": [
-                                318,
-                                502
+                        "Arbitrage_Sell_Item_NumberSafety_ON": {
+                            "enabled": true
+                        },
+                        "Arbitrage_Sell_Item_NumberSafety_OFF": {
+                            "enabled": false
+                        },
+                        "Arbitrage_Sell_Item_Selling": {
+                            "next": [
+                                "Arbitrage_Sell_Item_Selling",
+                                "Arbitrage_Sell_End",
+                                "[JumpBack]Arbitrage_PackList_ResetSwip"
                             ]
                         }
                     }
@@ -1658,11 +1634,11 @@
                 {
                     "name": "No",
                     "pipeline_override": {
-                        "Arbitrage_Sell_Item_Number": {
-                            "target": [
-                                596,
-                                506
-                            ]
+                        "Arbitrage_Sell_Item_NumberSafety_ON": {
+                            "enabled": false
+                        },
+                        "Arbitrage_Sell_Item_NumberSafety_OFF": {
+                            "enabled": true
                         }
                     }
                 }
@@ -1941,7 +1917,6 @@
                     "enabled": true,
                     "option": {
                         "一键速抽": "No",
-                        "高级抽卡-按需|强制": "Yes",
                         "5星必出保留": "Yes"
                     }
                 },
