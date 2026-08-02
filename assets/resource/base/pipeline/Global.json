@@ -1,6 +1,6 @@
 {
     "Global_Index": {
-        "desc": "依次为:回到主页面|回到箱庭|调出快速卡带菜单|回到快速卡带1(预设入口x2)|快速卡带任意门(类型入口x5,Anc出口QCPack)|回到传统卡带(预设入口x2+Anc入口)|点一次返回按钮|卡带读取界面循环等待",
+        "desc": "依次为:回到主页面|回到箱庭|调出快速卡带菜单|回到快速卡带1(预设入口x2)|快速卡带任意门(类型入口x5,Anc出口QCPack-R)|回到传统卡带(预设入口x2+Anc入口)|点一次返回按钮|卡带读取界面循环等待",
         "on_error": [
             "Global_ToHomePage",
             "Global_ToSandBox",
@@ -470,7 +470,7 @@
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
         "anchor": {
-            "QCPack": "Global_BackToQC_TouchQC1Pack"
+            "QCPack-Regress": "Global_BackToQC_TouchQC1Pack"
         },
         "post_delay": 2000,
         "next": [
@@ -483,7 +483,7 @@
         "recognition": "Or",
         "any_of": ["Collect_QuickCart_SelectType_StoryPack"],
         "anchor": {
-            "QCPack": "Global_BackToQC_TouchQC1Pack"
+            "QCPack-Regress": "Global_BackToQC_TouchQC1Pack"
         },
         "next": [
             "Global_BackToQC_SelectStory",
@@ -494,7 +494,7 @@
         "focus": "GO.快速卡带离开-菜单模式"
     },
     "Global_BackToQC_Story_Anc": {
-        "desc": "【快速卡带识别链-剧情页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "desc": "【快速卡带识别链-剧情页签入口_必须先声明Anc出口'QCPack-R' & Anc出口记得复位锚点'QCPack-R'】不许Patch。",
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
         "action": "Click",
@@ -509,7 +509,7 @@
         "focus": "GO.快速卡带复位开始"
     },
     "Global_BackToQC_Character_Anc": {
-        "desc": "【快速卡带识别链-角色页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "desc": "【快速卡带识别链-角色页签入口_必须先声明Anc出口'QCPack-R' & Anc出口记得复位锚点'QCPack'】不许Patch。",
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
         "action": "Click",
@@ -524,7 +524,7 @@
         "focus": "GO.快速卡带复位开始"
     },
     "Global_BackToQC_Event_Anc": {
-        "desc": "【快速卡带识别链-活动页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "desc": "【快速卡带识别链-活动页签入口_必须先声明Anc出口'QCPack-R' & Anc出口记得复位锚点'QCPack'】不许Patch。",
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
         "action": "Click",
@@ -539,7 +539,7 @@
         "focus": "GO.快速卡带复位开始"
     },
     "Global_BackToQC_Manager_Anc": {
-        "desc": "【快速卡带识别链-店长页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "desc": "【快速卡带识别链-店长页签入口_必须先声明Anc出口'QCPack-R' & Anc出口记得复位锚点'QCPack'】不许Patch。",
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
         "action": "Click",
@@ -554,7 +554,7 @@
         "focus": "GO.快速卡带复位开始"
     },
     "Global_BackToQC_Gameplay_Anc": {
-        "desc": "【快速卡带识别链-玩法页签入口_必须先声明Anc出口'QCPack' & Anc出口记得复位锚点'QCPack'】不许Patch。",
+        "desc": "【快速卡带识别链-玩法页签入口_必须先声明Anc出口'QCPack-R' & Anc出口记得复位锚点'QCPack'】不许Patch。",
         "recognition": "Or",
         "any_of": ["Global_QuickCart_MenuReset"],
         "action": "Click",
@@ -701,6 +701,7 @@
         ],
         "count": 200,
         "next": [
+            "[Anchor]QCPack-Regress",
             "[Anchor]QCPack"
         ],
         "focus": "GO.QC.剧情页签-色核通过"
@@ -721,6 +722,7 @@
         ],
         "count": 300,
         "next": [
+            "[Anchor]QCPack-Regress",
             "[Anchor]QCPack"
         ],
         "focus": "GO.QC.角色页签-色核通过"
@@ -741,6 +743,7 @@
         ],
         "count": 500,
         "next": [
+            "[Anchor]QCPack-Regress",
             "[Anchor]QCPack"
         ],
         "focus": "GO.QC.活动页签-色核通过"
@@ -761,6 +764,7 @@
         ],
         "count": 500,
         "next": [
+            "[Anchor]QCPack-Regress",
             "[Anchor]QCPack"
         ],
         "focus": "GO.QC.店长页签-色核通过"
@@ -781,6 +785,7 @@
         ],
         "count": 500,
         "next": [
+            "[Anchor]QCPack-Regress",
             "[Anchor]QCPack"
         ],
         "focus": "GO.QC.玩法页签-色核通过"
@@ -805,7 +810,7 @@
             0,
             0
         ],
-        "anchor": {"QCPack": ""},
+        "anchor": {"QCPack-Regress": ""},
         "post_delay": 4000,
         "next": [
             "Global_BackToQC_Fin",
