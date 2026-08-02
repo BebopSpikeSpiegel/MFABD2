@@ -272,7 +272,7 @@
     "Global_BackToPve_1#": {
         "desc": "【传统卡带识别链-预设入口.预设pve1#】",
         "anchor": {
-            "BackToPack": "Global_BackToPve_TouchPVE1#Pack"
+            "BackToPack_Regress": "Global_BackToPve_TouchPVE1#Pack"
         },
         "next": [
             "Global_BackToPve_ToCardMenu",
@@ -285,7 +285,7 @@
     "Global_BackToPve_2#": {
         "desc": "【传统卡带识别链-预设入口.pve2#】",
         "anchor": {
-            "BackToPack": "Global_BackToPve_TouchPVE2#Pack"
+            "BackToPack_Regress": "Global_BackToPve_TouchPVE2#Pack"
         },
         "next": [
             "Global_BackToPve_ToCardMenu",
@@ -296,7 +296,7 @@
         "focus": "G.复位卡带开始.预设2#"
     },
     "Global_BackToPve_Anc": {
-        "desc": "【传统卡带识别链-标准入口_必须先声明Anc出口'BackToPack' & Anc出口记得复位锚点'BackToPack'】不许Patch。",
+        "desc": "【传统卡带识别链-标准入口_必须先声明Anc出口'BackToPack_Regress' & Anc出口记得复位锚点'BackToPack_Regress'】不许Patch。",
         "next": [
             "Global_BackToPve_ToCardMenu",
             "[JumpBack]Global_HomeButton_Once",
@@ -358,7 +358,7 @@
         ]
     },
     "Global_BackToPve_CardMenu_Tp3": {
-        "desc": "【传统卡带识别链-结束. 出口由锚点 'BackToPack' 决定，未设锚会停在此处】固定位置识别pack1#=传统卡带界面已左划到首部",
+        "desc": "【传统卡带识别链-结束. 出口由锚点 'BackToPack_Regress' 决定，未设锚会停在此处】固定位置识别pack1#=传统卡带界面已左划到首部",
         "recognition": "TemplateMatch",
         "roi": [
             109,
@@ -370,6 +370,7 @@
             "pve1.png"
         ],
         "next": [
+            "[Anchor]BackToPack_Regress",
             "[Anchor]BackToPack"
         ]
     },
@@ -418,7 +419,7 @@
             0,
             0
         ],
-        "anchor": {"BackToPack": ""},
+        "anchor": {"BackToPack_Regress": ""},
         "post_delay": 5000,
         "next": [
             "Global_BackToPve_FinBackMapPage",
@@ -446,7 +447,7 @@
             0,
             0
         ],
-        "anchor": {"BackToPack": ""},
+        "anchor": {"BackToPack_Regress": ""},
         "post_delay": 5000,
         "next": [
             "Global_BackToPve_FinBackMapPage",
