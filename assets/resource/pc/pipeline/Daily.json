@@ -577,17 +577,17 @@
         }
     },
     "Daily_Square_Hub": {
-        "desc": "广场枢纽。|[PC覆盖·2026-08-01两轮实录] 病灶=next轮询永不终结:两条JumpBack援救腿(快速卡带复位/复位到箱庭)永远'成功'刷新轮询计时器,而Daily_FantasiaSquare在'人已在广场卡带内+QC菜单开合'状态下恒miss(已激活卡带点击=空操作不转场;菜单关闭间隙里人站林区角落底部中央无镜子图标),13秒/圈永动。第一轮(21:05)另叠加QCPack锚被QC1援救链消费清除(anchor not set,maafw实锤)。修=援救腿换成本地限次包装:预算耗尽→全miss→轮询超时→FAILED响亮收场。max_hit 3 保留(锚点重注册仍需要)。",
-        "max_hit": 3,
+        "desc": "广场枢纽。|[PC覆盖·2026-08-02 v3,吸收#424评审] 病灶=next轮询无终止(JumpBack援救腿恒成功刷新计时器),08-01实录两轮共150+圈13秒/圈。v3改法:①max_hit回归base的1——评审指出成功后余额会致重进2次;且锚重注册需求已被上游QCPack_Regress独立优先锚(fix/patch0801)根治,预算无存在必要;②两条援救腿保留限次包装(各2次);③新增GiveUp标记腿:预算耗尽后响亮打点并经Global_Null_Exception终止子流,退栈返回Daily_HomePage轮询继续其余日常段(hub经JumpBack被调,base anchor QCPack照常继承)。",
         "next": [
             "Daily_FantasiaSquare",
             "Daily_Square_QCReset_PC",
             "Daily_Square_ToSandBox_PC",
+            "Daily_Square_GiveUp_PC",
             "[JumpBack]Global_WaitingForLoading"
         ]
     },
     "Daily_Square_QCReset_PC": {
-        "desc": "[PC新增·2026-08-01] 快速卡带复位援救腿的限次包装:JumpBack进Global_BackToQC_Gameplay_Anc,max_hit 2 耗尽后本腿不再命中,把'永远成功刷新轮询'变成有限预算。",
+        "desc": "[PC新增·2026-08-01] 快速卡带复位援救腿的限次包装:JumpBack进Global_BackToQC_Gameplay_Anc,max_hit 2 耗尽后本腿不再命中,把'援救永远成功刷新轮询'变成有限预算。",
         "max_hit": 2,
         "recognition": "DirectHit",
         "next": [
@@ -596,12 +596,21 @@
         "focus": "DM.[WRN]PC.广场枢纽卡带复位援救(限2次)"
     },
     "Daily_Square_ToSandBox_PC": {
-        "desc": "[PC新增·2026-08-01] 复位到箱庭援救腿的限次包装,同上,max_hit 2。两垫全部耗尽后枢纽next仅剩FantasiaSquare与WaitingForLoading,恒miss则轮询超时→流程FAILED,绝不再无声空转。",
+        "desc": "[PC新增·2026-08-01] 复位到箱庭援救腿的限次包装,同上,max_hit 2。",
         "max_hit": 2,
         "recognition": "DirectHit",
         "next": [
             "[JumpBack]Global_ToSandBox"
         ],
         "focus": "DM.[WRN]PC.广场枢纽箱庭复位援救(限2次)"
+    },
+    "Daily_Square_GiveUp_PC": {
+        "desc": "[PC新增·2026-08-02,回应#424评审'失败退栈须可区分'] 广场援救预算(2+2)全耗尽后的响亮放弃标记:独立focus供运营区分失败模态,经 Global_Null_Exception 终止子流并计入异常;退栈状态=经QC1复位收敛(卡带停QC1、菜单关闭),JumpBack返回Daily_HomePage继续其余日常段。max_hit 1保证只打点一次。",
+        "max_hit": 1,
+        "recognition": "DirectHit",
+        "next": [
+            "Global_Null_Exception"
+        ],
+        "focus": "DM.[ERR]PC.广场援救预算耗尽,放弃本段(已收敛到QC1复位态)"
     }
 }
