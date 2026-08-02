@@ -528,5 +528,22 @@
             69,
             60
         ]
+    },
+    "Equip_HomePage": {
+        "desc": "锻造入口。|[PC覆盖·2026-08-02] 卡带留驻梦幻广场时,新setup技能表进入方式在广场必死(OpenSklMenu连败20s→默认Null假成功,当日三连实录)——广场无技能坞。前置一发QC1归位守卫:无论开局卡带在哪,锻造永远从标准卡带起步,零手动。",
+        "next": [
+            "Equip_CassetteHome_PC",
+            "Equip_Skill_Call",
+            "[JumpBack]Global_ToSandBox"
+        ]
+    },
+    "Equip_CassetteHome_PC": {
+        "desc": "[PC新增·2026-08-02] 锻造前卡带归位:DirectHit一发,JumpBack快速卡带复位到QC1后返回继续原链。已在QC1时复位链自身幂等(~10s)。",
+        "max_hit": 1,
+        "recognition": "DirectHit",
+        "next": [
+            "[JumpBack]Global_BackToQC1"
+        ],
+        "focus": "EM.PC.锻造前卡带归位(QC1)"
     }
 }

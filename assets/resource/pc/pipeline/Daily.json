@@ -612,5 +612,27 @@
             "Global_Null_Exception"
         ],
         "focus": "DM.[ERR]PC.广场援救预算耗尽,放弃本段(已收敛到QC1复位态)"
+    },
+    "Daily_HomePage": {
+        "desc": "日常枢纽。|[PC覆盖·2026-08-02] 广场段成功后卡带留驻广场→次日开局派遣静默丢领/锻造哑死(当日实录)。在Global_Hub_End前插一发QC1归位腿:六个子枢纽全部消耗后触发,日常无论成败收尾时卡带必回QC1,次日开局天然安全,零手动。base六腿原序照抄。",
+        "next": [
+            "[JumpBack]Daily_HomePage_Hub",
+            "[JumpBack]Daily_Union_Hub",
+            "[JumpBack]Daily_VisitCabin_Hub",
+            "[JumpBack]Daily_Busin_Hub",
+            "[JumpBack]Daily_Intimacy_HUB",
+            "[JumpBack]Daily_Square_Hub",
+            "Daily_End_CassetteHome_PC",
+            "Global_Hub_End"
+        ]
+    },
+    "Daily_End_CassetteHome_PC": {
+        "desc": "[PC新增·2026-08-02] 日常收尾卡带归位:六枢纽耗尽后DirectHit一发,JumpBack快速卡带复位到QC1,归位后轮询继续走到Global_Hub_End正常收队。",
+        "max_hit": 1,
+        "recognition": "DirectHit",
+        "next": [
+            "[JumpBack]Global_BackToQC1"
+        ],
+        "focus": "DM.PC.日常收尾卡带归位(QC1)"
     }
 }
