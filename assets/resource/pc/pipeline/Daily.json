@@ -628,21 +628,43 @@
         ]
     },
     "Daily_End_CassetteHome_PC": {
-        "desc": "[PC新增·2026-08-02] 日常收尾卡带归位:六枢纽耗尽后DirectHit一发,JumpBack快速卡带复位到QC1,归位后轮询继续走到Global_Hub_End正常收队。",
+        "desc": "[PC新增·2026-08-02 v5条件化] 日常收尾卡带归位:六枢纽耗尽后仅当仍留驻广场才复位——保次日开局派遣/锻造安全;正常日miss让路。",
         "max_hit": 1,
-        "recognition": "DirectHit",
+        "recognition": "OCR",
+        "roi": [
+            1035,
+            80,
+            220,
+            60
+        ],
+        "expected": [
+            "创建队伍",
+            "創建隊伍"
+        ],
+        "timeout": 3000,
         "next": [
             "[JumpBack]Global_BackToQC1"
         ],
-        "focus": "DM.PC.日常收尾卡带归位(QC1)"
+        "focus": "DM.PC.收尾检测到留驻广场,归位QC1"
     },
     "Daily_Square_CassetteHome_PC": {
-        "desc": "[PC新增·2026-08-02 v4] 广场段业务前卡带归位:DirectHit一发,JumpBack快速卡带复位到QC1。归位后FantasiaSquare(箱庭镜子)方可见,后续援救腿降为纯纵深。",
+        "desc": "[PC新增·2026-08-02 v5条件化] 广场段前卡带归位:仅当身处梦幻广场(右上'创建队伍'OCR命中)才JumpBack复位QC1;不在广场则3秒miss让路零成本。响应'没必要复位那么多次'的反馈,无条件版(v4)废弃。",
         "max_hit": 1,
-        "recognition": "DirectHit",
+        "recognition": "OCR",
+        "roi": [
+            1035,
+            80,
+            220,
+            60
+        ],
+        "expected": [
+            "创建队伍",
+            "創建隊伍"
+        ],
+        "timeout": 3000,
         "next": [
             "[JumpBack]Global_BackToQC1"
         ],
-        "focus": "DM.PC.广场段前卡带归位(QC1)"
+        "focus": "DM.PC.检测到身处广场,归位QC1"
     }
 }

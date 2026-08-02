@@ -538,12 +538,23 @@
         ]
     },
     "Equip_CassetteHome_PC": {
-        "desc": "[PC新增·2026-08-02] 锻造前卡带归位:DirectHit一发,JumpBack快速卡带复位到QC1后返回继续原链。已在QC1时复位链自身幂等(~10s)。",
+        "desc": "[PC新增·2026-08-02 v5条件化] 锻造前卡带归位:仅当身处梦幻广场才复位(广场无技能坞,OpenSklMenu必死);正常开局miss让路零成本。",
         "max_hit": 1,
-        "recognition": "DirectHit",
+        "recognition": "OCR",
+        "roi": [
+            1035,
+            80,
+            220,
+            60
+        ],
+        "expected": [
+            "创建队伍",
+            "創建隊伍"
+        ],
+        "timeout": 3000,
         "next": [
             "[JumpBack]Global_BackToQC1"
         ],
-        "focus": "EM.PC.锻造前卡带归位(QC1)"
+        "focus": "EM.PC.检测到身处广场,归位QC1"
     }
 }
