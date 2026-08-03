@@ -316,6 +316,7 @@
             1111,
             650
         ],
+        "post_delay": 3000,
         "next": [
             "Global_BackToPve_CardMenu_Tp1",
             "Global_BackToPve_ToCardMenu"
@@ -973,6 +974,40 @@
         "next": [
             "Global_SliderSwitch_End"
         ]
+    },
+    "Rec_SliderSwitch_YewOn_Clr": {
+        "desc": "[识别]滑块识别,黄色,已enable",
+        "recognition": "ColorMatch",
+        "roi": "Clr",
+        "method": 40,
+        "lower": [
+            17,
+            180,
+            152
+        ],
+        "upper": [
+            23,
+            200,
+            185
+        ],
+        "count": 25
+    },
+    "Rec_SliderSwitch_GryOff_Clr": {
+        "desc": "[识别]滑块识别,灰色,已disable",
+        "recognition": "ColorMatch",
+        "roi": "Clr",
+        "method": 40,
+        "lower": [
+            101,
+            50,
+            30
+        ],
+        "upper": [
+            110,
+            60,
+            46
+        ],
+        "count": 25
     },
     "Anc_SliderSwitch_Gry_TurnOn_Clr": {
         "desc": "【必须用万能识色生成box后锚点引用】，识别灰色，变成黄色",

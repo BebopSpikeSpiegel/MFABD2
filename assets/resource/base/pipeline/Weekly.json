@@ -60,16 +60,14 @@
             "cycle_type": "g_weekly"
         },
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Custom_Fishing_Task",
-            "patches": {
-                "Custom_Fishing_Task": {
-                    "custom_action_param": {
-                        "max_count": 3
-                    },
-                    "next": "[Anchor]Weekly_Fishing"
-                }
+            "target": "Custom_Fishing_Task",
+            "patch": {
+                "custom_action_param": {
+                    "max_count": 3
+                },
+                "next": "[Anchor]Weekly_Fishing"
             }
         },
         "next": [
@@ -542,15 +540,8 @@
         ]
     },
     "Weekly_VisitCabin_Like1Chg": {
-        "roi": [
-            946,
-            597,
-            263,
-            106
-        ],
-        "expected": [
-            "再次探查"
-        ],
+        "recognition": "Or",
+        "any_of": ["Weekly_VisitCabin_Like1"],
         "action": "Click",
         "target": [
             850,

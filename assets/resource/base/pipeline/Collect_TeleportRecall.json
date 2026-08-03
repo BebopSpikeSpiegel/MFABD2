@@ -422,9 +422,9 @@
             "泳池派对场"
         ],
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_IM_Closure",
+            "target": "Collect_IM_Closure",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -432,8 +432,7 @@
                     "card_name": "Event_1_夏日骑士",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "origin": {"action": "DoNothing"}
+            }
         },
         "timeout": 5000,
         "next": [
@@ -462,9 +461,9 @@
             "派对会场角落"
         ],
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_IM_Closure",
+            "target": "Collect_IM_Closure",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -472,8 +471,7 @@
                     "card_name": "Event_1_夏日骑士",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "origin": {"action": "DoNothing"}
+            }
         },
         "timeout": 5000,
         "next": [
@@ -664,18 +662,13 @@
     },
     "Collect_IM_Skill_1_Patch": {
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_Skill_TapReset",
+            "target": "Collect_Skill_TapReset",
             "patch": {
-                "next": ["Collect_IM_GoinNviMap"]
-            },
-            "origin": {
                 "next": [
-                    "Collect_Skill_End",
-                    "Collect_Skill_TapReset"
-                ],
-                "timeout": 10000
+                    "Collect_IM_GoinNviMap"
+                ]
             }
         },
         "next": [
@@ -686,21 +679,14 @@
     },
     "Collect_IM_Skill_End_Patch": {
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_Skill_TapReset",
+            "target": "Collect_Skill_TapReset",
             "patch": {
                 "next": [
                     "Collect_IM_Closure",
                     "[JumpBack]Global_QuickCart_MenuReset"
                 ]
-            },
-            "origin": {
-                "next": [
-                    "Collect_IM_Skill_End_Patch",
-                    "Collect_Skill_TapReset"
-                ],
-                "timeout": 10000
             }
         },
         "next": [
@@ -719,9 +705,9 @@
     "Collect_IM_Reset": {
         "desc": "复位环境",
         "action": "Custom",
-        "custom_action": "RestoreBatch",
+        "custom_action": "RestorePipeline",
         "custom_action_param": {
-            "nodes": [
+            "target": [
                 "Collect_Skill_TapReset",
                 "Collect_IM_Closure"
             ],
@@ -772,9 +758,9 @@
             "海岸沙滩"
         ],
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_IM_Closure",
+            "target": "Collect_IM_Closure",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -782,8 +768,7 @@
                     "card_name": "Event_3_海滨天使",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "origin": {"action": "DoNothing"}
+            }
         },
         "timeout": 5000,
         "next": [
@@ -812,9 +797,9 @@
             "海岸椰林"
         ],
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_IM_Closure",
+            "target": "Collect_IM_Closure",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -822,8 +807,7 @@
                     "card_name": "Event_3_海滨天使",
                     "cycle_type": "g_weekly"
                 }
-            },
-            "origin": {"action": "DoNothing"}
+            }
         },
         "timeout": 5000,
         "next": [

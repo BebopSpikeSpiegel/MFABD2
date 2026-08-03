@@ -1,20 +1,14 @@
 {
     "Test_HomePage_C": {
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Test_HomePage_1",
+            "target": "Test_HomePage_1",
             "patch": {
                 "next": [
                     "Test_HomePage_B"
                 ],
                 "timeout": 30000
-            },
-            "origin": {
-                "next": [
-                    "Check_Weekly_Task"
-                ],
-                "timeout": 10000
             }
         },
         "next": [
@@ -114,9 +108,9 @@
     },
     "Test_HomePage_C_End": {
         "action": "Custom",
-        "custom_action": "RestoreNode",
+        "custom_action": "RestorePipeline",
         "custom_action_param": {
-            "node": "Test_HomePage_1"
+            "target": "Test_HomePage_1"
         },
         "next": [
             "Test_HomePage"
@@ -395,18 +389,7 @@
             "test_runtask"
         ]
     },
-    "test_runtask": {
-        "action": "Custom",
-        "custom_action": "RunTask",
-        "custom_action_param": {
-            "entry": "test_runtask2",
-            "param": {
-                "test_runtask2": {
-                    "target": "test_runtask0"
-                }
-            }
-        }
-    },
+    "test_runtask": {},
     "test_runtask2": {
         "action": "Click"
     },
@@ -414,7 +397,7 @@
         "action": {
             "type": "Custom",
             "param": {
-                "custom_action": "PatchBatch",
+                "custom_action": "PatchPipeline",
                 "custom_action_param": {
                     "patches": {
                         "test_PatchBatch1": {
@@ -455,12 +438,14 @@
     },
     "test_seejson": {
         "action": "Custom",
-        "custom_action": "PatchByRegex",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "pattern": [
-                "Shop*",
-                "Battle$"
-            ],
+            "target": {
+                "regex": [
+                    "Shop*",
+                    "Battle$"
+                ]
+            },
             "patch": {
                 "timeout": 5000
             }
@@ -669,7 +654,7 @@
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {
-            "hsv_ranges": [
+            "flt_red_hsv": [
                 {"lower": [
                         0,
                         140,
@@ -692,24 +677,25 @@
                     ]
                 }
             ],
-            "red_area": [
+            "flt_area": [
                 50,
                 1200
             ],
-            "min_confidence": 0.25,
-            "gap_ratio": 0.35,
+            "sc_min_conf": 0.55,
+            "sc_gap_ratio": 0.35,
             "debug": true
         }
     },
     "CheckPanel_A": {
+        "desc": "Agt_RedDot_Preset_Panoram",
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {"preset": "RedDot_Preset"},
         "roi": [
-            723,
-            616,
-            18,
-            18
+            0,
+            0,
+            1280,
+            720
         ]
     }
 }

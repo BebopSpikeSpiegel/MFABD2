@@ -704,7 +704,7 @@
         "desc": "类Anchor实现,偷取吸取导航节点链,注入修改路进较多,注意复位",
         "max_hit": 1,
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
             "patches": {
                 "Collect_OperationsMain_ToAreaMap": {
@@ -743,69 +743,6 @@
                     "timeout": 5000,
                     "max_hit": 5
                 }
-            },
-            "origins": {
-                "Collect_OperationsMain_ToAreaMap": {
-                    "next": [
-                        "Collect_TargetMap1-1",
-                        "[JumpBack]Collect_MapLift"
-                    ]
-                },
-                "Collect_TargetMap1-2": {
-                    "expected": [
-                        "达普雷镇",
-                        "雷瓦汀基地",
-                        "拉勒凯镇",
-                        "罗戴夫镇",
-                        "科库托斯圣域",
-                        "学校1楼",
-                        "安全"
-                    ],
-                    "next": [
-                        "Collect_TargetMap1_Special_Right",
-                        "Collect_TargetMap2",
-                        "Collect_TargetMap3",
-                        "Collect_TargetMap4",
-                        "[JumpBack]Collect_ClickTelepor_ButNotActive",
-                        "[JumpBack]Collect_TargetMap_Special_ClickTpCircleIco",
-                        "[JumpBack]Collect_ClickTeleporCircleIco",
-                        "[JumpBack]Collect_ClickBackOnSecureMap",
-                        "[JumpBack]Collect_ClickTelepor_Abnormal_Overlap",
-                        "Collect_QuickCart_FastUI",
-                        "[JumpBack]Collect_TeleporNotFind"
-                    ]
-                },
-                "Collect_ClickBackOnSecureMap": {
-                    "next": [
-                        "Collect_Skill_Start",
-                        "Collect_ClickBackOnSecureMap"
-                    ],
-                    "expected": [
-                        "达普雷镇",
-                        "雷瓦汀基地",
-                        "拉勒凯镇",
-                        "罗戴夫镇",
-                        "安全"
-                    ]
-                },
-                "Collect_ClickTelepor_TargetClass_PurpleProcess": {
-                    "next": [
-                        "[Anchor]Arbitrage5",
-                        "Collect_Skill_Start",
-                        "Collect_ClickTelepor_TargetClass_PurpleProcess"
-                    ],
-                    "timeout": 20000,
-                    "max_hit": -1
-                },
-                "Collect_ClickTelepor_TargetClass_White": {
-                    "next": [
-                        "[Anchor]Arbitrage5",
-                        "Collect_Skill_Start",
-                        "Collect_ClickTelepor_TargetClass_White"
-                    ],
-                    "timeout": 20000,
-                    "max_hit": -1
-                }
             }
         },
         "next": [
@@ -839,9 +776,9 @@
     "Setup_Patch_Reset": {
         "max_hit": 1,
         "action": "Custom",
-        "custom_action": "RestoreBatch",
+        "custom_action": "RestorePipeline",
         "custom_action_param": {
-            "nodes": [
+            "target": [
                 "Global_BackToPve_TouchPVE2#Pack",
                 "Collect_OperationsMain_ToAreaMap",
                 "Collect_TargetMap1-2",
@@ -1564,16 +1501,8 @@
         "focus": "背包"
     },
     "Setup_Equip": {
-        "recognition": "OCR",
-        "roi": [
-            217,
-            21,
-            73,
-            38
-        ],
-        "expected": [
-            "装备"
-        ],
+        "recognition": "And",
+        "all_of": ["Equip_EquipUp_CK"],
         "anchor": "Setup_EquipUp",
         "next": [
             "Setup_EquipUp",
@@ -1602,109 +1531,144 @@
         ]
     },
     "Setup_EquipUp_MJ": {
-        "recognition": "ColorMatch",
-        "roi": [
-            1145,
-            378,
-            10,
-            17
-        ],
-        "lower": [
-            162,
-            122,
-            31
-        ],
-        "upper": [
-            182,
-            142,
-            51
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    1145,
+                    378,
+                    10,
+                    17
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Rec_SliderSwitch_YewOn_Clr"
         ],
         "action": "Click",
         "post_delay": 1500
     },
     "Setup_EquipUp_CheckBox_L1": {
-        "recognition": "ColorMatch",
-        "roi": [
-            784,
-            441,
-            16,
-            13
-        ],
-        "lower": [
-            31,
-            34,
-            40
-        ],
-        "upper": [
-            35,
-            37,
-            42
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    784,
+                    441,
+                    16,
+                    13
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
         ],
         "action": "Click",
         "post_delay": 1500,
         "focus": "[Set.N1]"
     },
     "Setup_EquipUp_CheckBox_L2": {
-        "recognition": "ColorMatch",
-        "roi": [
-            990,
-            440,
-            17,
-            16
-        ],
-        "lower": [
-            31,
-            34,
-            40
-        ],
-        "upper": [
-            35,
-            37,
-            42
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    990,
+                    440,
+                    17,
+                    16
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
         ],
         "action": "Click",
         "post_delay": 1500,
         "focus": "[Set.N2]"
     },
     "Setup_EquipUp_CheckBox_L3": {
-        "recognition": "ColorMatch",
-        "roi": [
-            784,
-            481,
-            17,
-            16
-        ],
-        "lower": [
-            31,
-            34,
-            40
-        ],
-        "upper": [
-            35,
-            37,
-            42
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    784,
+                    481,
+                    17,
+                    16
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
         ],
         "action": "Click",
         "post_delay": 1500,
         "focus": "[Set.N3]"
     },
     "Setup_EquipUp_CheckBox_L4": {
-        "recognition": "ColorMatch",
-        "roi": [
-            1006,
-            482,
-            17,
-            16
-        ],
-        "lower": [
-            31,
-            34,
-            40
-        ],
-        "upper": [
-            35,
-            37,
-            42
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    1006,
+                    482,
+                    17,
+                    16
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
         ],
         "action": "Click",
         "post_delay": 1500,
@@ -1745,8 +1709,24 @@
         "anchor": "Setup_EquipDec",
         "next": [
             "Setup_EquipDec",
-            "Equip_EquipDec"
+            "[JumpBack]Equip_EquipDec"
         ]
+    },
+    "Equip_EquipDec": {
+        "desc": "点击一键分解",
+        "recognition": "OCR",
+        "roi": [
+            1017,
+            599,
+            174,
+            121
+        ],
+        "expected": [
+            "键分解"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "focus": "装备分解"
     },
     "Setup_EquipDec": {
         "recognition": "OCR",

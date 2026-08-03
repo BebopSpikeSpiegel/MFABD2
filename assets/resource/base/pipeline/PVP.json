@@ -10,9 +10,6 @@
             "[JumpBack]PVP_PerOperationsMain_Error",
             "[JumpBack]Global_ToSandBox",
             "[JumpBack]Global_BackToQC_Gameplay_Anc"
-        ],
-        "on_error": [
-            "PVP_WorkaroundIn_Start"
         ]
     },
     "PVP_PullUp_QuickCart_PVP": {
@@ -161,16 +158,8 @@
     },
     "PVP_PVPMes2": {
         "desc": "防守分结算，点击画面返回",
-        "recognition": "OCR",
-        "roi": [
-            437,
-            574,
-            528,
-            134
-        ],
-        "expected": [
-            "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
-        ],
+        "recognition": "Or",
+        "any_of": ["Rec_Reward_Ocr"],
         "action": "Click",
         "target": [
             1,
@@ -217,16 +206,8 @@
     },
     "PVP_PerPetTask": {
         "desc": "宠物派遣。初始位置就在pvp图防错",
-        "recognition": "TemplateMatch",
-        "roi": [
-            866,
-            550,
-            28,
-            28
-        ],
-        "template": [
-            "PetTask.png"
-        ],
+        "recognition": "Or",
+        "any_of": ["StartGame_PerPetTask"],
         "action": "Click",
         "post_delay": 5000,
         "focus": "PM.宠物派遣"
@@ -237,7 +218,7 @@
         "roi": [
             918,
             622,
-            87,
+            88,
             71
         ],
         "expected": [
@@ -253,14 +234,14 @@
         ],
         "post_delay": 1000,
         "next": [
-            "PVP_AutoBattle_SucCK",
             "PVP_SeasonSettling",
+            "PVP_AutoBattle_SucCK",
             "PVP_AutoBattle"
         ],
         "focus": "PM.PVP.自动战斗-点击(关键节点)"
     },
     "PVP_AutoBattle_SucCK": {
-        "desc": "点击自动战斗",
+        "desc": "确认点击自动战斗,sub弹出",
         "recognition": "OCR",
         "roi": [
             327,
@@ -271,12 +252,6 @@
         "expected": [
             "鲜血鸡尾酒"
         ],
-        "target_offset": [
-            -5,
-            -45,
-            0,
-            0
-        ],
         "next": [
             "PVP_JustUseFree"
         ],
@@ -286,18 +261,20 @@
         "desc": "镜中之战赛季结算期间,自动战斗菜单被'可在赛季结算完成后确认'弹窗替代,PVP无法进行(奖励顺延至结算),优雅退出避免死循环",
         "recognition": "OCR",
         "roi": [
-            327,
-            165,
-            417,
-            156
+            113,
+            9,
+            856,
+            503
         ],
         "expected": [
-            "结算完成后确认",
             "结算完成后",
-            "赛季结算"
+            "赛季结算",
+            "结算中",
+            "当前并非赛季"
         ],
         "next": [
-            "Global_BackToQC1"
+            "Global_BackToQC1",
+            "[JumpBack]Global_ToSandBox"
         ],
         "focus": "PB.[WRN]镜中之战赛季结算中,跳过PVP"
     },
@@ -433,6 +410,7 @@
         ],
         "count": 500,
         "next": [
+            "PVP_SeasonSettling",
             "PVP_AutoBattleStart"
         ],
         "focus": "PM.MAX确认"
@@ -792,7 +770,7 @@
         "desc": "patch成1倍重开,只执行一次,有很多转向改动,后期维护注意",
         "max_hit": 1,
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
             "patches": {
                 "PVP_Multiplier_Verify": {
@@ -888,254 +866,5 @@
         "action": "Click",
         "post_delay": 5000,
         "focus": "null"
-    },
-    "PVP_WorkaroundIn_Start": {
-        "next": [
-            "PVP_WorkaroundIn_CkAtPass",
-            "PVP_WorkaroundIn_GoInPass",
-            "[JumpBack]Global_ToHomePage"
-        ],
-        "focus": "PWB.[WRN]PVP进入舞台备用方案启用"
-    },
-    "PVP_WorkaroundIn_GoInPass": {
-        "desc": "识别左下抽抽乐-点击通行证",
-        "recognition": "And",
-        "all_of": [
-            "Rec_HomePage_GA_Ocr",
-            "Sub_HomePage_GA_Bright_Clr"
-        ],
-        "action": "Click",
-        "target": [
-            1063,
-            210
-        ],
-        "post_delay": 1000,
-        "next": [
-            "PVP_WorkaroundIn_CkAtPass",
-            "PVP_WorkaroundIn_GoInPass"
-        ],
-        "focus": "PWM.尝试进入通行证页面"
-    },
-    "PVP_WorkaroundIn_CkAtPass": {
-        "desc": "目前默认就是这个通行证,后续需要维护加判定,和异常状态返回",
-        "recognition": "OCR",
-        "roi": [
-            217,
-            14,
-            101,
-            49
-        ],
-        "expected": [
-            "通行证"
-        ],
-        "next": [
-            "PVP_WorkaroundIn_PassIsEnter",
-            "[JumpBack]Pass_WorkaroundIn_PassTab_Change"
-        ]
-    },
-    "Pass_WorkaroundIn_PassTab_Change": {
-        "desc": "选择通行证任务列表中pvp相关",
-        "recognition": "ColorMatch",
-        "lower": [
-            [
-                153,
-                151,
-                146
-            ]
-        ],
-        "upper": [
-            [
-                153,
-                151,
-                146
-            ]
-        ],
-        "count": 100,
-        "action": "Click",
-        "target": [
-            1145,
-            250
-        ],
-        "post_delay": 1000,
-        "focus": "PWB.任务子项页色核检查"
-    },
-    "PVP_WorkaroundIn_PassIsEnter": {
-        "recognition": "OCR",
-        "roi": [
-            957,
-            164,
-            72,
-            35
-        ],
-        "expected": [
-            "高级"
-        ],
-        "next": [
-            "Pass_WorkaroundIn_TextPVP",
-            "Pass_WorkaroundIn_TemplinePVP",
-            "Pass_WorkaroundIn_Swip_pre",
-            "[JumpBack]Pass_WorkaroundIn_PassTabEnter",
-            "[JumpBack]Pass_WorkaroundIn_Swip"
-        ]
-    },
-    "Pass_WorkaroundIn_PassTabEnter": {
-        "desc": "选择通行证任务列表中pvp相关",
-        "recognition": "ColorMatch",
-        "roi": [
-            1119,
-            362,
-            53,
-            219
-        ],
-        "lower": [
-            [
-                153,
-                151,
-                146
-            ]
-        ],
-        "upper": [
-            [
-                153,
-                151,
-                146
-            ]
-        ],
-        "count": 100,
-        "action": "Click",
-        "target": [
-            1145,
-            460
-        ],
-        "post_delay": 1000,
-        "focus": "PWB.任务子项页色核检查"
-    },
-    "Pass_WorkaroundIn_TextPVP": {
-        "recognition": "OCR",
-        "roi": [
-            610,
-            151,
-            492,
-            362
-        ],
-        "expected": "在镜中之战进行战斗",
-        "next": [
-            "Pass_WorkaroundIn_TyrFindButt_Ubanle_Ocr",
-            "Pass_WorkaroundIn_TyrFindButt_Find_Ocr"
-        ],
-        "focus": "PWB.目标条目发现-OCR"
-    },
-    "Pass_WorkaroundIn_TyrFindButt_Ubanle_Ocr": {
-        "recognition": "TemplateMatch",
-        "roi": "Pass_WorkaroundIn_TextPVP",
-        "roi_offset": [
-            0,
-            -45,
-            490,
-            130
-        ],
-        "template": [
-            "PassGotoUnable.png"
-        ],
-        "focus": "PWB.已完成,路径消失-OCR"
-    },
-    "Pass_WorkaroundIn_TyrFindButt_Find_Ocr": {
-        "recognition": "TemplateMatch",
-        "roi": "Pass_WorkaroundIn_TextPVP",
-        "roi_offset": [
-            0,
-            -45,
-            490,
-            130
-        ],
-        "template": [
-            "PassGotoSomeone.png"
-        ],
-        "action": "Click",
-        "next": [
-            "Pass_WorkaroundIn_TyrFindButt_Find_Ocr",
-            "PVP_HUB_Sandplay"
-        ],
-        "focus": "PWB.路径发现,点击-OCR"
-    },
-    "Pass_WorkaroundIn_TemplinePVP": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            610,
-            151,
-            492,
-            362
-        ],
-        "template": [
-            "PassList_PVP.png"
-        ],
-        "next": [
-            "Pass_WorkaroundIn_TyrFindButt_Ubanle_Tmp",
-            "Pass_WorkaroundIn_TyrFindButt_Find_Tmp"
-        ],
-        "focus": "PWB.目标条目发现-Temp"
-    },
-    "Pass_WorkaroundIn_TyrFindButt_Ubanle_Tmp": {
-        "recognition": "TemplateMatch",
-        "roi": "Pass_WorkaroundIn_TemplinePVP",
-        "roi_offset": [
-            0,
-            -45,
-            490,
-            100
-        ],
-        "template": [
-            "PassGotoUnable.png"
-        ],
-        "focus": "PWB.已完成,路径消失-Tmp"
-    },
-    "Pass_WorkaroundIn_TyrFindButt_Find_Tmp": {
-        "recognition": "TemplateMatch",
-        "roi": "Pass_WorkaroundIn_TemplinePVP",
-        "roi_offset": [
-            0,
-            -45,
-            490,
-            100
-        ],
-        "template": [
-            "PassGotoSomeone.png"
-        ],
-        "action": "Click",
-        "next": [
-            "Pass_WorkaroundIn_TyrFindButt_Find_Tmp",
-            "PVP_HUB_Sandplay"
-        ],
-        "focus": "PWB.路径发现,点击-Tmp"
-    },
-    "Pass_WorkaroundIn_Swip_pre": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            610,
-            151,
-            492,
-            362
-        ],
-        "template": [
-            "PassGotoUnable.png"
-        ],
-        "next": [
-            "Global_ToSandBox"
-        ],
-        "focus": "PWB.未完成任务见底,未找到目标"
-    },
-    "Pass_WorkaroundIn_Swip": {
-        "action": "Swipe",
-        "begin": [
-            787,
-            480
-        ],
-        "end": [
-            787,
-            200
-        ],
-        "end_hold": 1000,
-        "duration": 500,
-        "focus": "PWB.滑动后继续寻找"
     }
 }
