@@ -374,6 +374,8 @@ class ArbitrageSellController(CustomAction):
                 cands.append(alt_raw)
 
             delta = None
+            verdict = None                     # 跨候选保留的最强结论 (delta, before, after)
+            gold_before = gold_after = 0       # verdict 成立时必被下方解构覆盖,此处仅兜底占位
             sell_result = False
             for att, cand in enumerate(cands):
                 if att:
@@ -404,10 +406,19 @@ class ArbitrageSellController(CustomAction):
                 gold_after = _read_gold(context)
 
                 delta = (gold_after - gold_before) if (gold_before and gold_after) else None
+                # 结论只升不降(2026-08-03):delta 每轮重写,若首选读到确凿的「没卖出」(delta==0)、
+                # 回退轮金币却读失手(None),原写法让 None 覆盖掉已成立的结论 → 该项漏进 sold_fail,
+                # 汇总还会误报「金币均不可读、无一项通过验证」。故另存最强结论,打印用的金币值一并带走。
+                if delta is not None and (verdict is None or delta > verdict[0]):
+                    verdict = (delta, gold_before, gold_after)
                 if delta is not None and delta > 0:
                     break            # 已售出,不再试后续候选
                 if delta is None:
                     break            # 金币不可读,无法判定,不盲目重试
+
+            delta = None
+            if verdict is not None:
+                delta, gold_before, gold_after = verdict
 
             if delta is not None:
                 if delta > 0:
