@@ -575,5 +575,55 @@
             "settle_delay": 500,
             "threshold": 5.0
         }
+    },
+    "Daily_HomePage": {
+        "desc": "日常枢纽。|[PC覆盖·2026-08-02] 广场段成功后卡带留驻广场→次日开局派遣静默丢领/锻造哑死(当日实录)。在Global_Hub_End前插一发QC1归位腿:六个子枢纽全部消耗后触发,日常无论成败收尾时卡带必回QC1,次日开局天然安全,零手动。base六腿原序照抄。",
+        "next": [
+            "[JumpBack]Daily_HomePage_Hub",
+            "[JumpBack]Daily_Union_Hub",
+            "[JumpBack]Daily_VisitCabin_Hub",
+            "[JumpBack]Daily_Busin_Hub",
+            "[JumpBack]Daily_Intimacy_HUB",
+            "[JumpBack]Daily_Square_Hub",
+            "[JumpBack]Daily_End_CassetteHome_PC",
+            "Global_Hub_End"
+        ]
+    },
+    "Daily_End_CassetteHome_PC": {
+        "desc": "[PC v6] 日常收尾条件归位:六枢纽耗尽后仍留驻广场才复位,保次日开局安全;结构同上反相出口终止。",
+        "max_hit": 1,
+        "recognition": "OCR",
+        "roi": [
+            1035,
+            80,
+            220,
+            60
+        ],
+        "expected": [
+            "创建队伍",
+            "創建隊伍"
+        ],
+        "timeout": 3000,
+        "next": [
+            "Daily_End_CassetteHome_Done_PC",
+            "[JumpBack]Global_BackToQC1"
+        ],
+        "focus": "DM.PC.收尾检测到留驻广场,归位QC1"
+    },
+    "Daily_End_CassetteHome_Done_PC": {
+        "desc": "[PC v6] 收尾归位反相出口:接Global_Hub_End正常收队。",
+        "recognition": "OCR",
+        "roi": [
+            1035,
+            80,
+            220,
+            60
+        ],
+        "expected": [
+            "创建队伍",
+            "創建隊伍"
+        ],
+        "inverse": true,
+        "focus": "DM.PC.收尾归位完成"
     }
 }
