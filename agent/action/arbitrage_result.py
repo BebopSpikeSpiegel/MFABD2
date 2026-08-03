@@ -370,7 +370,12 @@ class ArbitrageSellController(CustomAction):
             # 另一串一次(实录:双1.00分歧,首选"当前行17"进错柜台,真身在"每月行12")。
             cands = [cart_raw]
             alt_raw = target.get("cartridge_alt", "")
-            if target.get("cart_conflict") and alt_raw and alt_raw != cart_raw and _tail_num(alt_raw):
+            # 去重比「匹配式」而非 OCR 原文(2026-08-03):原文差一个 帶/带 会被 _cart_expected 折成
+            # 同一条正则(见上方 _CART_FUZZ;同趟 OCR 繁简混读是实录常态),按原文比会把一个生成完全
+            # 相同 override 的候选塞进来,白跑一整轮 UI 往返 + 两次金币 OCR 且不可能有不同结果。
+            # 只有匹配式真不同(=真会去到别的柜台)才值得回退重试。
+            if (target.get("cart_conflict") and alt_raw and _tail_num(alt_raw)
+                    and _cart_expected(alt_raw) != _cart_expected(cart_raw)):
                 cands.append(alt_raw)
 
             delta = None
@@ -546,7 +551,11 @@ class ArbitrageSellController(CustomAction):
                         best_str, best_sc = lo_str, lo_sc
                     elif up_has == lo_has and lo_sc > up_sc:  # 两组同态(都带号/都缺号)→ 比组分
                         best_str, best_sc = lo_str, lo_sc
-                    item_data["cart_conflict"] = (up_str != lo_str)
+                    # 分歧判定同样走匹配式(2026-08-03):繁简互吃的两串生成同一条正则、指向同一
+                    # 柜台,不算分歧——否则会对无害的 帶/带 差异打误导性告警并触发回退空跑。
+                    item_data["cart_conflict"] = (
+                        _cart_expected(up_str) != _cart_expected(lo_str)
+                    )
                     if item_data["cart_conflict"]:
                         # 分歧回退候选(2026-08-03):两子行各自笃定却互斥时(实录组分双1.00,当前行误读
                         # 17/每月行12,首选进错柜台白跑),把未被选中的一串也带走,执行层金币验证失败后
