@@ -172,22 +172,35 @@ jobs:
         run: |
           MSG="$TITLE"$'\n'"$CONTENT"
           # 直发 NapCat OneBot 群消息：POST /send_group_msg，QMSG_GROUPS 可为逗号分隔的多个群号
+          # 本 step 跑在 bash -e 下，裸命令返回非零会立刻掐断脚本，
+          # 故 curl / jq 一律显式接管退出码，保证失败时诊断信息能打出来
+          if [ -z "$NOTIFY_URL" ] || [ -z "$QMSG_GROUPS" ]; then
+            echo "::error::NOTIFY_URL 或 QMSG_GROUPS 未配置"
+            exit 1
+          fi
           FAIL=0
-          IFS=',' read -ra GROUPS <<< "$QMSG_GROUPS"
-          for GID in "${GROUPS[@]}"; do
-            GID="$(echo "$GID" | xargs)"
-            [ -z "$GID" ] && continue
-            RESP=$(curl -sS --max-time 60 -X POST "${NOTIFY_URL}/send_group_msg" \
+          # 不加引号的命令替换借词分割顺带剥掉群号两侧空白；群号为纯数字，无 glob 风险
+          for GID in $(echo "$QMSG_GROUPS" | tr ',' ' '); do
+            BODY=$(jq -n --arg gid "$GID" --arg msg "$MSG" '{group_id: ($gid | tonumber), message: $msg}') || {
+              echo "::error::群号非法: $GID"
+              FAIL=1
+              continue
+            }
+            RC=0
+            RESP=$(curl -sS --max-time 60 -w '\n%{http_code}' -X POST "${NOTIFY_URL}/send_group_msg" \
               -H "Authorization: Bearer ${NOTIFY_TOKEN}" \
               -H "Content-Type: application/json" \
-              -d "$(jq -n --arg gid "$GID" --arg msg "$MSG" '{group_id: ($gid | tonumber), message: $msg}')")
-            echo "NapCat 响应($GID): $RESP"
-            echo "$RESP" | jq -e '.status == "ok" and .retcode == 0' >/dev/null || {
+              -d "$BODY") || RC=$?
+            CODE=$(printf '%s' "$RESP" | tail -n1)
+            JSON=$(printf '%s' "$RESP" | sed '$d')
+            echo "群 $GID → curl_rc=$RC http=$CODE 响应: $JSON"
+            if [ "$RC" -ne 0 ] || [ "$CODE" != "200" ] \
+               || ! printf '%s' "$JSON" | jq -e '.status == "ok" and .retcode == 0' >/dev/null 2>&1; then
               echo "::error::推送到群 $GID 失败"
               FAIL=1
-            }
+            fi
           done
-          [ "$FAIL" -eq 0 ] || exit 1
+          if [ "$FAIL" -ne 0 ]; then exit 1; fi
       
       - name: Skip Notification Log
         if: steps.prepare_message.outputs.skip_notification == 'true'
