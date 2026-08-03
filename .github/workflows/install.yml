@@ -964,7 +964,9 @@ jobs:
       - name: Send Notification
         env:
           # 经 env 注入，避免用户可控内容直接拼进命令行
-          QMSG_KEY: ${{ secrets.QMSG_KEY }}
+          # 自建中继（NapCat OneBot HTTP，经 Cloudflare Tunnel 暴露），已不再依赖 qmsg.zendee.cn
+          NOTIFY_URL: ${{ secrets.NOTIFY_URL }}
+          NOTIFY_TOKEN: ${{ secrets.NOTIFY_TOKEN }}
           QMSG_GROUPS: ${{ needs.meta.outputs.version_type == 'ci' && secrets.QMSG_GROUPS_DEV || needs.meta.outputs.version_type != 'ci' && secrets.QMSG_GROUPS_PUB || '' }}
           MSG: |
             🏗️ [${{ github.repository }}] 构建完成
@@ -979,12 +981,20 @@ jobs:
             🔗 查看提交: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
             🔨 构建下载: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          # 直发 Qmsg 群消息：POST /group/<KEY>
-          RESP=$(curl -sS --max-time 60 -X POST "https://qmsg.zendee.cn/group/${QMSG_KEY}" \
-            --data-urlencode "msg=${MSG}" \
-            --data-urlencode "qq=${QMSG_GROUPS}")
-          echo "Qmsg 响应: $RESP"
-          echo "$RESP" | jq -e '.success == true' >/dev/null || {
-            echo "::error::Qmsg 推送失败"
-            exit 1
-          }
+          # 直发 NapCat OneBot 群消息：POST /send_group_msg，QMSG_GROUPS 可为逗号分隔的多个群号
+          FAIL=0
+          IFS=',' read -ra GROUPS <<< "$QMSG_GROUPS"
+          for GID in "${GROUPS[@]}"; do
+            GID="$(echo "$GID" | xargs)"
+            [ -z "$GID" ] && continue
+            RESP=$(curl -sS --max-time 60 -X POST "${NOTIFY_URL}/send_group_msg" \
+              -H "Authorization: Bearer ${NOTIFY_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n --arg gid "$GID" --arg msg "$MSG" '{group_id: ($gid | tonumber), message: $msg}')")
+            echo "NapCat 响应($GID): $RESP"
+            echo "$RESP" | jq -e '.status == "ok" and .retcode == 0' >/dev/null || {
+              echo "::error::推送到群 $GID 失败"
+              FAIL=1
+            }
+          done
+          [ "$FAIL" -eq 0 ] || exit 1
