@@ -383,6 +383,17 @@ class ArbitrageSellController(CustomAction):
             gold_before = gold_after = 0       # verdict 成立时必被下方解构覆盖,此处仅兜底占位
             sell_result = False
             for att, cand in enumerate(cands):
+                # 停止指令只打断框架侧任务,管不到 Python 控制流(post_stop 清队列+断当前任务,
+                # stopping 仅表示"已发指令未结束")。不在循环头拦一道,回退轮仍会先跑一次
+                # _read_gold——截图+识别走控制器/资源,不受任务队列清空约束——再提一次注定被拒的
+                # run_task。本文件的翻页循环、外层目标循环与 shop_buy_fav_controller 的重试/动作
+                # 循环都是在循环头检查,此处补齐同一约定。
+                if context.tasker.stopping:
+                    break
+                # 上轮 sell_result 为假 = 链条自身中断/失败(压根没走到选柜台),换卡带串解决不了,
+                # 不空跑。回退只对"链条跑完了但金币证明没卖出"这一种情形有意义。
+                if att and not sell_result:
+                    break
                 if att:
                     mfaalog.warning(
                         f"[Arbitrage]   🔁 上下分歧回退：首选 [{cart_raw}] 未售出，改试 [{cand}]"
