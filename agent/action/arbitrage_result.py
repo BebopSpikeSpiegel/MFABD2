@@ -308,7 +308,8 @@ class ArbitrageSellController(CustomAction):
                             "name": name,
                             "cartridge_raw": cart,
                             "cart_score": item.get("cart_score", 0.0),
-                            "cart_conflict": item.get("cart_conflict", False)
+                            "cart_conflict": item.get("cart_conflict", False),
+                            "cartridge_alt": item.get("alt_cartridge", "")
                         })
 
             if has_non_max:
@@ -365,31 +366,50 @@ class ArbitrageSellController(CustomAction):
                     f"若进错柜台将当作未卖出处理"
                 )
 
-            # 核心：构造多节点参数替换字典
-            # 卡带名走容错正则(OCR 把'剧'读成'则'等,前缀模糊卡号精确)
-            cart_pat = _cart_expected(cart_raw)
-            if cart_pat != cart_raw:
-                mfaalog.info(f"[Arbitrage]   ↳ 卡带匹配用容错式: {cart_pat}")
-            override_cfg = {
-                "Arbitrage_Sell_PackShopSwich": {
-                    "expected": cart_pat
-                },
-                "Arbitrage_Sell_Item_ListTraverse": {
-                    "expected": item_name
+            # 候选序列(2026-08-03):首选=判读胜者;上下分歧且另一串带号时,金币验证失败后改试
+            # 另一串一次(实录:双1.00分歧,首选"当前行17"进错柜台,真身在"每月行12")。
+            cands = [cart_raw]
+            alt_raw = target.get("cartridge_alt", "")
+            if target.get("cart_conflict") and alt_raw and alt_raw != cart_raw and _tail_num(alt_raw):
+                cands.append(alt_raw)
+
+            delta = None
+            sell_result = False
+            for att, cand in enumerate(cands):
+                if att:
+                    mfaalog.warning(
+                        f"[Arbitrage]   🔁 上下分歧回退：首选 [{cart_raw}] 未售出，改试 [{cand}]"
+                    )
+                # 核心：构造多节点参数替换字典
+                # 卡带名走容错正则(OCR 把'剧'读成'则'等,前缀模糊卡号精确)
+                cart_pat = _cart_expected(cand)
+                if cart_pat != cand:
+                    mfaalog.info(f"[Arbitrage]   ↳ 卡带匹配用容错式: {cart_pat}")
+                override_cfg = {
+                    "Arbitrage_Sell_PackShopSwich": {
+                        "expected": cart_pat
+                    },
+                    "Arbitrage_Sell_Item_ListTraverse": {
+                        "expected": item_name
+                    }
                 }
-            }
-            
-            # 卖出验证:派发前后各读一次金币
-            gold_before = _read_gold(context)
 
-            # 拉起 JSON 端的出售链，并阻塞等待它执行完毕
-            # 起点设为进入出售菜单的识别节点
-            sell_result = context.run_task("Arbitrage_Sell_HUB", pipeline_override=override_cfg)
+                # 卖出验证:派发前后各读一次金币
+                gold_before = _read_gold(context)
 
-            gold_after = _read_gold(context)
+                # 拉起 JSON 端的出售链，并阻塞等待它执行完毕
+                # 起点设为进入出售菜单的识别节点
+                sell_result = context.run_task("Arbitrage_Sell_HUB", pipeline_override=override_cfg)
 
-            if gold_before and gold_after:
-                delta = gold_after - gold_before
+                gold_after = _read_gold(context)
+
+                delta = (gold_after - gold_before) if (gold_before and gold_after) else None
+                if delta is not None and delta > 0:
+                    break            # 已售出,不再试后续候选
+                if delta is None:
+                    break            # 金币不可读,无法判定,不盲目重试
+
+            if delta is not None:
                 if delta > 0:
                     sold_ok.append(item_name)
                     mfaalog.info(
@@ -480,7 +500,7 @@ class ArbitrageSellController(CustomAction):
         results = []
         for i, row in enumerate(anchors):
             item_data = {"name": row["name"], "is_max_price": False, "target_cartridge": "",
-                         "cart_score": 0.0, "cart_conflict": False}
+                         "cart_score": 0.0, "cart_conflict": False, "alt_cartridge": ""}
             ny = row["cy"]                                    # 上子行(当前)y = 名锚 y
             next_ny = anchors[i + 1]["cy"] if i + 1 < len(anchors) else ny + gap_bound
 
@@ -516,6 +536,11 @@ class ArbitrageSellController(CustomAction):
                     elif up_has == lo_has and lo_sc > up_sc:  # 两组同态(都带号/都缺号)→ 比组分
                         best_str, best_sc = lo_str, lo_sc
                     item_data["cart_conflict"] = (up_str != lo_str)
+                    if item_data["cart_conflict"]:
+                        # 分歧回退候选(2026-08-03):两子行各自笃定却互斥时(实录组分双1.00,当前行误读
+                        # 17/每月行12,首选进错柜台白跑),把未被选中的一串也带走,执行层金币验证失败后
+                        # 可改试一次——把"抛硬币"变成"两个都试",真相仍由金币验证承担。
+                        item_data["alt_cartridge"] = lo_str if best_str == up_str else up_str
             item_data["target_cartridge"] = best_str
             item_data["cart_score"] = best_sc
 
