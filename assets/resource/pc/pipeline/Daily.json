@@ -585,7 +585,7 @@
             "[JumpBack]Daily_Busin_Hub",
             "[JumpBack]Daily_Intimacy_HUB",
             "[JumpBack]Daily_Square_Hub",
-            "Daily_End_CassetteHome_PC",
+            "[JumpBack]Daily_End_CassetteHome_PC",
             "Global_Hub_End"
         ]
     },
@@ -624,9 +624,6 @@
             "創建隊伍"
         ],
         "inverse": true,
-        "next": [
-            "Global_Hub_End"
-        ],
         "focus": "DM.PC.收尾归位完成"
     }
 }
