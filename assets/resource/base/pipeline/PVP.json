@@ -197,9 +197,11 @@
             "PVPstage.png"
         ],
         "action": "Click",
-        "target": [
-            529,
-            414
+        "target_offset": [
+            0,
+            -30,
+            0,
+            0
         ],
         "post_delay": 3000,
         "focus": "PM.PVP.点击舞台物件"
@@ -241,7 +243,7 @@
         "focus": "PM.PVP.自动战斗-点击(关键节点)"
     },
     "PVP_AutoBattle_SucCK": {
-        "desc": "点击自动战斗",
+        "desc": "确认点击自动战斗,sub弹出",
         "recognition": "OCR",
         "roi": [
             327,
@@ -770,7 +772,7 @@
         "desc": "patch成1倍重开,只执行一次,有很多转向改动,后期维护注意",
         "max_hit": 1,
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
             "patches": {
                 "PVP_Multiplier_Verify": {
@@ -821,6 +823,7 @@
         "focus": "PM.开始离开PVP卡带"
     },
     "PVP_PerOperationsMain_Error": {
+        "desc": "异常弹窗,没有赛季奖励等",
         "recognition": "OCR",
         "roi": [
             480,

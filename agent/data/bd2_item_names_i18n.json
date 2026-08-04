@@ -1,0 +1,4376 @@
+[
+ {
+  "itemId": "000001A560EE19E0_260426",
+  "cn": "「奇迹☆闪耀」公章",
+  "tw": "奇蹟☆閃耀公司印章",
+  "en": "Miracle☆Twinkle Corporate Seal",
+  "ja": "ミラクル☆トゥインクル印鑑",
+  "ko": "미라클☆트윙클 인감 도장",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001A7871C75E0_260426",
+  "cn": "黎维塔的幸运符",
+  "tw": "黎維塔的幸運符",
+  "en": "Liberta's Lucky Charm",
+  "ja": "リベルタの幸運のお守り",
+  "ko": "리베르타의 행운 부적",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001A7871C99A0_260426",
+  "cn": "帕莱特的签名纸",
+  "tw": "帕萊特的簽名紙",
+  "en": "Palette's Autograph",
+  "ja": "パレットのサイン色紙",
+  "ko": "팔레트의 사인지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001A7AFF8EDE0_260426",
+  "cn": "开业典礼纪念照",
+  "tw": "開業紀念照",
+  "en": "Grand Opening Photo",
+  "ja": "開業式記念写真",
+  "ko": "개업식 기념 사진",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001B400EBF1A0_C251216_4",
+  "cn": "杰尼斯的签名",
+  "tw": "傑尼斯的簽名",
+  "en": "Zenith's Autograph",
+  "ja": "ジェニスのサイン",
+  "ko": "제니스의 사인",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001B4523AADA0_C251216_2",
+  "cn": "冰之项链",
+  "tw": "冰之項鍊",
+  "en": "Ice Necklace",
+  "ja": "氷のネックレス",
+  "ko": "얼음 목걸이",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001B45C171C60_C251216_5",
+  "cn": "干巴巴又噎人的面包饼干",
+  "tw": "乾巴巴的麵包餅乾",
+  "en": "Dry Biscuit",
+  "ja": "バサバサの菓子パン",
+  "ko": "퍽퍽한 빵과자",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001B4669D5520_C251216_1",
+  "cn": "游行队旗帜",
+  "tw": "示威隊旗幟",
+  "en": "Protest Banner",
+  "ja": "デモ隊の旗",
+  "ko": "시위대 깃발",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001B467F1AEE0_C251216_6",
+  "cn": "薄荷叶",
+  "tw": "薄荷葉",
+  "en": "Peppermint Leaf",
+  "ja": "ミントの葉",
+  "ko": "박하 잎",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001B46835BDE0_C251216_3",
+  "cn": "冰之水晶碎片",
+  "tw": "冰之水晶碎片",
+  "en": "Ice Crystal Piece",
+  "ja": "氷の水晶の欠片",
+  "ko": "얼음 수정 조각",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001D1375951A0_260426",
+  "cn": "凯那尔会计组的名片",
+  "tw": "凱那爾會計部名片",
+  "en": "Ghenar Industry Business Card",
+  "ja": "ゲナール経理チームの名刺",
+  "ko": "게나르 회계팀 명함",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001D1DFC44660_260426",
+  "cn": "蜕皮怪兽的外壳",
+  "tw": "蛻皮怪獸的外殼",
+  "en": "Molter Monster's Husk",
+  "ja": "脱皮怪獣の皮",
+  "ko": "탈피 괴수의 껍질",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DC5E9A8638_250717_C5",
+  "cn": "破旧的布娃娃",
+  "tw": "破舊的布偶",
+  "en": "Tattered Rag Doll",
+  "ja": "ボロボロのぬいぐるみ",
+  "ko": "해어진 헝겊 인형",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DC72D2C978_250717_C4",
+  "cn": "纯白羽毛",
+  "tw": "純白的羽毛",
+  "en": "Pure White Feather",
+  "ja": "純白の羽",
+  "ko": "순백의 깃털",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DC97AE5A78_250717_C6",
+  "cn": "使徒候选人训练日志",
+  "tw": "使者候補生訓練日誌",
+  "en": "Apostle Candidate Training Journal",
+  "ja": "使徒候補生訓練日誌",
+  "ko": "사도 후보생 훈련 일지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DCBEFEF938_250717_C1",
+  "cn": "卡尔利恩的雕像",
+  "tw": "卡爾利恩的雕像",
+  "en": "Kalien's Statue",
+  "ja": "カリエンの像",
+  "ko": "칼리엔의 조각상",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DCC0421078_0327_3",
+  "cn": "贝伦王国国玺",
+  "tw": "貝倫王國國璽",
+  "en": "Beirun Kingdom Royal Seal",
+  "ja": "ベイルーン王国の国璽",
+  "ko": "베이룬 왕국 국새",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DD00FC0878_250717_C3",
+  "cn": "奥利维耶的吊坠",
+  "tw": "奧利維爾的墜飾",
+  "en": "Olivier's Pendant",
+  "ja": "オリビエのペンダント",
+  "ko": "올리비에의 펜던트",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DD1124ACB8_0327_7",
+  "cn": "展示的锚",
+  "tw": "展示中的錨",
+  "en": "Anchor on Display",
+  "ja": "展示された錨",
+  "ko": "전시된 닻",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DD2CC65A38_250717_C2",
+  "cn": "破碎的记忆",
+  "tw": "破碎的記憶",
+  "en": "Torn Memory",
+  "ja": "破れた記憶",
+  "ko": "찢어진 기억",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DD468A1DF8_0327_4",
+  "cn": "尼福兰特王国国玺",
+  "tw": "尼福蘭特王國國璽",
+  "en": "Nifflant Kingdom Royal Seal",
+  "ja": "ニプラント王国の国璽",
+  "ko": "니플란트 왕국 국새",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DDBF7DB278_0327_1",
+  "cn": "罗坦王国国玺",
+  "tw": "羅坦王國國璽",
+  "en": "Rotein Kingdom Royal Seal",
+  "ja": "ロテインの国璽",
+  "ko": "로테인 왕국 국새",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DDBF7DC778_0327_2",
+  "cn": "克蕾西亚的鞋子",
+  "tw": "克蕾西亞的皮鞋",
+  "en": "Glacia's Shoe",
+  "ja": "グレイシアの靴",
+  "ko": "글레이시아의 구두",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DDBF7DCCB8_0327_6",
+  "cn": "挂在墙上的舵盘",
+  "tw": "掛在牆上的舵輪",
+  "en": "Ship Wheel on Wall",
+  "ja": "壁にかかった舵輪",
+  "ko": "벽에 걸린 타륜",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001DDD27F3DF8_0327_5",
+  "cn": "三国同盟协定书",
+  "tw": "三國同盟協定書",
+  "en": "Triple Alliance Agreement",
+  "ja": "三ヶ国同盟協定書",
+  "ko": "삼국 동맹 협정서",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001E569D5E6A0_260314_2",
+  "cn": "腐蚀之剑",
+  "tw": "鏽蝕的劍",
+  "en": "Corroded Sword",
+  "ja": "腐食した剣",
+  "ko": "부식된 검",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001E569D5FCA0_260314_3",
+  "cn": "白色颜料",
+  "tw": "白色顏料",
+  "en": "White Paint",
+  "ja": "白い絵の具",
+  "ko": "하얀 물감",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001E574056020_260314_5",
+  "cn": "可疑的植物",
+  "tw": "可疑的植物",
+  "en": "Strange Plant",
+  "ja": "怪しい植物",
+  "ko": "수상한 식물",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001E57405DEA0_260314_1",
+  "cn": "破烂的衣服碎片",
+  "tw": "破舊衣服碎片",
+  "en": "Tattered Piece of Cloth",
+  "ja": "ボロボロの服の切れ端",
+  "ko": "누더기 옷 조각",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001E5F748CE20_260314_4",
+  "cn": "陈旧的书籍",
+  "tw": "老舊的書",
+  "en": "Old Book",
+  "ja": "古い本",
+  "ko": "낡은 책",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001EEF1DCBAB8_250619_c3",
+  "cn": "埃保尼的草帽",
+  "tw": "埃保尼的草帽",
+  "en": "Ebony's Straw Hat",
+  "ja": "エボニーの麦わら帽子",
+  "ko": "에보니의 밀짚모자",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001EF5AB5ADF8_250619_c5",
+  "cn": "被丢弃的泳衣",
+  "tw": "被丟棄的泳衣",
+  "en": "Discarded Swimsuit",
+  "ja": "捨てられた水着",
+  "ko": "버려진 수영복",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001EF5AB7FF38_250619_c6",
+  "cn": "沙滩浴巾",
+  "tw": "海灘巾",
+  "en": "Beach Towel",
+  "ja": "ビーチタオル",
+  "ko": "비치타올",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001EF77310578_250619_c1",
+  "cn": "水上乐园VIP出入证",
+  "tw": "水上樂園VIP通行證",
+  "en": "Water Park VIP Pass",
+  "ja": "ウォーターパークVIP入場パス",
+  "ko": "워터파크 VIP 출입증",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001EF7783F4F8_250619_c4",
+  "cn": "回忆的纪念照",
+  "tw": "回憶紀念照",
+  "en": "Commemorative Photo",
+  "ja": "追憶の記念写真",
+  "ko": "추억의 기념사진",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001EF8C5A77F8_250619_c2",
+  "cn": "泡发的杯面",
+  "tw": "泡爛的杯麵",
+  "en": "Overcooked Cup of Noodles",
+  "ja": "伸びたヌードル",
+  "ko": "불은 컵라면",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001F2C8EC9120_260607_5",
+  "cn": "红色救生圈",
+  "tw": "紅色救生圈",
+  "en": "Red Life Ring",
+  "ja": "赤い救命浮輪",
+  "ko": "빨간색 구명 튜브",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000001F2C8EC9C20_260607_6",
+  "cn": "黄色气球",
+  "tw": "黃色氣球",
+  "en": "Yellow Balloon",
+  "ja": "黄色い風船",
+  "ko": "노란색 풍선",
+  "category": "Collection"
+ },
+ {
+  "itemId": "00000201B2611E60_260704_c5",
+  "cn": "贝拉肖像画",
+  "tw": "貝拉的肖像畫",
+  "en": "Veila's Portrait",
+  "ja": "ヴェイラの肖像画",
+  "ko": "베일라의 초상화",
+  "category": "Collection"
+ },
+ {
+  "itemId": "00000201B26131A0_260704_c4",
+  "cn": "希拉的秘密食谱",
+  "tw": "希拉的祕密食譜",
+  "en": "Sheila's Secret Recipe",
+  "ja": "シーラの秘密のレシピ",
+  "ko": "실라의 비밀 레시피",
+  "category": "Collection"
+ },
+ {
+  "itemId": "00000201B2640D20_260704_c1",
+  "cn": "切块蛋糕",
+  "tw": "一塊蛋糕",
+  "en": "Slice of Cake",
+  "ja": "ケーキの一切れ",
+  "ko": "케이크 조각",
+  "category": "Collection"
+ },
+ {
+  "itemId": "00000201B2640FE0_260704_c2",
+  "cn": "矿物碎片",
+  "tw": "礦石碎片",
+  "en": "Stone Fragment",
+  "ja": "鉱物の破片",
+  "ko": "광물 조각",
+  "category": "Collection"
+ },
+ {
+  "itemId": "0000020209B4AC60_260704_c3",
+  "cn": "黑色面纱",
+  "tw": "黑色面紗",
+  "en": "Black Veil",
+  "ja": "黒いヴェール",
+  "ko": "검은 베일",
+  "category": "Collection"
+ },
+ {
+  "itemId": "0000021411FB6420_260607_2",
+  "cn": "晕车贴",
+  "tw": "暈車貼片",
+  "en": "Motion Sickness Patch",
+  "ja": "貼る酔い止め",
+  "ko": "붙이는 멀미약",
+  "category": "Collection"
+ },
+ {
+  "itemId": "0000021411FB6F20_260607_1",
+  "cn": "海洋赌场筹码",
+  "tw": "海洋賭場籌碼",
+  "en": "Ocean Casino Chip",
+  "ja": "オーシャンカジノチップ",
+  "ko": "오션 카지노 칩",
+  "category": "Collection"
+ },
+ {
+  "itemId": "0000021411FBBC20_260607_3",
+  "cn": "游轮客房房卡",
+  "tw": "遊輪客房房卡",
+  "en": "Guest Cabin Key",
+  "ja": "クルーズ客室の鍵",
+  "ko": "크루즈 객실 열쇠",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000002141875EF20_260607_4",
+  "cn": "马莫尼勒的红丝巾",
+  "tw": "馬莫尼勒的紅絲巾",
+  "en": "Mamonir's Crimson Scarf",
+  "ja": "マモニルの赤いスカーフ",
+  "ko": "마모니르의 붉은 스카프",
+  "category": "Collection"
+ },
+ {
+  "itemId": "0000022371B1B1E0_2601162",
+  "cn": "睡眠符咒",
+  "tw": "睡眠符咒",
+  "en": "Talisman of Slumber",
+  "ja": "微睡みの護符",
+  "ko": "수면 부적",
+  "category": "Collection"
+ },
+ {
+  "itemId": "0000022371B1EE60_2601161",
+  "cn": "巫女神牌",
+  "tw": "巫女神符",
+  "en": "The Divine Token of the Shrine Maiden",
+  "ja": "巫女の護符",
+  "ko": "무녀의 신패",
+  "category": "Collection"
+ },
+ {
+  "itemId": "0000022371B20720_2601164",
+  "cn": "燃尽的灯火",
+  "tw": "燃盡的燈籠",
+  "en": "Burnt Lantern",
+  "ja": "燃え尽きた提灯",
+  "ko": "타버린 등불",
+  "category": "Collection"
+ },
+ {
+  "itemId": "00000223723E1EA0_2601166",
+  "cn": "温泉浴场挂画",
+  "tw": "溫泉館掛軸",
+  "en": "Bathhouse Scroll",
+  "ja": "温泉宿の掛け軸",
+  "ko": "온천장 족자",
+  "category": "Collection"
+ },
+ {
+  "itemId": "0000022377B2EC60_2601165",
+  "cn": "洁净的枕头",
+  "tw": "乾淨的枕頭",
+  "en": "Clean Pillow",
+  "ja": "綺麗な枕",
+  "ko": "깨끗한 베개",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000002237C63D9A0_2601163",
+  "cn": "香烛",
+  "tw": "香氛蠟燭",
+  "en": "Candle",
+  "ja": "蝋燭",
+  "ko": "향초",
+  "category": "Collection"
+ },
+ {
+  "itemId": "0000024176AAF0B8_0424_1",
+  "cn": "伊柯利普斯的信标",
+  "tw": "伊柯利普斯的信標",
+  "en": "Eclipse's Beacon",
+  "ja": "エクリプスのビーコン",
+  "ko": "이클립스의 비콘",
+  "category": "Collection"
+ },
+ {
+  "itemId": "0000024176ACB6F8_0424_6",
+  "cn": "完好车轮",
+  "tw": "完整的手推車輪",
+  "en": "Intact Cart Wheel",
+  "ja": "無傷の車輪",
+  "ko": "온전한 수레바퀴",
+  "category": "Collection"
+ },
+ {
+  "itemId": "0000024176ADF478_0424_5",
+  "cn": "破损作战地图",
+  "tw": "破碎的作戰地圖",
+  "en": "Torn Operations Map",
+  "ja": "破れた作戦地図",
+  "ko": "찢어진 작전 지도",
+  "category": "Collection"
+ },
+ {
+  "itemId": "00000241D298D078_0424_2",
+  "cn": "封印之剑",
+  "tw": "封印之劍",
+  "en": "Sword of Sealing",
+  "ja": "封印の剣",
+  "ko": "봉인의 검",
+  "category": "Collection"
+ },
+ {
+  "itemId": "00000242A29AF9B8_0424_4",
+  "cn": "古代魔物阿德林",
+  "tw": "古代魔物阿德林",
+  "en": "Ancient Fiend's Adeline",
+  "ja": "古代魔獣のアデリーヌ",
+  "ko": "용의 아델린",
+  "category": "Collection"
+ },
+ {
+  "itemId": "00000242A29B2BB8_0424_3",
+  "cn": "卡尔利恩的面具",
+  "tw": "卡爾利恩的面具",
+  "en": "Kalien's Mask",
+  "ja": "カリエンの仮面",
+  "ko": "칼리엔의 가면",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000002936F248CF8_251120_C6",
+  "cn": "老旧的笔记本",
+  "tw": "陳舊的筆記本",
+  "en": "Old Memo",
+  "ja": "古いメモ帳",
+  "ko": "낡은 메모장",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000002936F6EAFB8_251120_C5",
+  "cn": "污渍斑斑的布片",
+  "tw": "沾滿污漬的布",
+  "en": "Tattered Cloth",
+  "ja": "染みが付いた布切れ",
+  "ko": "얼룩진 헝겊",
+  "category": "Collection"
+ },
+ {
+  "itemId": "000002936F70AA38_251120_C4",
+  "cn": "沾染鲜血的黑羽毛",
+  "tw": "染血的黑羽毛",
+  "en": "Crimson Black Feather",
+  "ja": "鮮血の黒き羽根",
+  "ko": "선혈의 검은 깃털",
+  "category": "Collection"
+ },
+ {
+  "itemId": "00000293A1AB40F8_251120_C2",
+  "cn": "格雷的口信",
+  "tw": "格雷的傳言",
+  "en": "Gray's Message",
+  "ja": "グレイの伝言",
+  "ko": "그레이의 전언",
+  "category": "Collection"
+ },
+ {
+  "itemId": "00000293E1FE1BF8_251120_C1",
+  "cn": "纯白之剑",
+  "tw": "純白之劍",
+  "en": "Pure White Sword",
+  "ja": "純白の剣",
+  "ko": "순백색 검",
+  "category": "Collection"
+ },
+ {
+  "itemId": "00000293EC494E38_251120_C3",
+  "cn": "破损大门的碎片",
+  "tw": "被破壞的門碎片",
+  "en": "Shattered Door Fragment",
+  "ja": "破壊された扉の破片",
+  "ko": "파괴된 문의 파편",
+  "category": "Collection"
+ },
+ {
+  "itemId": "currency_actionpoint_l_19",
+  "cn": "米饭",
+  "tw": "白飯",
+  "en": "Cooked rice",
+  "ja": "ごはん",
+  "ko": "쌀밥",
+  "category": null
+ },
+ {
+  "itemId": "currency_catalyst1_1",
+  "cn": "天赋神药",
+  "tw": "天賦特效藥",
+  "en": "Ability Pill",
+  "ja": "才能の秘薬",
+  "ko": "재능의 묘약",
+  "category": null
+ },
+ {
+  "itemId": "icon_collection000112_23",
+  "cn": "装着盾牌的背包",
+  "tw": "裝著盾牌的背包",
+  "en": "Bag with the Shield",
+  "ja": "盾が入ったカバン",
+  "ko": "방패가 든 가방",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000301_25",
+  "cn": "新人佣兵名片",
+  "tw": "新傭兵的名片",
+  "en": "New Mercenary's Business Card",
+  "ja": "新入り傭兵の名刺",
+  "ko": "신입 용병의 명함",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000302_26",
+  "cn": "带毒箭矢",
+  "tw": "沾毒的箭",
+  "en": "Poisoned Arrow",
+  "ja": "毒が付いた矢",
+  "ko": "독 묻은 화살",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000303_28",
+  "cn": "格雷的硬币",
+  "tw": "格雷的硬幣",
+  "en": "Gray's Coin",
+  "ja": "グレイのコイン",
+  "ko": "그레이의 동전",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000304_29",
+  "cn": "克劳的帽子",
+  "tw": "克勞的帽子",
+  "en": "Krau's Hat",
+  "ja": "クラウの帽子",
+  "ko": "크라우의 모자",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000305_30",
+  "cn": "消灭不死生物委托书",
+  "tw": "消滅不死生物委託單",
+  "en": "Undead Extermination Request",
+  "ja": "アンデッド討伐依頼書",
+  "ko": "언데드 처치 의뢰서",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000306_31",
+  "cn": "三个男人的肖像画",
+  "tw": "三個男人的肖像畫",
+  "en": "Portrait of Three Men",
+  "ja": "男3人の肖像画",
+  "ko": "세 남자의 초상화",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000307_32",
+  "cn": "艾尔诺特副本#3",
+  "tw": "埃爾筆記副本#3",
+  "en": "Isle note copy #3",
+  "ja": "アイルノート写本#3",
+  "ko": "아일노트 사본 #3",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000308_33",
+  "cn": "赊账单",
+  "tw": "欠帳憑單",
+  "en": "Chit",
+  "ja": "帳付け伝票",
+  "ko": "외상 전표",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000309_34",
+  "cn": "维尔尼通缉单",
+  "tw": "維爾尼通緝令",
+  "en": "Wanted Poster: Bernie",
+  "ja": "ベルニー手配書",
+  "ko": "베르니 수배 전단",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000310_35",
+  "cn": "特别宝石盒",
+  "tw": "特別的珠寶盒",
+  "en": "Special Jewelry Case",
+  "ja": "特別な宝石箱",
+  "ko": "특별한 보석함",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000401_36",
+  "cn": "藏身处的便条",
+  "tw": "藏身處的便條",
+  "en": "Note from Hideout",
+  "ja": "隠れ家のメモ",
+  "ko": "은신처의 메모",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000402_37",
+  "cn": "失去力量的魔石",
+  "tw": "失去力量的魔石",
+  "en": "Drained Manastone",
+  "ja": "力を失った魔石",
+  "ko": "힘을 잃은 마석",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000403_38",
+  "cn": "指令书碎片",
+  "tw": "撕毀的指令單",
+  "en": "Torn Order",
+  "ja": "破れた指令書",
+  "ko": "찢어진 지령서",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000404_39",
+  "cn": "佣兵团协定书",
+  "tw": "傭兵團協定書",
+  "en": "Mercenary Band Agreement",
+  "ja": "傭兵団協定書",
+  "ko": "용병단 협정서",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000405_40",
+  "cn": "猫咪鱼干",
+  "tw": "貓咪魚乾",
+  "en": "Fish Pellets for Cats",
+  "ja": "猫用の魚干し",
+  "ko": "고양이용 생선포",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000406_41",
+  "cn": "稀有药酒",
+  "tw": "稀有藥酒",
+  "en": "Rare Herbal Liqueur",
+  "ja": "珍しい薬酒",
+  "ko": "희귀한 약주",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000407_42",
+  "cn": "两个国际象棋棋子",
+  "tw": "兩個西洋棋馬",
+  "en": "Two Chess Pieces",
+  "ja": "チェスの駒",
+  "ko": "체스 말 두 개",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000408_43",
+  "cn": "艾尔诺特副本#4",
+  "tw": "埃爾筆記副本#4",
+  "en": "Isle note copy #4",
+  "ja": "アイルノート写本#4",
+  "ko": "아일노트 사본 #4",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000409_44",
+  "cn": "黄色果实",
+  "tw": "黃色果實",
+  "en": "Yellow Fruit",
+  "ja": "黄色の実",
+  "ko": "노란색 열매",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000502_46",
+  "cn": "四散遗迹碎片",
+  "tw": "遺跡碎片",
+  "en": "Shattered Ruin Fragment",
+  "ja": "壊れた遺跡の欠片",
+  "ko": "부서진 유적 조각",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000503_48",
+  "cn": "纳尔森的剑",
+  "tw": "納爾森的劍",
+  "en": "Nelson's Sword",
+  "ja": "ネルソンの剣",
+  "ko": "넬슨의 검",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000504_24",
+  "cn": "绿洲解毒剂",
+  "tw": "綠洲解毒劑",
+  "en": "Oasis Antidote",
+  "ja": "オアシス解毒剤",
+  "ko": "오아시스 해독제",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000505_49",
+  "cn": "清热药",
+  "tw": "解熱劑",
+  "en": "Fever Remedy",
+  "ja": "解熱剤",
+  "ko": "해열제",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000506_50",
+  "cn": "亚拉里克鸡尾酒",
+  "tw": "亞拉里克雞尾酒",
+  "en": "Alaric Cocktail",
+  "ja": "アラリックカクテル",
+  "ko": "알라릭 칵테일",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000507_51",
+  "cn": "遗属补助金收据",
+  "tw": "遺族補助金收據",
+  "en": "Benefit Receipt for the Bereaved Family",
+  "ja": "遺族支援金領収書",
+  "ko": "유족 지원금 영수증",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000508_52",
+  "cn": "艾尔诺特副本#5",
+  "tw": "埃爾筆記副本#5",
+  "en": "Isle note copy #5",
+  "ja": "アイルノート写本#5",
+  "ko": "아일노트 사본 #5",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000601_55",
+  "cn": "附魔花",
+  "tw": "被施法的花",
+  "en": "Enchanted Flower",
+  "ja": "魔法がかけられた花",
+  "ko": "마법에 걸린 꽃",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000602_56",
+  "cn": "卡戎的信",
+  "tw": "卡戎的信",
+  "en": "Caron's Letter",
+  "ja": "カロンの手紙",
+  "ko": "카론의 편지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000603_57",
+  "cn": "旧采药人手套",
+  "tw": "破舊採藥人手套",
+  "en": "Old Herbalist Gloves",
+  "ja": "古い薬草採りのグローブ",
+  "ko": "낡은 약초꾼 장갑",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000604_58",
+  "cn": "魔法墨水",
+  "tw": "魔法墨水",
+  "en": "Enchanted Ink",
+  "ja": "魔法のインク",
+  "ko": "마법 잉크",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000605_59",
+  "cn": "娇弱白花",
+  "tw": "嬌弱的白花",
+  "en": "Fragile White Flower",
+  "ja": "儚い白い花",
+  "ko": "연약한 흰색 꽃",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000606_60",
+  "cn": "未能递出的信",
+  "tw": "無法傳遞的信",
+  "en": "Unsent Letter",
+  "ja": "伝えられなかった手紙",
+  "ko": "전하지 못한 편지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000607_61",
+  "cn": "艾尔诺特副本#6",
+  "tw": "埃爾筆記副本#6",
+  "en": "Isle note copy #6",
+  "ja": "アイルノート写本#6",
+  "ko": "아일노트 사본 #6",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000608_62",
+  "cn": "石怪手指",
+  "tw": "石怪手指",
+  "en": "Golem's Finger",
+  "ja": "ゴーレムの指",
+  "ko": "골렘의 손가락",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000609_63",
+  "cn": "小圣杯",
+  "tw": "小聖杯",
+  "en": "Small Chalice",
+  "ja": "小さい聖杯",
+  "ko": "작은 성배",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000701_65",
+  "cn": "阿尔敏家手帕",
+  "tw": "阿爾敏家手帕",
+  "en": "Handkerchief of the House of Armin",
+  "ja": "アルミン家のハンカチ",
+  "ko": "아르민 가 손수건",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000702_66",
+  "cn": "阿尔敏家镜子",
+  "tw": "阿爾敏家鏡子",
+  "en": "Mirror of the House of Armin",
+  "ja": "アルミン家の鏡",
+  "ko": "아르민 가 거울",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000703_67",
+  "cn": "褶皱饼干盒",
+  "tw": "皺巴巴的餅乾盒",
+  "en": "Crumpled Cookie Box",
+  "ja": "壊れたクッキー箱",
+  "ko": "구겨진 쿠키 상자",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000704_68",
+  "cn": "破采药人手套",
+  "tw": "破掉的採藥人手套",
+  "en": "Tattered Herbalist Gloves",
+  "ja": "壊れた薬草採りのグローブ",
+  "ko": "찢어진 약초꾼 장갑",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000705_69",
+  "cn": "艾尔诺特副本#7",
+  "tw": "埃爾筆記副本#7",
+  "en": "Isle note copy #7",
+  "ja": "アイルノート写本#7",
+  "ko": "아일노트 사본 #7",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000801_72",
+  "cn": "伯克的面具",
+  "tw": "伯克的面具",
+  "en": "Burk's Mask",
+  "ja": "バークの仮面",
+  "ko": "버크의 가면",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000802_73",
+  "cn": "罗戴夫羹汤",
+  "tw": "羅戴夫濃湯",
+  "en": "Rodev Soup",
+  "ja": "ロデブスープ",
+  "ko": "로데브 수프",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000803_74",
+  "cn": "贾尼博的匕首",
+  "tw": "賈尼博的匕首",
+  "en": "Jennifer's Dagger",
+  "ja": "ジェニファーの短剣",
+  "ko": "제니퍼의 단검",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000804_75",
+  "cn": "内勒德的蝴蝶结",
+  "tw": "內勒德的蝴蝶結",
+  "en": "Nereid's Ribbon",
+  "ja": "ネレイドのリボン",
+  "ko": "네레이드의 리본",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000805_76",
+  "cn": "染血红布",
+  "tw": "沾血的紅布",
+  "en": "Bloody Red Cloth",
+  "ja": "血の付いた布",
+  "ko": "피 묻은 붉은 천",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000806_77",
+  "cn": "资金账本",
+  "tw": "資金帳本",
+  "en": "Merchant's Ledger",
+  "ja": "資金帳簿",
+  "ko": "자금 장부",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000807_78",
+  "cn": "艾尔诺特副本#8",
+  "tw": "埃爾筆記副本#8",
+  "en": "Isle note copy #8",
+  "ja": "アイルノート写本#8",
+  "ko": "아일노트 사본 #8",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000808_79",
+  "cn": "破洞通缉令",
+  "tw": "破洞的通緝令",
+  "en": "Wanted Poster with a Hole",
+  "ja": "穴があいた手配書",
+  "ko": "구멍 난 수배서",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000809_80",
+  "cn": "破袋子",
+  "tw": "破掉的袋子",
+  "en": "Torn Bag",
+  "ja": "破れた袋",
+  "ko": "찢어진 주머니",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000810_81",
+  "cn": "私藏零钱",
+  "tw": "藏起來的零錢",
+  "en": "Stashed Change",
+  "ja": "隠しておいたお金",
+  "ko": "숨겨 놓은 잔돈",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000902_103",
+  "cn": "格雷的面罩",
+  "tw": "格雷的蒙面",
+  "en": "Gray's Mask",
+  "ja": "グレイの覆面",
+  "ko": "그레이의 복면",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000903_104",
+  "cn": "碎铁假面",
+  "tw": "破碎的鐵面具",
+  "en": "Broken Iron Mask",
+  "ja": "壊れた鉄仮面",
+  "ko": "부서진 철가면",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000904_105",
+  "cn": "黑魔法师的灰",
+  "tw": "黑魔法師的灰",
+  "en": "Warlock's Ashes",
+  "ja": "黒魔術師の灰",
+  "ko": "흑마법사의 재",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000905_106",
+  "cn": "未寄出的信",
+  "tw": "沒有送出的信",
+  "en": "Unsent Letter",
+  "ja": "送れなかった手紙",
+  "ko": "보내지 못한 편지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000906_107",
+  "cn": "布莉姬的铁椎",
+  "tw": "布莉姬的鐵鎚",
+  "en": "Bridgette's Mace",
+  "ja": "ブリジットの鉄槌",
+  "ko": "브리짓의 철퇴",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection000907_108",
+  "cn": "补给品魔石",
+  "tw": "補給品魔石",
+  "en": "Supply Manastones",
+  "ja": "補給品の魔石",
+  "ko": "보급품 마석",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001001_110",
+  "cn": "元素之珠",
+  "tw": "元素之珠",
+  "en": "Elemental Bead",
+  "ja": "元素の玉",
+  "ko": "원소의 구슬",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001002_110",
+  "cn": "不明料理",
+  "tw": "來歷不明的料理",
+  "en": "Unidentified dish",
+  "ja": "正体不明の料理",
+  "ko": "정체불명의 요리",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001003_111",
+  "cn": "李昂哈德肖像画",
+  "tw": "李昂哈德的畫像",
+  "en": "Portrait of Leonhart",
+  "ja": "レオンハルトの肖像画",
+  "ko": "레온하르트의 초상화",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001004_112",
+  "cn": "遗失的针筒",
+  "tw": "不見的針筒",
+  "en": "Missing Syringe",
+  "ja": "失くした注射器",
+  "ko": "잃어버린 주사기",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001005_113",
+  "cn": "清新香草茶",
+  "tw": "芳香的藥草茶",
+  "en": "Aromatic Herbal Tea",
+  "ja": "香り高いハーブティ",
+  "ko": "향긋한 허브 티",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001101_250",
+  "cn": "李昂哈德之剑",
+  "tw": "李昂哈德之劍",
+  "en": "Leonhart's Sword",
+  "ja": "レオンハルトの剣",
+  "ko": "레온하르트의 검",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001102_251",
+  "cn": "开关装置零件",
+  "tw": "開關裝置零件",
+  "en": "Winch Component",
+  "ja": "開閉装置の付属品",
+  "ko": "개폐 장치 부속품",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001103_252",
+  "cn": "黑羽毛",
+  "tw": "黑羽毛",
+  "en": "Black Feather",
+  "ja": "黒い羽根",
+  "ko": "검은 깃털",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001104_253",
+  "cn": "奥尔施塔因的魔石",
+  "tw": "奧爾施塔因的魔石",
+  "en": "Olstein's Manastone",
+  "ja": "オルシュタインの魔石",
+  "ko": "올슈타인의 마석",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001105_254",
+  "cn": "柏瑞坦的面具",
+  "tw": "柏瑞坦的面具",
+  "en": "Partan's Mask",
+  "ja": "パルタンの仮面",
+  "ko": "파르탄의 가면",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001106_258",
+  "cn": "染血绷带",
+  "tw": "沾滿鮮血的繃帶",
+  "en": "Bloody bandage",
+  "ja": "血の付いた包帯",
+  "ko": "피 묻은 붕대",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001107_259",
+  "cn": "斥候队密函",
+  "tw": "偵察兵的密信",
+  "en": "Secret letter from the scouts",
+  "ja": "斥候隊の密書",
+  "ko": "척후대의 밀서",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001108_260",
+  "cn": "烧红的铁砧",
+  "tw": "燒紅的鐵砧",
+  "en": "A heated anvil",
+  "ja": "熱せられた金床",
+  "ko": "달아오른 모루",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001201_261",
+  "cn": "染血头巾",
+  "tw": "沾滿血漬的頭巾",
+  "en": "Bloody Veil",
+  "ja": "血の付いたヴェール",
+  "ko": "피 묻은 베일",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001202_262",
+  "cn": "食人魔之血",
+  "tw": "食人魔的血",
+  "en": "Ogre's Blood",
+  "ja": "オーガの血",
+  "ko": "오거의 피",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001203_263",
+  "cn": "食人魔的木棒",
+  "tw": "食人魔的木棒",
+  "en": "Ogre's Club",
+  "ja": "オーガのこん棒",
+  "ko": "오거의 몽둥이",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001204_264",
+  "cn": "神圣石板",
+  "tw": "神聖的石板",
+  "en": "Sacred Stone Tablet",
+  "ja": "聖なる石板",
+  "ko": "신성한 석판",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001205_265",
+  "cn": "破碎的誓约",
+  "tw": "破碎的誓約",
+  "en": "Shattered Oath",
+  "ja": "壊れた誓い",
+  "ko": "부서진 맹세",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001206_266",
+  "cn": "古董酒桶",
+  "tw": "老舊的酒桶",
+  "en": "Old Keg",
+  "ja": "古びた酒樽",
+  "ko": "오래된 술통",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001207_267",
+  "cn": "女人肖像画",
+  "tw": "女人的肖像畫",
+  "en": "Portrait of a Woman",
+  "ja": "女性の肖像画",
+  "ko": "여인의 초상화",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001208_268",
+  "cn": "魔物通缉令",
+  "tw": "魔獸通緝令",
+  "en": "Fiend Bounty Request",
+  "ja": "魔物手配書",
+  "ko": "마물 수배지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001301_269",
+  "cn": "古董史贝伦地图",
+  "tw": "老舊的史貝倫地圖",
+  "en": "Old Map of Sbern",
+  "ja": "古いスベルンの地図",
+  "ko": "오래된 스베른 지도",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001302_270",
+  "cn": "小孩的画",
+  "tw": "小孩的畫",
+  "en": "Young Child's Drawing",
+  "ja": "子供の絵",
+  "ko": "어린아이의 그림",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001303_271",
+  "cn": "空药瓶",
+  "tw": "空藥瓶",
+  "en": "Empty Medicine Bottle",
+  "ja": "空っぽの薬瓶",
+  "ko": "텅 빈 약병",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001304_272",
+  "cn": "手写祷文",
+  "tw": "手寫的禱文",
+  "en": "Handwritten Prayer",
+  "ja": "手書きのお祈り文",
+  "ko": "손으로 쓴 기도문",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001305_273",
+  "cn": "可疑药方",
+  "tw": "可疑的藥方",
+  "en": "Suspicious Drug Recipe",
+  "ja": "怪しい薬のレシピ",
+  "ko": "수상한 약 레시피",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001401_274",
+  "cn": "银十字架项链",
+  "tw": "銀十字架項鍊",
+  "en": "Silver Cross Necklace",
+  "ja": "銀の十字架のネックレス",
+  "ko": "은 십자가 목걸이",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001402_275",
+  "cn": "凋谢的花束",
+  "tw": "凋謝的花束",
+  "en": "Withered Bouquet",
+  "ja": "枯れた花束",
+  "ko": "시든 꽃다발",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001403_276",
+  "cn": "干净头巾",
+  "tw": "乾淨的頭巾",
+  "en": "Clean Veil",
+  "ja": "綺麗なヴェール",
+  "ko": "깨끗한 베일",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001404_277",
+  "cn": "断翅天使雕像",
+  "tw": "斷翅天使雕像",
+  "en": "Broken Angel Statue",
+  "ja": "壊れた天使像",
+  "ko": "부러진 천사상",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001405_278",
+  "cn": "撕毁的祷文",
+  "tw": "被撕毀的祈禱文",
+  "en": "Torn Prayer",
+  "ja": "破れた祈祷文",
+  "ko": "찢긴 기도문",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001406_279",
+  "cn": "圣水",
+  "tw": "聖水",
+  "en": "Holy Water",
+  "ja": "聖水",
+  "ko": "성수",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001501_324",
+  "cn": "不规则葛洛堤证章",
+  "tw": "不規則葛洛堤證章",
+  "en": "Irregultti Badge",
+  "ja": "イレギュラーティバッジ",
+  "ko": "이레귤러티 배지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001502_325",
+  "cn": "科库托斯设施地图",
+  "tw": "科庫托斯設施地圖",
+  "en": "Cocytus Facility Map",
+  "ja": "コキュートスの施設地図",
+  "ko": "코퀴토스 시설 지도",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001503_326",
+  "cn": "蛇怪鳞片",
+  "tw": "蛇怪鱗片",
+  "en": "Basilisk Scale",
+  "ja": "バジリスクのウロコ",
+  "ko": "바실리스크의 비늘",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001504_327",
+  "cn": "渗人的手术工具",
+  "tw": "駭人的手術工具",
+  "en": "Creepy Surgical Tool",
+  "ja": "おぞましい手術道具",
+  "ko": "섬뜩한 수술 도구",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection001505_328",
+  "cn": "黑魔法师魔石",
+  "tw": "黑魔法師魔石",
+  "en": "Warlock's Manastone",
+  "ja": "黒魔術師の魔石",
+  "ko": "흑마법사의 마석",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection1000001_391",
+  "cn": "卢班希亚的军牌",
+  "tw": "盧班希亞的識別牌",
+  "en": "Luvencia's Dog Tag",
+  "ja": "ルベンシアのドッグタグ",
+  "ko": "루벤시아의 인식표",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000003_393",
+  "cn": "格兰希特的急救绷带",
+  "tw": "葛蘭西特的急救繃帶",
+  "en": "Granhildr's First Aid Bandages",
+  "ja": "グランヒルトの応急包帯",
+  "ko": "그란힐트의 응급붕대",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000005_395",
+  "cn": "内肯达莉亚的骰子",
+  "tw": "涅肯達莉亞的骰子",
+  "en": "Nekyndalia's Die",
+  "ja": "ネケンダリアのダイス",
+  "ko": "네켄달리아의 주사위",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000007_397",
+  "cn": "爱丽洁的手帕",
+  "tw": "愛麗潔的手帕",
+  "en": "Elise's Handkerchief",
+  "ja": "エリーゼのハンカチ",
+  "ko": "앨리제의 손수건",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000009_404",
+  "cn": "布莱德的敌我识别布条",
+  "tw": "布萊德的敵我識別布",
+  "en": "Blade's Cloth Marker",
+  "ja": "ブレイドの敵味方識別用の布",
+  "ko": "블레이드의 피아식별 천",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000012_407",
+  "cn": "刚脱下的内衣",
+  "tw": "剛脫下的內衣",
+  "en": "Freshly Removed Underwear",
+  "ja": "脱ぎたての下着",
+  "ko": "막 벗은 속옷",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000014_409",
+  "cn": "写着字的餐巾纸",
+  "tw": "寫有字的餐巾紙",
+  "en": "Napkin with Writing",
+  "ja": "何かが書かれているナプキン",
+  "ko": "글씨 쓰인 냅킨",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000016_411",
+  "cn": "约会券",
+  "tw": "約會兌換券",
+  "en": "Date Coupon",
+  "ja": "デートクーポン",
+  "ko": "데이트 쿠폰",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000018_413",
+  "cn": "急救巧克力礼盒",
+  "tw": "急救巧克力盒",
+  "en": "Chocolate First Aid Kit",
+  "ja": "救急チョコボックス",
+  "ko": "구급 초콜릿 상자",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000020_415",
+  "cn": "高级真丝领带",
+  "tw": "高級絲質領帶",
+  "en": "Fancy Silk Necktie",
+  "ja": "高級シルクネクタイ",
+  "ko": "고급 실크 넥타이",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000022_417",
+  "cn": "性感内衣目录",
+  "tw": "內衣型錄",
+  "en": "Lingerie Catalogue",
+  "ja": "ランジェリーカタログ",
+  "ko": "란제리 카탈로그",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000025_426",
+  "cn": "塔洛斯战略书草稿",
+  "tw": "塔洛斯戰略書草稿",
+  "en": "Taros Strategy Guide Draft",
+  "ja": "ターロス戦略書草稿",
+  "ko": "타로스 전략서 초본",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000029_430",
+  "cn": "黎维塔的念珠",
+  "tw": "黎維塔的念珠",
+  "en": "Liberta's Rosary",
+  "ja": "リベルタのロザリオ",
+  "ko": "리베르타의 묵주",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000031_432",
+  "cn": "鲁的手环",
+  "tw": "魯的手環",
+  "en": "Rou's Bracelet",
+  "ja": "ルゥのブレスレット",
+  "ko": "루의 팔찌",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection1000033_434",
+  "cn": "达非的扑克牌",
+  "tw": "達非的王牌撲克",
+  "en": "Dalvi's Trump Cards",
+  "ja": "キュウビのトランプカード",
+  "ko": "달비의 트럼프 카드",
+  "category": "Keepsakes"
+ },
+ {
+  "itemId": "icon_collection100101_82",
+  "cn": "小卖部新品面包",
+  "tw": "合作社的麵包新品",
+  "en": "New School Cafeteria Bread",
+  "ja": "売店の新作パン",
+  "ko": "매점의 신작 빵",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100102_83",
+  "cn": "赶制玩具",
+  "tw": "臨時玩具",
+  "en": "Makeshift Toy",
+  "ja": "急造したおもちゃ",
+  "ko": "급조한 장난감",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100103_84",
+  "cn": "猫耳发箍",
+  "tw": "貓耳髮箍",
+  "en": "Cat Ear Headband",
+  "ja": "ネコ耳のヘアバンド",
+  "ko": "고양이귀 머리띠",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100104_85",
+  "cn": "奥尔施塔因的日记",
+  "tw": "奧爾施塔因的日誌",
+  "en": "Olstein's Journal",
+  "ja": "オルシュタインの日誌",
+  "ko": "올슈타인의 일지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100105_86",
+  "cn": "中二病笔记本",
+  "tw": "中二病筆記",
+  "en": "Notebook of Teen Angst",
+  "ja": "中二病ノート",
+  "ko": "중2병 노트",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100106_87",
+  "cn": "杰登的学生证",
+  "tw": "傑登的學生證",
+  "en": "Jayden's Student ID",
+  "ja": "ジェイデンの学生証",
+  "ko": "제이든의 학생증",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100107_88",
+  "cn": "树上的情书",
+  "tw": "吊著的情書",
+  "en": "Tied Love Letter",
+  "ja": "つるされたラブレター",
+  "ko": "매달린 러브레터",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100118_309",
+  "cn": "罗安的笔记",
+  "tw": "羅安的筆記",
+  "en": "Loen's Notebook",
+  "ja": "ロエンのノート",
+  "ko": "로엔의 노트",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100119_310",
+  "cn": "罗安的日记",
+  "tw": "羅安的日誌",
+  "en": "Loen's Journal",
+  "ja": "ロエンの日誌",
+  "ko": "로엔의 일지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100201_89",
+  "cn": "废品杂物",
+  "tw": "如廢品的雜物",
+  "en": "Junk Items and the Like",
+  "ja": "廃品のようなガラクタ",
+  "ko": "폐품 같은 잡동사니",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100202_90",
+  "cn": "幸存者日记",
+  "tw": "生存者日誌",
+  "en": "Survivor's Diary",
+  "ja": "生存者日誌",
+  "ko": "생존자 일지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100203_91",
+  "cn": "不明卡片",
+  "tw": "不明的卡片",
+  "en": "Mysterious Card",
+  "ja": "正体不明のカード",
+  "ko": "정체불명의 카드",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100204_92",
+  "cn": "研究日记",
+  "tw": "研究日誌",
+  "en": "Research Journal",
+  "ja": "研究日誌",
+  "ko": "연구 일지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100205_93",
+  "cn": "不明可乐瓶",
+  "tw": "不明的可樂瓶",
+  "en": "Mysterious Cola Bottle",
+  "ja": "正体不明のコーラ瓶",
+  "ko": "정체불명의 콜라병",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100206_94",
+  "cn": "保藏食品块",
+  "tw": "塊狀保久食物",
+  "en": "Preserved Food Cubes",
+  "ja": "保存食キューブ",
+  "ko": "보존식 큐브",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100207_95",
+  "cn": "体检表",
+  "tw": "健康檢查報告",
+  "en": "Medical Examination Report",
+  "ja": "健康検診表",
+  "ko": "건강검진표",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100210_236",
+  "cn": "格雷的身份证",
+  "tw": "格雷的身分證",
+  "en": "Gray's ID Card",
+  "ja": "グレイのIDカード",
+  "ko": "그레이의 ID 카드",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100301_96",
+  "cn": "黑色墨镜",
+  "tw": "黑色太陽眼鏡",
+  "en": "Black Sunglasses",
+  "ja": "黒いサングラス",
+  "ko": "검은 선글라스",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100302_97",
+  "cn": "禁闭室钥匙",
+  "tw": "禁閉室鑰匙",
+  "en": "Confinement Room Key",
+  "ja": "留置所の鍵",
+  "ko": "감금실 열쇠",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100303_98",
+  "cn": "埃保尼的宝石",
+  "tw": "埃保尼的寶石",
+  "en": "Ebony's Jewelry",
+  "ja": "エボニーの宝石",
+  "ko": "에보니의 보석들",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100304_99",
+  "cn": "奇迹霜",
+  "tw": "奇蹟霜",
+  "en": "Miracleizer",
+  "ja": "ミラクルライザー",
+  "ko": "미라클라이저",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100305_100",
+  "cn": "派对会场玫瑰",
+  "tw": "宴會場的玫瑰",
+  "en": "Rose from the Party",
+  "ja": "パーティ会場のバラ",
+  "ko": "파티장의 장미",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100306_101",
+  "cn": "特别蜡烛",
+  "tw": "特別的蠟燭",
+  "en": "Special Candle",
+  "ja": "特別なロウソク",
+  "ko": "특별한 양초",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100307_102",
+  "cn": "粘有口香糖的纸",
+  "tw": "用口香糖黏起的紙",
+  "en": "Paper Firmly Gummed to a Desk",
+  "ja": "ガムで付けた紙",
+  "ko": "껌으로 붙인 종이",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100401_114",
+  "cn": "兔子娃娃",
+  "tw": "兔子玩偶",
+  "en": "Rabbit Doll",
+  "ja": "ウサギのぬいぐるみ",
+  "ko": "토끼 인형",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100402_115",
+  "cn": "格雷的钱包",
+  "tw": "格雷的錢包",
+  "en": "Gray's Wallet",
+  "ja": "グレイの財布",
+  "ko": "그레이의 지갑",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100403_116",
+  "cn": "B.I.Gz周边",
+  "tw": "B.I.Gz 周邊",
+  "en": "B.I.Gz Goods",
+  "ja": "B.I.Gzグッズ",
+  "ko": "B.I.Gz 굿즈",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100404_117",
+  "cn": "格雷的车钥匙",
+  "tw": "格雷的車鑰匙",
+  "en": "Gray's Car Key",
+  "ja": "グレイの車の鍵",
+  "ko": "그레이의 자동차 키",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100405_118",
+  "cn": "按摩店优惠券",
+  "tw": "按摩店優惠卷",
+  "en": "Massage Parlor Coupon",
+  "ja": "マッサージショップのクーポン",
+  "ko": "마사지샵 쿠폰",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100406_119",
+  "cn": "签名练习纸",
+  "tw": "簽名練習紙",
+  "en": "Autograph Exercise Book",
+  "ja": "サイン練習紙",
+  "ko": "사인 연습지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100407_120",
+  "cn": "旧出纳账本",
+  "tw": "舊帳簿",
+  "en": "An Old Ledger",
+  "ja": "古い出納帳簿",
+  "ko": "낡은 출납 장부",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100501_121",
+  "cn": "罗宾汉之箭",
+  "tw": "羅賓漢之箭",
+  "en": "Robin Hood's Arrow",
+  "ja": "ロビンフッドの矢",
+  "ko": "로빈 후드의 화살",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100502_122",
+  "cn": "枯萎之花",
+  "tw": "凋謝的花朵",
+  "en": "Wilted Flower",
+  "ja": "枯れてしまった花",
+  "ko": "시들어버린 꽃",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100503_123",
+  "cn": "精灵之泉",
+  "tw": "精靈之泉",
+  "en": "Fairy Fountain Water",
+  "ja": "妖精の泉の水",
+  "ko": "요정의 샘물",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100504_124",
+  "cn": "苦涩蘑菇",
+  "tw": "苦澀澀蘑菇",
+  "en": "Bitter Mushroom",
+  "ja": "ニガニガキノコ",
+  "ko": "쌉사래 버섯",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100505_125",
+  "cn": "穿箭苹果",
+  "tw": "貫穿的蘋果",
+  "en": "Pierced Apple",
+  "ja": "貫かれたリンゴ",
+  "ko": "꿰뚫린 사과",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100506_126",
+  "cn": "池塘净化药",
+  "tw": "池塘淨化劑",
+  "en": "Pond Purification Potion",
+  "ja": "泉浄化のポーション",
+  "ko": "연못 정화약",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100507_127",
+  "cn": "水晶鞋",
+  "tw": "玻璃鞋",
+  "en": "Glass Slipper",
+  "ja": "ガラスの靴",
+  "ko": "유리 구두",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100601_237",
+  "cn": "平凡药物和绷带",
+  "tw": "普通藥和繃帶",
+  "en": "Average Medicine and Bandages",
+  "ja": "普通の薬と包帯",
+  "ko": "평범한 약과 붕대",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100602_238",
+  "cn": "焦黑符咒",
+  "tw": "焦黑符咒",
+  "en": "Charred Talisman",
+  "ja": "焼けた呪符",
+  "ko": "그을린 부적",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100603_239",
+  "cn": "尤里的妖魂",
+  "tw": "尤里的妖魂",
+  "en": "Yuri's Fiendsoul",
+  "ja": "ユリの妖魂",
+  "ko": "유리의 요혼",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100604_240",
+  "cn": "美人图",
+  "tw": "美人圖",
+  "en": "Portrait of a Beauty",
+  "ja": "美人図",
+  "ko": "미인도",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100605_241",
+  "cn": "稻草娃娃们",
+  "tw": "用稻草做的玩偶",
+  "en": "Straw Dolls",
+  "ja": "藁で作られた人形たち",
+  "ko": "짚으로 만든 인형들",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100606_242",
+  "cn": "贵族河回面具",
+  "tw": "貴族河回面具",
+  "en": "Aristocrat Folk Mask",
+  "ja": "ヤンバンハフェタル",
+  "ko": "양반 하회탈",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100701_311",
+  "cn": "外勤人员名单",
+  "tw": "外勤人員名單",
+  "en": "Out-of-Office Employees List",
+  "ja": "外回り社員リスト",
+  "ko": "외근자 명단",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100702_312",
+  "cn": "赛尔的员工证",
+  "tw": "賽爾的員工證",
+  "en": "Seir's Employee ID Card",
+  "ja": "セイルの社員証",
+  "ko": "세이르의 사원증",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100703_313",
+  "cn": "酷丽她新款女性衬衫",
+  "tw": "奎利特新款雪紡衫",
+  "en": "Qualite's Brand-new Blouse",
+  "ja": "クオリテ新作ブラウス",
+  "ko": "쿠알리테 신상 블라우스",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100704_314",
+  "cn": "爆笑弹",
+  "tw": "爆笑彈",
+  "en": "Giggle Burst Grenade",
+  "ja": "笑い爆弾",
+  "ko": "폭소탄",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100705_315",
+  "cn": "保健品",
+  "tw": "保健品",
+  "en": "Supplements",
+  "ja": "栄養ドリンク",
+  "ko": "영양제",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection100706_316",
+  "cn": "华丽螺钿印章",
+  "tw": "華麗螺鈿印章",
+  "en": "Gorgeous Mother-of-Pearl Seal",
+  "ja": "華やかな螺鈿細工の印鑑",
+  "ko": "화려한 자개 인장",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection101_1",
+  "cn": "卢戈镇告示",
+  "tw": "盧戈鎮的公告",
+  "en": "Lugo Village Announcement",
+  "ja": "ルーゴ村告知文",
+  "ko": "루고 마을 공고문",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection102_2",
+  "cn": "皎洁死神通缉令",
+  "tw": "皎潔死神通緝令",
+  "en": "White Reaper WANTED poster",
+  "ja": "白の死神の手配書",
+  "ko": "하얀 사신 수배서",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection103_3",
+  "cn": "卢戈森林草药地图",
+  "tw": "盧戈森林草藥地圖",
+  "en": "Lugo Forest Herb Map",
+  "ja": "ルーゴ森の薬草地図",
+  "ko": "루고 숲 약초 지도",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection104_4",
+  "cn": "遗失的花铲",
+  "tw": "遺失的花鏟",
+  "en": "Lost Shovel",
+  "ja": "なくしたスコップ",
+  "ko": "잃어버린 모종삽",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection106_6",
+  "cn": "伤痕累累的獠牙",
+  "tw": "滿是傷痕的臼齒",
+  "en": "Wounded Tusk",
+  "ja": "傷だらけの牙",
+  "ko": "상처투성이 엄니",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection107_7",
+  "cn": "艾尔诺特副本#1",
+  "tw": "埃爾筆記副本#1",
+  "en": "Isle note copy #1",
+  "ja": "アイルノート写本#1",
+  "ko": "아일노트 사본#1",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection108_8",
+  "cn": "米莎的日记本",
+  "tw": "米莎的日記",
+  "en": "Misha's Diary",
+  "ja": "ミーシャの日記帳",
+  "ko": "미샤의 일기장",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection109_9",
+  "cn": "卢戈村长的戒指",
+  "tw": "盧戈村長的戒指",
+  "en": "Lugo Village Chief's Ring",
+  "ja": "ルーゴ村長の指輪",
+  "ko": "루고 촌장의 반지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200101_128",
+  "cn": "烤串签",
+  "tw": "串燒用的竹串",
+  "en": "Barbecue Skewers",
+  "ja": "串焼き用の串",
+  "ko": "꼬치구이용 꼬챙이",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200102_129",
+  "cn": "两截冰雕",
+  "tw": "半截冰雕雕像",
+  "en": "Ice statue cut in half",
+  "ja": "真っ二つになった氷像",
+  "ko": "반토막 난 얼음상",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200103_130",
+  "cn": "失物泳装",
+  "tw": "沒有主人的泳裝",
+  "en": "Lost Swimsuit",
+  "ja": "持ち主のいない水着",
+  "ko": "주인 없는 수영복",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200104_131",
+  "cn": "玩具水炮",
+  "tw": "玩具水大砲",
+  "en": "Toy Water Cannon",
+  "ja": "おもちゃの水鉄砲",
+  "ko": "장난감 물대포",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200105_132",
+  "cn": "章鱼腿",
+  "tw": "章魚腿",
+  "en": "Octopus Leg",
+  "ja": "タコの足",
+  "ko": "문어 다리",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200106_133",
+  "cn": "Endless Summer",
+  "tw": "Endless Summer",
+  "en": "Endless Summer",
+  "ja": "Endless Summer",
+  "ko": "Endless Summer",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200107_134",
+  "cn": "救生圈",
+  "tw": "救生圈",
+  "en": "Swimming Tube",
+  "ja": "救命浮き輪",
+  "ko": "구명 튜브",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200108_135",
+  "cn": "某人的手机",
+  "tw": "某人的手機",
+  "en": "Someone's Phone",
+  "ja": "誰かのスマホ",
+  "ko": "누군가의 폰",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200201_243",
+  "cn": "旧皮手册",
+  "tw": "舊皮手帳",
+  "en": "Worn Leather Notebook",
+  "ja": "古い皮の手帳",
+  "ko": "낡은 가죽 수첩",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200202_244",
+  "cn": "奥尔施塔因的项链",
+  "tw": "奧爾施塔因的項鍊",
+  "en": "Olstein's Necklace",
+  "ja": "オルシュタインのネックレス",
+  "ko": "올슈타인의 목걸이",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200203_245",
+  "cn": "76年高级红酒",
+  "tw": "76年高級紅酒",
+  "en": "High Quality '76 Wine",
+  "ja": "76年産高級ワイン",
+  "ko": "76년산 고급 와인",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200204_246",
+  "cn": "墨菲晶片",
+  "tw": "墨菲晶片",
+  "en": "Morchip",
+  "ja": "モルチップ",
+  "ko": "모르칩",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200205_247",
+  "cn": "破照片",
+  "tw": "破碎相片",
+  "en": "Torn Photo",
+  "ja": "破れた写真",
+  "ko": "찢어진 사진",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200301_280",
+  "cn": "断裂的泳衣",
+  "tw": "斷裂的泳衣",
+  "en": "Torn Swimsuit",
+  "ja": "破れた水着",
+  "ko": "끊어진 수영복",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200302_281",
+  "cn": "黑衣",
+  "tw": "黑衣",
+  "en": "Black Outfit",
+  "ja": "黒服",
+  "ko": "검은 옷",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200303_282",
+  "cn": "演员签名纸",
+  "tw": "演員的簽名",
+  "en": "Autographs of Actors",
+  "ja": "女優達のサイン色紙",
+  "ko": "배우들의 사인지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200304_283",
+  "cn": "狂热粉丝的对讲机",
+  "tw": "狂熱粉絲的對講機",
+  "en": "Die-Hard Fan's Radio",
+  "ja": "熱心なファンの無線機",
+  "ko": "열성팬의 무전기",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200305_284",
+  "cn": "大容量防晒霜",
+  "tw": "大容量防曬乳",
+  "en": "Large Size Sunscreen",
+  "ja": "日焼け止め（大容量）",
+  "ko": "대용량 선크림",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200501_317",
+  "cn": "故障骰子",
+  "tw": "故障骰子",
+  "en": "Broken Die",
+  "ja": "壊れたサイコロ",
+  "ko": "고장난 주사위",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200502_318",
+  "cn": "烧坏的演算辅助装置",
+  "tw": "燒毀的演算輔助裝置",
+  "en": "Burned Computational Aid Device",
+  "ja": "燃え尽きた演算補助装置",
+  "ko": "타버린 연산 보조장치",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200503_319",
+  "cn": "实验体死亡报告书",
+  "tw": "實驗體死亡報告書",
+  "en": "Test Subject Death Report",
+  "ja": "実験体死亡報告書",
+  "ko": "실험체 사망 보고서",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200504_320",
+  "cn": "肮脏火箭",
+  "tw": "骯髒的墜子",
+  "en": "Dirty Locket",
+  "ja": "汚れたロケット",
+  "ko": "더러운 로켓",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200505_321",
+  "cn": "拆解的炸弹",
+  "tw": "拆卸的炸彈",
+  "en": "Defused Bomb",
+  "ja": "解体された爆弾",
+  "ko": "해체된 폭탄",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200506_322",
+  "cn": "报废火箭",
+  "tw": "報廢火箭",
+  "en": "Broken Locket",
+  "ja": "壊れたロケット",
+  "ko": "망가진 로켓",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection200507_323",
+  "cn": "修理后的火箭",
+  "tw": "修好的火箭",
+  "en": "Repaired Locket",
+  "ja": "修理されたロケット",
+  "ko": "수리된 로켓",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection201_12",
+  "cn": "护士修女的笔记",
+  "tw": "護士修女的筆記",
+  "en": "Nurse Nun's Notes",
+  "ja": "看護シスターのノート",
+  "ko": "간호수녀의 노트",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection202_13",
+  "cn": "艾尔诺特副本#2",
+  "tw": "埃爾筆記副本#2",
+  "en": "Isle note copy #2",
+  "ja": "アイルノート写本#2",
+  "ko": "아일노트 사본#2",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection203_14",
+  "cn": "黄金镐",
+  "tw": "黃金十字鎬",
+  "en": "Golden Pickaxe",
+  "ja": "黄金のつるはし",
+  "ko": "황금 곡괭이",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection204_15",
+  "cn": "威格的契约书",
+  "tw": "威格的契約書",
+  "en": "Wiggle's Contract",
+  "ja": "ウィグルの契約書",
+  "ko": "위글의 계약서",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection205_16",
+  "cn": "魔道具启动说明书",
+  "tw": "魔道具啟動說明書",
+  "en": "Magic Tool Operation Manual",
+  "ja": "魔道具作動説明書",
+  "ko": "마도구 작동 설명서",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection206_17",
+  "cn": "皱巴巴的纸条",
+  "tw": "皺巴巴的紙條",
+  "en": "Crumpled Note",
+  "ja": "しわくちゃのメモ",
+  "ko": "구겨진 쪽지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection209_20",
+  "cn": "骗术牌",
+  "tw": "騙術檯面",
+  "en": "Cheat Deck",
+  "ja": "トリックデッキ",
+  "ko": "속임수 덱",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection211_22",
+  "cn": "发光魔石帽",
+  "tw": "發光魔石帽",
+  "en": "Glowing Manastone Hat",
+  "ja": "発光魔石帽子",
+  "ko": "발광 마석 모자",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection212_23",
+  "cn": "铁匠日记",
+  "tw": "鐵匠的日誌",
+  "en": "Blacksmith's Journal",
+  "ja": "鍛冶屋の日誌",
+  "ko": "대장장이의 일지",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection300501_248",
+  "cn": "创世魔石",
+  "tw": "創世魔石",
+  "en": "Manastone of Creation",
+  "ja": "創世の魔石",
+  "ko": "창세의 마석",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_collection300502_249",
+  "cn": "旧魔法书籍",
+  "tw": "古魔法書",
+  "en": "Old Magic Book",
+  "ja": "古い魔法書籍",
+  "ko": "낡은 마법 서적",
+  "category": "Collection"
+ },
+ {
+  "itemId": "icon_equipment_matk_weapon_n",
+  "cn": "佣兵手杖",
+  "tw": "傭兵杖",
+  "en": "Mercenary Staff I",
+  "ja": "傭兵のロッド",
+  "ko": "용병 지팡이",
+  "category": null
+ },
+ {
+  "itemId": "icon_equipment1_1",
+  "cn": "佣兵剑",
+  "tw": "傭兵劍",
+  "en": "Mercenary Sword I",
+  "ja": "傭兵の剣",
+  "ko": "용병 검",
+  "category": null
+ },
+ {
+  "itemId": "icon_equipment1202_48",
+  "cn": "佣兵手环",
+  "tw": "傭兵手鐲",
+  "en": "Mercenary Bracelet I",
+  "ja": "傭兵のブレスレット",
+  "ko": "용병 팔찌",
+  "category": null
+ },
+ {
+  "itemId": "icon_equipment1302_47",
+  "cn": "佣兵长袍",
+  "tw": "傭兵長袍",
+  "en": "Mercenary Robe I",
+  "ja": "傭兵のローブ",
+  "ko": "용병 로브",
+  "category": null
+ },
+ {
+  "itemId": "icon_equipment1402_49",
+  "cn": "佣兵环饰",
+  "tw": "傭兵頭環",
+  "en": "Mercenary Circlet I",
+  "ja": "傭兵のサークレット",
+  "ko": "용병 서클릿",
+  "category": null
+ },
+ {
+  "itemId": "icon_equipment1502_50",
+  "cn": "佣兵戒指",
+  "tw": "傭兵戒指",
+  "en": "Mercenary Ring I",
+  "ja": "傭兵の指輪",
+  "ko": "용병 반지",
+  "category": null
+ },
+ {
+  "itemId": "icon_equipment2_2",
+  "cn": "佣兵手套",
+  "tw": "傭兵手套",
+  "en": "Mercenary Gloves I",
+  "ja": "傭兵の籠手",
+  "ko": "용병 장갑",
+  "category": null
+ },
+ {
+  "itemId": "icon_equipment3_3",
+  "cn": "佣兵盔甲",
+  "tw": "傭兵盔甲",
+  "en": "Mercenary Armor I",
+  "ja": "傭兵の鎧",
+  "ko": "용병 갑옷",
+  "category": null
+ },
+ {
+  "itemId": "icon_equipment4_4",
+  "cn": "佣兵帽",
+  "tw": "傭兵帽子",
+  "en": "Mercenary Helm",
+  "ja": "傭兵の兜",
+  "ko": "용병 모자",
+  "category": null
+ },
+ {
+  "itemId": "icon_equipment5_5",
+  "cn": "佣兵项链",
+  "tw": "傭兵項鍊",
+  "en": "Mercenary Necklace I",
+  "ja": "傭兵のネックレス",
+  "ko": "용병 목걸이",
+  "category": null
+ },
+ {
+  "itemId": "icon_food1001_1",
+  "cn": "兽肉",
+  "tw": "獸肉",
+  "en": "Beast Meat",
+  "ja": "獣の肉",
+  "ko": "짐승 고기",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1002_2",
+  "cn": "三文鱼",
+  "tw": "鮭魚",
+  "en": "Salmon",
+  "ja": "鮭",
+  "ko": "연어",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1003_3",
+  "cn": "虾",
+  "tw": "淡水蝦",
+  "en": "Shrimp",
+  "ja": "エビ",
+  "ko": "새우",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1004_4",
+  "cn": "小麦",
+  "tw": "小麥",
+  "en": "Wheat",
+  "ja": "小麦",
+  "ko": "밀",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1005_5",
+  "cn": "香草",
+  "tw": "草藥",
+  "en": "Herb",
+  "ja": "ハーブ",
+  "ko": "허브",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1006_6",
+  "cn": "玉米",
+  "tw": "玉米",
+  "en": "Corn",
+  "ja": "トウモロコシ",
+  "ko": "옥수수",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1007_7",
+  "cn": "豆子",
+  "tw": "豆子",
+  "en": "Bean",
+  "ja": "豆",
+  "ko": "콩",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1008_8",
+  "cn": "大麦",
+  "tw": "大麥",
+  "en": "Barley",
+  "ja": "麦",
+  "ko": "보리",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1009_9",
+  "cn": "啤酒花",
+  "tw": "啤酒花",
+  "en": "Hop",
+  "ja": "ホップ",
+  "ko": "홉",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1010_10",
+  "cn": "米",
+  "tw": "米",
+  "en": "Rice",
+  "ja": "米",
+  "ko": "쌀",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1011_11",
+  "cn": "苹果",
+  "tw": "蘋果",
+  "en": "Apple",
+  "ja": "リンゴ",
+  "ko": "사과",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1012_12",
+  "cn": "葡萄",
+  "tw": "葡萄",
+  "en": "Grape",
+  "ja": "ブドウ",
+  "ko": "포도",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1013_13",
+  "cn": "蘑菇",
+  "tw": "蘑菇",
+  "en": "Mushroom",
+  "ja": "キノコ",
+  "ko": "버섯",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1014_14",
+  "cn": "胡萝卜",
+  "tw": "紅蘿蔔",
+  "en": "Carrot",
+  "ja": "ニンジン",
+  "ko": "당근",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1015_15",
+  "cn": "土豆",
+  "tw": "馬鈴薯",
+  "en": "Potato",
+  "ja": "ジャガイモ",
+  "ko": "감자",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1016_16",
+  "cn": "洋葱",
+  "tw": "洋蔥",
+  "en": "Onion",
+  "ja": "玉ねぎ",
+  "ko": "양파",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1017_17",
+  "cn": "甜椒",
+  "tw": "甜椒",
+  "en": "Paprika",
+  "ja": "パプリカ",
+  "ko": "파프리카",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1018_18",
+  "cn": "萝卜缨",
+  "tw": "蘿蔔嬰",
+  "en": "Radish",
+  "ja": "かいわれ菜",
+  "ko": "무순",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1019_19",
+  "cn": "西蓝花",
+  "tw": "花椰菜",
+  "en": "Broccoli",
+  "ja": "ブロッコリー",
+  "ko": "브로콜리",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1020_20",
+  "cn": "番茄",
+  "tw": "番茄",
+  "en": "Tomato",
+  "ja": "トマト",
+  "ko": "토마토",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1022_22",
+  "cn": "咖啡豆",
+  "tw": "咖啡豆",
+  "en": "Coffee Bean",
+  "ja": "コーヒー豆",
+  "ko": "커피 원두",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1023_23",
+  "cn": "白糖",
+  "tw": "糖",
+  "en": "Sugar",
+  "ja": "砂糖",
+  "ko": "설탕",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1024_24",
+  "cn": "奶酪",
+  "tw": "起司",
+  "en": "Cheese",
+  "ja": "チーズ",
+  "ko": "치즈",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1025_25",
+  "cn": "鸡蛋",
+  "tw": "雞蛋",
+  "en": "Egg",
+  "ja": "卵",
+  "ko": "계란",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1026_26",
+  "cn": "黄油",
+  "tw": "奶油",
+  "en": "Butter",
+  "ja": "バター",
+  "ko": "버터",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1027_27",
+  "cn": "牛奶",
+  "tw": "牛奶",
+  "en": "Milk",
+  "ja": "牛乳",
+  "ko": "우유",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1028_28",
+  "cn": "金枪鱼罐头",
+  "tw": "鮪魚罐頭",
+  "en": "Canned Tuna",
+  "ja": "ツナ缶",
+  "ko": "참치 통조림",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1029_29",
+  "cn": "袋装鸡胸肉",
+  "tw": "雞胸肉袋",
+  "en": "Chicken Breast Pack",
+  "ja": "鶏の胸肉パック",
+  "ko": "닭가슴살 팩",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1030_30",
+  "cn": "巧克力",
+  "tw": "巧克力",
+  "en": "Chocolate",
+  "ja": "チョコレート",
+  "ko": "초콜릿",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1031_31",
+  "cn": "吐司",
+  "tw": "吐司",
+  "en": "Bread",
+  "ja": "食パン",
+  "ko": "식빵",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1032_32",
+  "cn": "橄榄油",
+  "tw": "橄欖油",
+  "en": "Olive Oil",
+  "ja": "オリーブ油",
+  "ko": "올리브유",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1033_33",
+  "cn": "甜辣酱",
+  "tw": "辣醬",
+  "en": "Chili Sauce",
+  "ja": "チリソース",
+  "ko": "칠리소스",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1034_34",
+  "cn": "蜂蜜",
+  "tw": "蜂蜜",
+  "en": "Honey",
+  "ja": "ハチミツ",
+  "ko": "꿀",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1035_35",
+  "cn": "盐",
+  "tw": "鹽",
+  "en": "Salt",
+  "ja": "塩",
+  "ko": "소금",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1036_36",
+  "cn": "哈密瓜",
+  "tw": "哈密瓜",
+  "en": "Melon",
+  "ja": "メロン",
+  "ko": "멜론",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1037_37",
+  "cn": "辣椒",
+  "tw": "辣椒",
+  "en": "Pepper",
+  "ja": "唐辛子",
+  "ko": "고추",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1038_38",
+  "cn": "藏红花",
+  "tw": "番紅花",
+  "en": "Saffron",
+  "ja": "サフラン",
+  "ko": "사프란",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1039_39",
+  "cn": "杏仁",
+  "tw": "杏仁",
+  "en": "Almond",
+  "ja": "アーモンド",
+  "ko": "아몬드",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1040_40",
+  "cn": "水果罐头",
+  "tw": "水果罐頭",
+  "en": "Canned Fruit",
+  "ja": "缶詰フルーツ",
+  "ko": "과일 통조림",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1041_41",
+  "cn": "鱼子酱罐头",
+  "tw": "魚子醬罐頭",
+  "en": "Canned Caviar",
+  "ja": "キャビア缶",
+  "ko": "캐비어 통조림",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1042_42",
+  "cn": "调味海苔",
+  "tw": "包裝好的海苔",
+  "en": "Seasoned Seaweed",
+  "ja": "味付け海苔",
+  "ko": "조미 김",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1043_43",
+  "cn": "凯洛药材",
+  "tw": "凱洛藥材",
+  "en": "Kailac Medicine",
+  "ja": "カイラック薬材",
+  "ko": "카이락 약재",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1044_44",
+  "cn": "姜黄",
+  "tw": "薑黃",
+  "en": "Turmeric",
+  "ja": "ウコン",
+  "ko": "강황",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1045_45",
+  "cn": "永恒之爱",
+  "tw": "永恆龍舌蘭酒",
+  "en": "Eternal Love",
+  "ja": "エターナルラブ",
+  "ko": "이터널 러브",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1046_46",
+  "cn": "芥末",
+  "tw": "芥末",
+  "en": "Wasabi",
+  "ja": "ワサビ",
+  "ko": "와사비",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1047_47",
+  "cn": "料酒",
+  "tw": "料酒",
+  "en": "Cooking Wine",
+  "ja": "みりん",
+  "ko": "맛술",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1048_48",
+  "cn": "雷瓦汀火腿",
+  "tw": "雷瓦汀火腿",
+  "en": "Levatein Ham",
+  "ja": "レーヴァテインハム",
+  "ko": "레바테인 햄",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1050_50",
+  "cn": "辣椒素",
+  "tw": "辣椒素",
+  "en": "Capsaicin",
+  "ja": "カプサイシン",
+  "ko": "캡사이신",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1051_51",
+  "cn": "松露油",
+  "tw": "松露油",
+  "en": "Truffle oil",
+  "ja": "トリュフオイル",
+  "ko": "트러플 오일",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1052_52",
+  "cn": "蛋黄酱",
+  "tw": "美乃滋",
+  "en": "Mayonnaise",
+  "ja": "マヨネーズ",
+  "ko": "마요네즈",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1053_53",
+  "cn": "卢戈山参",
+  "tw": "盧戈山蔘",
+  "en": "Lugo Ginseng",
+  "ja": "ルーゴ高麗人参",
+  "ko": "루고 산삼",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1054_54",
+  "cn": "生命木炭",
+  "tw": "生命的木炭",
+  "en": "Charcoal of Life",
+  "ja": "生命の炭",
+  "ko": "생명의 숯",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1055_55",
+  "cn": "闪光粉末",
+  "tw": "閃爍的粉末",
+  "en": "Glittering Powder",
+  "ja": "光る粉",
+  "ko": "반짝이는 가루",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1056_56",
+  "cn": "透明蘑菇",
+  "tw": "透明的蘑菇",
+  "en": "Transparent Mushroom",
+  "ja": "透明キノコ",
+  "ko": "투명 버섯",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1057_57",
+  "cn": "穿山甲鳞片",
+  "tw": "穿山甲的鱗片",
+  "en": "Pangolin Scale",
+  "ja": "鱗甲目のうろっこ",
+  "ko": "천산갑의 비늘",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1058_58",
+  "cn": "能量蘑菇",
+  "tw": "能量蘑菇",
+  "en": "Energy Boost Mushroom",
+  "ja": "元気キノコ",
+  "ko": "불끈 버섯",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1059_59",
+  "cn": "秃鹫羽毛",
+  "tw": "禿鷲的羽毛",
+  "en": "Eagle's Feather",
+  "ja": "鷲の羽根",
+  "ko": "독수리의 깃털",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1060_60",
+  "cn": "魅惑粉末",
+  "tw": "魅惑粉末",
+  "en": "Charm Powder",
+  "ja": "魅惑の粉",
+  "ko": "매혹의 가루",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1061_61",
+  "cn": "黄金罗勒",
+  "tw": "黃金羅勒",
+  "en": "Golden Basil",
+  "ja": "黄金バジル",
+  "ko": "황금 바질",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1062_62",
+  "cn": "能量药水",
+  "tw": "能量藥水",
+  "en": "Energy Boost Potion",
+  "ja": "元気ポーション",
+  "ko": "불끈 포션",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1063_63",
+  "cn": "灵魂鲜奶油",
+  "tw": "靈魂鮮奶油",
+  "en": "Soul whipped Cream",
+  "ja": "魂生クリーム",
+  "ko": "영혼 생크림",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1064_64",
+  "cn": "维生素B浓缩液",
+  "tw": "維生素B濃縮溶液",
+  "en": "Vita B Concentrated Solution",
+  "ja": "ビタB 濃縮溶液",
+  "ko": "비타B 농축 용액",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1065_65",
+  "cn": "能量粉末",
+  "tw": "能量粉末",
+  "en": "Energy Boost Powder",
+  "ja": "元気粉",
+  "ko": "불끈 가루",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1066_66",
+  "cn": "地狱火辣酱",
+  "tw": "地獄火醬汁",
+  "en": "Hell's fire Sauce",
+  "ja": "地獄火ソース",
+  "ko": "지옥불소스",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1068_133",
+  "cn": "生蚝",
+  "tw": "生蠔",
+  "en": "Oyster",
+  "ja": "オイスター",
+  "ko": "오이스터",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1069_134",
+  "cn": "大蒜",
+  "tw": "大蒜",
+  "en": "Garlic",
+  "ja": "ニンニク",
+  "ko": "마늘",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1070_135",
+  "cn": "樱桃",
+  "tw": "櫻桃",
+  "en": "Cherry",
+  "ja": "チェリー",
+  "ko": "체리",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1071_136",
+  "cn": "胡椒",
+  "tw": "胡椒",
+  "en": "Pepper",
+  "ja": "胡椒",
+  "ko": "후추",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food1072_137",
+  "cn": "肉桂",
+  "tw": "肉桂",
+  "en": "Cinnamon",
+  "ja": "シナモン",
+  "ko": "시나몬",
+  "category": "Ingredients"
+ },
+ {
+  "itemId": "icon_food2002_2",
+  "cn": "蘑菇汤",
+  "tw": "蘑菇湯",
+  "en": "Mushroom Soup",
+  "ja": "マッシュルームスープ",
+  "ko": "버섯 수프",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2003_3",
+  "cn": "炒蘑菇",
+  "tw": "炒蘑菇",
+  "en": "Fried Mushroom",
+  "ja": "キノコ炒め",
+  "ko": "버섯 볶음",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2004_4",
+  "cn": "烤菇串",
+  "tw": "烤菇串",
+  "en": "Mushroom Skewer",
+  "ja": "キノコの串焼き",
+  "ko": "버섯 꼬치",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2005_5",
+  "cn": "蘑菇烤肉火锅",
+  "tw": "蘑菇烤牛肉火鍋",
+  "en": "Mushroom Bulgogi Stew",
+  "ja": "キノコすき焼き鍋",
+  "ko": "버섯불고기 전골",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2006_6",
+  "cn": "土豆汤",
+  "tw": "馬鈴薯湯",
+  "en": "Potato Soup",
+  "ja": "ポテトポタージュ",
+  "ko": "감자 수프",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2007_7",
+  "cn": "达雷普黑啤酒",
+  "tw": "達雷普黑啤酒",
+  "en": "Daref Black Beer",
+  "ja": "ダレフ黒ビール",
+  "ko": "다레프 흑맥주",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2008_8",
+  "cn": "黑啤酒炖锅",
+  "tw": "黑啤酒燉鍋",
+  "en": "Black Beer Stew",
+  "ja": "黒ビールシチュー",
+  "ko": "흑맥주 스튜",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2009_9",
+  "cn": "烤蜂蜜苹果",
+  "tw": "烤蜂蜜蘋果",
+  "en": "Baked Honey Apple",
+  "ja": "ベイクドハニーアップル",
+  "ko": "구운 꿀 사과",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2010_10",
+  "cn": "桑格利亚酒",
+  "tw": "桑格利亞酒",
+  "en": "Sangria",
+  "ja": "サングリア",
+  "ko": "샹그리아",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2011_11",
+  "cn": "流浪美食家烤肉",
+  "tw": "流浪美食家的烤肉",
+  "en": "The Wandering Gourmet's Barbeque",
+  "ja": "さすらい美食家の丸焼き",
+  "ko": "방랑 미식가의 통구이",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2012_12",
+  "cn": "喵拿铁",
+  "tw": "喵拿鐵",
+  "en": "Meow Latte",
+  "ja": "にゃんこラテ",
+  "ko": "야옹이 라떼",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2013_13",
+  "cn": "炸三文鱼便当",
+  "tw": "炸鮭魚便當",
+  "en": "Salmon Cutlet Lunchbox",
+  "ja": "サーモンカツ弁当",
+  "ko": "연어 커틀릿 도시락",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2014_14",
+  "cn": "草药三明治",
+  "tw": "草藥三明治",
+  "en": "Herb Sandwich",
+  "ja": "薬草サンドイッチ",
+  "ko": "약초 샌드위치",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2015_15",
+  "cn": "哈密瓜雪酪",
+  "tw": "哈密瓜雪酪",
+  "en": "Melon Sherbet",
+  "ja": "メロンシャーベット",
+  "ko": "멜론 셔벗",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2016_16",
+  "cn": "藏红花甜茶",
+  "tw": "番紅花甜茶",
+  "en": "Saffron Punch",
+  "ja": "サフラン花のポンチ",
+  "ko": "사프란꽃 화채",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2017_17",
+  "cn": "甜椒意式烘蛋",
+  "tw": "甜椒義式烘蛋",
+  "en": "Bell Pepper Frittata",
+  "ja": "パプリカフリッタータ",
+  "ko": "파프리카 프리타타",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2018_18",
+  "cn": "三分熟鲜血布丁",
+  "tw": "鮮血布丁",
+  "en": "Rare Bloody Pudding",
+  "ja": "レアブラッディプリン",
+  "ko": "레어 블러디 푸딩",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2019_19",
+  "cn": "蔬菜三明治",
+  "tw": "蔬菜三明治",
+  "en": "Vegetable Sandwich",
+  "ja": "ベジタブルサンドイッチ",
+  "ko": "채소 샌드위치",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2020_20",
+  "cn": "三文鱼芥末寿司",
+  "tw": "鮭魚芥末壽司",
+  "en": "Salmon Wasabi Sushi",
+  "ja": "サーモンワサビ寿司",
+  "ko": "연어 와사비 초밥",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2021_21",
+  "cn": "玉米奶酪",
+  "tw": "玉米起司",
+  "en": "Corn Cheese",
+  "ja": "コーンクリームチーズ",
+  "ko": "옥수수콘치즈",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2022_22",
+  "cn": "豆奶酱意大利面",
+  "tw": "豆奶醬義大利麵",
+  "en": "Bean Cream Pasta",
+  "ja": "豆クリームパスタ",
+  "ko": "콩크림 파스타",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2023_23",
+  "cn": "炒土豆",
+  "tw": "炒馬鈴薯",
+  "en": "Fried Potato",
+  "ja": "ジャガイモ炒め",
+  "ko": "감자 볶음",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2024_24",
+  "cn": "酱炒牛排",
+  "tw": "醬炒牛排",
+  "en": "Chop Steak",
+  "ja": "チョップステーキ",
+  "ko": "찹 스테이크",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2025_25",
+  "cn": "甜辣鲜虾",
+  "tw": "甜辣鮮蝦",
+  "en": "Chili Shrimp",
+  "ja": "エビチリ",
+  "ko": "칠리 새우",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2026_26",
+  "cn": "蜂蜜黄油杏仁",
+  "tw": "蜂蜜奶油杏仁",
+  "en": "Honey Butter Almond",
+  "ja": "ハニーバターアーモンド",
+  "ko": "허니버터 아몬드",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2027_27",
+  "cn": "凯洛养身汤",
+  "tw": "凱洛養身湯",
+  "en": "Kailac Health Soup",
+  "ja": "カイラック 養生スープ",
+  "ko": "카이락 보양탕",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2028_28",
+  "cn": "巧克力面包",
+  "tw": "巧克力麵包",
+  "en": "Chocolate Bread",
+  "ja": "チョコパン",
+  "ko": "초코빵",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2029_29",
+  "cn": "金枪鱼鸡胸肉三明治",
+  "tw": "鮪魚雞胸肉三明治",
+  "en": "Tuna Chicken Breast Sandwich",
+  "ja": "ツナチキンサンドイッチ",
+  "ko": "참치 닭가슴살 샌드위치",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2030_30",
+  "cn": "水果冰沙",
+  "tw": "水果冰沙",
+  "en": "Fruit Slushy",
+  "ja": "フルーツスラッシュ",
+  "ko": "후르츠 슬러시",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2031_31",
+  "cn": "火烤鱼板棒",
+  "tw": "火烤魚板棒",
+  "en": "Smoky Fish Cake bar",
+  "ja": "香ばしい棒天",
+  "ko": "불맛 핫바",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2032_32",
+  "cn": "巧克力鸡尾酒",
+  "tw": "巧克力雞尾酒",
+  "en": "Chocolat Cocktail",
+  "ja": "ショコラカクテル",
+  "ko": "쇼콜라 칵테일",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2033_33",
+  "cn": "鱼子酱蛋包饭",
+  "tw": "魚子醬蛋包飯",
+  "en": "Caviar Omelette",
+  "ja": "キャビアオムレツ",
+  "ko": "캐비어 오믈렛",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2034_34",
+  "cn": "三角美乃滋饭团",
+  "tw": "三角美乃滋飯糰",
+  "en": "Triangle Mayo Rice Ball",
+  "ja": "ツナマヨおにぎり",
+  "ko": "삼각마요 주먹밥",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2035_35",
+  "cn": "鸡肉卷",
+  "tw": "雞肉捲",
+  "en": "Chicken Roll",
+  "ja": "チキンロール",
+  "ko": "치킨롤",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2038_122",
+  "cn": "洛克菲勒生蚝",
+  "tw": "洛克菲勒生蠔",
+  "en": "Oysters Rockefeller",
+  "ja": "オイスター・ロックフェラー",
+  "ko": "오이스터 로커펠러",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2039_123",
+  "cn": "泰瑞丝派",
+  "tw": "泰瑞絲派",
+  "en": "Teresse Pie",
+  "ja": "テレーゼ・パイ",
+  "ko": "테레제 파이",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2040_124",
+  "cn": "三明治便当",
+  "tw": "三明治便當",
+  "en": "Sandwich Lunch Box",
+  "ja": "サンドイッチ弁当",
+  "ko": "샌드위치 도시락",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2041_125",
+  "cn": "手工蛋糕",
+  "tw": "手作蛋糕",
+  "en": "Home-Baked Cake",
+  "ja": "手作りケーキ",
+  "ko": "수제 케이크",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2042_126",
+  "cn": "香甜马卡龙",
+  "tw": "甜蜜馬卡龍",
+  "en": "Sweet Macaron",
+  "ja": "スイート・マカロン",
+  "ko": "달콤 마카롱",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2043_127",
+  "cn": "街头烤鸡肉串",
+  "tw": "街頭烤雞串",
+  "en": "Street Grilled Chicken Skewer",
+  "ja": "屋台の焼き鳥",
+  "ko": "길거리 닭꼬치 구이",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2044_128",
+  "cn": "香草牛排",
+  "tw": "香草牛排",
+  "en": "Herb Steak",
+  "ja": "ハーブステーキ",
+  "ko": "허브 스테이크",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2045_129",
+  "cn": "冰镇甜点",
+  "tw": "冰品甜點",
+  "en": "Frozen Dessert",
+  "ja": "アイスキャンディ",
+  "ko": "얼음 디저트",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2046_130",
+  "cn": "炸猪排盖饭",
+  "tw": "豬排蓋飯",
+  "en": "Pork Cutlet Rice Bowl",
+  "ja": "カツ丼",
+  "ko": "돈가스 덮밥",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2047_131",
+  "cn": "橄榄油意面",
+  "tw": "橄欖油義大利麵",
+  "en": "Aglio e Olio",
+  "ja": "ペペロンチーノ",
+  "ko": "오일 파스타",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food2048_132",
+  "cn": "汉堡排便当",
+  "tw": "漢堡肉便當",
+  "en": "Hamburg Steak Lunch Box",
+  "ja": "ハンバーグ弁当",
+  "ko": "함바그 도시락",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food3001_1",
+  "cn": "卢戈山参烤串",
+  "tw": "盧戈烤山蔘串",
+  "en": "Lugo Ginseng Grilled Skewer",
+  "ja": "ルーゴ高麗人参の串焼き",
+  "ko": "루고 산삼 꼬치구이",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food3002_2",
+  "cn": "煤炭饼干",
+  "tw": "煤炭餅乾",
+  "en": "Charcoal Cookie",
+  "ja": "黒焦げのクッキー",
+  "ko": "숯검댕 쿠키",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food3003_3",
+  "cn": "闪闪铁板虾",
+  "tw": "閃耀西班牙蒜味蝦",
+  "en": "Shiny Gambas",
+  "ja": "シャイニーガンバス",
+  "ko": "샤이니 감바스",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food3004_4",
+  "cn": "透明沙拉",
+  "tw": "透明化沙拉",
+  "en": "Transparent Salad",
+  "ja": "透明化サラダ",
+  "ko": "투명화 샐러드",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_food3014_14",
+  "cn": "地狱火紫菜包饭",
+  "tw": "地獄火海苔飯捲",
+  "en": "Fire of Hell Kimbab",
+  "ja": "地獄炎キンパ",
+  "ko": "지옥불 김밥",
+  "category": "Recipe"
+ },
+ {
+  "itemId": "icon_questItem000208_145",
+  "cn": "炸药箱",
+  "tw": "炸藥箱",
+  "en": "Box of explosives",
+  "ja": "爆発物の箱",
+  "ko": "폭발물 상자",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem000408_144",
+  "cn": "碧色锄头",
+  "tw": "藍色鋤草耙",
+  "en": "Blue Garden Plow",
+  "ja": "青い手ぐわ",
+  "ko": "푸른색 호미",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem000409_145",
+  "cn": "热灵药",
+  "tw": "溫熱的靈藥",
+  "en": "Warm Elixir",
+  "ja": "暖かい霊薬",
+  "ko": "따듯한 영약",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem000901_65",
+  "cn": "莎拉画的示意图",
+  "tw": "莎拉畫的示意圖",
+  "en": "Map drawn by Schera",
+  "ja": "シェラが描いてくれた略図",
+  "ko": "세라가 그려준 약도",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem000902_66",
+  "cn": "血刻印铁假面",
+  "tw": "血刻印的鐵面具",
+  "en": "The Blood Imprint's Iron Mask",
+  "ja": "鮮血刻印の鉄仮面",
+  "ko": "혈각인의 철가면",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem000903_67",
+  "cn": "黑魔法师追踪魔石",
+  "tw": "追蹤黑魔法師的魔石",
+  "en": "The Manastone of Warlock Pursuit",
+  "ja": "黒魔術師追跡の魔石",
+  "ko": "흑마법사 추적의 마석",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem001001_68",
+  "cn": "黛安娜的研究资料",
+  "tw": "黛安娜的研究資料",
+  "en": "Diana's Research Data",
+  "ja": "ディアナの研究資料",
+  "ko": "디아나의 연구 자료",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem001002_69",
+  "cn": "伯爵家的装饰用头盔",
+  "tw": "伯爵家的裝飾用頭盔",
+  "en": "The Count's Ornamental Helms",
+  "ja": "伯爵家の装飾用兜",
+  "ko": "백작가의 장식용 투구들",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem001003_70",
+  "cn": "挂在墙上的鞭子",
+  "tw": "掛在牆上的鞭子",
+  "en": "The Whip hanging on the wall",
+  "ja": "壁にかけられていた鞭",
+  "ko": "벽에 걸려 있던 채찍",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem001004_71",
+  "cn": "霍尔蒙克斯的核心",
+  "tw": "霍爾蒙克斯的核心",
+  "en": "Homunculus's Core",
+  "ja": "ホムンクルスのコア",
+  "ko": "호문쿨루스의 핵",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem001005_72",
+  "cn": "李昂哈德的核心",
+  "tw": "李昂哈德的核心",
+  "en": "Leonhart's Core",
+  "ja": "レオンハルトのコア",
+  "ko": "레온하르트의 핵",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem15_15",
+  "cn": "封锁矿山钥匙",
+  "tw": "封閉的礦山鑰匙",
+  "en": "Closed Mine Key",
+  "ja": "閉鎖された鉱山の鍵",
+  "ko": "폐쇄된 광산 열쇠",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem17_17",
+  "cn": "生锈之剑",
+  "tw": "生鏽的劍",
+  "en": "Rusty Sword",
+  "ja": "錆びた剣",
+  "ko": "녹슨 검",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem18_18",
+  "cn": "图案石板",
+  "tw": "畫有圖案的石板",
+  "en": "Stone Tablet with engraved symbols",
+  "ja": "模様が描かれた石板",
+  "ko": "문양이 그려진 석판",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem19_19",
+  "cn": "脏钥匙",
+  "tw": "骯髒的鑰匙",
+  "en": "Dirty Key",
+  "ja": "汚れた鍵",
+  "ko": "더러운 열쇠",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem2_2",
+  "cn": "米莎的项链",
+  "tw": "米莎的項鍊",
+  "en": "Misha's Necklace",
+  "ja": "ミーシャのネックレス",
+  "ko": "미샤의 목걸이",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem20_20",
+  "cn": "破烂食谱",
+  "tw": "又皺又爛的食譜",
+  "en": "Tattered Recipe",
+  "ja": "ボロボロなレシピ",
+  "ko": "너덜너덜한 레시피",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem21_21",
+  "cn": "纪律部室出入证",
+  "tw": "糾察隊室卡片鑰匙",
+  "en": "Disciplinary Committee Room's Key",
+  "ja": "風紀委員会室のカードキー",
+  "ko": "선도부실 카드키",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem22_22",
+  "cn": "黑暗秘传料理",
+  "tw": "黑暗的秘傳料理",
+  "en": "The Vision of Darkness Dish",
+  "ja": "闇の秘伝料理",
+  "ko": "어둠의 비전 요리",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem23_23",
+  "cn": "一捆鱼干",
+  "tw": "一束魚乾",
+  "en": "Dried Fish Bundle",
+  "ja": "干し魚の束",
+  "ko": "말린 생선 묶음",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem24_24",
+  "cn": "袋装鸡胸肉",
+  "tw": "雞胸肉袋",
+  "en": "Chicken Breast Pack",
+  "ja": "鶏の胸肉パック",
+  "ko": "닭가슴살 팩",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem25_25",
+  "cn": "料理社秘传香辛料",
+  "tw": "料理社的秘製香料",
+  "en": "Spice of the Cooking Club's Vision",
+  "ja": "料理部秘伝のスパイス",
+  "ko": "요리부 비전의 향신료",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem26_26",
+  "cn": "新闻剪报",
+  "tw": "被剪掉的報紙報導",
+  "en": "Torn newspaper article",
+  "ja": "切り取られた新聞記事",
+  "ko": "잘린 신문 기사",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem27_27",
+  "cn": "备用钥匙",
+  "tw": "備用鑰匙",
+  "en": "Emergency Key",
+  "ja": "非常用合鍵",
+  "ko": "비상용 열쇠",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem3_3",
+  "cn": "梅利德",
+  "tw": "梅利德",
+  "en": "Meled",
+  "ja": "メリッド",
+  "ko": "멜리드",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem31_31",
+  "cn": "矿山钥匙串",
+  "tw": "礦山鑰匙串",
+  "en": "Bundle of Mine Key",
+  "ja": "鉱山の鍵束",
+  "ko": "광산 열쇠 꾸러미",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem32_32",
+  "cn": "放债人的账本",
+  "tw": "借貸業者的帳本",
+  "en": "Loan Shark's Ledger",
+  "ja": "金貸し業者の帳簿",
+  "ko": "대금업자의 장부",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem35_35",
+  "cn": "帕拉奇勒的鳔胶",
+  "tw": "帕拉奇勒的鰾",
+  "en": "Parakyr's Air Bladder",
+  "ja": "パラキールの浮袋",
+  "ko": "파라키르의 부레",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem38_38",
+  "cn": "PC-2钥匙",
+  "tw": "PC-2鑰匙",
+  "en": "PC-2 Key",
+  "ja": "PC-2 鍵",
+  "ko": "PC-2 열쇠",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem39_39",
+  "cn": "紧急出口钥匙",
+  "tw": "緊急出口鑰匙",
+  "en": "Emergency Exit Key",
+  "ja": "非常口の鍵",
+  "ko": "비상구 열쇠",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem4_4",
+  "cn": "风铃",
+  "tw": "坎帕",
+  "en": "Campa",
+  "ja": "カンパー",
+  "ko": "캄파",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem40_40",
+  "cn": "电路图",
+  "tw": "電路圖",
+  "en": "Electrical circuit diagram",
+  "ja": "電気回路図",
+  "ko": "전기 회로도",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem41_41",
+  "cn": "亚拉里克炸弹",
+  "tw": "亞拉里克炸彈",
+  "en": "Alaric Bomb",
+  "ja": "アラリック爆弾",
+  "ko": "알라릭 폭탄",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem43_43",
+  "cn": "德温烟雾弹",
+  "tw": "德溫煙霧彈",
+  "en": "Deuwin Smoke Grenade",
+  "ja": "デュウィン煙幕弾",
+  "ko": "드윈 연막탄",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem44_44",
+  "cn": "臭味碎片",
+  "tw": "散發臭味的碎片",
+  "en": "Smelly Broken Piece",
+  "ja": "匂う割れた破片",
+  "ko": "냄새나는 깨진 조각",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem45_45",
+  "cn": "干净绷带",
+  "tw": "乾淨的繃帶",
+  "en": "Clean Bandage",
+  "ja": "きれいな包帯",
+  "ko": "깨끗한 붕대",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem46_46",
+  "cn": "绿油油利戴芙",
+  "tw": "翠綠的利戴芙",
+  "en": "Fresh Redev",
+  "ja": "青々としているリデブ",
+  "ko": "파릇파릇한 리데브",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem47_47",
+  "cn": "阿莫尼勒花",
+  "tw": "阿莫尼勒花",
+  "en": "Amonir Flower",
+  "ja": "アモニールの花",
+  "ko": "아모니르 꽃",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem48_48",
+  "cn": "凯洛特制恢复药",
+  "tw": "凱洛特製恢復藥",
+  "en": "Kailac's Special Recovery Potion",
+  "ja": "カイラック特製回復薬",
+  "ko": "카이락 특제 회복약",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem49_49",
+  "cn": "非完全体石怪核心",
+  "tw": "不完整的石怪核心",
+  "en": "Incomplete Golem's Core",
+  "ja": "不完全なゴーレムのコア",
+  "ko": "불완전한 골렘의 핵",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem5_5",
+  "cn": "雪鹿衔草",
+  "tw": "眼鹿草",
+  "en": "Snow Deer Grass",
+  "ja": "メジカグサ",
+  "ko": "눈사슴풀",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem51_51",
+  "cn": "核心复原装置设计图",
+  "tw": "核心復原裝置設計圖",
+  "en": "Core Recovery Device Blueprint",
+  "ja": "コア復旧装置設計図",
+  "ko": "핵 복구장치 설계도",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem52_52",
+  "cn": "魔塔核心复原装置",
+  "tw": "魔塔核心復原裝置",
+  "en": "Magic Tower Core Recovery Device",
+  "ja": "魔塔コア復旧装置",
+  "ko": "마탑 핵 복구장치",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem53_53",
+  "cn": "秘密拍卖邀请函",
+  "tw": "神祕拍賣邀請函",
+  "en": "Secret Auction Invitation",
+  "ja": "秘密オークションの招待状",
+  "ko": "비밀 경매 초대장",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem54_54",
+  "cn": "禁闭室示意图",
+  "tw": "禁閉室示意圖",
+  "en": "Confinement Room Map",
+  "ja": "留置所の地図",
+  "ko": "감금실 약도",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem55_55",
+  "cn": "禁闭室杂物",
+  "tw": "禁閉室的雜物",
+  "en": "Confinement Room Junk",
+  "ja": "留置所のガラクタ",
+  "ko": "감금실의 잡동사니",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem56_56",
+  "cn": "黑魔法研究书籍",
+  "tw": "黑魔法研究書籍",
+  "en": "Black Magic Research Book",
+  "ja": "黒魔術研究書籍",
+  "ko": "흑마법 연구서적",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem57_57",
+  "cn": "碎裂的右侧魔石",
+  "tw": "碎裂的右側魔石",
+  "en": "Fragmented Manastone (Right)",
+  "ja": "割れた魔石の右側",
+  "ko": "조각난 오른쪽 마석",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem58_58",
+  "cn": "碎裂的左侧魔石",
+  "tw": "碎裂的左側魔石",
+  "en": "Fragmented Manastone (Left)",
+  "ja": "割れた魔石の左側",
+  "ko": "조각난 왼쪽 마석",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem59_59",
+  "cn": "铁门解锁魔石",
+  "tw": "開啟鐵門用魔石",
+  "en": "Iron Door Opening Manastone",
+  "ja": "鉄扉開放用魔石",
+  "ko": "철문 개방용 마석",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem60_60",
+  "cn": "匕首钥匙",
+  "tw": "匕首鑰匙",
+  "en": "Dagger Key",
+  "ja": "短剣鍵",
+  "ko": "단검 열쇠",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem61_61",
+  "cn": "奇妙之书",
+  "tw": "奇妙的書",
+  "en": "Strange Book",
+  "ja": "奇妙な本",
+  "ko": "기묘한 책",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem62_62",
+  "cn": "三个金币",
+  "tw": "三個黃金",
+  "en": "Three Gold Coins",
+  "ja": "三枚の金貨",
+  "ko": "세 개의 금화",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem7_7",
+  "cn": "褐煤树枝",
+  "tw": "褐炭樹枝",
+  "en": "Lignite Twigs",
+  "ja": "リグナイトの枝",
+  "ko": "리그나이트 나뭇가지",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem8_8",
+  "cn": "褐煤种子",
+  "tw": "褐炭種子",
+  "en": "Lignite Seeds",
+  "ja": "リグナイトの種",
+  "ko": "리그나이트 씨앗",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_questItem9_9",
+  "cn": "褐煤盾牌",
+  "tw": "褐炭盾牌",
+  "en": "Lignite Shield",
+  "ja": "リグナイト盾",
+  "ko": "리그나이트 방패",
+  "category": "QuestItem"
+ },
+ {
+  "itemId": "icon_resource111_15",
+  "cn": "火圣石",
+  "tw": "火的聖石",
+  "en": "Fire Magic Crystal",
+  "ja": "火の聖石",
+  "ko": "불의 성석",
+  "category": "MagicCrystals"
+ },
+ {
+  "itemId": "icon_resource112_16",
+  "cn": "水圣石",
+  "tw": "水的聖石",
+  "en": "Water Magic Crystal",
+  "ja": "水の聖石",
+  "ko": "물의 성석",
+  "category": "MagicCrystals"
+ },
+ {
+  "itemId": "icon_resource113_17",
+  "cn": "风圣石",
+  "tw": "風的聖石",
+  "en": "Wind Magic Crystal",
+  "ja": "風の聖石",
+  "ko": "바람의 성석",
+  "category": "MagicCrystals"
+ },
+ {
+  "itemId": "icon_resource114_18",
+  "cn": "光明圣石",
+  "tw": "光的聖石",
+  "en": "Light Magic Crystal",
+  "ja": "光の聖石",
+  "ko": "빛의 성석",
+  "category": "MagicCrystals"
+ },
+ {
+  "itemId": "icon_resource115_19",
+  "cn": "黑暗圣石",
+  "tw": "暗的聖石",
+  "en": "Darkness Magic Crystal",
+  "ja": "闇の聖石",
+  "ko": "어둠의 성석",
+  "category": "MagicCrystals"
+ },
+ {
+  "itemId": "icon_resource201_27",
+  "cn": "铁矿石",
+  "tw": "鐵礦石",
+  "en": "Iron ore",
+  "ja": "鉄鉱石",
+  "ko": "철광석",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource202_28",
+  "cn": "铜矿石",
+  "tw": "銅礦石",
+  "en": "Copper ore",
+  "ja": "銅鉱石",
+  "ko": "동광석",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource203_29",
+  "cn": "金矿石",
+  "tw": "金礦石",
+  "en": "Gold ore",
+  "ja": "金鉱石",
+  "ko": "금광석",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource204_30",
+  "cn": "泥炭",
+  "tw": "泥炭",
+  "en": "Peat",
+  "ja": "泥炭",
+  "ko": "토탄",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource211_32",
+  "cn": "铁块",
+  "tw": "鐵塊",
+  "en": "Iron ingot",
+  "ja": "鉄のインゴット",
+  "ko": "철괴",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource212_33",
+  "cn": "铜块",
+  "tw": "銅塊",
+  "en": "Copper ingot",
+  "ja": "銅のインゴット",
+  "ko": "동괴",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource213_34",
+  "cn": "金块",
+  "tw": "金塊",
+  "en": "Gold ingot",
+  "ja": "金のインゴット",
+  "ko": "금괴",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource214_35",
+  "cn": "煤炭",
+  "tw": "煤",
+  "en": "Coal",
+  "ja": "石炭",
+  "ko": "석탄",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource221_36",
+  "cn": "钢铁块",
+  "tw": "鋼鐵塊",
+  "en": "Steel ingot",
+  "ja": "鋼鉄のインゴット",
+  "ko": "강철괴",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource222_37",
+  "cn": "黄铜块",
+  "tw": "黃銅塊",
+  "en": "Brass ingot",
+  "ja": "黄銅のインゴット",
+  "ko": "황동괴",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource223_38",
+  "cn": "白金块",
+  "tw": "白金塊",
+  "en": "Platinum ingot",
+  "ja": "白金のインゴット",
+  "ko": "백금괴",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource224_62",
+  "cn": "无烟煤",
+  "tw": "無煙煤",
+  "en": "Anthracite",
+  "ja": "無煙炭",
+  "ko": "무연탄",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource301_39",
+  "cn": "普通皮革",
+  "tw": "一般皮革",
+  "en": "Plain leather",
+  "ja": "一般皮",
+  "ko": "일반 가죽",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource311_40",
+  "cn": "高级皮革",
+  "tw": "高級皮革",
+  "en": "Fine leather",
+  "ja": "高級皮",
+  "ko": "고급 가죽",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource321_41",
+  "cn": "顶级皮革",
+  "tw": "頂級皮革",
+  "en": "Top quality leather",
+  "ja": "最高級皮",
+  "ko": "최고급 가죽",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource401_42",
+  "cn": "普通布料",
+  "tw": "一般布料",
+  "en": "Plain fabric",
+  "ja": "一般布",
+  "ko": "일반 천",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource411_43",
+  "cn": "高级布料",
+  "tw": "高級布料",
+  "en": "Fine fabric",
+  "ja": "高級布",
+  "ko": "고급 천",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource421_44",
+  "cn": "顶级布料",
+  "tw": "頂級布料",
+  "en": "Top quality fabric",
+  "ja": "最高級布",
+  "ko": "최고급 천",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource501_45",
+  "cn": "原木",
+  "tw": "原木",
+  "en": "Hardwood",
+  "ja": "原木",
+  "ko": "원목",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource511_46",
+  "cn": "胶合板",
+  "tw": "夾板",
+  "en": "Plywood",
+  "ja": "合板",
+  "ko": "합판",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource521_63",
+  "cn": "强化胶合板",
+  "tw": "強化夾板",
+  "en": "Reinforced plywood",
+  "ja": "強化合板",
+  "ko": "강화 합판",
+  "category": "CraftingMaterials"
+ },
+ {
+  "itemId": "icon_resource60005_88",
+  "cn": "金币",
+  "tw": "金幣",
+  "en": "Gold",
+  "ja": "ゴールド",
+  "ko": "골드",
+  "category": null
+ },
+ {
+  "itemId": "icon_resource80001_116",
+  "cn": "精炼粉末",
+  "tw": "強化粉末",
+  "en": "Refining Powder",
+  "ja": "製錬粉",
+  "ko": "재련 가루",
+  "category": null
+ },
+ {
+  "itemId": "icon_resource901_49",
+  "cn": "初级天赋技能书",
+  "tw": "新手天賦技能書",
+  "en": "★1 Ability S. Book",
+  "ja": "初心者用才能スキルブック",
+  "ko": "초보 재능스킬북",
+  "category": null
+ },
+ {
+  "itemId": "icon_resource906_50",
+  "cn": "进阶天赋技能书",
+  "tw": "進階天賦技能書",
+  "en": "★2 Ability S. Book",
+  "ja": "見習い用才能スキルブック",
+  "ko": "중수 재능스킬북",
+  "category": null
+ },
+ {
+  "itemId": "icon_resource907_51",
+  "cn": "高手天赋技能书",
+  "tw": "高手天賦技能書",
+  "en": "★3 Ability S. Book",
+  "ja": "玄人用才能スキルブック",
+  "ko": "고수 재능스킬북",
+  "category": null
+ }
+]

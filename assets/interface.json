@@ -1365,7 +1365,7 @@
         "亲密度谈心等级筛选": {
             "description": "仅与亲密度等级低于所选阈值的对象谈心。",
             "type": "select",
-            "default_case": "Lv<20",
+            "default_case": "Lv<10",
             "cases": [
                 {
                     "name": "Lv<10",
@@ -1430,6 +1430,9 @@
                     "name": "No",
                     "pipeline_override": {
                         "Arbitrage_BuyItem": {
+                            "enabled": false
+                        },
+                        "Arbitrage_Favorit_Buy": {
                             "enabled": false
                         },
                         "Arbitrage_Bargaining_SkillList": {
@@ -1628,6 +1631,13 @@
                         },
                         "Arbitrage_Sell_Item_NumberSafety_OFF": {
                             "enabled": false
+                        },
+                        "Arbitrage_Sell_Item_Selling": {
+                            "next": [
+                                "Arbitrage_Sell_Item_Selling",
+                                "Arbitrage_Sell_End",
+                                "[JumpBack]Arbitrage_PackList_ResetSwip"
+                            ]
                         }
                     }
                 },
