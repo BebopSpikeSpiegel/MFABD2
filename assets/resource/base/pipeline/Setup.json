@@ -569,7 +569,7 @@
         "focus": "Set.检测技能5,通过"
     },
     "Rec_<Setup_SkillScan_Skill5>_Tpl": {
-        "desc": "[识别]'锻造'技能存在",
+        "desc": "[识别]'压制'技能存在",
         "recognition": "TemplateMatch",
         "roi": [
             1140,
@@ -593,8 +593,7 @@
             83
         ],
         "template": [
-            "Binary/Binary_skill5_Nol.png",
-            "Binary/Binary_skill5_Lgt.png"
+            "Binary/Binary_skill5_Nol.png"
         ],
         "green_mask": true,
         "threshold": 0.6
@@ -1901,12 +1900,17 @@
             "Rec_SandBox_Pin_Tpl",
             "Rec_SandBox_Run_Tpl"
         ],
+        "anchor": {
+            "SetSkill": "Setup_SetSkill_tab3_Reset5",
+            "SkillList_ReLift": "",
+            "SkillList_Right": ""
+        },
         "next": [
             "Setup_SetSkill_Per"
         ]
     },
     "Setup_SetSkill_Per": {
-        "desc": "准备安放技能",
+        "desc": "准备安放技能 | 用Setup调用技能的接这里,需要外部写好锚点,参考Setup_SetSkill_Switch → Setup_SetSkill_tab3_Ck",
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Pin_Tpl",
@@ -1937,6 +1941,7 @@
     },
     "Setup_SetSkill_SwipMini": {
         "desc": "小幅度滑动,使黄色消失",
+        "enabled": false,
         "recognition": "ColorMatch",
         "roi": [
             110,
@@ -2011,12 +2016,12 @@
             55
         ],
         "next": [
-            "[JumpBack]Setup_SetSkill_tab3_ReLift",
-            "Setup_SetSkill_tab3_Reset5"
+            "[JumpBack][Anchor]SkillList_ReLift",
+            "[Anchor]SetSkill",
+            "[JumpBack][Anchor]SkillList_Right"
         ]
     },
-    "Setup_SetSkill_tab3_ReLift": {
-        "max_hit": 3,
+    "Setup_SetSkill_ReLift": {
         "recognition": "OCR",
         "roi": [
             87,
@@ -2040,9 +2045,32 @@
             1,
             1
         ],
-        "end_hold": 800,
+        "end_hold": 500,
         "duration": 500,
-        "post_delay": 1500
+        "post_delay": 1500,
+        "focus": "将技能列表复位"
+    },
+    "Setup_SetSkill_ReLift_Maxhit": {
+        "max_hit": 3,
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_ReLift"],
+        "action": "Swipe",
+        "begin": [
+            115,
+            590,
+            1,
+            1
+        ],
+        "end": [
+            1134,
+            592,
+            1,
+            1
+        ],
+        "end_hold": 500,
+        "duration": 500,
+        "post_delay": 1500,
+        "focus": "将技能列表复位"
     },
     "Setup_SetSkill_tab3_Reset5": {
         "action": "Click",
@@ -2134,16 +2162,8 @@
     },
     "Setup_SetSkill_3-1_Swip": {
         "max_hit": 2,
-        "recognition": "OCR",
-        "roi": [
-            87,
-            371,
-            97,
-            99
-        ],
-        "expected": [
-            "天赋技能"
-        ],
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_ReLift"],
         "action": "Swipe",
         "begin": [
             1134,
@@ -2240,16 +2260,8 @@
     },
     "Setup_SetSkill_2to3_Swip": {
         "max_hit": 2,
-        "recognition": "OCR",
-        "roi": [
-            87,
-            371,
-            97,
-            99
-        ],
-        "expected": [
-            "天赋技能"
-        ],
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_ReLift"],
         "action": "Swipe",
         "begin": [
             1134,
@@ -2344,16 +2356,8 @@
     },
     "Setup_SetSkill_3to4_Swip": {
         "max_hit": 2,
-        "recognition": "OCR",
-        "roi": [
-            87,
-            371,
-            97,
-            99
-        ],
-        "expected": [
-            "天赋技能"
-        ],
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_ReLift"],
         "action": "Swipe",
         "begin": [
             1134,
@@ -2449,16 +2453,8 @@
     },
     "Setup_SetSkill_4to5_Swip": {
         "max_hit": 2,
-        "recognition": "OCR",
-        "roi": [
-            87,
-            371,
-            97,
-            99
-        ],
-        "expected": [
-            "天赋技能"
-        ],
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_ReLift"],
         "action": "Swipe",
         "begin": [
             1134,
@@ -2539,7 +2535,7 @@
             33
         ],
         "expected": [
-            "装备制作"
+            "制伏"
         ],
         "action": "Click",
         "target_offset": [
@@ -2596,16 +2592,8 @@
     "Setup_SetSkill_1to2_Swip": {
         "desc": "当页找不到,向后滑动,限定次数",
         "max_hit": 2,
-        "recognition": "OCR",
-        "roi": [
-            87,
-            371,
-            97,
-            99
-        ],
-        "expected": [
-            "天赋技能"
-        ],
+        "recognition": "Or",
+        "any_of": ["Setup_SetSkill_ReLift"],
         "action": "Swipe",
         "begin": [
             1134,
@@ -2644,34 +2632,5 @@
             255
         ],
         "count": 50
-    },
-    "Setup_SetSkill_ReLift": {
-        "recognition": "OCR",
-        "roi": [
-            87,
-            371,
-            97,
-            99
-        ],
-        "expected": [
-            "天赋技能"
-        ],
-        "action": "Swipe",
-        "begin": [
-            115,
-            590,
-            1,
-            1
-        ],
-        "end": [
-            1134,
-            592,
-            1,
-            1
-        ],
-        "end_hold": 600,
-        "duration": 500,
-        "post_delay": 1500,
-        "focus": "将技能列表复位"
     }
 }
