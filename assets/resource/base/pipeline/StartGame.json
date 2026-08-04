@@ -544,14 +544,9 @@
         "desc": "识别左下抽抽乐-返回地图页(原版)",
         "recognition": "And",
         "all_of": [
-            "Rec_HomePage_GA_Ocr",
-            "Rec_HomePage_GA_Clr"
+            "Global_BackPageHub_Once"
         ],
         "action": "Click",
-        "target": [
-            120,
-            35
-        ],
         "post_delay": 2000,
         "next": [
             "[JumpBack]StartGame_PVPSet",
