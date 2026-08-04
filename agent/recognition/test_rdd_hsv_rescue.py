@@ -69,6 +69,41 @@ class RescueConfigTest(unittest.TestCase):
         self.assertEqual(profile[1]["lower"], [165, 152, 138])
         self.assertEqual(profile[0]["upper"], RANGES[0]["upper"])
 
+    def test_strict_profile_fails_closed_when_lower_crosses_upper(self):
+        """收紧把 lower 顶过 upper 时必须 fail closed。
+
+        构造要点：新 lower 有 `min(255, ...)` 钳位，所以只有 upper 的 S 或 V
+        **小于 255** 时才够得到这个分支。拿 upper 全 255 的 RANGES 配再大的
+        delta 都撞不出来 —— 这里容易凭直觉写出永远不成立的用例。
+        """
+        narrow_s = [{"lower": [0, 140, 120], "upper": [12, 200, 255]}]
+        self.assertIsNone(strict_profile(narrow_s, 80, 0))       # 140+80 > 200
+        self.assertIsNotNone(strict_profile(narrow_s, 60, 0))    # 140+60 = 200，贴边不算越界
+        narrow_v = [{"lower": [0, 140, 120], "upper": [12, 255, 180]}]
+        self.assertIsNone(strict_profile(narrow_v, 0, 61))       # 120+61 > 180
+        # upper 全 255 时钳位兜底，无论多大都收敛成合法 profile，不该误判成 fail closed
+        self.assertEqual(strict_profile(RANGES, 10000, 10000)[0]["lower"], [0, 255, 255])
+
+    def test_strict_profile_allows_single_axis_tightening(self):
+        """单边 delta=0 是合法档，**不得**拒 —— 拒了等于废掉三个切法里的两个。
+
+        `direction_deltas` 给出的是 亮度=(0, dv)、饱和=(ds, 0)、双切=(ds, dv)，
+        单边为 0 正是前两者的常态；实测语料里绝大多数救援命中走的就是 亮度 档。
+        只有两边都不收紧才没救援可做。
+        """
+        self.assertEqual(strict_profile(RANGES, 0, 18)[0]["lower"], [0, 140, 138])
+        self.assertEqual(strict_profile(RANGES, 12, 0)[0]["lower"], [0, 152, 120])
+        self.assertIsNone(strict_profile(RANGES, 0, 0))
+        self.assertIsNone(strict_profile(RANGES, -1, 18))
+        self.assertIsNone(strict_profile(RANGES, 12, -1))
+
+    def test_strict_profile_rejects_malformed_ranges(self):
+        self.assertIsNone(strict_profile(
+            [{"lower": [0, 140], "upper": [12, 255, 255]}], 12, 18))
+        self.assertIsNone(strict_profile([{"upper": [12, 255, 255]}], 12, 18))
+        self.assertIsNone(strict_profile([{"lower": [0, 140, 120]}], 12, 18))
+        self.assertIsNone(strict_profile([], 12, 18))
+
 
 class CutpointAndCandidateTest(unittest.TestCase):
     def test_candidate_mask_must_be_true_subset(self):

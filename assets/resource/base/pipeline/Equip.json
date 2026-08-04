@@ -1,74 +1,45 @@
 {
     "Equip_HomePage": {
         "next": [
-            "Equip_Skill_Tap3_clr",
-            "Equip_Skill_Tap3",
+            "Equip_Skill_Call",
             "[JumpBack]Global_ToSandBox"
         ],
         "focus": "EM.锻造开始"
     },
-    "Equip_Skill_Tap3": {
+    "Equip_Skill_Call": {
         "desc": "第3页技能点击",
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Pin3_Tpl"
         ],
-        "action": "Click",
+        "anchor": {
+            "SetSkill": "Equip_Skill",
+            "SkillList_ReLift": "",
+            "SkillList_Right": "Setup_SetSkill_4to5_Swip"
+        },
         "post_delay": 800,
         "next": [
-            "Equip_Skill_Tap3_clr",
-            "Equip_Skill_Tap3"
+            "Equip_Skill",
+            "Setup_SetSkill_Per"
         ]
     },
-    "Equip_Skill_Tap3_clr": {
-        "desc": "技能页3，色核识别.next遍历是防止放置其他技能;次节点每轮next判定",
-        "recognition": "And",
-        "all_of": [
-            "Rec_SandBox_Pin3_Tpl",
-            "Sub_SandBox_Pin3_Bright_Clr"
-        ],
-        "next": [
-            "[JumpBack]Setup_Entry5",
-            "[JumpBack]Equip_Backpack_Full",
-            "Equip_Skill3_5_Nothing",
-            "Equip_Skill3_5"
-        ],
-        "focus": "ESB.技能页3-色核通过"
-    },
-    "Equip_Skill3_5_Nothing": {
-        "desc": "PVE点击技能2（栏位4。栏位5留空，摸鱼）",
-        "recognition": "TemplateMatch",
+    "Equip_Skill": {
+        "desc": "技能菜单出口",
+        "recognition": "OCR",
         "roi": [
-            1140,
-            447,
-            83,
-            83
+            110,
+            580,
+            1053,
+            33
         ],
-        "template": [
-            "Skill-Nothing.png"
-        ],
-        "focus": "ESB.无技能被设置，栏位3-5"
-    },
-    "Equip_Skill3_5": {
-        "desc": "PVE点击技能4",
-        "recognition": "TemplateMatch",
-        "roi": [
-            1140,
-            447,
-            83,
-            83
-        ],
-        "template": [
-            "skill3-5.png"
+        "expected": [
+            "装备制作"
         ],
         "action": "Click",
-        "target": [
-            1181,
-            486
-        ],
         "post_delay": 2000,
         "next": [
-            "Equip_EquipMakeGui"
+            "Equip_EquipMakeGui",
+            "[JumpBack]Global_WaitingForLoading"
         ]
     },
     "Equip_EquipMakeGui": {
@@ -992,14 +963,11 @@
     },
     "Equip_Overdrive_RefLvMax_Forwarding": {
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Equip_filter<C17",
+            "target": "Equip_filter<C17",
             "patch": {
                 "enabled": true
-            },
-            "origin": {
-                "enabled": false
             }
         },
         "next": [

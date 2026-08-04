@@ -14,7 +14,7 @@
             "cycle_type": "g_weekly"
         },
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
             "patches": {
                 "Collect_PackEnd_Ck": {
@@ -26,21 +26,6 @@
                     "next": [
                         "Collect_Skill3_2",
                         "[JumpBack]Collect_OnlyOnce_SkillUsed",
-                        "Collect_Skill3_2_Used",
-                        "Collect_Skill3_3_perOcr",
-                        "Collect_Skill3_3_Nothing",
-                        "Collect_Skill3_3",
-                        "Collect_Skill_TapReset"
-                    ]
-                }
-            },
-            "origins": {
-                "Collect_PackEnd_Ck": {
-                    "next": []
-                },
-                "Collect_Skill3_2": {
-                    "next": [
-                        "Collect_Skill3_2",
                         "Collect_Skill3_2_Used",
                         "Collect_Skill3_3_perOcr",
                         "Collect_Skill3_3_Nothing",
@@ -250,7 +235,8 @@
             "SetSimpleSkip": "Collect_FirstBootPack_To1_Sandbox_Dit"
         },
         "next": [
-            "Collect_QuickCart_SelectType_EventPack"
+            "Collect_QuickCart_SelectType_EventPack",
+            "[JumpBack]Global_QuickCart_SwipTo_2P"
         ]
     },
     "Collect_ManagerPack_SetSimpleSkip": {
@@ -380,9 +366,9 @@
         ],
         "count": 200,
         "action": "Custom",
-        "custom_action": "RestoreNode",
+        "custom_action": "RestorePipeline",
         "custom_action_param": {
-            "node": "Collect_LocatePackFrame_Smart_Swip"
+            "target": "Collect_LocatePackFrame_Smart_Swip"
         },
         "anchor": {
             "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
@@ -407,9 +393,9 @@
         ],
         "count": 300,
         "action": "Custom",
-        "custom_action": "RestoreNode",
+        "custom_action": "RestorePipeline",
         "custom_action_param": {
-            "node": "Collect_LocatePackFrame_Smart_Swip"
+            "target": "Collect_LocatePackFrame_Smart_Swip"
         },
         "anchor": {
             "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
@@ -434,9 +420,9 @@
         ],
         "count": 500,
         "action": "Custom",
-        "custom_action": "RestoreNode",
+        "custom_action": "RestorePipeline",
         "custom_action_param": {
-            "node": "Collect_LocatePackFrame_Smart_Swip"
+            "target": "Collect_LocatePackFrame_Smart_Swip"
         },
         "anchor": {
             "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
@@ -461,9 +447,9 @@
         ],
         "count": 500,
         "action": "Custom",
-        "custom_action": "RestoreNode",
+        "custom_action": "RestorePipeline",
         "custom_action_param": {
-            "node": "Collect_LocatePackFrame_Smart_Swip"
+            "target": "Collect_LocatePackFrame_Smart_Swip"
         },
         "anchor": {
             "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
@@ -488,9 +474,9 @@
         ],
         "count": 500,
         "action": "Custom",
-        "custom_action": "RestoreNode",
+        "custom_action": "RestorePipeline",
         "custom_action_param": {
-            "node": "Collect_LocatePackFrame_Smart_Swip"
+            "target": "Collect_LocatePackFrame_Smart_Swip"
         },
         "anchor": {
             "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
@@ -1231,24 +1217,15 @@
     },
     "Collect_Loc_Swip_1Page": {
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "patches": {
-                "Collect_LocatePackFrame_Smart_Swip": {
-                    "custom_recognition_param": {
-                        "tag": "LocPage_SmartSwip",
-                        "max": 1
-                    },
-                    "focus": "CL.M.智能翻页,到第2页."
-                }
-            },
-            "origins": {
-                "Collect_LocatePackFrame_Smart_Swip": {
-                    "custom_recognition_param": {
-                        "tag": "LocPage_SmartSwip",
-                        "max": 0
-                    }
-                }
+            "target": "Collect_LocatePackFrame_Smart_Swip",
+            "patch": {
+                "custom_recognition_param": {
+                    "tag": "LocPage_SmartSwip",
+                    "max": 1
+                },
+                "focus": "CL.M.智能翻页,到第2页."
             }
         },
         "anchor": {
@@ -1260,24 +1237,15 @@
     },
     "Collect_Loc_Swip_2Page": {
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "patches": {
-                "Collect_LocatePackFrame_Smart_Swip": {
-                    "custom_recognition_param": {
-                        "tag": "LocPage_SmartSwip",
-                        "max": 2
-                    },
-                    "focus": "CL.M.智能翻页,到第3页."
-                }
-            },
-            "origins": {
-                "Collect_LocatePackFrame_Smart_Swip": {
-                    "custom_recognition_param": {
-                        "tag": "LocPage_SmartSwip",
-                        "max": 0
-                    }
-                }
+            "target": "Collect_LocatePackFrame_Smart_Swip",
+            "patch": {
+                "custom_recognition_param": {
+                    "tag": "LocPage_SmartSwip",
+                    "max": 2
+                },
+                "focus": "CL.M.智能翻页,到第3页."
             }
         },
         "anchor": {
@@ -1289,24 +1257,15 @@
     },
     "Collect_Loc_Swip_3Page": {
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "patches": {
-                "Collect_LocatePackFrame_Smart_Swip": {
-                    "custom_recognition_param": {
-                        "tag": "LocPage_SmartSwip",
-                        "max": 3
-                    },
-                    "focus": "CL.M.智能翻页,到第4页."
-                }
-            },
-            "origins": {
-                "Collect_LocatePackFrame_Smart_Swip": {
-                    "custom_recognition_param": {
-                        "tag": "LocPage_SmartSwip",
-                        "max": 0
-                    }
-                }
+            "target": "Collect_LocatePackFrame_Smart_Swip",
+            "patch": {
+                "custom_recognition_param": {
+                    "tag": "LocPage_SmartSwip",
+                    "max": 3
+                },
+                "focus": "CL.M.智能翻页,到第4页."
             }
         },
         "anchor": {
@@ -1318,24 +1277,15 @@
     },
     "Collect_Loc_Swip_4Page": {
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "patches": {
-                "Collect_LocatePackFrame_Smart_Swip": {
-                    "custom_recognition_param": {
-                        "tag": "LocPage_SmartSwip",
-                        "max": 4
-                    },
-                    "focus": "CL.M.智能翻页,到第5页."
-                }
-            },
-            "origins": {
-                "Collect_LocatePackFrame_Smart_Swip": {
-                    "custom_recognition_param": {
-                        "tag": "LocPage_SmartSwip",
-                        "max": 0
-                    }
-                }
+            "target": "Collect_LocatePackFrame_Smart_Swip",
+            "patch": {
+                "custom_recognition_param": {
+                    "tag": "LocPage_SmartSwip",
+                    "max": 4
+                },
+                "focus": "CL.M.智能翻页,到第5页."
             }
         },
         "anchor": {
@@ -1348,23 +1298,15 @@
     "Collect_Loc_Swip_5Page": {
         "desc": "只做到兼容6页,目前已200%溢出非常足够.",
         "action": "Custom",
-        "custom_action": "PatchBatch",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "patches": {
-                "Collect_LocatePackFrame_Smart_Swip": {
-                    "custom_recognition_param": {
-                        "tag": "LocPage_SmartSwip",
-                        "max": 5
-                    },
-                    "focus": "CL.M.智能翻页,到第6页."
-                }
-            },
-            "origins": {
-                "Collect_LocatePackFrame_Smart_Swip": {
-                    "custom_recognition_param": {
-                        "max": 0
-                    }
-                }
+            "target": "Collect_LocatePackFrame_Smart_Swip",
+            "patch": {
+                "custom_recognition_param": {
+                    "tag": "LocPage_SmartSwip",
+                    "max": 5
+                },
+                "focus": "CL.M.智能翻页,到第6页."
             }
         },
         "next": [
@@ -1542,9 +1484,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -1581,9 +1523,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -1620,9 +1562,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -1659,9 +1601,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -1698,9 +1640,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -1737,9 +1679,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -1776,9 +1718,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -1815,9 +1757,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -1854,9 +1796,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -1893,9 +1835,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -1932,9 +1874,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -1971,9 +1913,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2010,9 +1952,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2049,9 +1991,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2088,9 +2030,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2127,9 +2069,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2166,9 +2108,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2206,9 +2148,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2245,9 +2187,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2285,9 +2227,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2324,9 +2266,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2363,9 +2305,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2402,9 +2344,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2441,9 +2383,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2481,9 +2423,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2520,9 +2462,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2559,9 +2501,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2599,9 +2541,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2639,9 +2581,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2678,9 +2620,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2717,9 +2659,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",
@@ -2756,9 +2698,9 @@
         ],
         "box_index": 0,
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck",
+            "target": "Collect_PackEnd_Ck",
             "patch": {
                 "action": "Custom",
                 "custom_action": "MarkComplete",

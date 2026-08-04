@@ -1,25 +1,22 @@
 {
-    "Equip_Skill3_5_Nothing": {
-        "roi": [
-            1164,
-            496,
-            69,
-            60
+    "Equip_HomePage": {
+        "desc": "锻造入口。|[PC覆盖·2026-08-02] 卡带留驻梦幻广场时,新setup技能表进入方式在广场必死(OpenSklMenu连败20s→默认Null假成功,当日三连实录)——广场无技能坞。前置一发QC1归位守卫:无论开局卡带在哪,锻造永远从标准卡带起步,零手动。",
+        "next": [
+            "[JumpBack]Daily_End_CassetteHome_PC",
+            "Equip_Skill_Call",
+            "[JumpBack]Global_ToSandBox"
         ]
     },
-    "Equip_Skill3_5": {
+    "Equip_Skill": {
         "roi": [
-            1164,
-            496,
-            69,
-            60
+            76,
+            601,
+            1138,
+            34
         ],
-        "green_mask": true,
-        "target": [
-            1193,
-            521,
-            5,
-            5
+        "expected": [
+            "装备制作",
+            "製作装備"
         ]
     },
     "Equip_EquipMakeGui": {
@@ -96,7 +93,8 @@
         ],
         "expected": [
             "键强化",
-            "鍵強化"
+            "鍵強化",
+            "键強化"
         ]
     },
     "Equip_EquipUp": {
@@ -212,6 +210,10 @@
             490,
             96,
             128
+        ],
+        "expected": [
+            "强化",
+            "強化"
         ]
     },
     "Equip_EquipUpResult": {
@@ -515,6 +517,24 @@
         "expected": [
             "装备",
             "裝備"
+        ]
+    },
+    "Equip_Skill3_5_Nothing": {
+        "recognition": "DirectHit",
+        "roi": [
+            1164,
+            496,
+            69,
+            60
+        ]
+    },
+    "Equip_Skill3_5": {
+        "recognition": "DirectHit",
+        "roi": [
+            1164,
+            496,
+            69,
+            60
         ]
     }
 }
