@@ -660,22 +660,27 @@
         ]
     },
     "QuickHunt_NoAP_Rice": {
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": "OCR",
-                "roi": [
-                    667,
-                    536,
-                    78,
-                    39
-                ],
-                "expected": [
-                    "\\d"
-                ]
-            },
-            "Sub_Ocr_Red_Clr"
+        "desc": "快速战斗子菜单,无AP为红字,mfa5.12.2存在子识别重名称Roi漏问题,暂时删除Ocr.未来需要回滚",
+        "recognition": "ColorMatch",
+        "roi": [
+            667,
+            536,
+            78,
+            39
         ],
+        "method": 40,
+        "lower": [
+            0,
+            150,
+            230
+        ],
+        "upper": [
+            10,
+            255,
+            255
+        ],
+        "connected": true,
+        "count": 10,
         "next": [
             "QuickHunt_CollectMap_Initialize"
         ],

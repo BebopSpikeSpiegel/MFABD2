@@ -150,16 +150,19 @@
             "Global_ToHomePage_Reset"
         ],
         "on_error": [
-            "[JumpBack]StartGame_SeasonSet",
             "[JumpBack]StartGame_Special",
             "[JumpBack]StartGame_PVPSet",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
             "[JumpBack]PVP_PerOperationsMain_Error",
             "[JumpBack]Global_ERR_AtFish",
             "[JumpBack]Dummy_Err_GetProductsFail",
+            "[JumpBack]StartGame_Error_API",
             "[JumpBack]Global_HomeButton_Once",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ]
+        ],
+        "focus": "GO.复位到主菜单-开始"
     },
     "Global_ToHomePage_HomeButton": {
         "desc": "找到run-点击返回主页",
@@ -221,10 +224,11 @@
         "all_of": [
             "Rec_HomePage_GA_Ocr",
             "Rec_HomePage_GA_Clr"
-        ]
+        ],
+        "focus": "GO.复位到主菜单-已确认"
     },
     "Global_ToSandBox": {
-        "desc": "[通用复位]复位到主界面模块,开始,中继调用",
+        "desc": "[通用复位]复位到箱庭模块,开始,中继调用",
         "recognition": "Or",
         "any_of": ["Global_ToSandBox_Enter"],
         "inverse": true,
@@ -235,16 +239,20 @@
             "[JumpBack]Global_WaitingForLoading"
         ],
         "on_error": [
-            "Global_BackToQC1",
-            "[JumpBack]StartGame_SeasonSet",
             "[JumpBack]StartGame_Special",
             "[JumpBack]StartGame_PVPSet",
             "[JumpBack]PVP_PerOperationsMain_Error",
             "[JumpBack]Global_ERR_AtFish",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]Dummy_Err_GetProductsFail",
+            "[JumpBack]StartGame_Error_API",
+            "Global_BackToQC1",
             "[JumpBack]Global_ToHomePage_Crash",
             "Global_Null_Exception",
             "Global_Null_Panic"
-        ]
+        ],
+        "focus": "GO.复位到箱庭-开始"
     },
     "Global_ToSandBox_Reset": {
         "desc": "其他页面，返回按钮",
@@ -259,6 +267,20 @@
             "Global_ToSandBox_Enter",
             "Global_ToSandBox_Reset"
         ],
+        "on_error": [
+            "[JumpBack]StartGame_Special",
+            "[JumpBack]StartGame_PVPSet",
+            "[JumpBack]PVP_PerOperationsMain_Error",
+            "[JumpBack]Global_ERR_AtFish",
+            "[JumpBack]PVP_PVPMes",
+            "[JumpBack]PVP_PVPMes2",
+            "[JumpBack]Dummy_Err_GetProductsFail",
+            "[JumpBack]StartGame_Error_API",
+            "Global_BackToQC1",
+            "[JumpBack]Global_ToHomePage_Crash",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
         "focus": "G=1.页面非预期，点击返回按钮"
     },
     "Global_ToSandBox_Enter": {
@@ -267,7 +289,7 @@
             "Rec_SandBox_Pin_Tpl",
             "Rec_SandBox_Run_Tpl"
         ],
-        "focus": "G.已复位到箱庭"
+        "focus": "GO.复位到箱庭-已确认"
     },
     "Global_BackToPve_1#": {
         "desc": "【传统卡带识别链-预设入口.预设pve1#】",
@@ -316,6 +338,15 @@
             1111,
             650
         ],
+        "post_wait_freezes": {
+            "time": 300,
+            "target": [
+                364,
+                13,
+                587,
+                73
+            ]
+        },
         "post_delay": 3000,
         "next": [
             "Global_BackToPve_CardMenu_Tp1",
@@ -968,12 +999,12 @@
         "method": 40,
         "lower": [
             101,
-            59,
+            55,
             36
         ],
         "upper": [
-            110,
-            68,
+            115,
+            95,
             44
         ],
         "count": 25,
@@ -1005,13 +1036,13 @@
         "method": 40,
         "lower": [
             101,
-            50,
-            30
+            55,
+            36
         ],
         "upper": [
-            110,
-            60,
-            46
+            115,
+            95,
+            44
         ],
         "count": 25
     },
@@ -1056,6 +1087,7 @@
         "desc": "避免正常结束时,报错跳出"
     },
     "Global_ERR_AtFish": {
+        "desc": "钓鱼界面返回",
         "recognition": "TemplateMatch",
         "roi": [
             1168,
@@ -1345,10 +1377,10 @@
         "desc": "[识别]获得奖励,下方文字",
         "recognition": "OCR",
         "roi": [
-            551,
-            623,
-            168,
-            51
+            391,
+            418,
+            838,
+            284
         ],
         "expected": [
             "^(?=.*[点击画面])(?=.*[即可])(?=.*[返回]).{4,12}$"
