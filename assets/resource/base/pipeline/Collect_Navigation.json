@@ -1108,14 +1108,11 @@
     },
     "Collect_OnlyOnce_SkillUsed_Active": {
         "action": "Custom",
-        "custom_action": "PatchNode",
+        "custom_action": "PatchPipeline",
         "custom_action_param": {
-            "node": "Collect_PackEnd_Ck_OnlyOnce",
+            "target": "Collect_PackEnd_Ck_OnlyOnce",
             "patch": {
                 "enabled": true
-            },
-            "origin": {
-                "enabled": false
             }
         }
     },
