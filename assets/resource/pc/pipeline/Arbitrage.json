@@ -1456,5 +1456,120 @@
             "Global_BackToPve_Anc"
         ],
         "focus": "Arb.PC.进图链超时!重回复位整链重试"
+    },
+    "Arbitrage_Cooking_MenuPatch": {
+        "desc": "借用setup管路进料理。|[PC覆盖·2026-08-06验尸] 82b1a4c锚点化重构后借道断链:5槽装完3-5_Shake2的[JumpBack]Global_ToSandBox必先关菜单才能让Setup_End命中(结构互斥),回落到SetupToSkill时菜单已没了→料理零制作(08-03三启/08-06一启全部实录,tab3_Ck的SkillList_Right腿无JumpBack前缀且4to5_Swip为无next死叶,从未生效)。修=重开菜单桥:Setup照常跑完打标,ReopenSkl_PC重开→Tab3Click_PC进天赋页签→原SetupToSkill找'料理'。",
+        "next": [
+            "Setup_SetSkill_Per",
+            "Arbitrage_Cooking_ReopenSkl_PC",
+            "[JumpBack]Global_BackPageHub_Once"
+        ]
+    },
+    "Arbitrage_Cooking_ReopenSkl_PC": {
+        "desc": "[PC新增·2026-08-06] 料理借道第二幕:Setup收尾被Global_ToSandBox关掉的技能菜单,在箱庭裸视图重开一次。模板/roi抄07-14高分校准的OpenSklMenu(1.000/0.935),独立节点独立max_hit,不与base调用方共享计数。on_error显式逃生防默认Null假成功掐死整条套利任务。",
+        "recognition": "TemplateMatch",
+        "roi": [
+            570,
+            598,
+            214,
+            107
+        ],
+        "template": [
+            "UI_SetSkill.png",
+            "UI_SetSkill_PC.png"
+        ],
+        "green_mask": true,
+        "action": "Click",
+        "post_delay": 1500,
+        "max_hit": 3,
+        "next": [
+            "Arbitrage_Cooking_Tab3Click_PC"
+        ],
+        "on_error": [
+            "Global_BackPageHub_Once"
+        ],
+        "focus": "Arb.PC.料理:重开技能菜单"
+    },
+    "Arbitrage_Cooking_Tab3Click_PC": {
+        "desc": "[PC新增·2026-08-06] 重开后点天赋技能页签(roi/target抄pc版Setup_SetSkill_tab3的07-14校准值,不复用原节点——其next绕回锚已消费的tab3_Ck死结)。找'料理':先左归位再右扫全表,两swipe均为独立计数克隆(原ReLift_Maxhit的3次预算已被同任务Setup段耗光,4to5_Swip的2次扫不完从最左起的全表)。",
+        "recognition": "OCR",
+        "roi": [
+            70,
+            438,
+            110,
+            52
+        ],
+        "expected": [
+            "天赋技能",
+            "天賦技能"
+        ],
+        "action": "Click",
+        "target": [
+            313,
+            452,
+            18,
+            18
+        ],
+        "post_delay": 1500,
+        "max_hit": 5,
+        "next": [
+            "Arbitrage_Cooking_SetupToSkill",
+            "[JumpBack]Arbitrage_Cooking_ListReset_PC",
+            "[JumpBack]Arbitrage_Cooking_SwipRight_PC"
+        ],
+        "on_error": [
+            "Global_BackPageHub_Once"
+        ],
+        "focus": "Arb.PC.料理:进入天赋技能页签"
+    },
+    "Arbitrage_Cooking_ListReset_PC": {
+        "desc": "[PC新增·2026-08-06] 技能卡列表左归位(参数抄Setup_SetSkill_ReLift_Maxhit,独立max_hit 2)。识别借Setup_SetSkill_ReLift(OCR天赋技能,pc覆盖已含繁体)=菜单开着才滑。",
+        "max_hit": 2,
+        "recognition": "Or",
+        "any_of": [
+            "Setup_SetSkill_ReLift"
+        ],
+        "action": "Swipe",
+        "begin": [
+            115,
+            590,
+            1,
+            1
+        ],
+        "end": [
+            1134,
+            592,
+            1,
+            1
+        ],
+        "end_hold": 500,
+        "duration": 500,
+        "post_delay": 1500,
+        "focus": "Arb.PC.料理:技能列表左归位"
+    },
+    "Arbitrage_Cooking_SwipRight_PC": {
+        "desc": "[PC新增·2026-08-06] 技能卡列表右扫找'料理'(参数抄Setup_SetSkill_4to5_Swip,独立max_hit 6=左归位后足够扫完全表14+空位)。",
+        "max_hit": 6,
+        "recognition": "Or",
+        "any_of": [
+            "Setup_SetSkill_ReLift"
+        ],
+        "action": "Swipe",
+        "begin": [
+            1134,
+            592,
+            1,
+            1
+        ],
+        "end": [
+            103,
+            590,
+            1,
+            1
+        ],
+        "end_hold": 800,
+        "duration": 500,
+        "post_delay": 1500,
+        "focus": "Arb.PC.料理:右滑找料理"
     }
 }
