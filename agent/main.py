@@ -192,7 +192,9 @@ def main():
             mfaalog.info("AgentServer 已关闭")
         return
 
-    mfaalog.info(f"[Agent] 宿主守护已启动 (UI pid={watchdog.ppid})")
+    # 这里必须打出实际监视的目标：上一版只打 getppid()，把 venv launcher 说成了 UI，
+    # 排查时正是靠这条日志与进程树对不上才发现守护失效的。别再让它说谎。
+    mfaalog.info(f"[Agent] 宿主守护已启动，监视 {watchdog.describe()}")
 
     # 把阻塞的 join 挪到后台线程，主线程腾出来守护宿主。
     # 用 join 而非 detach：msg_thread_ 仍保持 joinable，正常关闭时 shut_down()
@@ -215,7 +217,8 @@ def main():
                 # 宿主 UI 已消失。此刻 msg_thread 仍永久阻塞在 recv() 上
                 # (Transceiver 的 timeout_ 是 milliseconds::max())，调 shut_down()
                 # 会挂死在它内部的 join() 里，所以只能硬退出。
-                mfaalog.error(f"[Agent] 宿主进程 (pid={watchdog.ppid}) 已退出，Agent 立即终止")
+                gone = watchdog.exited_target or f"pid={watchdog.ppid}"
+                mfaalog.error(f"[Agent] 宿主进程 {gone} 已退出，Agent 立即终止")
                 watchdog.close()
                 cleanup_socket_file(socket_id)
                 sys.stdout.flush()

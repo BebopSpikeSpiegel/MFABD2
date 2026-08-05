@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""宿主 (UI) 存活守护。
+"""宿主存活守护。
 
 【为什么需要它】
 MaaFramework 的 AgentServer 侧接收超时恒为 `milliseconds::max()`
@@ -12,14 +12,34 @@ MaaFramework 的 AgentServer 侧接收超时恒为 `milliseconds::max()`
 MaaAgentServerAPI.h 只暴露 StartUp / ShutDown / Join / Detach，**没有任何 timeout
 设置接口**（`set_timeout` 仅 AgentClient 侧调用），所以这一层只能由我们自己补。
 
-【实现要点】
-Windows 上在启动时就 `OpenProcess(SYNCHRONIZE)` 抓住父进程句柄，之后一直用这个
-句柄 `WaitForSingleObject`：
-  · 句柄绑定的是那个具体的内核对象，**PID 被复用也不会误判**；
-  · 父进程一退出，等待立即返回，不必等到下一个轮询周期。
-POSIX 上退化为 `getppid()` 变化检测（父进程死后子进程会被 reparent）。
+【为什么不能用 os.getppid()】
+Windows 上 `.venv\\Scripts\\python.exe` **不是解释器本体**，是 CPython 自带的
+venv redirector（源码 PC/launcher.c，产物 venvlauncher.exe）。它读 pyvenv.cfg 的
+`home=` 找到真解释器，`CreateProcessW` 原样转发命令行，设 `__PYVENV_LAUNCHER__`
+让真解释器把 `sys.executable` 认成 venv 路径，然后 `WaitForSingleObject(INFINITE)`
+干等子进程并转发退出码。Python 3.7.2+ 在 Windows 上 `python -m venv` 建出来的环境
+一律如此。
 
-拿不到句柄时 `available` 为 False，调用方应回退到原来的阻塞 join，
+于是只要 `child_exec` 指向 `.venv/Scripts/python.exe`（interface.json 现在正是如此），
+真 Agent 进程的父**永远是这个 launcher**，而不是 UI：
+    MFAAvalonia / pwsh  →  venv launcher  →  agent(本进程)
+拿 `getppid()` 当宿主会构成自指死锁 —— launcher 在等 agent 退出，watchdog 在等
+launcher 退出，`WaitForSingleObject` 永不 signaled，守护 100% 失效。
+（实测：agent 是 Px7144，却打印「宿主守护已启动 (UI pid=5820)」，5820 就是 launcher。）
+
+【实现要点】
+Windows 上启动时做一次进程快照，从父进程沿祖先链向上：
+  · 途中每一层 python（launcher 及任何 python 包装）都**纳入监视**并继续向上；
+  · 第一个非 python 祖先即真正的宿主（MFAAvalonia / pwsh / Code.exe），纳入监视后停止。
+对选中的目标各持一个 `OpenProcess(SYNCHRONIZE)` 句柄，用 `WaitForMultipleObjects`
+等**任意一个**退出。句柄绑定具体内核对象，PID 被复用也不会误判；目标一退出等待立即
+返回，不必等到下一个轮询周期。
+
+向上遍历设了深度上限与创建时间校验，避免 pid 复用时一路走到 `services.exe`
+这类杀了要连坐的进程上。POSIX 上没有 redirector 结构（`os.execv` 就地替换），
+仍退化为 `getppid()` 变化检测。
+
+一个目标都没拿到时 `available` 为 False，调用方应回退到原来的阻塞 join，
 行为不会比现状更差。
 """
 
@@ -31,18 +51,56 @@ from . import mfaalog
 
 # --- Windows API 常量 ---
 _SYNCHRONIZE = 0x00100000
+_PROCESS_QUERY_LIMITED_INFORMATION = 0x00001000
+_TH32CS_SNAPPROCESS = 0x00000002
 _WAIT_OBJECT_0 = 0x00000000
 _WAIT_TIMEOUT = 0x00000102
 # 其余返回值(WAIT_FAILED=0xFFFFFFFF、WAIT_ABANDONED 等)一律按「句柄失效 → 宿主已没」处理
 
+# 祖先链向上遍历的硬上限。真实最深链路是
+# 「Code.exe → pwsh → venv launcher → agent」，取 4 足够；
+# 上限本身也是防线 —— 万一 pid 复用导致链路错乱，不至于一路走到系统进程上。
+_MAX_ANCESTOR_DEPTH = 4
+# 同时监视的目标数上限（正常是 1~2 个）
+_MAX_TARGETS = 3
+
+# 视作「中间层」的映像名：命中则继续向上找真宿主
+_PYTHON_IMAGES = ("python.exe", "pythonw.exe", "python3.exe")
+
+
+def _same_path(a: str, b: str) -> bool:
+    """Windows 路径等价比较（大小写不敏感 + 分隔符归一）。"""
+    if not a or not b:
+        return False
+    try:
+        return os.path.normcase(os.path.normpath(a)) == os.path.normcase(os.path.normpath(b))
+    except Exception:
+        return False
+
+
+class _WatchTarget:
+    """一个被监视的进程。role 仅用于日志，便于一眼看出链路结构。"""
+
+    __slots__ = ("pid", "image", "role", "handle")
+
+    def __init__(self, pid: int, image: str, role: str, handle=None):
+        self.pid = pid
+        self.image = image or "?"
+        self.role = role
+        self.handle = handle
+
+    def __str__(self) -> str:
+        return f"{self.pid}({self.image},{self.role})"
+
 
 class HostWatchdog:
-    """监视父进程（即启动本 Agent 的 UI 进程）是否退出。"""
+    """监视宿主进程链是否有任一环退出。"""
 
     def __init__(self) -> None:
         self.ppid = 0
         self.available = False
-        self._handle = None
+        self.targets = []           # List[_WatchTarget]
+        self.exited_target = None   # 触发退出判定的那个目标，供调用方写日志
         self._kernel32 = None
 
         try:
@@ -61,61 +119,253 @@ class HostWatchdog:
             # POSIX 下 getppid() 变化即可判定，无需额外资源
             self.available = True
 
+    def describe(self) -> str:
+        """给日志用的一行描述。"""
+        if not self.targets:
+            return f"ppid={self.ppid}(未解析)"
+        return " / ".join(str(t) for t in self.targets)
+
     # ------------------------------------------------------------------
     # Windows
     # ------------------------------------------------------------------
     def _init_windows(self) -> None:
         try:
             import ctypes
+            from ctypes import wintypes
 
-            kernel32 = ctypes.windll.kernel32
-            kernel32.OpenProcess.restype = ctypes.c_void_p
-            kernel32.OpenProcess.argtypes = [ctypes.c_ulong, ctypes.c_int, ctypes.c_ulong]
-            kernel32.WaitForSingleObject.restype = ctypes.c_ulong
-            kernel32.WaitForSingleObject.argtypes = [ctypes.c_void_p, ctypes.c_ulong]
-            kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
+            kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+            kernel32.OpenProcess.restype = wintypes.HANDLE
+            kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+            kernel32.WaitForMultipleObjects.restype = wintypes.DWORD
+            kernel32.WaitForMultipleObjects.argtypes = [
+                wintypes.DWORD,
+                ctypes.POINTER(wintypes.HANDLE),
+                wintypes.BOOL,
+                wintypes.DWORD,
+            ]
+            kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
 
-            # SYNCHRONIZE 是能 Wait 所需的最小权限，比 PROCESS_QUERY_INFORMATION 更容易拿到
-            handle = kernel32.OpenProcess(_SYNCHRONIZE, False, self.ppid)
-            if not handle:
-                err = ctypes.get_last_error() if hasattr(ctypes, "get_last_error") else 0
+            self._kernel32 = kernel32
+
+            table = self._snapshot(kernel32)
+            if not table:
+                mfaalog.warning("[Watchdog] 进程快照失败，将回退为阻塞等待")
+                return
+
+            self._resolve_targets(kernel32, table)
+
+            if not self.targets:
                 mfaalog.warning(
-                    f"[Watchdog] OpenProcess 失败 (ppid={self.ppid}, err={err})，"
-                    "将回退为阻塞等待，UI 异常退出时本进程可能残留"
+                    f"[Watchdog] 未能解析出可监视的宿主 (ppid={self.ppid})，"
+                    "将回退为阻塞等待，宿主异常退出时本进程可能残留"
                 )
                 return
 
-            self._kernel32 = kernel32
-            self._handle = handle
             self.available = True
         except Exception as e:
             mfaalog.warning(f"[Watchdog] Windows 守护初始化失败: {e}")
+
+    @staticmethod
+    def _snapshot(kernel32) -> dict:
+        """一次 Toolhelp 快照拿到全表 {pid: (ppid, 映像名)}。纯 kernel32，不引入 psutil。"""
+        import ctypes
+        from ctypes import wintypes
+
+        class PROCESSENTRY32W(ctypes.Structure):
+            _fields_ = [
+                ("dwSize", wintypes.DWORD),
+                ("cntUsage", wintypes.DWORD),
+                ("th32ProcessID", wintypes.DWORD),
+                # ULONG_PTR：64 位下是 8 字节，用 c_size_t 才不会错位
+                ("th32DefaultHeapID", ctypes.c_size_t),
+                ("th32ModuleID", wintypes.DWORD),
+                ("cntThreads", wintypes.DWORD),
+                ("th32ParentProcessID", wintypes.DWORD),
+                ("pcPriClassBase", ctypes.c_long),
+                ("dwFlags", wintypes.DWORD),
+                ("szExeFile", wintypes.WCHAR * 260),
+            ]
+
+        kernel32.CreateToolhelp32Snapshot.restype = wintypes.HANDLE
+        kernel32.CreateToolhelp32Snapshot.argtypes = [wintypes.DWORD, wintypes.DWORD]
+        kernel32.Process32FirstW.argtypes = [wintypes.HANDLE, ctypes.POINTER(PROCESSENTRY32W)]
+        kernel32.Process32NextW.argtypes = [wintypes.HANDLE, ctypes.POINTER(PROCESSENTRY32W)]
+
+        invalid = ctypes.c_void_p(-1).value
+        snap = kernel32.CreateToolhelp32Snapshot(_TH32CS_SNAPPROCESS, 0)
+        if not snap or snap == invalid:
+            mfaalog.debug(
+                f"[Watchdog] CreateToolhelp32Snapshot 失败 (err={ctypes.get_last_error()})"
+            )
+            return {}
+
+        table = {}
+        try:
+            entry = PROCESSENTRY32W()
+            entry.dwSize = ctypes.sizeof(PROCESSENTRY32W)
+            ok = kernel32.Process32FirstW(snap, ctypes.byref(entry))
+            while ok:
+                table[int(entry.th32ProcessID)] = (
+                    int(entry.th32ParentProcessID),
+                    entry.szExeFile,
+                )
+                ok = kernel32.Process32NextW(snap, ctypes.byref(entry))
+        finally:
+            kernel32.CloseHandle(snap)
+
+        return table
+
+    def _resolve_targets(self, kernel32, table: dict) -> None:
+        """从父进程沿祖先链向上，选出要监视的目标。
+
+        规则：途中每一层 python 都纳入监视并继续向上，第一个非 python 祖先即宿主，
+        纳入后停止。这样 kill 链路上任意一环，Agent 都会收敛退出。
+        """
+        self_pid = os.getpid()
+        self_create = self._create_time(kernel32, self_pid)
+
+        seen = {self_pid}
+        cur = self.ppid
+        depth = 0
+
+        while cur and cur not in seen and depth < _MAX_ANCESTOR_DEPTH:
+            if len(self.targets) >= _MAX_TARGETS:
+                break
+            seen.add(cur)
+            depth += 1
+
+            info = table.get(cur)
+            if info is None:
+                mfaalog.debug(f"[Watchdog] 祖先 pid={cur} 不在快照中（已退出？），停止向上")
+                break
+            next_ppid, image_name = info
+
+            handle = kernel32.OpenProcess(
+                _SYNCHRONIZE | _PROCESS_QUERY_LIMITED_INFORMATION, False, cur
+            )
+            if not handle:
+                # 降级：只要能 Wait 就够，SYNCHRONIZE 是最低要求
+                handle = kernel32.OpenProcess(_SYNCHRONIZE, False, cur)
+            if not handle:
+                import ctypes
+
+                mfaalog.warning(
+                    f"[Watchdog] OpenProcess 失败 (pid={cur}, image={image_name}, "
+                    f"err={ctypes.get_last_error()})，该层无法监视"
+                )
+                break
+
+            # pid 复用防护：祖先的创建时间不可能晚于本进程
+            create = self._create_time(kernel32, cur, handle)
+            if self_create and create and create > self_create:
+                mfaalog.warning(
+                    f"[Watchdog] pid={cur}({image_name}) 创建时间晚于本进程，"
+                    "判定为 PID 复用，停止向上"
+                )
+                kernel32.CloseHandle(handle)
+                break
+
+            image_path = self._image_path(kernel32, handle)
+
+            if self._is_intermediate(image_name, image_path):
+                # 判据 1 命中时说明它就是启动我的那个 venv launcher
+                role = "venv-launcher" if _same_path(image_path, sys.executable) else "python"
+                self.targets.append(_WatchTarget(cur, image_name, role, handle))
+                cur = next_ppid
+                continue
+
+            self.targets.append(_WatchTarget(cur, image_name, "host", handle))
+            break
+
+    @staticmethod
+    def _is_intermediate(image_name: str, image_path: str) -> bool:
+        """判断这一层是不是「包装层」，需要继续向上找真宿主。
+
+        判据 1（强）：它的映像就是我自称的解释器 —— 只有 venv redirector 会这样，
+                     因为 __PYVENV_LAUNCHER__ 把我的 sys.executable 改写成了它的路径。
+        判据 2（兜底）：映像名是 python.exe / pythonw.exe。
+        """
+        if _same_path(image_path, sys.executable):
+            return True
+        return (image_name or "").lower() in _PYTHON_IMAGES
+
+    @staticmethod
+    def _create_time(kernel32, pid: int, handle=None):
+        """返回进程创建时间（100ns 计数）。拿不到返回 None。"""
+        import ctypes
+        from ctypes import wintypes
+
+        own = handle is None
+        if own:
+            handle = kernel32.OpenProcess(_PROCESS_QUERY_LIMITED_INFORMATION, False, pid)
+            if not handle:
+                return None
+        try:
+            kernel32.GetProcessTimes.argtypes = [
+                wintypes.HANDLE,
+                ctypes.POINTER(wintypes.FILETIME),
+                ctypes.POINTER(wintypes.FILETIME),
+                ctypes.POINTER(wintypes.FILETIME),
+                ctypes.POINTER(wintypes.FILETIME),
+            ]
+            created = wintypes.FILETIME()
+            exited = wintypes.FILETIME()
+            kern = wintypes.FILETIME()
+            user = wintypes.FILETIME()
+            if not kernel32.GetProcessTimes(
+                handle,
+                ctypes.byref(created),
+                ctypes.byref(exited),
+                ctypes.byref(kern),
+                ctypes.byref(user),
+            ):
+                return None
+            return (created.dwHighDateTime << 32) | created.dwLowDateTime
+        except Exception:
+            return None
+        finally:
+            if own:
+                kernel32.CloseHandle(handle)
+
+    @staticmethod
+    def _image_path(kernel32, handle) -> str:
+        """QueryFullProcessImageNameW 拿完整映像路径。拿不到返回空串。"""
+        import ctypes
+        from ctypes import wintypes
+
+        try:
+            kernel32.QueryFullProcessImageNameW.argtypes = [
+                wintypes.HANDLE,
+                wintypes.DWORD,
+                wintypes.LPWSTR,
+                ctypes.POINTER(wintypes.DWORD),
+            ]
+            size = wintypes.DWORD(32768)
+            buf = ctypes.create_unicode_buffer(size.value)
+            if kernel32.QueryFullProcessImageNameW(handle, 0, buf, ctypes.byref(size)):
+                return buf.value
+        except Exception:
+            pass
+        return ""
 
     # ------------------------------------------------------------------
     # 对外接口
     # ------------------------------------------------------------------
     def host_exited(self, timeout: float) -> bool:
-        """阻塞至多 timeout 秒等待父进程退出。
+        """阻塞至多 timeout 秒等待宿主链中任一环退出。
 
         Returns
         -------
         bool
-            True  = 父进程已退出（UI 没了）
-            False = 超时，父进程仍在
+            True  = 有监视目标已退出（宿主没了），具体是哪个见 `exited_target`
+            False = 超时，全都还在
         """
         if not self.available:
             time.sleep(timeout)
             return False
 
-        if self._handle is not None and self._kernel32 is not None:
-            ret = self._kernel32.WaitForSingleObject(self._handle, int(timeout * 1000))
-            if ret == _WAIT_OBJECT_0:
-                return True
-            if ret == _WAIT_TIMEOUT:
-                return False
-            # WAIT_FAILED 等异常返回：句柄已失效，按父进程已消失处理（保守方向是退出）
-            mfaalog.warning(f"[Watchdog] WaitForSingleObject 返回异常值 {ret:#x}，按宿主已退出处理")
-            return True
+        if self.targets and self._kernel32 is not None:
+            return self._wait_windows(timeout)
 
         # POSIX: 轮询 getppid()。父进程退出后子进程被 reparent，ppid 必然改变。
         deadline = time.monotonic() + timeout
@@ -130,13 +380,44 @@ class HostWatchdog:
                 return False
             time.sleep(min(0.5, remaining))
 
+    def _wait_windows(self, timeout: float) -> bool:
+        import ctypes
+        from ctypes import wintypes
+
+        kernel32 = self._kernel32
+        alive = [t for t in self.targets if t.handle]
+        if not alive or kernel32 is None:
+            return True
+
+        count = len(alive)
+        arr = (wintypes.HANDLE * count)(*[t.handle for t in alive])
+        ret = kernel32.WaitForMultipleObjects(count, arr, False, int(timeout * 1000))
+
+        if _WAIT_OBJECT_0 <= ret < _WAIT_OBJECT_0 + count:
+            self.exited_target = alive[ret - _WAIT_OBJECT_0]
+            return True
+        if ret == _WAIT_TIMEOUT:
+            return False
+
+        # WAIT_FAILED 等异常返回：句柄已失效，按宿主已消失处理（保守方向是退出）
+        mfaalog.warning(
+            f"[Watchdog] WaitForMultipleObjects 返回异常值 {ret:#x} "
+            f"(err={ctypes.get_last_error()})，按宿主已退出处理"
+        )
+        return True
+
     def close(self) -> None:
-        if self._handle is not None and self._kernel32 is not None:
-            try:
-                self._kernel32.CloseHandle(self._handle)
-            except Exception:
-                pass
-            self._handle = None
+        if self._kernel32 is None:
+            self.targets = []
+            return
+        for t in self.targets:
+            if t.handle:
+                try:
+                    self._kernel32.CloseHandle(t.handle)
+                except Exception:
+                    pass
+                t.handle = None
+        self.targets = []
 
 
 def cleanup_socket_file(socket_id: str) -> None:
