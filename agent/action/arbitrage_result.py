@@ -39,6 +39,17 @@ SCORE_MIN = 0.6      # 卡带选中组组分低于此=低置信,打WRN(实录错
 GOLD_NODE = "Arbitrage_Sell_GoldRead"
 
 
+def _task_ok(detail) -> bool:
+    """run_task 的返回值判成败。
+
+    它返回 Optional[TaskDetail],而 **TaskDetail 对象恒为真值** —— 直接 `if detail`
+    只测得出"任务提没提上去",测不出"它跑成没跑成"。本文件已因此栽过两次(翻页段把
+    TaskDetail 当 bool 导致"滑不动"完全不可见;派发段 `elif sell_result` 让失败分支
+    几乎不可达),故收成一处,新代码一律走这里。
+    """
+    return detail is not None and detail.status.succeeded
+
+
 def _read_gold(context) -> int:
     """读右上角金币数。读不到返回 0(主脑据此跳过验证,退回原行为,不阻断流程)。"""
     try:
@@ -427,7 +438,10 @@ class ArbitrageSellController(CustomAction):
             delta = None
             verdict = None                     # 跨候选保留的最强结论 (delta, before, after)
             gold_before = gold_after = 0       # verdict 成立时必被下方解构覆盖,此处仅兜底占位
-            sell_result = False
+            # 初值必须是 None 而非 False:下方收尾分支按 `is not None` 判"链条跑过了",
+            # False 会被判成跑过 → 取 .status 抛 AttributeError(停止指令恰好落在内层
+            # 循环头、一轮未跑时可达)。
+            sell_result = None
             for att, cand in enumerate(cands):
                 # 停止指令只打断框架侧任务,管不到 Python 控制流(post_stop 清队列+断当前任务,
                 # stopping 仅表示"已发指令未结束")。不在循环头拦一道,回退轮仍会先跑一次
@@ -436,9 +450,10 @@ class ArbitrageSellController(CustomAction):
                 # 循环都是在循环头检查,此处补齐同一约定。
                 if context.tasker.stopping:
                     break
-                # 上轮 sell_result 为假 = 链条自身中断/失败(压根没走到选柜台),换卡带串解决不了,
-                # 不空跑。回退只对"链条跑完了但金币证明没卖出"这一种情形有意义。
-                if att and not sell_result:
+                # 上轮链条没跑成 = 自身中断/失败(压根没走到选柜台),换卡带串解决不了,不空跑。
+                # 回退只对"链条跑完了但金币证明没卖出"这一种情形有意义。判成败必须走 _task_ok:
+                # `not sell_result` 只拦得住"任务没提上去",拦不住"提上去了但跑失败"。
+                if att and not _task_ok(sell_result):
                     break
                 if att:
                     mfaalog.warning(
@@ -496,14 +511,14 @@ class ArbitrageSellController(CustomAction):
                         f"({gold_before:,} → {gold_after:,})，"
                         f"链条多半卡在选卡带/物品定位，run_task 的成功是假信号"
                     )
-            elif sell_detail is not None and sell_detail.status.succeeded:
+            elif _task_ok(sell_result):
                 # 金币读不到(画面不在出售界面/OCR失手),退回原行为但如实标注未验证
                 mfaalog.info(f"[Arbitrage] ➖ [{item_name}] 售卖链执行完毕（金币不可读，未验证）")
             else:
                 # 旧写法 `elif sell_result` 把 TaskDetail 当 bool,只要任务被提交就恒为真,
                 # 这个 else 几乎不可达。改判 .status 后"链条真的失败了"才会落到这里。
                 sold_fail.append(item_name)
-                reason = "未能启动（节点缺失或正在停止）" if sell_detail is None else "执行失败"
+                reason = "未能启动（节点缺失或正在停止）" if sell_result is None else "执行失败"
                 mfaalog.warning(f"[Arbitrage] ❌ [{item_name}] 售卖流程{reason}，继续尝试下一个。")
 
         if sold_fail:
