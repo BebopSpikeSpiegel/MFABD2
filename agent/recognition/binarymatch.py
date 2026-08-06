@@ -343,9 +343,9 @@ class HSVShapeMatching(CustomRecognition):
 #
 # [识别原理 —— 置信度加权模型 v2]（真假样本论证见 docs/RedDotDetector_打分模型.md）
 #   先做"筛选六步"，任一步不过即淘汰；筛到最后的封闭区(enclosed，被红包围的非红芯)
-#   才进入"打分四项"，每项算 0~1，加权求和 ≥ min_confidence 即命中。
+#   才进入"打分四项"，每项算 0~1，加权求和 ≥ sc_min_conf 即命中。
 #
-#   筛选六步：框选 roi → 红掩膜(HSV) → 连块 → 面积(red_area) → 长宽比(flt_aspect) → 取封闭内部区。
+#   筛选六步：框选 roi → 红掩膜(HSV) → 连块 → 面积(flt_area) → 长宽比(flt_aspect) → 取封闭内部区。
 #
 #   打分四项（权重见模块常量 _SC_W_*；硬不变量 max(单项权重)=0.45 < 阈值0.55，
 #             故命中必须"竖长+偏白"两可靠项同时背书，单项满分越不过阈值）：
@@ -364,19 +364,26 @@ class HSVShapeMatching(CustomRecognition):
 #   断层降权 + 纳入凹陷高度变诚实，真假分离从"假分>真分"翻转为"真0.63+ / 假0.05"。
 #
 # [参数说明]（HSV 坐标系：OpenCV 标准 H 0-180 / S,V 0-255，内部自动映射 Pillow）
-#   hsv_ranges     (list)  红色 HSV 范围 [{lower:[H,S,V], upper:[H,S,V]}, ...]，H 跨 0 拆两组 OR。
-#   red_area       (list)  红色 blob 面积范围 [min, max]，默认 [30, 1200]。
+#   两级命名：flt_ = 筛选阶段，sc_ = 打分阶段。下面一律用新名，旧名见本段末尾对照表。
+#   flt_red_hsv    (list)  红色 HSV 范围 [{lower:[H,S,V], upper:[H,S,V]}, ...]，H 跨 0 拆两组 OR。
+#   flt_area       (list)  红色 blob 面积范围 [min, max]，默认 [30, 1200]。
 #   flt_aspect     (list)  红块外接框 h/w 范围 [min, max]，默认 [0.6, 1.6](v3 形状闸门)。
 #                          真货实测紧聚 0.92~1.10 且抗模糊；横条(≈0.5)/实心柱(≈2.1)杂红在圈外。
 #                          仅新名无旧名；设 [0, 99] 等于禁用。
-#   min_confidence (float) 命中阈值(0-1)，默认 0.55(v2 量纲；真货约 0.63+，留 0.08 余量)；
+#   sc_min_conf    (float) 命中阈值(0-1)，默认 0.55(v2 量纲；真货约 0.63+，留 0.08 余量)；
 #                          必须 > 最大单项权重 0.45，否则单项就能越阈值，破坏"两项背书"。
 #                          大 ROI 泛找可调高到 0.58。
-#   gap_ratio      (float) 仅用于 detail 里 gap 的"是否成双段"标注，不再作命中门槛。
+#   sc_gap_ratio   (float) 仅用于 detail 里 gap 的"是否成双段"标注，不再作命中门槛。
 #   preset         (str)   预设节点名（预设模式）。
 #   flt_hsv_rescue (object) 严格 HSV 拓扑救援。mode=off/shadow/active；仅 baseline
 #                          最终卡 aspect 时提高 S/V lower，严格子集经 lineage+跨档稳定
 #                          后才可命中。默认 off；预算/歧义/异常均 fail closed。
+#
+#   旧名对照(存量节点仍可用，由 _PARAM_ALIAS 翻译；同时写则新名优先)：
+#       flt_red_hsv ← hsv_ranges      flt_area     ← red_area
+#       sc_min_conf ← min_confidence  sc_gap_ratio ← gap_ratio
+#   ⚠️ 内部变量、detail 与样本台账落盘用的仍是旧名(hsv_ranges / red_area / ...)——
+#      那是数据键不是配置字段，离线回放工具按旧名读取，改不得。看日志时按此对应。
 #   注：旧的 inner_v_min / inner_s_max 已弃用(绝对亮度阈值在模糊下会掉崖)，若残留会被忽略。
 #
 # [可观测性 —— 金字塔回调 + vision 调试图]
@@ -392,7 +399,7 @@ class HSVShapeMatching(CustomRecognition):
 #   vision 调试图(原生回显)：受 save_draw 门控(RDD_DRAW=0 可强制关)——
 #     · 自定义识别的 C API 回调只有 box+detail 两个输出通道，没有注入 draw 的接口，
 #       Custom 节点自身永远没有原生 vision 图；自建图对不上 reco_id，日志工具不认。
-#     · 故识别结束后借一次内置 ColorMatch(method 40，同 hsv_ranges/red_area min)在
+#     · 故识别结束后借一次内置 ColorMatch(method 40，同 flt_red_hsv/flt_area min)在
 #       整屏原图上重跑红色过滤，由框架原生画图落盘：绿框=ROI，红字 R:[box]=红色
 #       blob 包围框(与本识别器返回的 box 是同一个红块)。
 #     · 原生图带 reco_id，框架自动存入 <log_dir>/vision(VSCode 调试时即扩展目录)，
@@ -414,11 +421,11 @@ class HSVShapeMatching(CustomRecognition):
 #
 # [一句话调参口诀]（对照 detail：阶段→卡在/明细）
 #   筛选·红掩膜  → HSV 没框到红色：降低 S/V 下限 / 校正 roi
-#   筛选·面积    → 面积不在 red_area：多半 min 太大
+#   筛选·面积    → 面积不在 flt_area：多半 min 太大
 #   筛选·长宽比  → 红块 h/w 出圈(看 aspect_rej)：横条/竖柱杂红=正常拒；
 #                  连片真货由 flt_hsv_rescue 严格 HSV 搜索拆开；不要放宽 flt_aspect
 #   筛选·内部    → 红块内无封闭非红区(无感叹号轮廓)：roi 偏移 / 红圈破损 / 被模糊填满
-#   打分        → 看「明细」贡献列：竖长/偏白低=非感叹号(正常拒)；真货被拒才降 min_confidence
+#   打分        → 看「明细」贡献列：竖长/偏白低=非感叹号(正常拒)；真货被拒才降 sc_min_conf
 #
 # ================================================================
 #
@@ -428,11 +435,11 @@ class HSVShapeMatching(CustomRecognition):
 #         "recognition": "Custom",
 #         "custom_recognition": "RedDotDetector",
 #         "custom_recognition_param": {
-#             "hsv_ranges": [
+#             "flt_red_hsv": [
 #                 {"lower": [0,   140, 120], "upper": [12,  255, 255]},
 #                 {"lower": [165, 140, 120], "upper": [180, 255, 255]}
 #             ],
-#             "red_area": [30, 1200], "min_confidence": 0.25
+#             "flt_area": [30, 1200], "sc_min_conf": 0.25
 #         },
 #         "roi": [950, 100, 40, 600], "action": "Click", "next": ["NextTask"]
 #     }
@@ -444,11 +451,11 @@ class HSVShapeMatching(CustomRecognition):
 #         "recognition": "Custom",
 #         "custom_recognition": "RedDotDetector",
 #         "custom_recognition_param": {
-#             "hsv_ranges": [
+#             "flt_red_hsv": [
 #                 {"lower": [0,   140, 120], "upper": [12,  255, 255]},
 #                 {"lower": [165, 140, 120], "upper": [180, 255, 255]}
 #             ],
-#             "red_area": [30, 1200], "min_confidence": 0.25
+#             "flt_area": [30, 1200], "sc_min_conf": 0.25
 #         }
 #     },
 #     "CheckPanel_A": {
@@ -491,7 +498,7 @@ class HSVShapeMatching(CustomRecognition):
 # ────────────────────────────────────────────────────────────────
 # 阶段 2  HSV 过滤 → 红色掩膜（detail.stage = "red_mask"）
 # ────────────────────────────────────────────────────────────────
-# 参数：hsv_ranges（H 0-180 / S 0-255 / V 0-255，OpenCV 坐标系）
+# 参数：flt_red_hsv（H 0-180 / S 0-255 / V 0-255，OpenCV 坐标系）
 # 输出：rdd_*_red_mask.png  ← 黑=检测为红，白=非红
 #
 # 调参方法：
@@ -502,14 +509,14 @@ class HSVShapeMatching(CustomRecognition):
 #   红色连片（红点与其他红色 UI 连成一块）不影响识别：感叹号的拓扑关系不变。
 #
 # 判断（看 red_mask.png）：
-#   全白             → hsv_ranges 没覆盖到实际红色，降 S/V 下限
-#   大片黑色（背景黑）→ hsv_ranges 太宽，提高 S 或 V 下限
+#   全白             → flt_red_hsv 没覆盖到实际红色，降 S/V 下限
+#   大片黑色（背景黑）→ flt_red_hsv 太宽，提高 S 或 V 下限
 #   菱形轮廓完整黑色 → 正常，进入下一阶段
 #
 # ────────────────────────────────────────────────────────────────
 # 阶段 3  连通域面积筛选（detail.stage = "area"）
 # ────────────────────────────────────────────────────────────────
-# 参数：red_area [min, max]
+# 参数：flt_area [min, max]
 # 数据：detail.stat.n_blobs（总连通域数）、detail.stat.area_pass（通过面积的数量）
 #
 # 面积估算：菱形面积 ≈ 对角线² / 2。16px 菱形 ≈ 128px，10px 菱形 ≈ 50px。
@@ -540,7 +547,7 @@ class HSVShapeMatching(CustomRecognition):
 # ────────────────────────────────────────────────────────────────
 # 阶段 6  置信度加权评分 v2（detail.阶段 = "打分"）
 # ────────────────────────────────────────────────────────────────
-# 参数：min_confidence（默认 0.55；必须 > 最大单项权重 0.45 → 命中需两项背书）
+# 参数：sc_min_conf（默认 0.55；必须 > 最大单项权重 0.45 → 命中需两项背书）
 # 数据：detail.打分 = {总分, 阈值, 通过, 明细:[每项 值/权重/贡献]}
 #
 # 四个分项（权重在模块常量 _SC_W_* 可直接调整；完整真假样本论证见
@@ -568,8 +575,8 @@ class HSVShapeMatching(CustomRecognition):
 #
 # 调参方法（看 detail.打分.明细 的"贡献"列）：
 #   竖长 或 偏白 贡献低 → 非感叹号，正常拒，不要为它降阈值；
-#   真货被误拒(两项贡献都不低却差一点) → 适度降 min_confidence；
-#   大 ROI 泛找误判 → 升 min_confidence 到 0.58。
+#   真货被误拒(两项贡献都不低却差一点) → 适度降 sc_min_conf；
+#   大 ROI 泛找误判 → 升 sc_min_conf 到 0.58。
 #
 # ────────────────────────────────────────────────────────────────
 # 物理边界说明
@@ -580,12 +587,12 @@ class HSVShapeMatching(CustomRecognition):
 # ────────────────────────────────────────────────────────────────
 # 一句话调参口诀（对照 detail.阶段）
 # ────────────────────────────────────────────────────────────────
-# 筛选·红掩膜(red_mask)  → red_mask 全白：降 hsv_ranges S/V 下限 / 校 roi
-# 筛选·面积(area)        → area_pass=0：降 red_area min（或升 max）
+# 筛选·红掩膜(red_mask)  → red_mask 全白：降 flt_red_hsv S/V 下限 / 校 roi
+# 筛选·面积(area)        → area_pass=0：降 flt_area min（或升 max）
 # 筛选·长宽比(aspect)    → 连片真货仅走 flt_hsv_rescue；不要放宽 flt_aspect
 # 筛选·内部(interior)    → inner 全白：红圈破损或模糊填满，缩小 roi / 等清晰帧
-# 打分(confidence)       → 看明细贡献列：竖长/偏白低=非感叹号(拒对了)；真货被拒才降 min_confidence
-# 大 ROI 误判杂红         → 提高 min_confidence 到 0.58
+# 打分(confidence)       → 看明细贡献列：竖长/偏白低=非感叹号(拒对了)；真货被拒才降 sc_min_conf
+# 大 ROI 误判杂红         → 提高 sc_min_conf 到 0.58
 #
 # ================================================================
 
@@ -593,6 +600,12 @@ _RED_RANGES_DEFAULT = [
     {"lower": [0,   130, 100], "upper": [12,  255, 255]},
     {"lower": [165, 130, 100], "upper": [180, 255, 255]},
 ]
+
+# 筛选·面积闸门：红色 blob 面积允许范围 [min, max]。菱形面积 ≈ 对角线²/2，
+# 16px 菱形 ≈ 128px、10px ≈ 50px，故下限 30 足以放行小红点；上限挡掉大面积红色 UI。
+# 与 flt_aspect 一样是"配置缺省值"而非硬结构常量 —— 离线回放器(replay_rdd_samples.py)
+# 复用同一个，避免两侧各写一份、改了一头忘另一头。
+_FLT_AREA_DEFAULT = [30, 1200]
 
 # 筛选·长宽比闸门(v3)：红块外接框 h/w 允许范围。真红点是圆/菱形，
 # 实测紧聚 [0.92, 1.10] 且极端模糊不漂移(抗模糊抗缩放)；两侧各留 ~3 倍余量，
@@ -656,6 +669,9 @@ _SC_W_CENT  = 0.04   # 居中：微调
 _SC_MIN_CONF = 0.55  # 默认命中阈值；必须 > 最大单项权重(0.45)，保证两项背书
 # 断层"细窄度"：凹陷连续高度 / 内部总高 超过此比例 → 视为"两块不相干"而非缝，细窄度归零
 _SC_GAP_MAX_RATIO = 0.40
+# sc_gap_ratio 缺省值。只影响 detail 里 gap 的"是否成双段"标注，不作命中门槛；
+# 与 _FLT_AREA_DEFAULT 同理，供离线回放器复用。
+_SC_GAP_RATIO_DEFAULT = 0.35
 
 # 同一检测点(节点名+ROI)两次落盘的最小间隔(秒)，防 next 自循环刷屏；RDD_DUMP_INTERVAL 可调
 try:
@@ -855,9 +871,9 @@ class RedDotDetector(CustomRecognition):
         """独立模式：HSV 过滤 → blob 面积筛 → 长宽比闸 → 拓扑封闭取内部 → 置信度加权打分。"""
         params = self._normalize_params(params)
         hsv_ranges = params.get("hsv_ranges", _RED_RANGES_DEFAULT)
-        area_min, area_max = params.get("red_area", [30, 1200])
+        area_min, area_max = params.get("red_area", _FLT_AREA_DEFAULT)
         asp_lo, asp_hi = params.get("flt_aspect", _FLT_ASPECT_DEFAULT)
-        gap_ratio = params.get("gap_ratio", 0.35)      # 仅用于 detail 的 gap 标注
+        gap_ratio = params.get("gap_ratio", _SC_GAP_RATIO_DEFAULT)  # 仅用于 detail 的 gap 标注
         min_conf = params.get("min_confidence", _SC_MIN_CONF)
         rescue_cfg, rescue_error = normalize_rescue_config(params.get("flt_hsv_rescue"))
         if rescue_error and "flt_hsv_rescue" in params:
@@ -1391,7 +1407,14 @@ class RedDotDetector(CustomRecognition):
         configured_hsv = params.get("hsv_ranges", _RED_RANGES_DEFAULT)
         meta = {
             "mode": "preset" if caller else "standalone",
-            "box": list(result_box), "conf": conf, "parts": parts,
+            "box": list(result_box),
+            # box 是加过 roi 偏移的坐标，偏移量取决于本次是独立还是预设模式；
+            # box_local 恒为 ROI 局部坐标，正是回放时 _detect_once(rx=0,ry=0) 产出的
+            # 那个坐标系。回放器直接读它即可，不必再按 mode 反推偏移(见 replay 的
+            # _expected_local)——那条反推依赖"预设节点不写 roi"这个 pipeline 侧约定，
+            # 约定破了不会报错，只会让 box 校验静默失真。
+            "box_local": list(candidate["box_local"]),
+            "conf": conf, "parts": parts,
             "red_blob": red_blob, "proj": chk.get("proj"),
             "params": {"hsv_ranges": configured_hsv,
                        "configured_hsv_ranges": configured_hsv,
@@ -1451,6 +1474,8 @@ class RedDotDetector(CustomRecognition):
                      best_box_local[1] + roi_tuple[1],
                      best_box_local[2], best_box_local[3]]
                     if best_box_local else None),
+            # 与 _finalize_hit 同理：未加偏移的 ROI 局部坐标，回放/诊断直接可用。
+            "box_local": list(best_box_local) if best_box_local else None,
             "conf": stat.get("conf"), "parts": stat.get("parts"),
             "red_blob": stat.get("red_blob"), "proj": stat.get("proj"),
             "gap": stat.get("gap"), "aspect_rej": stat.get("aspect_rej"),
@@ -1467,7 +1492,7 @@ class RedDotDetector(CustomRecognition):
                        "effective_hsv_ranges": hsv_ranges,
                        "red_area": [area_min, area_max],
                        "flt_aspect": [asp_lo, asp_hi],
-                       "gap_ratio": params.get("gap_ratio", 0.35),
+                       "gap_ratio": params.get("gap_ratio", _SC_GAP_RATIO_DEFAULT),
                        "min_conf": min_conf,
                        "flt_hsv_rescue": params.get("flt_hsv_rescue")},
             "failure_dump": dump_info,
@@ -1626,7 +1651,7 @@ class RedDotDetector(CustomRecognition):
         if stat["n_blobs"] == 0:
             return "red_mask", f"有红像素但未成连通域(red_px={stat['red_px']})，检查红色是否破碎"
         if stat["area_pass"] == 0:
-            return "area", f"红色面积都不在 [{area_min},{area_max}]，调 red_area（多半是 min 太大）"
+            return "area", f"红色面积都不在 [{area_min},{area_max}]，调 flt_area（多半是 min 太大）"
         if stat.get("aspect_pass", 0) == 0:
             rej = stat.get("aspect_rej") or []
             total = stat.get("aspect_rej_n", len(rej))
@@ -1635,8 +1660,8 @@ class RedDotDetector(CustomRecognition):
                               "由 flt_hsv_rescue 严格 HSV 搜索拆开连片；不要放宽 flt_aspect")
         if stat["max_inner_px"] == 0:
             return "interior", "红块内无封闭非红区(无感叹号轮廓)：roi 偏移 / 红圈破损 / 被模糊填满"
-        return "confidence", (f"最高置信 {stat.get('conf')} < min_confidence({min_conf})；"
-                              f"分项 {stat.get('parts')}；降低 min_confidence 提召回，"
+        return "confidence", (f"最高置信 {stat.get('conf')} < sc_min_conf({min_conf})；"
+                              f"分项 {stat.get('parts')}；降低 sc_min_conf 提召回，"
                               f"或检查偏白/竖向是否被模糊吃掉")
 
     def _miss(self, mode: str, stage: str, hint: str, stat: dict, params: dict,
@@ -1747,12 +1772,15 @@ class RedDotDetector(CustomRecognition):
             print(f"[RedDotDetector] 原生回显失败: {e}")
 
     def _preset_echo_params(self, context: Context, preset_node: str):
-        """从预设节点定义里取回显所需的 hsv_ranges / red_area 下限；取不到用默认。"""
+        """从预设节点定义里取回显所需的 HSV 范围 / 面积下限；取不到用默认。
+
+        节点里写的是新名(flt_red_hsv / flt_area)，_normalize_params 翻成内部旧名后再取。
+        """
         try:
             data = context.get_node_data(preset_node) or {}
             p = self._normalize_params(data.get("custom_recognition_param") or {})
             return (p.get("hsv_ranges", _RED_RANGES_DEFAULT),
-                    p.get("red_area", [30, 1200])[0])
+                    p.get("red_area", _FLT_AREA_DEFAULT)[0])
         except Exception:
             return _RED_RANGES_DEFAULT, 30
 
@@ -1761,9 +1789,9 @@ class RedDotDetector(CustomRecognition):
         hr = params.get("hsv_ranges", _RED_RANGES_DEFAULT)
         lines = [
             result_line,
-            f"params: red_area={params.get('red_area', [30, 1200])} "
+            f"params: flt_area={params.get('red_area', _FLT_AREA_DEFAULT)} "
             f"flt_aspect={params.get('flt_aspect', _FLT_ASPECT_DEFAULT)} "
-            f"min_conf={params.get('min_confidence', _SC_MIN_CONF)} hsv_groups={len(hr)}",
+            f"sc_min_conf={params.get('min_confidence', _SC_MIN_CONF)} hsv_groups={len(hr)}",
             f"stat: red_px={stat.get('red_px')} n_blobs={stat.get('n_blobs')} "
             f"area_pass={stat.get('area_pass')} aspect_pass={stat.get('aspect_pass')} "
             f"inner_px={stat.get('max_inner_px')} scored={stat.get('scored')}",
