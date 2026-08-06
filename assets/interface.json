@@ -2019,7 +2019,8 @@
             "-X",
             "utf8=1",
             "../agent/main.py"
-        ]
+        ],
+        "debug_session": "MFABD2 Agent"
     },
     "interface_version": 2,
     "name": "MFABD2",
