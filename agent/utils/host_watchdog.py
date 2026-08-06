@@ -36,7 +36,10 @@ Windows 上启动时做一次进程快照，从父进程沿祖先链向上：
 返回，不必等到下一个轮询周期。
 
 向上遍历设了深度上限与创建时间校验，避免 pid 复用时一路走到 `services.exe`
-这类杀了要连坐的进程上。POSIX 上没有 redirector 结构（`os.execv` 就地替换），
+这类杀了要连坐的进程上。**深度上限别照某条链路的长度来定** —— 链长取决于启动方式：
+`child_exec`（pwsh → venv launcher → agent）只要 3 跳，而 VSCode 的 `debug_session`
+要走 6 跳才到宿主（debugpy 是 adapter → launcher → 目标 三级，每级各套一层
+venv launcher）。POSIX 上没有 redirector 结构（`os.execv` 就地替换），
 仍退化为 `getppid()` 变化检测。
 
 一个目标都没拿到时 `available` 为 False，调用方应回退到原来的阻塞 join，
@@ -57,12 +60,17 @@ _WAIT_OBJECT_0 = 0x00000000
 _WAIT_TIMEOUT = 0x00000102
 # 其余返回值(WAIT_FAILED=0xFFFFFFFF、WAIT_ABANDONED 等)一律按「句柄失效 → 宿主已没」处理
 
-# 祖先链向上遍历的硬上限。真实最深链路是
-# 「Code.exe → pwsh → venv launcher → agent」，取 4 足够；
-# 上限本身也是防线 —— 万一 pid 复用导致链路错乱，不至于一路走到系统进程上。
-_MAX_ANCESTOR_DEPTH = 4
-# 同时监视的目标数上限（正常是 1~2 个）
-_MAX_TARGETS = 3
+# 祖先链向上遍历的硬上限。**别按某条具体链路的长度来定** —— 链长取决于启动方式，
+# 实测三种：MFAAvalonia 直起 2 跳、child_exec 经 pwsh 3 跳、VSCode debug_session
+# 足足 6 跳（debugpy 是 adapter→launcher→目标 三级，每级各套一层 venv launcher）。
+# 原值 4 是照 child_exec 定的，debug_session 下够不到宿主。这里只作「跑飞兜底」，
+# pid 复用另有创建时间校验做精确防护，不靠这个数。
+_MAX_ANCESTOR_DEPTH = 16
+# **中间层**(python 包装层)的监视数上限。宿主不受此限，见 _resolve_targets ——
+# 中间层监视按 §12.5 只是无害的冗余(kill launcher 会被其 Job Object 连坐)，
+# 而宿主是守护存在的唯一理由，绝不能被冗余项挤掉。
+# WaitForMultipleObjects 的 nCount 上限是 MAXIMUM_WAIT_OBJECTS(64)，留足余量。
+_MAX_INTERMEDIATE_TARGETS = 16
 
 # 视作「中间层」的映像名：命中则继续向上找真宿主
 _PYTHON_IMAGES = ("python.exe", "pythonw.exe", "python3.exe")
@@ -161,6 +169,16 @@ class HostWatchdog:
                 )
                 return
 
+            # 只监视到 python 包装层、没走到真宿主时必须喊出来。原实现在这里静默
+            # 收场，日志只说「监视了 N 个 python 层」，看着一切正常，实际守护已经
+            # 对宿主失效 —— §12 那次栽的就是「日志不说谎但也不说实话」。
+            if not any(t.role == "host" for t in self.targets):
+                mfaalog.warning(
+                    f"[Watchdog] 祖先链已走到上限仍未找到非 python 宿主，当前只监视 "
+                    f"{self.describe()}。这些包装层若先于宿主退出仍能感知，但宿主"
+                    "自身异常退出时可能感知不到 —— 链路确实更深就调高 _MAX_ANCESTOR_DEPTH"
+                )
+
             self.available = True
         except Exception as e:
             mfaalog.warning(f"[Watchdog] Windows 守护初始化失败: {e}")
@@ -220,6 +238,10 @@ class HostWatchdog:
 
         规则：途中每一层 python 都纳入监视并继续向上，第一个非 python 祖先即宿主，
         纳入后停止。这样 kill 链路上任意一环，Agent 都会收敛退出。
+
+        中间层超过 _MAX_INTERMEDIATE_TARGETS 后**只是不再纳入监视，仍继续向上找宿主** ——
+        原实现在这里直接 break，于是 debug_session 那条 6 跳链路上三个 debugpy 包装层
+        就把名额占满了，宿主(Code.exe)根本走不到，守护退化成「只监视 debugpy 内部」。
         """
         self_pid = os.getpid()
         self_create = self._create_time(kernel32, self_pid)
@@ -227,10 +249,9 @@ class HostWatchdog:
         seen = {self_pid}
         cur = self.ppid
         depth = 0
+        intermediates = 0
 
         while cur and cur not in seen and depth < _MAX_ANCESTOR_DEPTH:
-            if len(self.targets) >= _MAX_TARGETS:
-                break
             seen.add(cur)
             depth += 1
 
@@ -268,9 +289,14 @@ class HostWatchdog:
             image_path = self._image_path(kernel32, handle)
 
             if self._is_intermediate(image_name, image_path):
-                # 判据 1 命中时说明它就是启动我的那个 venv launcher
-                role = "venv-launcher" if _same_path(image_path, sys.executable) else "python"
-                self.targets.append(_WatchTarget(cur, image_name, role, handle))
+                if intermediates < _MAX_INTERMEDIATE_TARGETS:
+                    # 判据 1 命中时说明它就是启动我的那个 venv launcher
+                    role = "venv-launcher" if _same_path(image_path, sys.executable) else "python"
+                    self.targets.append(_WatchTarget(cur, image_name, role, handle))
+                    intermediates += 1
+                else:
+                    # 名额用尽就不监视这一层，但句柄必须还回去，否则每跳泄漏一个
+                    kernel32.CloseHandle(handle)
                 cur = next_ppid
                 continue
 
