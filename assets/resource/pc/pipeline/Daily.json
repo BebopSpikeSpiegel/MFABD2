@@ -1,4 +1,17 @@
 {
+    "Daily_HomePage": {
+        "desc": "日常枢纽。|[PC覆盖·2026-08-02] 广场段成功后卡带留驻广场→次日开局派遣静默丢领/锻造哑死(当日实录)。在Global_Hub_End前插一发QC1归位腿:六个子枢纽全部消耗后触发,日常无论成败收尾时卡带必回QC1,次日开局天然安全,零手动。base六腿原序照抄。",
+        "next": [
+            "[JumpBack]Daily_HomePage_Hub",
+            "[JumpBack]Daily_Union_Hub",
+            "[JumpBack]Daily_VisitCabin_Hub",
+            "[JumpBack]Daily_Busin_Hub",
+            "[JumpBack]Daily_Intimacy_HUB",
+            "[JumpBack]Daily_Square_Hub",
+            "[JumpBack]Daily_End_CassetteHome_PC",
+            "Global_Hub_End"
+        ]
+    },
     "Daily_EnterUnion": {
         "desc": "主菜单公会红点存在则进入。|[PC覆盖] 公会按钮在主页左上,红点在按钮右上角720(267,92)(native(400,138)),base roi[298,88,29,28]按安卓→[250,80,30,24]。红点为清晰红点沿用Agt_RedDot_Preset;target_offset继承base[-5,5]。实机验证有红点→点击进公会。",
         "roi": [
@@ -575,19 +588,6 @@
             "settle_delay": 500,
             "threshold": 5.0
         }
-    },
-    "Daily_HomePage": {
-        "desc": "日常枢纽。|[PC覆盖·2026-08-02] 广场段成功后卡带留驻广场→次日开局派遣静默丢领/锻造哑死(当日实录)。在Global_Hub_End前插一发QC1归位腿:六个子枢纽全部消耗后触发,日常无论成败收尾时卡带必回QC1,次日开局天然安全,零手动。base六腿原序照抄。",
-        "next": [
-            "[JumpBack]Daily_HomePage_Hub",
-            "[JumpBack]Daily_Union_Hub",
-            "[JumpBack]Daily_VisitCabin_Hub",
-            "[JumpBack]Daily_Busin_Hub",
-            "[JumpBack]Daily_Intimacy_HUB",
-            "[JumpBack]Daily_Square_Hub",
-            "[JumpBack]Daily_End_CassetteHome_PC",
-            "Global_Hub_End"
-        ]
     },
     "Daily_End_CassetteHome_PC": {
         "desc": "[PC v6] 日常收尾条件归位:六枢纽耗尽后仍留驻广场才复位,保次日开局安全;结构同上反相出口终止。",
