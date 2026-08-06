@@ -14,7 +14,7 @@
                 "-X",
                 "utf8=1"
             ],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/assets",
             "console": "internalConsole"
         }
     ]
