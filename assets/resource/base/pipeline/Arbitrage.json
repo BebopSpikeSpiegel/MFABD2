@@ -2646,6 +2646,26 @@
         "action": "Click",
         "post_delay": 2000,
         "next": [
+            "[JumpBack]Arbitrage_Sell_Gold_Snapshot",
+            "Arbitrage_Sell_Item_Click"
+        ]
+    },
+    "Arbitrage_Sell_Gold_Snapshot": {
+        "desc": "金币检测点A",
+        "max_hit": 1,
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "GoldSnapshot",
+        "custom_action_param": {
+            "node": "Arbitrage_Sell_GoldRead"
+        },
+        "post_delay": 0
+    },
+    "Arbitrage_Sell_Item_Click": {
+        "action": "Click",
+        "target": "Arbitrage_Sell_Item_ListTraverse",
+        "post_delay": 2000,
+        "next": [
             "Arbitrage_Sell_Item_SellMenu",
             "Arbitrage_Sell_Item_ListTraverse"
         ]
@@ -2735,6 +2755,13 @@
         "desc": "出售循环内已进行,卡带已复位",
         "recognition": "Or",
         "any_of": ["Arbitrage_PackList_ResetEnter"],
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "GoldVerdict",
+        "custom_action_param": {
+            "node": "Arbitrage_Sell_GoldRead"
+        },
+        "post_delay": 0,
         "focus": "Arb.B.出售一轮循环结束"
     },
     "Arbitrage_PackList_ResetSwip": {
@@ -2754,7 +2781,7 @@
         "focus": "复位商店卡带表"
     },
     "Arbitrage_Sell_GoldRead": {
-        "desc": "【Py引用·被动数据节点,不入任何流程】读右上角金币数,供出售主脑做卖出验证。背景:主脑原先只看 run_task(\"Arbitrage_Sell_HUB\") 的返回值判成败,而该返回值只表示链条\"正常结束\",链条在选卡带找不到目标、SmartSwipe 判触底 JumpOut 时同样返回 True→假报'售卖成功'(07-22实录:桑格利亚酒一件没卖仍报成功)。改为派发前后各读一次金币,增长才算真卖出。读不到时主脑自动跳过验证、退回原行为,不阻断流程。",
+        "desc": "【Py引用·被动数据节点,不入任何流程】右上角金币数范围,金币检测默认区域。",
         "recognition": "OCR",
         "roi": [
             964,
