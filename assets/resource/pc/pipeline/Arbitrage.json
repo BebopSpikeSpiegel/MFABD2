@@ -884,11 +884,32 @@
         ]
     },
     "Arbitrage_Sell_PackShopListSwich_OnlyHave_NeedDisable": {
-        "roi": [
-            969,
-            535,
-            17,
-            16
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    971,
+                    535,
+                    17,
+                    16
+                ],
+                "lower": [
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ],
+                "upper": [
+                    [
+                        255,
+                        255,
+                        255
+                    ]
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
         ]
     },
     "Arbitrage_Sell_Col_Name": {
@@ -1060,6 +1081,14 @@
             109
         ]
     },
+    "Arbitrage_Sell_Item_Price_MaxCheck": {
+        "roi": [
+            322,
+            355,
+            328,
+            102
+        ]
+    },
     "Arbitrage_Sell_Item_NumberSafety_ON": {
         "target": [
             367,
@@ -1102,7 +1131,7 @@
         "roi": [
             1045,
             20,
-            130,
+            177,
             32
         ]
     },
