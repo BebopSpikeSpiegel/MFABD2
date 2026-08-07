@@ -2088,14 +2088,14 @@
             "价目表"
         ],
         "next": [
-            "[JumpBack]Arbitrage_Sell_PriceList_FirstCalibration",
             "[JumpBack]Arbitrage_Sell_PackShopListSwich_OnlyHave_NeedDisable",
+            "[JumpBack]Arbitrage_Sell_PriceList_FirstCalibration",
             "[JumpBack]Arbitrage_Sell_PackShopListSwich_OCR_Entry",
             "Arbitrage_ShopSell_Active"
         ]
     },
     "Arbitrage_Sell_PackShopListSwich_OCR_Entry": {
-        "desc": "价目表本身的排序,若第一项存在非120%,触发",
+        "desc": "价目表本身的排序修改,若第一项存在非120%,触发",
         "max_hit": 4,
         "recognition": "OCR",
         "roi": [
@@ -2110,6 +2110,7 @@
         "next": ["Arbitrage_Sell_PackShopListSwich_Butt"]
     },
     "Arbitrage_Sell_PackShopListSwich_Butt": {
+        "desc": "改价目表排序",
         "action": "Click",
         "target": [
             991,
@@ -2173,27 +2174,32 @@
         ]
     },
     "Arbitrage_Sell_PackShopListSwich_OnlyHave_NeedDisable": {
-        "desc": "如果询价表中,'仅显示已有'为开启,则需要关闭",
+        "desc": "询价表,切换到'仅显示已有物品'",
         "max_hit": 4,
-        "recognition": "ColorMatch",
-        "roi": [
-            1039,
-            572,
-            16,
-            15
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    1039,
+                    572,
+                    16,
+                    15
+                ],
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
         ],
-        "method": 40,
-        "lower": [
-            17,
-            180,
-            152
-        ],
-        "upper": [
-            23,
-            200,
-            185
-        ],
-        "count": 20,
         "action": "Click",
         "post_delay": 1500
     },
