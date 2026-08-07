@@ -2649,8 +2649,6 @@
                 ""
             ]
         ],
-        "action": "Click",
-        "post_delay": 2000,
         "next": [
             "[JumpBack]Arbitrage_Sell_Gold_Snapshot",
             "Arbitrage_Sell_Item_Click"
