@@ -1111,12 +1111,15 @@
         "focus": "Arb.料理模块启动"
     },
     "Arbitrage_Cooking_SetupToSkill": {
-        "desc": "技能列表点'料理'进烹饪菜单。|[PC覆盖·2026-07-14帧校准] PC技能卡名字行实测720 y617-635,base roi[110,580,1053,33](y580-613)整体偏上漏读。roi改[80,600,1120,45]。",
+        "desc": "技能列表点'料理'进烹饪菜单。|[PC覆盖·2026-07-14帧校准] PC技能卡名字行实测720 y617-635,base roi[110,580,1053,33](y580-613)整体偏上漏读。roi改[80,600,1120,45]。|[08-07]补 on_error 逃生:借道全哑时按返回收场,防默认 Null 假成功掐死套利任务。",
         "roi": [
             80,
             604,
             1120,
             30
+        ],
+        "on_error": [
+            "Global_BackPageHub_Once"
         ],
         "focus": "Arb.PC.料理:找到'料理'技能,进烹饪菜单"
     },
@@ -1456,5 +1459,13 @@
             "Global_BackToPve_Anc"
         ],
         "focus": "Arb.PC.进图链超时!重回复位整链重试"
+    },
+    "Arbitrage_Cooking_MenuPatch": {
+        "desc": "借用setup管路进料理。|[PC覆盖·2026-08-07二版] 82b1a4c 的 anchor.SetSkill 错指 Setup_SetSkill_tab3_Reset5(槽位重设链)→借道被5槽流程劫持,收尾 Global_ToSandBox 必关菜单,料理 OCR 永无菜单可读(08-03~08-07 全平台零制作)。对照锻造成功样板 Equip_Skill_Call(SetSkill→业务节点Equip_Skill),锚值本义=tab3_Ck 出口直连借用方业务节点。改对一个值:SetSkill→Arbitrage_Cooking_SetupToSkill,tab3_Ck 轮询天然成立:料理可见即点入,不可见走 SkillList_Right(4to5_Swip)右滑再试。5槽重设不再被误触发,较原设计省~50秒。anchor 整字段显式写全(整字段替换语义)。",
+        "anchor": {
+            "SetSkill": "Arbitrage_Cooking_SetupToSkill",
+            "SkillList_ReLift": "",
+            "SkillList_Right": "Setup_SetSkill_4to5_Swip"
+        }
     }
 }
