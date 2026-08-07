@@ -380,7 +380,7 @@ class ArbitrageSellController(CustomAction):
             page_count += 1
         
         # 🌟 优化日志 2：列出今日市面上的所有最高价商品
-        mfaalog.info(f"[Arbitrage] 📈 今日最高价商品总览: {', '.join(all_max_price_items) if all_max_price_items else '无'}")
+        mfaalog.info(f"[Arbitrage] 📈 今日最高价&有库存商品总览: {', '.join(all_max_price_items) if all_max_price_items else '无'}")
         
         # ==========================================
         # 3. 派发阶段：循环注入并执行售卖节点链
