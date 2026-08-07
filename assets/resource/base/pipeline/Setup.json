@@ -1907,6 +1907,9 @@
         },
         "next": [
             "Setup_SetSkill_Per"
+        ],
+        "on_error": [
+            "Global_BackPageHub_Once"
         ]
     },
     "Setup_SetSkill_Per": {
@@ -1924,10 +1927,10 @@
     "Setup_SetSkill_OpenSklMenu": {
         "recognition": "TemplateMatch",
         "roi": [
-            699,
-            628,
-            83,
-            52
+            555,
+            623,
+            227,
+            68
         ],
         "template": [
             "UI_SetSkill.png"
