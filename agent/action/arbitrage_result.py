@@ -1,4 +1,3 @@
-import os
 import json
 import re
 from maa.custom_action import CustomAction
@@ -268,13 +267,13 @@ class ArbitrageSellController(CustomAction):
         # 1. 提取并合并 Attach 白名单
         # ==========================================
         whitelist_set = set()
-        
+
         # 假设我们将此动作绑定在 Arbitrage_ShopSell_Active 节点
         node_obj = context.get_node_object("Arbitrage_ShopSell_Active")
-        
+
         if node_obj and node_obj.attach:
             # 遍历 attach 中的所有 key (default, Drops, 以及 UI 传进来的 SellName)
-            for key, val_str in node_obj.attach.items():
+            for _, val_str in node_obj.attach.items():
                 if isinstance(val_str, str) and val_str.strip():
                     # 按照逗号、分号、中文逗号切分
                     raw_items = [x.strip() for x in re.split(r'[，,;|]+', val_str) if x.strip()]
@@ -282,13 +281,13 @@ class ArbitrageSellController(CustomAction):
                         # 使用和 OCR 底层一模一样的清洗规则，保证 100% 绝对匹配
                         cleaned_item = re.sub(r'[^\w\u4e00-\u9fa5]', '', item)
                         if cleaned_item:
-                            # \u5f52\u4e00\u5316\u5230\u89c4\u8303\u7b80\u4f53\uff1a\u767d\u540d\u5355\u53ef\u7b80/\u7e41\u4e66\u5199\uff0c\u7edf\u4e00\u540e\u4e0e OCR \u540d\u540c\u57df\u6838\u5bf9\u3002
+                            # 归一化到规范简体：白名单可简/繁书写，统一后与 OCR 名同域核对。
                             whitelist_set.add(canon(cleaned_item))
-                    
+
         if not whitelist_set:
             mfaalog.warning("[Arbitrage] ⚠️ 未读取到任何待售物品白名单，流程结束。")
             return True
-            
+
         mfaalog.info(f"[Arbitrage] 📋 期望售卖清单 ({len(whitelist_set)}项): {', '.join(whitelist_set)}")
 
         # ==========================================
@@ -314,7 +313,7 @@ class ArbitrageSellController(CustomAction):
                 break
 
             mfaalog.info(f"[Arbitrage] 📷 正在扫描第 {page_count} 页价目表...")
-            
+
             # 调用内部的 V8 图像解析引擎
             page_results = self._parse_current_page(context)
             if not page_results:
@@ -336,17 +335,17 @@ class ArbitrageSellController(CustomAction):
                 name = item["name"]
                 is_max = item["is_max_price"]
                 cart = item["target_cartridge"]
-                
+
                 # 触发截断：遇到非最高价商品
                 if not is_max:
                     has_non_max = True
                     mfaalog.info(f"[Arbitrage] 🛑 扫描到非最高价商品 [{name}]，已触及利润边界，停止向下扫描。")
-                    break 
+                    break
 
                 # 记录所有扫描到的最高价商品（去重保存）
                 if name not in all_max_price_items:
                     all_max_price_items.append(name)
-                   
+
                 # 检查是否在白名单中（仅归一化「比较用副本」；name 原文保留回填售卖链，
                 # 繁体端须以 OCR 原文匹配同语言 UI，切勿把归一化后的简体名传给 expected）
                 if canon(name) in whitelist_set:
@@ -361,8 +360,8 @@ class ArbitrageSellController(CustomAction):
                         })
 
             if has_non_max:
-                break 
-                
+                break
+
             # 翻页动作：调用你写好的精准滑动链
             mfaalog.info("[Arbitrage] ⏬ 下滑翻页...")
             # run_task 返回 Optional[TaskDetail],返回对象只表示任务被成功提交,
@@ -376,27 +375,27 @@ class ArbitrageSellController(CustomAction):
             if not swip_detail.status.succeeded:
                 mfaalog.warning("[Arbitrage] ⚠️ 翻页任务执行失败，停止扫描。")
                 break
-                
+
             page_count += 1
-        
+
         # 🌟 优化日志 2：列出今日市面上的所有最高价商品
         mfaalog.info(f"[Arbitrage] 📈 今日最高价&有库存商品总览: {', '.join(all_max_price_items) if all_max_price_items else '无'}")
-        
+
         # ==========================================
         # 3. 派发阶段：循环注入并执行售卖节点链
         # ==========================================
         if not targets_to_sell:
             mfaalog.info("[Arbitrage] 💤 今日无符合条件的最高价商品，收工！")
             return True
-            
+
         # 🌟 优化日志 3：列出最终交集的执行清单
         final_sell_names = [t["name"] for t in targets_to_sell]
         mfaalog.info(f"[Arbitrage] 🛒 扫描完毕！确认共 {len(targets_to_sell)} 项物品待出售: {', '.join(final_sell_names)}")
-        
+
         sold_ok, sold_fail = [], []
         for idx, target in enumerate(targets_to_sell, 1):
             if context.tasker.stopping: break
-            
+
             item_name = target["name"]
             cart_raw = target["cartridge_raw"]
             mfaalog.info(f"[Arbitrage] 👉 正在执行 {idx}/{len(targets_to_sell)}: 前往 [{cart_raw}] 售卖 [{item_name}]")
@@ -534,7 +533,7 @@ class ArbitrageSellController(CustomAction):
         return True
 
     # ==========================================
-    # 附：V8 图像解析引擎 
+    # 附：V8 图像解析引擎
     # ==========================================
     def _parse_current_page(self, context: Context) -> list:
         # 每商品占价目表两行:上子行(当前,与名同高)/下子行(每月最高价日)
