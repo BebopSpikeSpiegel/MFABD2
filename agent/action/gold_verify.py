@@ -188,6 +188,15 @@ class GoldVerdict(CustomAction):
         before = baseline.get("gold") if baseline else None
         after = _read_gold(context, _node_of(argv))
         delta = (after - before) if (before is not None and after is not None) else None
+
+        # 同一趟 run_task 里 B 可能被触发不止一次(链条结构使然,实测「基准/差额」会成对出现
+        # 两次)。第二次起基准已被首次一次性消费掉,delta 必然是 None —— 绝不能让这个空结论
+        # 覆盖掉已经算出来的差额,否则主控会把一件明明卖成了的物品报成「无法判断」,还要多跑
+        # 一个候选柜台。只降不升的覆盖一律挡掉。
+        if delta is None and _VERDICT is not None and _VERDICT.get("delta") is not None:
+            mfaalog.debug(f"[Gold] ↺ 重复触发，保留已成立的差额 {_VERDICT['delta']:+,}")
+            return True
+
         _VERDICT = {"before": before, "after": after, "delta": delta}
 
         if delta is None:
