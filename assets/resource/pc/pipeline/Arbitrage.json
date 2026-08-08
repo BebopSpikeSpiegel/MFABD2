@@ -884,11 +884,32 @@
         ]
     },
     "Arbitrage_Sell_PackShopListSwich_OnlyHave_NeedDisable": {
-        "roi": [
-            969,
-            535,
-            17,
-            16
+        "all_of": [
+            {
+                "sub_name": "Clr",
+                "recognition": "ColorMatch",
+                "roi": [
+                    971,
+                    535,
+                    17,
+                    16
+                ],
+                "lower": [
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ],
+                "upper": [
+                    [
+                        255,
+                        255,
+                        255
+                    ]
+                ]
+            },
+            "Rec_SliderSwitch_GryOff_Clr"
         ]
     },
     "Arbitrage_Sell_Col_Name": {
@@ -1040,10 +1061,10 @@
     },
     "Arbitrage_Sell_Item_ListTraverse": {
         "roi": [
-            330,
-            77,
-            819,
-            230
+            322,
+            81,
+            823,
+            559
         ]
     },
     "Rec_<Arbitrage_Sell_Item_SellMenu>_Ocr_01": {
@@ -1058,6 +1079,14 @@
             445,
             350,
             109
+        ]
+    },
+    "Arbitrage_Sell_Item_Price_MaxCheck": {
+        "roi": [
+            322,
+            355,
+            328,
+            102
         ]
     },
     "Arbitrage_Sell_Item_NumberSafety_ON": {
@@ -1102,7 +1131,7 @@
         "roi": [
             1045,
             20,
-            130,
+            177,
             32
         ]
     },
@@ -1111,7 +1140,7 @@
         "focus": "Arb.料理模块启动"
     },
     "Arbitrage_Cooking_SetupToSkill": {
-        "desc": "技能列表点'料理'进烹饪菜单。|[PC覆盖·2026-07-14帧校准] PC技能卡名字行实测720 y617-635,base roi[110,580,1053,33](y580-613)整体偏上漏读。roi改[80,600,1120,45]。",
+        "desc": "技能列表点'料理'进烹饪菜单。|[PC覆盖·2026-07-14帧校准] PC技能卡名字行实测720 y617-635,base roi[110,580,1053,33](y580-613)整体偏上漏读。roi改[80,600,1120,45]。|[08-07]补 on_error 逃生:借道全哑时按返回收场,防默认 Null 假成功掐死套利任务。",
         "roi": [
             80,
             604,

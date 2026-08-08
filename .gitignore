@@ -484,6 +484,11 @@ prettier.config.mjs
 .claude/*
 
 # MaaOWM
+# 状态/备份目录。新版落在 maaowm/.state/ (由 maaowm/.gitignore 忽略),
+# 这行留给旧版遗留在适配包目录下的 .maaowm/
 **/.maaowm
-**/__mod_extras__.json
+# 曾有一行 **/__mod_extras__.json —— 那是 MaaOWM 给"工作区新建节点"编的兜底
+# 落点文件。它装的是真实可运行的节点定义, 被忽略掉就等于提交出一个 next 指向
+# 不存在节点的断链资源包。MaaOWM V0.7.12 已取消该兜底 (新建节点写回原 json),
+# 若再出现此文件, 应当入库而不是忽略。
 config.json

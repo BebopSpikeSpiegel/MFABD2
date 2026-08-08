@@ -1,4 +1,12 @@
 {
+    "Collect_Sandplay": {
+        "target": [
+            1214,
+            671,
+            4,
+            6
+        ]
+    },
     "Collect_QuickCart_SelectType_StoryPack": {
         "roi": [
             15,
@@ -64,5 +72,440 @@
                 "內"
             ]
         ]
+    },
+    "Collect_FirstBootPack_To1": {
+        "target": [
+            64,
+            650,
+            16,
+            15
+        ]
+    },
+    "Collect_PackProbe_Loc1": {
+        "roi": [
+            0,
+            667,
+            163,
+            20
+        ]
+    },
+    "Collect_PackProbe_Loc2": {
+        "roi": [
+            107,
+            667,
+            171,
+            20
+        ]
+    },
+    "Collect_PackProbe_Loc3": {
+        "roi": [
+            229,
+            667,
+            174,
+            20
+        ]
+    },
+    "Collect_PackProbe_Loc4": {
+        "roi": [
+            353,
+            667,
+            168,
+            20
+        ]
+    },
+    "Collect_PackProbe_Loc5": {
+        "roi": [
+            474,
+            667,
+            167,
+            20
+        ]
+    },
+    "Collect_PackProbe_Loc6": {
+        "roi": [
+            589,
+            667,
+            178,
+            20
+        ]
+    },
+    "Collect_PackProbe_Loc7": {
+        "roi": [
+            707,
+            667,
+            174,
+            20
+        ]
+    },
+    "Collect_PackProbe_Loc8": {
+        "roi": [
+            829,
+            667,
+            174,
+            20
+        ]
+    },
+    "Collect_PackProbe_Loc9": {
+        "roi": [
+            949,
+            667,
+            175,
+            20
+        ],
+        "next": [
+            "Collect_PackProbe_Loc10"
+        ]
+    },
+    "Collect_PackProbe_NotPresent": {
+        "roi": [
+            0,
+            672,
+            1279,
+            13
+        ]
+    },
+    "Collect_LocatePackFrame_Loc1": {
+        "roi": [
+            0,
+            595,
+            166,
+            99
+        ],
+        "template": [
+            "UI_StoryPack_PC.png",
+            "UI_CharacterPack_PC.png",
+            "UI_EventPack_PC.png"
+        ],
+        "on_error": [
+            "Collect_LocatePackFrame_Loc3",
+            "Collect_LocatePackFrame_Loc4",
+            "Collect_LocatePackFrame_Loc5",
+            "Collect_LocatePackFrame_Loc6",
+            "Collect_LocatePackFrame_Loc7",
+            "Collect_LocatePackFrame_Loc8",
+            "Collect_LocatePackFrame_Loc9",
+            "Collect_LocatePackFrame_Loc10",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Collect_LocatePackFrame_Loc2": {
+        "roi": [
+            99,
+            595,
+            194,
+            99
+        ],
+        "template": [
+            "UI_StoryPack_PC.png",
+            "UI_CharacterPack_PC.png",
+            "UI_EventPack_PC.png"
+        ],
+        "on_error": [
+            "Collect_LocatePackFrame_Loc4",
+            "Collect_LocatePackFrame_Loc5",
+            "Collect_LocatePackFrame_Loc6",
+            "Collect_LocatePackFrame_Loc7",
+            "Collect_LocatePackFrame_Loc8",
+            "Collect_LocatePackFrame_Loc9",
+            "Collect_LocatePackFrame_Loc10",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Collect_LocatePackFrame_Loc3": {
+        "roi": [
+            220,
+            595,
+            189,
+            99
+        ],
+        "template": [
+            "UI_StoryPack_PC.png",
+            "UI_CharacterPack_PC.png",
+            "UI_EventPack_PC.png"
+        ],
+        "on_error": [
+            "Collect_LocatePackFrame_Loc5",
+            "Collect_LocatePackFrame_Loc6",
+            "Collect_LocatePackFrame_Loc7",
+            "Collect_LocatePackFrame_Loc8",
+            "Collect_LocatePackFrame_Loc9",
+            "Collect_LocatePackFrame_Loc10",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Collect_LocatePackFrame_Loc4": {
+        "roi": [
+            340,
+            595,
+            189,
+            99
+        ],
+        "template": [
+            "UI_StoryPack_PC.png",
+            "UI_CharacterPack_PC.png",
+            "UI_EventPack_PC.png"
+        ],
+        "on_error": [
+            "Collect_LocatePackFrame_Loc6",
+            "Collect_LocatePackFrame_Loc7",
+            "Collect_LocatePackFrame_Loc8",
+            "Collect_LocatePackFrame_Loc9",
+            "Collect_LocatePackFrame_Loc10",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Collect_LocatePackFrame_Loc5": {
+        "roi": [
+            459,
+            595,
+            193,
+            99
+        ],
+        "template": [
+            "UI_StoryPack_PC.png",
+            "UI_CharacterPack_PC.png",
+            "UI_EventPack_PC.png"
+        ],
+        "on_error": [
+            "Collect_LocatePackFrame_Loc7",
+            "Collect_LocatePackFrame_Loc8",
+            "Collect_LocatePackFrame_Loc9",
+            "Collect_LocatePackFrame_Loc10",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Collect_LocatePackFrame_Loc6": {
+        "roi": [
+            580,
+            595,
+            192,
+            99
+        ],
+        "template": [
+            "UI_StoryPack_PC.png",
+            "UI_CharacterPack_PC.png",
+            "UI_EventPack_PC.png"
+        ],
+        "on_error": [
+            "Collect_LocatePackFrame_Loc8",
+            "Collect_LocatePackFrame_Loc9",
+            "Collect_LocatePackFrame_Loc10",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Collect_LocatePackFrame_Loc7": {
+        "roi": [
+            700,
+            595,
+            192,
+            99
+        ],
+        "template": [
+            "UI_StoryPack_PC.png",
+            "UI_CharacterPack_PC.png",
+            "UI_EventPack_PC.png"
+        ]
+    },
+    "Collect_LocatePackFrame_Loc8": {
+        "roi": [
+            818,
+            595,
+            193,
+            99
+        ],
+        "template": [
+            "UI_StoryPack_PC.png",
+            "UI_CharacterPack_PC.png",
+            "UI_EventPack_PC.png"
+        ],
+        "next": [
+            "Collect_LocatePackFrame_Smart_Swip",
+            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
+            "[JumpBack]Collect_PackLocation_PassFieldsAndHub",
+            "Collect_LocatePackFrame_Loc9"
+        ],
+        "on_error": [
+            "Collect_LocatePackFrame_Loc10",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Collect_LocatePackFrame_Loc9": {
+        "roi": [
+            939,
+            595,
+            192,
+            99
+        ],
+        "template": [
+            "UI_StoryPack_PC.png",
+            "UI_CharacterPack_PC.png",
+            "UI_EventPack_PC.png"
+        ],
+        "next": [
+            "Collect_LocatePackFrame_Smart_Swip",
+            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
+            "[JumpBack]Collect_PackLocation_PassFieldsAndHub",
+            "Collect_LocatePackFrame_Loc10",
+            "Collect_Loc_OutToSwip_Hub_Ingress"
+        ],
+        "on_error": [
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Collect_LocatePackFrame_Loc1_ResetLoc": {
+        "roi": [
+            0,
+            609,
+            16,
+            75
+        ],
+        "template": [
+            "PackReset_PC.png"
+        ],
+        "begin": [
+            49,
+            659,
+            1,
+            1
+        ],
+        "end": [
+            64,
+            659,
+            1,
+            1
+        ]
+    },
+    "Collect_LocatePackFrame_Smart_Swip": {
+        "custom_action_param": {
+            "action": "Swipe",
+            "begin": [
+                1252,
+                662
+            ],
+            "detect_roi": [
+                1088,
+                623,
+                190,
+                53
+            ],
+            "duration": 500,
+            "end": [
+                55,
+                662
+            ],
+            "end_hold": 800,
+            "proxy_node": "Custom_Proxy_Swipe",
+            "retry_times": 2,
+            "settle_delay": 1000,
+            "threshold": 3.0
+        }
+    },
+    "Collect_FirstPack": {
+        "desc": "事件图可能会有新卡带||全是猜的",
+        "roi": [
+            375,
+            469,
+            478,
+            190
+        ],
+        "expected": [
+            "未插好游戏卡",
+            "未插好遊戲卡"
+        ]
+    },
+    "Collect_FirstPack_Talk": {
+        "desc": "初次卡带对话跳过||范围猜的",
+        "roi": [
+            955,
+            15,
+            262,
+            50
+        ],
+        "template": [
+            "UI_TalkSkip.png"
+        ],
+        "green_mask": true
+    },
+    "Collect_FirstPack_Talk_Ck": {
+        "desc": "初次卡带对话跳过,确认||全是猜的",
+        "roi": [
+            626,
+            368,
+            255,
+            320
+        ],
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "Collect_PackProbe_Loc10": {
+        "recognition": "ColorMatch",
+        "roi": [
+            1067,
+            667,
+            190,
+            20
+        ],
+        "method": 40,
+        "lower": [
+            [
+                22,
+                67,
+                177
+            ]
+        ],
+        "upper": [
+            [
+                30,
+                241,
+                255
+            ]
+        ],
+        "count": 2,
+        "timeout": 2000,
+        "next": [
+            "Collect_LocatePackFrame_Smart_Swip"
+        ]
+    },
+    "Collect_LocatePackFrame_Loc10": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1057,
+            595,
+            223,
+            99
+        ],
+        "template": [
+            "UI_StoryPack_PC.png",
+            "UI_CharacterPack_PC.png",
+            "UI_EventPack_PC.png"
+        ],
+        "green_mask": true,
+        "action": "Custom",
+        "custom_action": "ResetTag",
+        "custom_action_param": {
+            "tags": [
+                "PackLocation_ToggleSwitch"
+            ]
+        },
+        "anchor": {
+            "PackFrame_Loc": "Collect_LocatePackFrame_Loc10"
+        },
+        "next": [
+            "Collect_LocatePackFrame_Smart_Swip",
+            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
+            "[JumpBack]Collect_PackLocation_PassFieldsAndHub",
+            "Collect_Loc_OutToSwip_Hub_Ingress"
+        ],
+        "focus": "CM.L.快速卡带盒定位-位置10"
     }
 }

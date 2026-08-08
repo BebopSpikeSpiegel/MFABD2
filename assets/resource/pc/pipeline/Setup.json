@@ -31,7 +31,17 @@
             13
         ]
     },
+    "Setup_Skill_Swich": {
+        "custom_recognition_param": {
+            "card_name": "SetSkill_PC",
+            "cycle_type": "g_daily"
+        }
+    },
     "Setup_EquipUp_Swich": {
+        "custom_recognition_param": {
+            "card_name": "EquipUpSet_PC",
+            "cycle_type": "g_daily"
+        },
         "custom_action_param": {
             "card_name": "EquipUpSet_PC",
             "cycle_type": "g_daily"
