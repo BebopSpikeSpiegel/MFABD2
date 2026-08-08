@@ -156,35 +156,6 @@
             "Collect_PackProbe_Loc10"
         ]
     },
-    "Collect_PackProbe_Loc10": {
-        "recognition": "ColorMatch",
-        "roi": [
-            1067,
-            667,
-            190,
-            20
-        ],
-        "method": 40,
-        "lower": [
-            [
-                22,
-                67,
-                177
-            ]
-        ],
-        "upper": [
-            [
-                30,
-                241,
-                255
-            ]
-        ],
-        "count": 2,
-        "timeout": 2000,
-        "next": [
-            "Collect_LocatePackFrame_Smart_Swip"
-        ]
-    },
     "Collect_PackProbe_NotPresent": {
         "roi": [
             0,
@@ -389,38 +360,6 @@
             "Global_Null_Panic"
         ]
     },
-    "Collect_LocatePackFrame_Loc10": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            1057,
-            595,
-            223,
-            99
-        ],
-        "template": [
-            "UI_StoryPack_PC.png",
-            "UI_CharacterPack_PC.png",
-            "UI_EventPack_PC.png"
-        ],
-        "green_mask": true,
-        "action": "Custom",
-        "custom_action": "ResetTag",
-        "custom_action_param": {
-            "tags": [
-                "PackLocation_ToggleSwitch"
-            ]
-        },
-        "anchor": {
-            "PackFrame_Loc": "Collect_LocatePackFrame_Loc10"
-        },
-        "next": [
-            "Collect_LocatePackFrame_Smart_Swip",
-            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
-            "[JumpBack]Collect_PackLocation_PassFieldsAndHub",
-            "Collect_Loc_OutToSwip_Hub_Ingress"
-        ],
-        "focus": "CM.L.快速卡带盒定位-位置9"
-    },
     "Collect_LocatePackFrame_Loc1_ResetLoc": {
         "roi": [
             0,
@@ -507,5 +446,66 @@
             "确认",
             "確認"
         ]
+    },
+    "Collect_PackProbe_Loc10": {
+        "recognition": "ColorMatch",
+        "roi": [
+            1067,
+            667,
+            190,
+            20
+        ],
+        "method": 40,
+        "lower": [
+            [
+                22,
+                67,
+                177
+            ]
+        ],
+        "upper": [
+            [
+                30,
+                241,
+                255
+            ]
+        ],
+        "count": 2,
+        "timeout": 2000,
+        "next": [
+            "Collect_LocatePackFrame_Smart_Swip"
+        ]
+    },
+    "Collect_LocatePackFrame_Loc10": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1057,
+            595,
+            223,
+            99
+        ],
+        "template": [
+            "UI_StoryPack_PC.png",
+            "UI_CharacterPack_PC.png",
+            "UI_EventPack_PC.png"
+        ],
+        "green_mask": true,
+        "action": "Custom",
+        "custom_action": "ResetTag",
+        "custom_action_param": {
+            "tags": [
+                "PackLocation_ToggleSwitch"
+            ]
+        },
+        "anchor": {
+            "PackFrame_Loc": "Collect_LocatePackFrame_Loc10"
+        },
+        "next": [
+            "Collect_LocatePackFrame_Smart_Swip",
+            "[JumpBack]Collect_LocatePackFrame_Loc1_ResetLoc",
+            "[JumpBack]Collect_PackLocation_PassFieldsAndHub",
+            "Collect_Loc_OutToSwip_Hub_Ingress"
+        ],
+        "focus": "CM.L.快速卡带盒定位-位置10"
     }
 }
