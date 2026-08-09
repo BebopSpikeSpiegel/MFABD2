@@ -40,7 +40,7 @@
         "focus": "CM.N.箱庭模块启动"
     },
     "Collect_FindPickupCat": {
-        "desc": "找到猫咪图标，",
+        "desc": "猫咪已被拿起图标，",
         "recognition": "TemplateMatch",
         "roi": [
             820,
@@ -112,17 +112,8 @@
     },
     "Collect_FindPickupCat_LeaveCircle_Ty5": {
         "desc": "放下猫咪，等待x秒，让它走开",
-        "recognition": "TemplateMatch",
-        "roi": [
-            820,
-            516,
-            105,
-            102
-        ],
-        "template": [
-            "PickupCatGE.png"
-        ],
-        "green_mask": true,
+        "recognition": "Or",
+        "any_of": ["Collect_FindPickupCat"],
         "action": "Click",
         "post_delay": 4000
     },
@@ -130,10 +121,10 @@
         "desc": "判断是否为区域地图界面",
         "recognition": "OCR",
         "roi": [
-            183,
-            11,
-            249,
-            53
+            128,
+            13,
+            329,
+            55
         ],
         "expected": [
             "移动魔法阵"
@@ -451,6 +442,7 @@
             47
         ],
         "expected": [
+            "剑之神殿中央回廊",
             "凯那尔工业2楼"
         ],
         "action": "Click",
@@ -492,17 +484,8 @@
     },
     "Collect_MapRight_NoFind": {
         "desc": "EP6.特殊地图，最后一图是紧接战斗2的狩猎图,特征是无右侧箭头。处理，直接结束箱庭内流程",
-        "recognition": "TemplateMatch",
-        "roi": [
-            838,
-            311,
-            418,
-            63
-        ],
-        "template": [
-            "TpMapRight.png"
-        ],
-        "green_mask": true,
+        "recognition": "Or",
+        "any_of": ["Rec_AreaMap_ButtRight_Tmp"],
         "inverse": true,
         "next": [
             "Collect_QuickCart_FastUI",
@@ -511,46 +494,10 @@
         ],
         "focus": "QBC.[INF]特殊地图.类EP6区域地图到底"
     },
-    "Collect_TargetMapEnd": {
-        "desc": "维护点C02开端",
-        "recognition": "OCR",
-        "roi": [
-            408,
-            622,
-            466,
-            47
-        ],
-        "expected": [
-            "达雷普旅馆",
-            "雷瓦汀基地救护站",
-            "拉勒凯旅馆",
-            "罗戴夫旅馆",
-            "安全"
-        ],
-        "target": [
-            120,
-            35
-        ],
-        "next": [],
-        "focus": "CM.N.卡带内流程进入END环节"
-    },
     "Collect_TargetMapEnd_End": {
         "desc": "维护点C02末端.快速卡带pipeline_override了此处next，去了C_QuickCart_TargetMapEnd,因为是中断内next，故必须结束退回上一个流程，单独end",
-        "recognition": "OCR",
-        "roi": [
-            408,
-            622,
-            466,
-            47
-        ],
-        "expected": [
-            "达雷普旅馆",
-            "雷瓦汀基地救护站",
-            "拉勒凯旅馆",
-            "罗戴夫旅馆",
-            "安全",
-            "^禁闭室"
-        ],
+        "recognition": "Or",
+        "any_of": ["Collect_QuickCart_TargetMapEnd"],
         "target": [
             120,
             35
@@ -657,17 +604,8 @@
     },
     "Collect_TeleporNotFind_Right": {
         "desc": "方案1:识别到存在右侧按键,点一下.next:1.若是旅馆安全图,异常消除,退出中断/2.有传送阵,点进去(非安全),尝试吸取【？，万一是狩猎场呢，逻辑又漏洞！】/3.还是没传送标,前位循环",
-        "recognition": "TemplateMatch",
-        "roi": [
-            943,
-            309,
-            67,
-            72
-        ],
-        "template": [
-            "TpMapRight.png"
-        ],
-        "green_mask": true,
+        "recognition": "Or",
+        "any_of": ["Rec_AreaMap_ButtRight_Tmp"],
         "action": "Click",
         "target": [
             977,
@@ -685,17 +623,8 @@
     },
     "Collect_TeleporNotFind_NORight": {
         "desc": "方案2:识别到右侧按键不存在,这是卡带中最后一图,如火片.操作,切到快速卡带界面,传递退出信号",
-        "recognition": "TemplateMatch",
-        "roi": [
-            943,
-            309,
-            67,
-            72
-        ],
-        "template": [
-            "TpMapRight.png"
-        ],
-        "green_mask": true,
+        "recognition": "Or",
+        "any_of": ["Rec_AreaMap_ButtRight_Tmp"],
         "inverse": true,
         "post_delay": 1000,
         "next": [
@@ -703,29 +632,6 @@
             "[JumpBack]Global_BackPageHub_Once"
         ],
         "focus": "CBB.[WRN]特殊换页-不存在右换页-方案2"
-    },
-    "Collect_TargetMap_Special_Right": {
-        "recognition": "OCR",
-        "roi": [
-            408,
-            622,
-            466,
-            47
-        ],
-        "expected": [
-            "剑之神殿中央回廊",
-            "封印指定室",
-            "施塔因之塔第8层",
-            "施塔因之塔宿舍"
-        ],
-        "action": "Click",
-        "target": [
-            977,
-            342,
-            2,
-            2
-        ],
-        "focus": "CBB.特殊地图，处理"
     },
     "Collect_Special_EP6": {
         "desc": "EP6主城默认位置异常,需要点右下角传送阵物件",
@@ -832,16 +738,8 @@
     },
     "Collect_ClickTelepor_TargetClass_White": {
         "desc": "详细地图内传送阵选择",
-        "recognition": "TemplateMatch",
-        "roi": [
-            100,
-            71,
-            1133,
-            534
-        ],
-        "template": [
-            "TpCircleMap.png"
-        ],
+        "recognition": "Or",
+        "any_of": ["Collect_ClickTeleporCircleIco"],
         "action": "Click",
         "post_delay": 5000,
         "next": [
@@ -929,16 +827,8 @@
     },
     "Collect_OperationsMain_OperationsEnd": {
         "desc": "找到图钉 ，进入区域地图",
-        "recognition": "OCR",
-        "roi": [
-            128,
-            13,
-            329,
-            55
-        ],
-        "expected": [
-            "移动魔法阵"
-        ],
+        "recognition": "Or",
+        "any_of": ["Collect_OperationsMain_ToAreaMap"],
         "timeout": 3000,
         "next": [
             "Collect_MapRight",
@@ -970,17 +860,8 @@
     },
     "Collect_MapRight": {
         "desc": "详细地图内右图标，目的右移动1格[缺陷，此步骤缺乏验证方法]",
-        "recognition": "TemplateMatch",
-        "roi": [
-            838,
-            311,
-            418,
-            63
-        ],
-        "template": [
-            "TpMapRight.png"
-        ],
-        "green_mask": true,
+        "recognition": "Or",
+        "any_of": ["Rec_AreaMap_ButtRight_Tmp"],
         "action": "Click",
         "post_delay": 5000
     },
@@ -1026,17 +907,8 @@
     },
     "Collect_MapLift": {
         "desc": "详细地图内左图标，目的移动到最左,直接5连击.",
-        "recognition": "TemplateMatch",
-        "roi": [
-            270,
-            317,
-            68,
-            54
-        ],
-        "template": [
-            "TpMapLeft.png"
-        ],
-        "green_mask": true,
+        "recognition": "Or",
+        "any_of": ["Rec_AreaMap_ButtLift_Tmp"],
         "action": "Click",
         "repeat": 7,
         "repeat_delay": 150,
@@ -1056,23 +928,8 @@
     },
     "Collect_QuickCart_TargetMapEnd": {
         "desc": "维护点C02开端",
-        "recognition": "OCR",
-        "roi": [
-            408,
-            622,
-            466,
-            47
-        ],
-        "expected": [
-            "达雷普旅馆",
-            "雷瓦汀基地救护站",
-            "拉勒凯旅馆",
-            "罗戴夫旅馆",
-            "封印指定室",
-            "禁闭室",
-            "旅馆",
-            "安全"
-        ],
+        "recognition": "Or",
+        "any_of": ["Cpt_Collect_TargetMapEnd_Ocr"],
         "next": [
             "Collect_QuickCart_FastUI",
             "[JumpBack]Global_QuickCart_MenuReset",
@@ -1082,21 +939,8 @@
     },
     "Collect_QuickCart_TargetMapEnd_End": {
         "desc": "维护点C02末端，同步_QuickCart_TargetMapEnd判定与动作，保留后续空节点",
-        "recognition": "OCR",
-        "roi": [
-            408,
-            622,
-            466,
-            47
-        ],
-        "expected": [
-            "达雷普旅馆",
-            "雷瓦汀基地救护站",
-            "拉勒凯旅馆",
-            "罗戴夫旅馆",
-            "旅馆",
-            "安全"
-        ],
+        "recognition": "Or",
+        "any_of": ["Cpt_Collect_TargetMapEnd_Ocr"],
         "focus": "CCB.[退出中断]快速卡带-卡带内流程进入END环节"
     },
     "Collect_OnlyOnce_SkillUsed": {
@@ -1130,5 +974,50 @@
     "Collect_PackEnd_Ck_OnlyOnce_StopTask": {
         "action": "StopTask",
         "focus": "CM.N.仅进行1张卡带策略-强制结束流程"
+    },
+    "Rec_AreaMap_ButtLift_Tmp": {
+        "desc": "[识别]区域地图,左按钮",
+        "recognition": "TemplateMatch",
+        "roi": [
+            270,
+            317,
+            68,
+            54
+        ],
+        "template": "TpMapLeft.png",
+        "green_mask": true
+    },
+    "Rec_AreaMap_ButtRight_Tmp": {
+        "desc": "[识别]区域地图,右按钮",
+        "recognition": "TemplateMatch",
+        "roi": [
+            943,
+            309,
+            67,
+            72
+        ],
+        "template": "TpMapRight.png",
+        "green_mask": true
+    },
+    "Cpt_Collect_TargetMapEnd_Ocr": {
+        "desc": "[判定]识别区域地图名称,卡带应该结束",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "达雷普旅馆",
+            "雷瓦汀基地救护站",
+            "拉勒凯旅馆",
+            "罗戴夫旅馆",
+            "封印指定室",
+            "^禁闭室",
+            "旅馆$",
+            "安全"
+        ],
+        "focus": "CM.N.卡带内流程进入END环节"
     }
 }
