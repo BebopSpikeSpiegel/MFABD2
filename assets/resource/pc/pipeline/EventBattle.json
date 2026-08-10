@@ -342,6 +342,7 @@
         ]
     },
     "Even_MamonoFollowUp_QuickBattle_ck": {
+        "desc": "|[PC覆盖·2026-08-10] 原pc覆盖把base简体'确认'换成繁体单飞'確認',简体端补刀确认弹窗恒miss→死轮24秒超时(00:35:37~00:36:01实录,Enable/ck两节点各轮665/504次全败,进度条0/13B补刀未执行)→on_error退出。补简体。同批Event_GoinEvent入场雷。",
         "roi": [
             676,
             514,
@@ -349,7 +350,8 @@
             34
         ],
         "expected": [
-            "確認"
+            "確認",
+            "确认"
         ]
     },
     "Even_MamonoFollowUp_onSubMain": {
