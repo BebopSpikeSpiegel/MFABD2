@@ -1,8 +1,14 @@
 {
     "Event_GoinEvent": {
+        "desc": "|[PC覆盖·2026-08-10实录] base盲点[1118,387]在主页横幅栈被促销横幅插队时正中皮肤购买页(D-24 Prestige Skin压在D-3魔兽追踪者上,17圈入场循环8.5分钟零战斗实录)。改瞄赛季横幅现位y517:促销在场=正中赛季;促销下架横幅上移后517=空位无害,由OcrCk救援腿真点。",
+        "action": "DoNothing",
         "post_delay": 200,
+        "timeout": 4000,
         "next": [
             "Event_GoinEvent_OcrCk"
+        ],
+        "on_error": [
+            "Event_GoinEvent_TarDit"
         ]
     },
     "Rec_<Event_Event_Main>_Ocr_01": {
@@ -337,6 +343,7 @@
         ]
     },
     "Even_MamonoFollowUp_QuickBattle_ck": {
+        "desc": "|[PC覆盖·2026-08-10] 原pc覆盖把base简体'确认'换成繁体单飞'確認',简体端补刀确认弹窗恒miss→死轮24秒超时(00:35:37~00:36:01实录,Enable/ck两节点各轮665/504次全败,进度条0/13B补刀未执行)→on_error退出。补简体。同批Event_GoinEvent入场雷。",
         "roi": [
             676,
             514,
@@ -344,7 +351,8 @@
             34
         ],
         "expected": [
-            "確認"
+            "確認",
+            "确认"
         ]
     },
     "Even_MamonoFollowUp_onSubMain": {
@@ -436,6 +444,7 @@
         ]
     },
     "Event_GoinEvent_OcrCk": {
+        "desc": "|[PC覆盖·2026-08-10] 原expected仅繁体(作者alpha为繁体端),简体端恒miss致救援腿失效。补简体三词。",
         "recognition": "OCR",
         "roi": [
             866,
@@ -444,6 +453,9 @@
             358
         ],
         "expected": [
+            "魔兽追踪者",
+            "开始",
+            "解锁",
             "魔獸追蹤者",
             "開始",
             "解鎖"
@@ -451,9 +463,20 @@
         "action": "Click",
         "target_offset": [
             0,
-            15,
+            -15,
             0,
             0
+        ],
+        "post_delay": 8000
+    },
+    "Event_GoinEvent_TarDit": {
+        "desc": "",
+        "action": "Click",
+        "target": [
+            1118,
+            517,
+            1,
+            1
         ],
         "post_delay": 8000
     }
