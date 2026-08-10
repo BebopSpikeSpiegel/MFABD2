@@ -1,13 +1,14 @@
 {
     "Event_GoinEvent": {
         "desc": "|[PC覆盖·2026-08-10实录] base盲点[1118,387]在主页横幅栈被促销横幅插队时正中皮肤购买页(D-24 Prestige Skin压在D-3魔兽追踪者上,17圈入场循环8.5分钟零战斗实录)。改瞄赛季横幅现位y517:促销在场=正中赛季;促销下架横幅上移后517=空位无害,由OcrCk救援腿真点。",
-        "target": [
-            1118,
-            517
-        ],
+        "action": "DoNothing",
         "post_delay": 200,
+        "timeout": 4000,
         "next": [
             "Event_GoinEvent_OcrCk"
+        ],
+        "on_error": [
+            "Event_GoinEvent_TarDit"
         ]
     },
     "Rec_<Event_Event_Main>_Ocr_01": {
@@ -452,19 +453,30 @@
             358
         ],
         "expected": [
-            "魔獸追蹤者",
-            "開始",
-            "解鎖",
             "魔兽追踪者",
             "开始",
-            "解锁"
+            "解锁",
+            "魔獸追蹤者",
+            "開始",
+            "解鎖"
         ],
         "action": "Click",
         "target_offset": [
             0,
-            15,
+            -15,
             0,
             0
+        ],
+        "post_delay": 8000
+    },
+    "Event_GoinEvent_TarDit": {
+        "desc": "",
+        "action": "Click",
+        "target": [
+            1118,
+            517,
+            1,
+            1
         ],
         "post_delay": 8000
     }
