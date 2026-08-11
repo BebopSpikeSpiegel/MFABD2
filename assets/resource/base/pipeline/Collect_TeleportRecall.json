@@ -661,44 +661,26 @@
         ]
     },
     "Collect_IM_Skill_1_Patch": {
-        "action": "Custom",
-        "custom_action": "PatchPipeline",
-        "custom_action_param": {
-            "target": "Collect_Skill_TapReset",
-            "patch": {
-                "next": [
-                    "Collect_IM_GoinNviMap"
-                ]
-            }
-        },
+        "anchor": {"OnFoot_Skill": "Collect_IM_GoinNviMap"},
         "next": [
             "Collect_Skill_Start",
             "[JumpBack]Global_ToSandBox"
         ],
-        "focus": "第一次技能Patch,结束后next复位到小地图"
+        "focus": "第一次技能调用,结束后出口锚定到小地图"
     },
     "Collect_IM_Skill_End_Patch": {
-        "action": "Custom",
-        "custom_action": "PatchPipeline",
-        "custom_action_param": {
-            "target": "Collect_Skill_TapReset",
-            "patch": {
-                "next": [
-                    "Collect_IM_Closure",
-                    "[JumpBack]Global_QuickCart_MenuReset"
-                ]
-            }
-        },
+        "anchor": {"OnFoot_Skill": "Collect_IM_Closure"},
         "next": [
             "Collect_Skill_Start",
             "[JumpBack]Global_ToSandBox"
         ],
-        "focus": "最后一次(根据地图使用)技能Patch,结束后保持箱庭.并调出卡带界面结束模块"
+        "focus": "最后一次(根据地图使用)技能调用,结束后出口锚定到模块收尾"
     },
     "Collect_IM_Closure": {
         "desc": "复位到卡带菜单,结束-【占用active】用于打标记完成卡带",
         "recognition": "And",
         "all_of": ["Global_QuickCart_MenuReset_Ocr"],
+        "anchor": {"OnFoot_Skill": ""},
         "next": ["Collect_IM_Reset"],
         "focus": "[特殊地图]-步行吸取模块完成"
     },
@@ -708,7 +690,6 @@
         "custom_action": "RestorePipeline",
         "custom_action_param": {
             "target": [
-                "Collect_Skill_TapReset",
                 "Collect_IM_Closure"
             ],
             "reset_tags": [
@@ -732,6 +713,7 @@
             34,
             38
         ],
+        "anchor": {"OnFoot_Skill": ""},
         "focus": "C.SK.打开导航地图"
     },
     "Collect_IM_DouMap_Tab": {
