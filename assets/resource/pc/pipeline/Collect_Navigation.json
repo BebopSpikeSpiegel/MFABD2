@@ -205,6 +205,12 @@
             "記憶岔路",
             "学校2楼",
             "学校3楼"
+        ],
+        "target": [
+            1026,
+            345,
+            3,
+            3
         ]
     },
     "Collect_TargetMap1_Special_Right": {
@@ -218,6 +224,12 @@
             "凯那尔工业2楼",
             "儿童房",
             "孩子們的房間"
+        ],
+        "target": [
+            1026,
+            345,
+            3,
+            3
         ]
     },
     "Collect_TargetMap2_Special_Right": {
@@ -226,6 +238,12 @@
             638,
             378,
             40
+        ],
+        "target": [
+            1026,
+            345,
+            3,
+            3
         ]
     },
     "Collect_TargetMap4_Special": {
@@ -309,6 +327,12 @@
             "拉勒凯镇",
             "罗戴夫镇",
             "安全"
+        ],
+        "target": [
+            90,
+            35,
+            1,
+            1
         ]
     },
     "Collect_FindTeleporCircle0.9": {
