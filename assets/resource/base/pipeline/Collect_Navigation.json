@@ -714,8 +714,17 @@
         "focus": "CTB.[WRN]识别首选为紫色技能传送阵,尝试规避"
     },
     "Collect_ClickTelepor_TargetClass_PurpleProcess": {
-        "recognition": "Or",
-        "any_of": ["Collect_ClickTeleporCircleIco"],
+        "recognition": "TemplateMatch",
+        "roi": [
+            100,
+            71,
+            1133,
+            534
+        ],
+        "template": [
+            "TpCircleMap.png"
+        ],
+        "index": 1,
         "action": "Click",
         "post_delay": 5000,
         "next": [
