@@ -22,7 +22,23 @@
                 "keyboard": "PostMessageWithWindowPos"
             },
             "permission_required": true,
-            "display_short_side": 720
+            "display_short_side": 720,
+            "description": "鼠标不抢,窗口移动,建议最小化"
+        },
+        {
+            "name": "PC客户端(Cursor)",
+            "label": "PC客户端(Cursor)",
+            "type": "Win32",
+            "win32": {
+                "class_regex": "UnityWndClass",
+                "window_regex": "BrownDust II",
+                "screencap": "PrintWindow",
+                "mouse": "SendMessageWithCursorPos",
+                "keyboard": "PostMessageWithCursorPos"
+            },
+            "permission_required": true,
+            "display_short_side": 720,
+            "description": "短暂抢鼠标控制权,窗口不动"
         }
     ],
     "resource": [
@@ -40,7 +56,8 @@
                 "./resource/pc"
             ],
             "controller": [
-                "PC客户端"
+                "PC客户端",
+                "PC客户端(Cursor)"
             ]
         }
     ],
@@ -77,6 +94,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "default_check": true,
@@ -92,6 +110,8 @@
             "entry": "Collect_StartGame_HomePage_OnlyOnce",
             "controller": [
                 "Adb",
+                "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "default_check": true,
@@ -107,6 +127,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "default_check": true,
@@ -124,6 +145,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "default_check": true,
@@ -138,6 +160,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "default_check": true,
@@ -152,6 +175,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "option": [
@@ -175,6 +199,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "option": [
@@ -191,6 +216,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "option": [
@@ -208,6 +234,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "description": "领取主界面<code>任务</code>页内的每日与每周任务奖励。"
@@ -219,6 +246,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "option": [
@@ -233,6 +261,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "description": "领取主界面<code>通行证</code>页内的可领奖励。"
@@ -244,6 +273,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "description": "领取主界面<code>邮件</code>内的全部邮件奖励（含一般与商品类）。<br>无未读红点时自动跳过，不进入邮件页面。"
@@ -254,6 +284,8 @@
             "default_check": true,
             "controller": [
                 "Adb",
+                "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "description": "进入卡带，对含传送阵的地图依次执行探查、吸取、召集。<br><span style=\"background-color:rgba(255,160,0,0.2)\"><b>前提：</b>传送阵须已激活，且周围箱庭迷雾已探明，使区域地图能完整显示传送阵图标。</span><br><b>周常CD：</b>自动跳过本周已刷卡带，进度记录于 <code>agent_save_data.json</code>，可手动迁移。刷取顺序：卡带框从左到右，依故事→角色→活动大类推进。",
@@ -269,6 +301,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "description": "卡带商店跑商套利：逐卡带扫购低价原料收藏一键购买，按每日最高价择机出售；同时制作高利润料理待出售变现。<br>三个环节均可独立开关，按需组合。",
@@ -295,6 +328,7 @@
             "controller": [
                 "Adb",
                 "PC客户端",
+                "PC客户端(Cursor)",
                 "PlayCover"
             ],
             "entry": "Close_HomePage"
