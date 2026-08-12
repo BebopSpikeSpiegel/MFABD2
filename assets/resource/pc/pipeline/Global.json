@@ -305,6 +305,10 @@
             56,
             52
         ],
+        "template": [
+            "pin.png",
+            "pin_PC.png"
+        ],
         "green_mask": true
     },
     "Rec_Reward_Ocr": {
@@ -449,14 +453,5 @@
     },
     "Rec_「Global_WaitingForLoading」_05": {
         "desc": "[识别]转场等待03,大色块-黑"
-    },
-    "Collect_OperationsMain_ToAreaMap": {
-        "desc": "判断在区域地图(移动魔法阵)界面。|[PC覆盖·2026-07-13实录] base roi[183,11,249,53]左缘正好切'移'字左边条,OCR以0.989读成'多动魔法阵'→expected恒miss→传送阵界面死等(23:24实录)。roi左扩[150,11,280,53]罩全标题。注:节点属 Collect_Navigation,跑商链途经(节点命名空间全局合并)。",
-        "roi": [
-            150,
-            11,
-            280,
-            53
-        ]
     }
 }

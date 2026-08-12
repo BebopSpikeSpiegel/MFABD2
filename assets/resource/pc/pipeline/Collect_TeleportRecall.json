@@ -15,18 +15,6 @@
             3
         ]
     },
-    "Collect_ForceTelepor_MapCk": {
-        "roi": [
-            164,
-            11,
-            153,
-            50
-        ],
-        "expected": [
-            "移动魔法阵",
-            "移動魔法陣"
-        ]
-    },
     "Collect_ForceTeleporCircle_Ico": {
         "recognition": "Or",
         "any_of": [
@@ -534,7 +522,6 @@
         ]
     },
     "Collect_ForceTelepor_IsEffect": {
-        "recognition": "Or",
         "any_of": [
             "Collect_ForceTelepor_MapCk"
         ]
@@ -573,6 +560,19 @@
         "expected": [
             "自动移动中",
             "自動移動中"
+        ]
+    },
+    "Collect_OperationsMain_ToAreaMap": {
+        "desc": "判断在区域地图(移动魔法阵)界面。|[PC覆盖·2026-07-13实录] base roi[183,11,249,53]左缘正好切'移'字左边条,OCR以0.989读成'多动魔法阵'→expected恒miss→传送阵界面死等(23:24实录)。roi左扩[150,11,280,53]罩全标题。注:节点属 Collect_Navigation,跑商链途经(节点命名空间全局合并)。",
+        "roi": [
+            164,
+            11,
+            153,
+            50
+        ],
+        "expected": [
+            "移动魔法阵",
+            "移動魔法陣"
         ]
     }
 }

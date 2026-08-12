@@ -25,7 +25,8 @@
             319,
             69,
             55
-        ]
+        ],
+        "count": 3700
     },
     "Collect_TargetMap1-2": {
         "roi": [
@@ -49,6 +50,23 @@
             "惡夢城市1",
             "恶梦之城I",
             "安全"
+        ]
+    },
+    "Collect_ClickTeleporOccupy": {
+        "roi": [
+            331,
+            60,
+            625,
+            556
+        ],
+        "template": [
+            "TeleporZero_PC.png"
+        ],
+        "target": [
+            90,
+            35,
+            1,
+            1
         ]
     },
     "Collect_TargetMap2": {
@@ -293,6 +311,11 @@
             12
         ]
     },
+    "Collect_ClickTeleporCircleIco": {
+        "template": [
+            "TpCircleMap_PC.png"
+        ]
+    },
     "Collect_ClickTelepor_ButNotActive": {
         "roi": [
             558,
@@ -343,7 +366,11 @@
             74
         ],
         "template": [
-            "IcoHand_PC.png"
+            "IcoHand_PC.png",
+            "IcoHand_PC2.png"
+        ],
+        "threshold": [
+            0.7
         ]
     },
     "Collect_FindTeleporCircle": {
