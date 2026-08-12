@@ -6,5 +6,573 @@
             64,
             65
         ]
+    },
+    "Collect_ForceTeleporCircle": {
+        "roi": [
+            1117,
+            476,
+            11,
+            3
+        ]
+    },
+    "Collect_ForceTelepor_MapCk": {
+        "roi": [
+            164,
+            11,
+            153,
+            50
+        ],
+        "expected": [
+            "移动魔法阵",
+            "移動魔法陣"
+        ]
+    },
+    "Collect_ForceTeleporCircle_Ico": {
+        "recognition": "Or",
+        "any_of": [
+            "Collect_ClickTeleporCircleIco"
+        ]
+    },
+    "Collect_ForceTeleporCircle_ClickMSB": {
+        "roi": [
+            672,
+            389,
+            61,
+            64
+        ],
+        "expected": [
+            "生成",
+            "創建"
+        ]
+    },
+    "Collect_ForceTeleporCircle_No": {
+        "roi": [
+            1117,
+            476,
+            11,
+            3
+        ]
+    },
+    "Collect_Skill3_4": {
+        "roi": [
+            1086,
+            455,
+            72,
+            68
+        ],
+        "template": [
+            "Skill3.png"
+        ]
+    },
+    "Collect_Skill3_1_ERR_TooClose": {
+        "expected": [
+            "^(?=.*[无法在])(?=.*[魔法阵附近])(?=.*[天赋技能]).{8,}$",
+            "^(?=.*[无法在])(?=.*[该地点])(?=.*[天赋技能]).{8,}$",
+            "^(?=.*[無法在])(?=.*[魔法陣附近])(?=.*[天賦技能]).{8,}$",
+            "^(?=.*[此地點])(?=.*[無法使用])(?=.*[天賦技能]).{8,}$"
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_GoinNviMap": {
+        "target": [
+            126,
+            97,
+            22,
+            33
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_NviMap": {
+        "roi": [
+            467,
+            600,
+            727,
+            105
+        ],
+        "expected": [
+            "在战场中查看",
+            "探索",
+            "世界地图",
+            "在場域中查看",
+            "任務",
+            "世界地圖"
+        ]
+    },
+    "Collect_InitiatingManual_Onfoot_Start": {
+        "roi": [
+            149,
+            10,
+            372,
+            53
+        ],
+        "expected": [
+            "泳池派对场",
+            "泳池派對",
+            "派对会场角落",
+            "派對會場角落",
+            "海岸沙滩",
+            "濱海沙灘",
+            "海岸椰林",
+            "海岸椰子樹林",
+            "底层居住区",
+            "底層階級居住區",
+            "第4区",
+            "第4區",
+            "水上乐园室内泳池",
+            "水上樂園室內泳池",
+            "泼水音乐节活动",
+            "潑水音樂節活動會場"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E01_A1": {
+        "roi": [
+            149,
+            10,
+            372,
+            53
+        ],
+        "expected": [
+            "泳池派对场",
+            "泳池派對"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E01_B1": {
+        "roi": [
+            149,
+            10,
+            372,
+            53
+        ],
+        "expected": [
+            "派对会场角落",
+            "派對會場角落"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E01_A2_Move": {
+        "target": [
+            465,
+            248,
+            3,
+            5
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E01_A2_Move_Sub": {
+        "roi": [
+            276,
+            247,
+            110,
+            124
+        ],
+        "expected": [
+            "戰鬥區域"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E01_B2_Move": {
+        "target": [
+            318,
+            508,
+            3,
+            4
+        ]
+    },
+    "Collect_IM_Move_MGS": {
+        "expected": [
+            "确认",
+            "確認"
+        ]
+    },
+    "Collect_IM_GoinNviMap": {
+        "target": [
+            130,
+            105,
+            15,
+            16
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E03_A1": {
+        "roi": [
+            149,
+            10,
+            372,
+            53
+        ],
+        "expected": [
+            "海岸沙滩",
+            "濱海沙灘"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E03_B1": {
+        "roi": [
+            149,
+            10,
+            372,
+            53
+        ],
+        "expected": [
+            "海岸椰林",
+            "海岸椰子樹林"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E03_A2_Move": {
+        "target": [
+            471,
+            494,
+            3,
+            4
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E03_A2_Move_Sub": {
+        "roi": [
+            303,
+            395,
+            103,
+            88
+        ],
+        "expected": [
+            "战斗区",
+            "戰鬥區域"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E03_B2_Move": {
+        "target": [
+            199,
+            268,
+            3,
+            3
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E04_A1": {
+        "roi": [
+            149,
+            10,
+            372,
+            53
+        ],
+        "expected": [
+            "底层居住区",
+            "底層階級居住區"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E04_B1": {
+        "roi": [
+            149,
+            10,
+            372,
+            53
+        ],
+        "expected": [
+            "第4区",
+            "第4區"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E04_A2_Move": {
+        "target": [
+            325,
+            171,
+            3,
+            2
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E04_B2_Move": {
+        "target": [
+            242,
+            380,
+            3,
+            3
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E05_A1": {
+        "roi": [
+            149,
+            10,
+            372,
+            53
+        ],
+        "expected": [
+            "水上乐园室内泳池",
+            "水上樂園室內泳池"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E05_B1": {
+        "roi": [
+            149,
+            10,
+            372,
+            53
+        ],
+        "expected": [
+            "泼水音乐节活动",
+            "潑水音樂節活動會場"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E05_A2_Move": {
+        "target": [
+            504,
+            394,
+            5,
+            4
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_E05_B2_Move": {
+        "target": [
+            258,
+            249,
+            2,
+            2
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_NviMap_GoHotel": {
+        "roi": [
+            151,
+            15,
+            575,
+            48
+        ],
+        "expected": [
+            "达雷普旅馆",
+            "達雷普旅館",
+            "雷瓦汀基地救护站",
+            "雷瓦汀基地救護站",
+            "拉勒凯旅馆",
+            "罗戴夫旅馆",
+            "羅戴夫旅館",
+            "旅馆",
+            "旅館",
+            "救护站"
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_NviMap_IsSafeArea": {
+        "roi": [
+            151,
+            15,
+            575,
+            48
+        ],
+        "expected": [
+            "达普雷镇",
+            "雷瓦汀基地",
+            "拉勒凯镇",
+            "罗戴夫镇",
+            "羅戴夫鎮",
+            "科库托斯圣域",
+            "科庫托斯聖域",
+            "安全"
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_NviMap_IsSafeArea_NotHotel": {
+        "roi": [
+            151,
+            15,
+            575,
+            48
+        ],
+        "expected": [
+            "达普雷镇",
+            "雷瓦汀基地",
+            "拉勒凯镇",
+            "罗戴夫镇",
+            "羅戴夫鎮",
+            "科库托斯圣域",
+            "科庫托斯聖域",
+            "安全"
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_NviMap_IsBattleArea": {
+        "roi": [
+            151,
+            15,
+            575,
+            48
+        ],
+        "expected": [
+            "^战斗",
+            "^戰鬥"
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_NviMap_IsBattleArea_FakeSecurity": {
+        "roi": [
+            151,
+            15,
+            575,
+            48
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu": {
+        "roi": [
+            134,
+            88,
+            437,
+            494
+        ],
+        "expected": [
+            "魔法阵",
+            "魔法陣"
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_TPIcoCk": {
+        "expected": [
+            "生成",
+            "創建",
+            "确认",
+            "確認"
+        ]
+    },
+    "Collect_OnFoot_Skill3_4": {
+        "all_of": [
+            {
+                "sub_name": "TemplateMatch",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    1086,
+                    455,
+                    72,
+                    68
+                ],
+                "template": [
+                    "Skill3.png"
+                ]
+            },
+            {
+                "sub_name": "ColorMatch",
+                "recognition": "ColorMatch",
+                "roi": [
+                    1117,
+                    476,
+                    11,
+                    3
+                ],
+                "method": 40,
+                "lower": [
+                    [
+                        0,
+                        0,
+                        200
+                    ]
+                ],
+                "upper": [
+                    [
+                        180,
+                        20,
+                        255
+                    ]
+                ],
+                "count": 10
+            }
+        ]
+    },
+    "Collect_OnFoot_Skill3_1_Again": {
+        "all_of": [
+            {
+                "sub_name": "TemplateMatch",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    1086,
+                    455,
+                    72,
+                    68
+                ],
+                "template": [
+                    "Skill3.png"
+                ]
+            },
+            {
+                "sub_name": "ColorMatch",
+                "recognition": "ColorMatch",
+                "roi": [
+                    1117,
+                    476,
+                    11,
+                    3
+                ],
+                "method": 40,
+                "lower": [
+                    [
+                        0,
+                        0,
+                        200
+                    ]
+                ],
+                "upper": [
+                    [
+                        180,
+                        20,
+                        255
+                    ]
+                ],
+                "count": 10
+            }
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_Skirmish": {
+        "roi": [
+            144,
+            69,
+            51,
+            307
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_Skirmish_Tpause": {
+        "target": [
+            1189,
+            29,
+            11,
+            11
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_Skirmish_TRun": {
+        "roi": [
+            488,
+            654,
+            86,
+            33
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_Skirmish_TRun_Ty2": {
+        "roi": [
+            665,
+            419,
+            82,
+            32
+        ]
+    },
+    "Collect_ForceTelepor_IsEffect": {
+        "recognition": "Or",
+        "any_of": [
+            "Collect_ForceTelepor_MapCk"
+        ]
+    },
+    "Rec_NavMap_Lift": {
+        "roi": [
+            123,
+            323,
+            63,
+            58
+        ]
+    },
+    "Rec_NavMap_Right": {
+        "roi": [
+            523,
+            325,
+            58,
+            54
+        ]
+    },
+    "Rec_SandBox_Moveing_Tpl": {
+        "roi": [
+            618,
+            634,
+            42,
+            42
+        ]
+    },
+    "Rec_SandBox_Moveing_Ocr": {
+        "roi": [
+            552,
+            581,
+            185,
+            50
+        ],
+        "expected": [
+            "自动移动中",
+            "自動移動中"
+        ]
     }
 }
