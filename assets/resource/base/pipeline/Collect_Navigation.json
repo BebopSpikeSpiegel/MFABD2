@@ -83,7 +83,7 @@
         ]
     },
     "Collect_FindPickupCat_LeaveCircle_Ty3": {
-        "desc": "自动寻路酒馆-确认，等待x秒",
+        "desc": "自动寻路酒馆-等待进入步行态,再等x秒",
         "recognition": "Or",
         "any_of": ["Arbitrage_NviGuide_Onfoot_Loop"],
         "post_delay": 3000,

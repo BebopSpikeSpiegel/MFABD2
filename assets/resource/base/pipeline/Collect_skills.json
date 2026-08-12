@@ -401,6 +401,7 @@
         "any_of": [
             "Rec_SandBox_Pin_Tpl"
         ],
+        "timeout": 10000,
         "next": [
             "[Anchor]OnFoot_Skill",
             "Collect_Skill_End",
