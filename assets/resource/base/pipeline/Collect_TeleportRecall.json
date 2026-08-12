@@ -92,6 +92,7 @@
             "Collect_ForceTeleporCircle",
             "Collect_ForceTeleporCircle_No"
         ],
+        "on_error": ["Collect_TeleporCircle_OnFoot_Start"],
         "focus": "CRT.传送阵技能已放置"
     },
     "Rec_<Collect_TeleportRecall_Skill>_Tpl": {
@@ -1001,8 +1002,17 @@
     },
     "Collect_TeleporCircle_OnFoot_TPIco": {
         "desc": "寻找当前页面传送阵图标",
-        "recognition": "Or",
-        "any_of": ["Collect_ClickTeleporCircleIco"],
+        "recognition": "TemplateMatch",
+        "roi": [
+            197,
+            76,
+            440,
+            535
+        ],
+        "template": [
+            "Nvi_TpCircleMap.png"
+        ],
+        "green_mask": true,
         "action": "Click",
         "post_delay": 3000,
         "next": [
@@ -1185,6 +1195,7 @@
         "template": [
             "Onfight.png"
         ],
+        "threshold": [0.9],
         "next": [
             "Collect_TeleporCircle_OnFoot_Skirmish_Tpause"
         ],
@@ -1242,17 +1253,8 @@
         "focus": "CTOB.逃离战斗"
     },
     "Collect_ForceTelepor_IsEffect": {
-        "recognition": "OCR",
-        "roi": [
-            195,
-            15,
-            141,
-            49
-        ],
-        "expected": [
-            "移动魔法阵"
-        ],
-        "action": "DoNothing",
+        "recognition": "Or",
+        "any_of": ["Collect_OperationsMain_ToAreaMap"],
         "next": [
             "Collect_ForceTelepor_IsEffect_ResetFoot",
             "[JumpBack]Global_BackPageHub_Once"
