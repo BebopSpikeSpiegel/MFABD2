@@ -143,17 +143,8 @@
     },
     "Collect_ForceTelepor_MapCk": {
         "desc": "潜在大漏洞,当塔柱传送满级,可以去任何地方,就不是单独回主城了,以后适配",
-        "recognition": "OCR",
-        "roi": [
-            195,
-            15,
-            141,
-            49
-        ],
-        "expected": [
-            "移动魔法阵"
-        ],
-        "action": "DoNothing",
+        "recognition": "Or",
+        "any_of": ["Collect_OperationsMain_ToAreaMap"],
         "next": [
             "Collect_ForceTeleporCircle_Ico"
         ]
