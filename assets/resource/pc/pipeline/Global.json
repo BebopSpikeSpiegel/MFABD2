@@ -185,15 +185,19 @@
         "count": 150
     },
     "Global_BackToQC_EventCor": {
-        "desc": "活动页签色核。|[PC覆盖·2026-07-12] 无PC实测样本,但与Gameplay同字数(5字)同色下限[167,167,165],高亮像素预期同为~380量级,base count:500必挂。随Gameplay同步降300。",
+        "desc": "活动页签色核。|[PC覆盖·2026-07-12] 无PC实测样本,但与玩法页签同字数(5字)同色下限[167,167,165],高亮像素预期同为~380量级,base count:500必挂。随玩法页签同步降300。",
         "count": 300
     },
     "Global_BackToQC_ManagerCor": {
-        "desc": "店长页签色核。|[PC覆盖·2026-07-12] 同EventCor:与Gameplay同字数同色下限,base count:500在PC预期必挂,随组降300。(CharacterCor base本为300≈实测安全线,不动)",
+        "desc": "店长页签色核。|[PC覆盖·2026-07-12] 同EventCor:与玩法页签同字数同色下限,base count:500在PC预期必挂,随组降300。(CharacterCor base本为300≈实测安全线,不动)",
         "count": 300
     },
-    "Global_BackToQC_GameplayCor": {
-        "desc": "玩法页签色核。|[PC覆盖·2026-07-11/12实录] base count:500在PC够不到——高亮白像素实测376~446(主峰380)→SelectGameplay反复点tab死循环;count降300留~20%余量,非高亮灰字远低于此不误判。",
+    "Global_BackToQC_BattleplayCor": {
+        "desc": "战斗玩法页签色核。|[PC覆盖·2026-07-11/12实录·原Gameplay覆写] base count:500在PC够不到——高亮白像素实测376~446(主峰380)→SelectBattleplay反复点tab死循环;count降300留~20%余量,非高亮灰字远低于此不误判。|官方拆分后PC繁中标签为'戰鬥遊戲卡'(5字),与拆分前'玩法游戏卡'同字数,像素量级不变,实测值继续适用。",
+        "count": 300
+    },
+    "Global_BackToQC_LifeplayCor": {
+        "desc": "生活玩法页签色核。|[PC覆盖] 同BattleplayCor:繁中'生活遊戲卡'(5字)同色下限[167,167,165],高亮像素同为~380量级,base count:500必挂,随组降300。",
         "count": 300
     },
     "Anc_SliderSwitch_YewOn_Clr": {

@@ -55,7 +55,7 @@
             "店長遊戲卡"
         ]
     },
-    "Collect_QuickCart_SelectType_GameplayPack": {
+    "Collect_QuickCart_SelectType_BattleplayPack": {
         "roi": [
             15,
             563,
@@ -63,14 +63,20 @@
             49
         ],
         "expected": [
-            "玩法游戏卡",
-            "內容遊戲卡"
+            "战斗玩法游戏卡",
+            "戰鬥遊戲卡"
+        ]
+    },
+    "Collect_QuickCart_SelectType_LifeplayPack": {
+        "roi": [
+            15,
+            563,
+            1105,
+            49
         ],
-        "replace": [
-            [
-                "内",
-                "內"
-            ]
+        "expected": [
+            "生活玩法游戏卡",
+            "生活遊戲卡"
         ]
     },
     "Collect_FirstBootPack_To1": {
