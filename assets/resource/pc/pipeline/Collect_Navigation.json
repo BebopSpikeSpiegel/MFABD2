@@ -25,7 +25,8 @@
             319,
             69,
             55
-        ]
+        ],
+        "count": 3700
     },
     "Collect_TargetMap1-2": {
         "roi": [
@@ -49,6 +50,23 @@
             "惡夢城市1",
             "恶梦之城I",
             "安全"
+        ]
+    },
+    "Collect_ClickTeleporOccupy": {
+        "roi": [
+            331,
+            60,
+            625,
+            556
+        ],
+        "template": [
+            "TeleporZero_PC.png"
+        ],
+        "target": [
+            90,
+            35,
+            1,
+            1
         ]
     },
     "Collect_TargetMap2": {
@@ -205,6 +223,12 @@
             "記憶岔路",
             "学校2楼",
             "学校3楼"
+        ],
+        "target": [
+            1026,
+            345,
+            3,
+            3
         ]
     },
     "Collect_TargetMap1_Special_Right": {
@@ -218,6 +242,12 @@
             "凯那尔工业2楼",
             "儿童房",
             "孩子們的房間"
+        ],
+        "target": [
+            1026,
+            345,
+            3,
+            3
         ]
     },
     "Collect_TargetMap2_Special_Right": {
@@ -226,6 +256,12 @@
             638,
             378,
             40
+        ],
+        "target": [
+            1026,
+            345,
+            3,
+            3
         ]
     },
     "Collect_TargetMap4_Special": {
@@ -275,6 +311,11 @@
             12
         ]
     },
+    "Collect_ClickTeleporCircleIco": {
+        "template": [
+            "TpCircleMap_PC.png"
+        ]
+    },
     "Collect_ClickTelepor_ButNotActive": {
         "roi": [
             558,
@@ -309,6 +350,12 @@
             "拉勒凯镇",
             "罗戴夫镇",
             "安全"
+        ],
+        "target": [
+            90,
+            35,
+            1,
+            1
         ]
     },
     "Collect_FindTeleporCircle0.9": {
@@ -319,7 +366,11 @@
             74
         ],
         "template": [
-            "IcoHand_PC.png"
+            "IcoHand_PC.png",
+            "IcoHand_PC2.png"
+        ],
+        "threshold": [
+            0.7
         ]
     },
     "Collect_FindTeleporCircle": {

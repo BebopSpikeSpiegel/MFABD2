@@ -185,15 +185,19 @@
         "count": 150
     },
     "Global_BackToQC_EventCor": {
-        "desc": "活动页签色核。|[PC覆盖·2026-07-12] 无PC实测样本,但与Gameplay同字数(5字)同色下限[167,167,165],高亮像素预期同为~380量级,base count:500必挂。随Gameplay同步降300。",
+        "desc": "活动页签色核。|[PC覆盖·2026-07-12] 无PC实测样本,但与玩法页签同字数(5字)同色下限[167,167,165],高亮像素预期同为~380量级,base count:500必挂。随玩法页签同步降300。",
         "count": 300
     },
     "Global_BackToQC_ManagerCor": {
-        "desc": "店长页签色核。|[PC覆盖·2026-07-12] 同EventCor:与Gameplay同字数同色下限,base count:500在PC预期必挂,随组降300。(CharacterCor base本为300≈实测安全线,不动)",
+        "desc": "店长页签色核。|[PC覆盖·2026-07-12] 同EventCor:与玩法页签同字数同色下限,base count:500在PC预期必挂,随组降300。(CharacterCor base本为300≈实测安全线,不动)",
         "count": 300
     },
-    "Global_BackToQC_GameplayCor": {
-        "desc": "玩法页签色核。|[PC覆盖·2026-07-11/12实录] base count:500在PC够不到——高亮白像素实测376~446(主峰380)→SelectGameplay反复点tab死循环;count降300留~20%余量,非高亮灰字远低于此不误判。",
+    "Global_BackToQC_BattleplayCor": {
+        "desc": "战斗玩法页签色核。|[PC覆盖·2026-07-11/12实录·原Gameplay覆写] base count:500在PC够不到——高亮白像素实测376~446(主峰380)→SelectBattleplay反复点tab死循环;count降300留~20%余量,非高亮灰字远低于此不误判。|官方拆分后PC繁中标签为'戰鬥遊戲卡'(5字),与拆分前'玩法游戏卡'同字数,像素量级不变,实测值继续适用。",
+        "count": 300
+    },
+    "Global_BackToQC_LifeplayCor": {
+        "desc": "生活玩法页签色核。|[PC覆盖] 同BattleplayCor:繁中'生活遊戲卡'(5字)同色下限[167,167,165],高亮像素同为~380量级,base count:500必挂,随组降300。",
         "count": 300
     },
     "Anc_SliderSwitch_YewOn_Clr": {
@@ -304,6 +308,10 @@
             646,
             56,
             52
+        ],
+        "template": [
+            "pin.png",
+            "pin_PC.png"
         ],
         "green_mask": true
     },
@@ -449,15 +457,6 @@
     },
     "Rec_「Global_WaitingForLoading」_05": {
         "desc": "[识别]转场等待03,大色块-黑"
-    },
-    "Collect_OperationsMain_ToAreaMap": {
-        "desc": "判断在区域地图(移动魔法阵)界面。|[PC覆盖·2026-07-13实录] base roi[183,11,249,53]左缘正好切'移'字左边条,OCR以0.989读成'多动魔法阵'→expected恒miss→传送阵界面死等(23:24实录)。roi左扩[150,11,280,53]罩全标题。注:节点属 Collect_Navigation,跑商链途经(节点命名空间全局合并)。",
-        "roi": [
-            150,
-            11,
-            280,
-            53
-        ]
     },
     "Global_BackToQC_RewardBubble_TurnOFF": {
         "desc": "奖励气泡关闭腿。|[PC覆盖·2026-08-07实录] base无max_hit:0803版式后该腿黄检在竞技场入口恒命中(动画相位),点击却消不掉黄源反致菜单被关→Gameplay_Anc自环重开,5.8秒/圈,两日实录各19-21圈,全靠气泡动画相位低谷那一帧黄检miss才随机自愈(06:20:33维恩子框[1158,552,1,1]渐灭实录)。补max_hit 2有界化:真气泡场景两次点击足够,点不掉场景两圈后本腿沉默、SelectGameplay得以轮到。落点/黄检对0803新版式的重标定属base侧,已另报。",

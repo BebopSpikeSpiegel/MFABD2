@@ -83,7 +83,7 @@
         ]
     },
     "Collect_FindPickupCat_LeaveCircle_Ty3": {
-        "desc": "自动寻路酒馆-确认，等待x秒",
+        "desc": "自动寻路酒馆-等待进入步行态,再等x秒",
         "recognition": "Or",
         "any_of": ["Arbitrage_NviGuide_Onfoot_Loop"],
         "post_delay": 3000,
@@ -211,6 +211,7 @@
         ],
         "next": [
             "Collect_TargetMap1_Special_Right",
+            "[JumpBack]Collect_ClickTeleporOccupy",
             "Collect_TargetMap2",
             "Collect_TargetMap3",
             "Collect_TargetMap4",
@@ -223,6 +224,31 @@
             "[JumpBack]Collect_TeleporNotFind"
         ],
         "focus": "确认区域地图tp1"
+    },
+    "Collect_ClickTeleporOccupy": {
+        "desc": "区域地图传送阵上站了人,遮蔽了传送图标。第一图判定用。",
+        "recognition": "TemplateMatch",
+        "roi": [
+            328,
+            89,
+            633,
+            527
+        ],
+        "template": "TeleporZero.png",
+        "green_mask": true,
+        "action": "Click",
+        "target": [
+            120,
+            35
+        ],
+        "post_delay": 5000,
+        "next": [
+            "[Anchor]Arbitrage5",
+            "Collect_Skill_Start",
+            "Collect_ClickTeleporOccupy",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "CM.N.区域地图.sp.人物已在传送阵"
     },
     "Collect_TargetMap2": {
         "desc": "详细地图确定位置2",
@@ -445,7 +471,8 @@
         ],
         "next": [
             "Collect_TargetMap2",
-            "Collect_TargetMap1_Special_Right"
+            "Collect_TargetMap1_Special_Right",
+            "[JumpBack]Collect_ClickTelepor_ButNotActive"
         ]
     },
     "Collect_TargetMap2_Special_Right": {
@@ -471,7 +498,8 @@
         ],
         "next": [
             "Collect_TargetMap3",
-            "Collect_TargetMap2_Special_Right"
+            "Collect_TargetMap2_Special_Right",
+            "[JumpBack]Collect_ClickTelepor_ButNotActive"
         ]
     },
     "Collect_TargetMap4_Special": {
@@ -686,8 +714,17 @@
         "focus": "CTB.[WRN]识别首选为紫色技能传送阵,尝试规避"
     },
     "Collect_ClickTelepor_TargetClass_PurpleProcess": {
-        "recognition": "Or",
-        "any_of": ["Collect_ClickTeleporCircleIco"],
+        "recognition": "TemplateMatch",
+        "roi": [
+            100,
+            71,
+            1133,
+            534
+        ],
+        "template": [
+            "TpCircleMap.png"
+        ],
+        "index": 1,
         "action": "Click",
         "post_delay": 5000,
         "next": [
@@ -755,7 +792,8 @@
         "next": [
             "Collect_Skill_Start",
             "Collect_ClickTelepor_TargetClass_White",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "Collect_ClickTelepor_Abnormal_Overlap"
         ],
         "focus": "CM.N.区域地图.tp1.找到传送阵图标"
     },
