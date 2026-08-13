@@ -990,6 +990,14 @@ jobs:
           cd artifacts
           mkdir -p release_assets
           for dir in *; do
+            # release_assets 是本步骤自己的输出目录。它按字母序排在最后，轮到它时
+            # 里面已躺着前面生成的全部平台包，再打一遍就得到一个等于所有包之和的
+            # 套娃 zip（v4.3.18-alpha 那次实测 1.29GB），对用户毫无意义。
+            # 注：CHANGES 是 changelog job 的构建物，打成 CHANGES.zip 是有意保留的。
+            if [ "$dir" = "release_assets" ]; then
+              continue
+            fi
+
             # 直接使用目录名作为 zip 文件名
             zip_name="${dir}.zip"
 
