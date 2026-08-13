@@ -934,6 +934,57 @@ jobs:
         with:
           path: artifacts
 
+      # actions/upload-artifact 不保留 Unix 权限位：构建时 chmod 过的文件到这里一律变 0644，
+      # 而 zip 会忠实记录，于是 mac/linux 用户解压后 MFAAvalonia 与内嵌 python3 都不可执行，
+      # MFA 全量更新整包覆盖安装目录后直接起不来（2026-08-08 mac 用户实例）。
+      # zip 格式本身存得下权限（external attributes 高 16 位，version-made-by=3），
+      # 所以在打包前补回执行位即可，不必把发布资产换成 tar.gz——
+      # 换格式会断掉 MFA 的 zip 解压路径和 MirrorChyan 的增量差分基线。
+      - name: Restore exec bits for unix artifacts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          # ELF 与 Mach-O(32/64/fat，两种字节序) 的魔数。
+          # PE 的 "MZ" 不在其中，Windows 产物不会被波及。
+          MAGIC = {
+              b"\x7fELF",
+              b"\xcf\xfa\xed\xfe", b"\xce\xfa\xed\xfe",
+              b"\xfe\xed\xfa\xcf", b"\xfe\xed\xfa\xce",
+              b"\xca\xfe\xba\xbe",
+          }
+          UNIX_PKG = ("-macos-", "-linux-", "-android-")
+
+          pkgs = [p for p in sorted(Path("artifacts").iterdir())
+                  if p.is_dir() and any(k in p.name for k in UNIX_PKG)]
+
+          total = 0
+          for pkg in pkgs:
+              n = 0
+              for f in pkg.rglob("*"):
+                  if f.is_symlink() or not f.is_file():
+                      continue
+                  try:
+                      with f.open("rb") as fh:
+                          head = fh.read(4)
+                  except OSError:
+                      continue
+                  # 二进制看魔数，脚本看 shebang 或后缀；
+                  # 按内容判定省得维护一份必然会漏的文件名清单
+                  if head in MAGIC or head[:2] == b"#!" or f.suffix in (".sh", ".command"):
+                      f.chmod(f.stat().st_mode | 0o755)
+                      n += 1
+              print(f"{pkg.name}: 恢复执行位 {n} 个")
+              total += n
+
+          if not pkgs:
+              print("::warning::未找到 macos/linux/android 产物目录，跳过执行位恢复")
+          elif total == 0:
+              # 一个都没命中说明产物布局变了，别让它静默通过——这正是上次翻车的方式
+              raise SystemExit("::error::unix 产物无一文件被赋予执行位，打包布局可能已变更")
+          print(f"合计恢复 {total} 个")
+          PY
+
       - name: Package release assets
         run: |
           cd artifacts
@@ -941,7 +992,7 @@ jobs:
           for dir in *; do
             # 直接使用目录名作为 zip 文件名
             zip_name="${dir}.zip"
-            
+
             # 创建压缩包
             (cd "$dir" && zip -r "../release_assets/$zip_name" .)
           done
