@@ -227,7 +227,6 @@
         ],
         "next": [
             "Collect_TargetMap1_Special_Right",
-            "[JumpBack]Collect_ClickTeleporOccupy",
             "Collect_TargetMap2",
             "Collect_TargetMap3",
             "Collect_TargetMap4",
@@ -678,6 +677,7 @@
         "inverse": true,
         "post_delay": 1000,
         "next": [
+            "Collect_ClickTeleporOccupy",
             "Collect_TeleporNotFind_Right",
             "Collect_TeleporNotFind_NORight"
         ],
