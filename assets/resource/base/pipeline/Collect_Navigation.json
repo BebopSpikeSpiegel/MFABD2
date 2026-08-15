@@ -1010,7 +1010,30 @@
             "TpMapRight.png"
         ],
         "green_mask": true,
-        "action": "Click",
+        "action": "Custom",
+        "custom_action": "SmartAction",
+        "custom_action_param": {
+            "proxy_node": "Agt_Proxy_Blank",
+            "proxy_override": {
+                "action": "Click",
+                "target": [
+                    975,
+                    342,
+                    3,
+                    2
+                ],
+                "post_delay": 500
+            },
+            "on_changed": "next",
+            "on_unchanged": "loop",
+            "unchanged_streak": 4,
+            "detect_roi": [
+                463,
+                622,
+                368,
+                47
+            ]
+        },
         "post_delay": 5000
     },
     "Collect_FindTeleporCircle0.9": {
