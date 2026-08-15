@@ -211,7 +211,6 @@
         ],
         "next": [
             "Collect_TargetMap1_Special_Right",
-            "[JumpBack]Collect_ClickTeleporOccupy",
             "Collect_TargetMap2",
             "Collect_TargetMap3",
             "Collect_TargetMap4",
@@ -487,7 +486,8 @@
         "expected": [
             "施塔因之塔第8层",
             "施塔因之塔第8層",
-            "施塔因之塔宿舍"
+            "施塔因之塔宿舍",
+            "儿童房"
         ],
         "action": "Click",
         "target": [
@@ -590,8 +590,7 @@
         ],
         "expected": [
             "学校1楼",
-            "学校2楼",
-            "学校3楼"
+            "雷瓦汀据点"
         ],
         "next": [
             "Collect_ClickTeleporCircleIco"
@@ -620,6 +619,7 @@
         "inverse": true,
         "post_delay": 1000,
         "next": [
+            "Collect_ClickTeleporOccupy",
             "Collect_TeleporNotFind_Right",
             "Collect_TeleporNotFind_NORight"
         ],
