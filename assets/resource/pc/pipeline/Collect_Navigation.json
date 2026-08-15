@@ -412,6 +412,31 @@
             73
         ]
     },
+    "Collect_MapRight": {
+        "desc": "详细地图内右图标，目的右移动1格。|[PC覆盖·2026-08-16实录] base的SmartAction proxy_override.target(975,342)按安卓箭头(base roi[943,309,67,72]中心≈976,345)硬编码;PC箭头实位[990,313,68,73](本文件Rec_AreaMap_ButtRight_Tmp pc roi)中心≈(1024,349),base落点偏左49px打空——右箭头连点无效的真凶(08-13死循环期间'每圈点了右箭头画面零变化'与用户08-16实测目击'点击箭头歪了往右一点'双证)。整字段重写custom_action_param,仅改target为PC箭头中心,SmartAction其余参数(on_changed/unchanged_streak/detect_roi)原样保留。",
+        "custom_action_param": {
+            "proxy_node": "Agt_Proxy_Blank",
+            "proxy_override": {
+                "action": "Click",
+                "target": [
+                    1024,
+                    349,
+                    3,
+                    2
+                ],
+                "post_delay": 500
+            },
+            "on_changed": "next",
+            "on_unchanged": "loop",
+            "unchanged_streak": 4,
+            "detect_roi": [
+                463,
+                622,
+                368,
+                47
+            ]
+        }
+    },
     "Cpt_Collect_TargetMapEnd_Ocr": {
         "roi": [
             452,
