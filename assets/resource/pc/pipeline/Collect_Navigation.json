@@ -375,6 +375,30 @@
             1
         ]
     },
+    "Collect_MapRight": {
+        "custom_action_param": {
+            "detect_roi": [
+                462,
+                638,
+                360,
+                38
+            ],
+            "on_changed": "next",
+            "on_unchanged": "loop",
+            "proxy_node": "Agt_Proxy_Blank",
+            "proxy_override": {
+                "action": "Click",
+                "post_delay": 500,
+                "target": [
+                    1027,
+                    345,
+                    3,
+                    3
+                ]
+            },
+            "unchanged_streak": 4
+        }
+    },
     "Collect_FindTeleporCircle0.9": {
         "roi": [
             904,
