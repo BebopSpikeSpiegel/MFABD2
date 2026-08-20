@@ -985,7 +985,6 @@
     },
     "Collect_PackEnd_Ck_OnlyOnce": {
         "desc": "单次运行时,标记已完成",
-        "enabled": false,
         "action": "Custom",
         "custom_action": "MarkComplete",
         "custom_action_param": {
