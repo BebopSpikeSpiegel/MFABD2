@@ -878,7 +878,7 @@
             },
             "on_changed": "next",
             "on_unchanged": "loop",
-            "unchanged_streak": 4,
+            "loop_limit": 4,
             "detect_roi": [
                 463,
                 622,
@@ -985,7 +985,6 @@
     },
     "Collect_PackEnd_Ck_OnlyOnce": {
         "desc": "单次运行时,标记已完成",
-        "enabled": false,
         "action": "Custom",
         "custom_action": "MarkComplete",
         "custom_action_param": {

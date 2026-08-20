@@ -19,18 +19,18 @@
     },
     "Rec_<AutoBattle_TabTo_Auto>_Ocr_01": {
         "roi": [
-            1146,
-            642,
-            74,
-            30
+            1066,
+            631,
+            157,
+            49
         ]
     },
     "Rec_<AutoBattle_TabTo_Auto>_Ocr_02": {
         "roi": [
-            1080,
-            641,
-            45,
-            30
+            53,
+            617,
+            290,
+            79
         ]
     },
     "AutoBattle_ClickAutoButt": {
