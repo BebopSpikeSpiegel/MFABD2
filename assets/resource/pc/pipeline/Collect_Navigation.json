@@ -398,7 +398,7 @@
                     3
                 ]
             },
-            "unchanged_streak": 4
+            "loop_limit": 4
         }
     },
     "Collect_FindTeleporCircle0.9": {
