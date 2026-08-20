@@ -61,7 +61,25 @@
         "next": [],
         "focus": "G=1.页面非预期，点击返回按钮"
     },
+    "SemiAuto_Evil_SemiautoTower_Timeout": {
+        "desc": "半自动爬塔的时间闸。爬塔环在 pipeline 里没有任何终止条件——收尾节点 _End 原本全仓无人引用, 整个环只能靠战败结束; 一旦战斗判定卡住或玩家中途接管, 它可以一直跑下去。轮数由玩家意愿决定的流程, 正确的界是时间而不是次数, 故用墙钟闸收口。识别逻辑是反的: 已超时才算命中, 未超时返回失败让引擎继续尝试 next 里的后续候选, 因此挂在各循环节点 next 首位不改变原有候选语义。上限由 interface.json 的「半自动爬塔时间上限」注入, 默认 30 分钟, 填 0 为不限时。",
+        "recognition": "Custom",
+        "custom_recognition": "TimerExpired",
+        "custom_recognition_param": {
+            "timer": "EvilTower",
+            "minutes": 30
+        },
+        "next": [
+            "SemiAuto_Evil_SemiautoTower_End"
+        ],
+        "focus": "半自动爬塔已达时间上限, 收工进入下一任务"
+    },
     "SemiAuto_Evil_SemiautoTower_Start": {
+        "action": "Custom",
+        "custom_action": "StartTimer",
+        "custom_action_param": {
+            "timer": "EvilTower"
+        },
         "next": [
             "SemiAuto_Evil_SemiautoTower_On"
         ]
@@ -113,6 +131,7 @@
         "action": "Click",
         "post_delay": 5000,
         "next": [
+            "SemiAuto_Evil_SemiautoTower_Timeout",
             "SemiAuto_Evil_SemiautoTower_InManual",
             "SemiAuto_Evil_SemiautoTower_InAuto",
             "SemiAuto_Evil_SemiautoTower_OnCk"
@@ -136,6 +155,7 @@
         ],
         "post_delay": 3500,
         "next": [
+            "SemiAuto_Evil_SemiautoTower_Timeout",
             "SemiAuto_Evil_SemiautoTower_InAuto",
             "SemiAuto_Evil_SemiautoTower_InManual"
         ]
@@ -170,6 +190,7 @@
         ],
         "post_delay": 10000,
         "next": [
+            "SemiAuto_Evil_SemiautoTower_Timeout",
             "SemiAuto_Evil_SemiautoTower_ToNextRound",
             "SemiAuto_Evil_SemiautoTower_AuDaemon",
             "SemiAuto_Evil_SemiautoTower_InAuto",
@@ -190,6 +211,7 @@
         "action": "Click",
         "post_delay": 500,
         "next": [
+            "SemiAuto_Evil_SemiautoTower_Timeout",
             "SemiAuto_Evil_SemiautoTower_OnCk",
             "SemiAuto_Evil_SemiautoTower_ToNextRound"
         ]

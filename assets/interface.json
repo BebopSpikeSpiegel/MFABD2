@@ -1755,6 +1755,9 @@
             "cases": [
                 {
                     "name": "半自动爬塔(从选层数界面开始)",
+                    "option": [
+                        "半自动爬塔时间上限"
+                    ],
                     "pipeline_override": {
                         "SemiAuto_TotalStart": {
                             "next": [
@@ -1789,7 +1792,28 @@
                 }
             ]
         },
-        "连续精炼次数": {
+        "半自动爬塔时间上限": {
+        "type": "input",
+        "inputs": [
+            {
+                "name": "半自动爬塔时间上限",
+                "pipeline_type": "int",
+                "default": "30",
+                "verify": "^(\\d+)$",
+                "pattern_msg": "应为非负整数",
+                "description": "爬塔运行超过该时长后自动收工, 单位分钟。<br>爬塔流程本身没有终止条件(只能靠战败结束), 该时限是防止它无限跑下去的兜底。<br>填 <b>0</b> 表示不限时。"
+            }
+        ],
+        "pipeline_override": {
+            "SemiAuto_Evil_SemiautoTower_Timeout": {
+                "custom_recognition_param": {
+                    "timer": "EvilTower",
+                    "minutes": "{半自动爬塔时间上限}"
+                }
+            }
+        }
+    },
+    "连续精炼次数": {
             "type": "input",
             "inputs": [
                 {
