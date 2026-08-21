@@ -53,6 +53,8 @@
         ]
     },
     "Collect_ClickTeleporOccupy": {
+        "desc": "区域地图传送阵上站了人,遮蔽了传送图标。第一图判定用。|[PC覆盖·2026-08-13实录] base无界:本分支视同已到达(点90,35退图直采),但next无任何回到MapRight/真传送的推进出口且含自引用——采集空手后FindTeleporCircle0.9重开区域图→再次命中本节点,22.8秒/圈定长死循环4小时08分(21:39:52~01:45:57,命中框[522,352,38,37]逐字节不变;每圈MapRight都点了右箭头(1020,333)但画面零变化,base自述'缺乏验证方法');全程动作success:true、Exception零触发,Panic永不接管,唯一出口=人工杀停。比照同文件Collect_Telepor_Retry_PC先例(07-27同构假成功空转)补max_hit 3有界化:合法边界场景一次命中足够,3圈静默后让位MapRight/NoFind正常路径,多卡带连采时的合法重现留一格余量。另:TeleporZero_PC同屏双命中(0.8559/0.8588)存在误匹配普通图标嫌疑,已报上游复核。",
+        "max_hit": 3,
         "roi": [
             331,
             60,
@@ -396,7 +398,7 @@
                     3
                 ]
             },
-            "unchanged_streak": 4
+            "loop_limit": 4
         }
     },
     "Collect_FindTeleporCircle0.9": {
