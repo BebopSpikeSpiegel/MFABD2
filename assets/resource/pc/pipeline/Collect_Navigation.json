@@ -377,6 +377,14 @@
             1
         ]
     },
+    "Collect_OperationsEnd_NORight": {
+        "roi": [
+            217,
+            298,
+            847,
+            84
+        ]
+    },
     "Collect_MapRight": {
         "custom_action_param": {
             "detect_roi": [
@@ -385,6 +393,7 @@
                 360,
                 38
             ],
+            "loop_limit": 4,
             "on_changed": "next",
             "on_unchanged": "loop",
             "proxy_node": "Agt_Proxy_Blank",
@@ -397,8 +406,7 @@
                     3,
                     3
                 ]
-            },
-            "loop_limit": 4
+            }
         }
     },
     "Collect_FindTeleporCircle0.9": {
