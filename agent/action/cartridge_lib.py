@@ -209,6 +209,11 @@ class CooldownManager:
         """
         【翻译器】: "本地时间字符串" -> "UTC时间戳"
         核心逻辑: 假设存档里的时间是基于当前电脑时区的，将其转为绝对的UTC时间戳。
+
+        解析不出来时返回 None,而不是 0.0。0.0 本身是个合法时间戳(1970-01-01),
+        与"解析失败"混在一起后调用方无从区分 —— 它恒小于任何 reset_ts,于是
+        "打过标"被静默判成"从没跑过",表现为完成态下反复重跑,且日志里一个字都没有。
+        返回 None 把这两件事拆开,由调用方显式决定怎么收场。
         """
         try:
             # 1. 解析字符串为 datetime 对象 (naive time)
@@ -217,8 +222,17 @@ class CooldownManager:
             dt_local = dt_naive.replace(tzinfo=self._get_local_timezone())
             # 3. 转换为 UTC 时间戳 (float)
             return dt_local.timestamp()
-        except:
-            return 0.0
+        except (ValueError, TypeError) as e:
+            # ValueError: 格式对不上(存档被手改过、或将来换了存储格式)
+            # TypeError : 存档里根本不是字符串(JSON 里存成了数字/null)
+            # 原先是裸 except —— 连 KeyboardInterrupt / SystemExit 都一并吞掉。
+            # 不必再捕 OSError/OverflowError: 上面 replace(tzinfo=...) 之后是 aware
+            # datetime,其 timestamp() 走纯算术而非平台 mktime,1970 年之前也不报错
+            # (实测 "1960-01-01 00:00:00" 正常返回 -315597600.0)。别再往回补。
+            utils.mfaalog.error(
+                f"[Py] ❌ 存档时间戳无法解析: {time_str!r} ({type(e).__name__}: {e})"
+            )
+            return None
 
     def _calculate_server_reset_timestamp(self, strategy_name):
         """
@@ -369,11 +383,19 @@ class CooldownManager:
         else:
             # 有记录 -> 比对
             last_run_ts = self._str_to_utc_timestamp(last_run_str)
-            
+
             # 直接使用完整时间字符串，不再截断
             last_run_display = last_run_str
 
-            if last_run_ts < reset_ts:
+            if last_run_ts is None:
+                # 有记录、但那条记录读不懂。沿用本文件既有的"失败开放"方向(当作可运行),
+                # 与第 3 步算不出刷新点时的兜底保持一致 —— 方向本身有争议(冷却管理器
+                # 失效时更该保守跳过),但改它要连着那几处一起评估,这里只负责别再静默。
+                # 上面 _str_to_utc_timestamp 已按 error 级记了原始值与异常类型。
+                status_icon = "🟡"
+                is_pass = True
+                last_run_display = f"{last_run_str!r} ← 解析失败,已按未运行处理"
+            elif last_run_ts < reset_ts:
                 status_icon = "🟢"
                 is_pass = True
             else:
