@@ -2,7 +2,10 @@
     "Collect_Story14_Init": {
         "desc": "剧情14进入后安装完成标记，以探索告示板作为稳定采集起点。",
         "recognition": "Or",
-        "any_of": ["Rec_SandBox_Pin_Tpl", "Rec_SandBox_Run_Tpl"],
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
         "action": "Custom",
         "custom_action": "PatchPipeline",
         "custom_action_param": {
@@ -25,7 +28,10 @@
     "Collect_Story14_Board_Arrived": {
         "desc": "抵达探索告示板，以此为稳定起点完成第一段采集。",
         "recognition": "Or",
-        "any_of": ["Rec_SandBox_Pin_Tpl", "Rec_SandBox_Run_Tpl"],
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
         "anchor": {
             "OnFoot_Skill": "Collect_Story14_OpenNviMap_Left"
         },
@@ -36,15 +42,25 @@
         "desc": "安全区采集结束后展开导航地图。",
         "max_hit": 3,
         "recognition": "Or",
-        "any_of": ["Rec_SandBox_Pin_Tpl", "Rec_SandBox_Run_Tpl"],
-        "action": "Click",
-        "target": [132, 103, 10, 10],
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
         "pre_delay": 2000,
+        "action": "Click",
+        "target": [
+            132,
+            103,
+            10,
+            10
+        ],
         "post_delay": 2500,
+        "timeout": 5000,
         "next": ["Collect_Story14_Left_Move"],
         "on_error": [
             "Collect_Story14_OpenNviMap_Left",
-            "Global_Null_Exception"
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ],
         "focus": "C14.展开导航地图前往左侧回廊"
     },
@@ -54,8 +70,14 @@
         "recognition": "And",
         "all_of": ["Collect_TeleporCircle_OnFoot_NviMap"],
         "action": "Click",
-        "target": [334, 213, 10, 10],
+        "target": [
+            334,
+            213,
+            10,
+            10
+        ],
         "post_delay": 1000,
+        "timeout": 5000,
         "next": [
             "[JumpBack]Collect_IM_Move_MGS",
             "[JumpBack]Collect_IM_OnFoot_Moveing",
@@ -64,14 +86,18 @@
         ],
         "on_error": [
             "Collect_Story14_Left_Move",
-            "Global_Null_Exception"
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ],
         "focus": "C14.步行前往剑之神殿左侧回廊"
     },
     "Collect_Story14_Left_Arrived": {
         "desc": "抵达左侧回廊，采集后先返回探索告示板。",
         "recognition": "Or",
-        "any_of": ["Rec_SandBox_Pin_Tpl", "Rec_SandBox_Run_Tpl"],
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
         "anchor": {
             "OnFoot_Skill": "Collect_Story14_ReturnBoard_AfterLeft"
         },
@@ -81,7 +107,10 @@
     "Collect_Story14_ReturnBoard_AfterLeft": {
         "desc": "左侧回廊采集结束，返回探索告示板后再前往中央回廊。",
         "recognition": "Or",
-        "any_of": ["Rec_SandBox_Pin_Tpl", "Rec_SandBox_Run_Tpl"],
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
         "anchor": {
             "ExplorationBoard_Arrived": "Collect_Story14_OpenNviMap_Central"
         },
@@ -92,15 +121,25 @@
         "desc": "回到探索告示板后展开导航地图。",
         "max_hit": 3,
         "recognition": "Or",
-        "any_of": ["Rec_SandBox_Pin_Tpl", "Rec_SandBox_Run_Tpl"],
-        "action": "Click",
-        "target": [132, 103, 10, 10],
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
         "pre_delay": 2000,
+        "action": "Click",
+        "target": [
+            132,
+            103,
+            10,
+            10
+        ],
         "post_delay": 2500,
+        "timeout": 5000,
         "next": ["Collect_Story14_Central_Move"],
         "on_error": [
             "Collect_Story14_OpenNviMap_Central",
-            "Global_Null_Exception"
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ],
         "focus": "C14.展开导航地图前往中央回廊"
     },
@@ -110,8 +149,14 @@
         "recognition": "And",
         "all_of": ["Collect_TeleporCircle_OnFoot_NviMap"],
         "action": "Click",
-        "target": [485, 233, 10, 10],
+        "target": [
+            485,
+            233,
+            10,
+            10
+        ],
         "post_delay": 1000,
+        "timeout": 5000,
         "next": [
             "[JumpBack]Collect_IM_Move_MGS",
             "[JumpBack]Collect_IM_OnFoot_Moveing",
@@ -120,14 +165,18 @@
         ],
         "on_error": [
             "Collect_Story14_Central_Move",
-            "Global_Null_Exception"
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ],
         "focus": "C14.步行前往剑之神殿中央回廊"
     },
     "Collect_Story14_Central_Arrived": {
         "desc": "抵达中央回廊，完成最后一次采集后结束剧情14。",
         "recognition": "Or",
-        "any_of": ["Rec_SandBox_Pin_Tpl", "Rec_SandBox_Run_Tpl"],
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
         "anchor": {
             "OnFoot_Skill": "Collect_IM_Closure"
         },

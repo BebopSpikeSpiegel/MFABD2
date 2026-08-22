@@ -504,12 +504,14 @@
             "Rec_SandBox_Pin_Tpl",
             "Rec_SandBox_Run_Tpl"
         ],
+        "timeout": 5000,
         "next": [
             "Collect_ReturnToExplorationBoard_Select",
             "Collect_ReturnToExplorationBoard_Open"
         ],
         "on_error": [
-            "Global_Null_Exception"
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ],
         "focus": "CTB.PC.回到探索告示板"
     },
@@ -530,11 +532,13 @@
         "pre_delay": 500,
         "action": "Click",
         "post_delay": 800,
+        "timeout": 5000,
         "next": [
             "Collect_ReturnToExplorationBoard_Select"
         ],
         "on_error": [
-            "Global_Null_Exception"
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ],
         "focus": "CTB.PC.展开寻路列表"
     },
@@ -552,9 +556,9 @@
             "探索告示板",
             "探索佈告欄"
         ],
-        "timeout": 1500,
         "action": "Click",
         "post_delay": 1500,
+        "timeout": 1500,
         "next": [
             "[JumpBack]Collect_IM_Move_MGS",
             "[JumpBack]Collect_IM_OnFoot_Moveing",
@@ -562,7 +566,8 @@
             "Collect_ReturnToExplorationBoard_Arrived"
         ],
         "on_error": [
-            "Global_Null_Exception"
+            "Global_Null_Exception",
+            "Global_Null_Panic"
         ],
         "focus": "CTB.PC.选择探索告示板"
     },
