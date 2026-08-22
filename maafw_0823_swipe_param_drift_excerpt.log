@@ -1,0 +1,10 @@
+### maafw: 参数形漂移 — Arbitrage_Select_Swip 代理滑动实际起点(配置 [200,660])
+
+### GUI: SmartAction 判到底 + 出售断链
+[2026-08-23 02:28:07.162][INF]  [Record] 🟣 >>> [SmartAction:Activities_Slip] 🛑 第1轮 画面未改变（diff=0.00）— 已连续 1 次确认 → error
+[2026-08-23 02:28:20.767][INF]  [Record] 🟣 >>> [SmartAction:Activities_Slip] 🛑 第1轮 画面未改变（diff=0.00）— 已连续 1 次确认 → error
+[2026-08-23 02:28:34.354][INF]  [Record] 🟣 >>> [SmartAction:Activities_Slip] 🛑 第1轮 画面未改变（diff=0.00）— 已连续 1 次确认 → error
+[2026-08-23 02:30:35.777][INF]  [Record] 🟣 >>> [SmartAction:Arbitrage_Select_Swip] 🛑 第1轮 画面未改变（diff=0.00）— 已连续 1 次确认 → error
+[2026-08-23 02:31:27.384][INF]  [Record] 🟣 >>> [SmartAction:Arbitrage_Select_Swip] 🛑 第1轮 画面未改变（diff=0.00）— 已连续 1 次确认 → error
+[2026-08-23 02:31:28.685][INF]  [Record] ⚠️ >>> [Arbitrage] ⚠️ [蜂蜜黄油杏仁] 无法判断是否售出：链条未走到金币复核点（B 未执行，多半中途断链）
+[2026-08-23 02:31:28.687][INF]  [Record] ⚠️ >>> [Arbitrage] 🚫 本轮无一项成功售出(1 项全部失败),请检查上方失败原因。

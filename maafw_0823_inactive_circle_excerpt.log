@@ -1,0 +1,6 @@
+### maafw: 模板对灰/金阵的命中分(02:47)
+
+### maafw: Purple 色核(无紫)与 Inactive_PC 色核(白像素=5<20 → inverse 命中)
+[2026-08-23 07:14:48.509][DBG][Px7564][Tx21670][ColorMatcher.cpp][L33][MaaNS::VisionNS::ColorMatcher::analyze] Collect_ClickTelepor_TargetClass_Purple [all_results_=[{"box":[628,339,0,0],"count":0}]] [filtered_results_=[]] [best_result_=null] [cost=2ms] [param_.count=1] [param_.method=4] [param_.con
+[2026-08-23 07:14:48.533][DBG][Px7564][Tx21670][ColorMatcher.cpp][L33][MaaNS::VisionNS::ColorMatcher::analyze] Collect_ClickTelepor_TargetClass_Inactive_PC [all_results_=[{"box":[628,339,19,20],"count":104}]] [filtered_results_=[{"box":[628,339,19,20],"count":104}]] [best_result_={"box":[628,339,19,
+[2026-08-23 07:14:54.076][DBG][Px7564][Tx21670][ColorMatcher.cpp][L33][MaaNS::VisionNS::ColorMatcher::analyze] Collect_ClickTelepor_TargetClass_Inactive_PC [all_results_=[{"box":[628,339,19,18],"count":5}]] [filtered_results_=[]] [best_result_=null] [cost=3ms] [param_.count=20] [param_.method=4] [pa
