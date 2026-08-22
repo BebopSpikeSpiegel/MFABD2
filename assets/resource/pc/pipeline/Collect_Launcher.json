@@ -1,4 +1,17 @@
 {
+    "Collect_Pack_Story_14": {
+        "desc": "[PC] 剧情卡带 14 使用左右回廊专用采集流程。",
+        "custom_action_param": {
+            "target": "Collect_Pack_Click",
+            "patch": {
+                "next": [
+                    "[JumpBack]Global_WaitingForLoading",
+                    "Collect_Story14_Init",
+                    "Collect_Pack_Click"
+                ]
+            }
+        }
+    },
     "Collect_Sandplay": {
         "target": [
             1214,
