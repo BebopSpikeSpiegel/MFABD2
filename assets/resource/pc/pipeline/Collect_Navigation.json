@@ -410,6 +410,23 @@
         }
     },
     "Collect_FindTeleporCircle0.9": {
+        "custom_action_param": {
+            "detect_roi": [
+                111,
+                90,
+                54,
+                48
+            ],
+            "loop_exhausted": "error",
+            "loop_limit": 5,
+            "on_changed": "next",
+            "on_unchanged": "loop",
+            "proxy_node": "Collect_TeleporCircle_Ico_Enter",
+            "settle_delay": 1000,
+            "threshold": 3.0
+        }
+    },
+    "Collect_TeleporCircle_Ico_Enter": {
         "roi": [
             904,
             555,
