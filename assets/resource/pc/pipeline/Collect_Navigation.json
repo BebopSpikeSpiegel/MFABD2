@@ -335,6 +335,36 @@
             "TpCircleMap_PC.png"
         ]
     },
+    "Collect_ClickTelepor_TargetClass_Purple": {
+        "desc": "[PC覆盖·2026-08-23实录] 仅改 on_error 插入灰阵门卫,识别/动作全继承 base。实录(02:46:48起,5.5s/圈,无界):卡勒塔市·战斗Ⅰ的 tp2 为灰色未激活阵,PC 模板 TpCircleMap_PC 对灰阵命中 0.953(高于金阵 0.926,base 安卓模板为金色阵不匹灰阵=PC独有),Collect_ClickTelepor_TargetClass_White 点灰阵只弹顶部『尚未激活的魔法阵。』,base 的 ButNotActive 守卫(底部 roi+『没有已激活』文案)接不住→自环无界(假成功死锁谱系第5例,#445 同型)。",
+        "on_error": [
+            "Collect_ClickTelepor_TargetClass_Inactive_PC",
+            "Collect_ClickTelepor_TargetClass_White",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ]
+    },
+    "Collect_ClickTelepor_TargetClass_Inactive_PC": {
+        "desc": "[PC新增·2026-08-23] 首选传送阵图标为灰色未激活阵的门卫:对 Collect_ClickTeleporCircleIco 命中框做亮白像素计数(激活阵=白符号+黑底+金环,灰阵=暗灰符号),取反→白像素<20 即灰阵,走 ButNotActive 同一出口结束本卡带。离线量化(MaaMCP 帧 INTER_AREA 缩到 720,19x20 框,min(R,G,B)>=215):灰阵 0 px / 金阵 81 px;阈 200/230 分别 0/107、0/42,余量充足。止血性质:若同图第三个阵为激活未访,本卡带会提前结束(损失一次传送,换无界循环根治),根治(跳过灰阵选下一激活阵)应在 base 层做。",
+        "recognition": "ColorMatch",
+        "roi": "Collect_ClickTeleporCircleIco",
+        "lower": [
+            200,
+            200,
+            200
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 20,
+        "inverse": true,
+        "next": [
+            "Collect_OperationsMain_OperationsEnd"
+        ],
+        "focus": "CM.N.[WRN]PC:首选传送阵为灰色未激活阵,结束本卡带"
+    },
     "Collect_ClickTelepor_ButNotActive": {
         "roi": [
             558,
