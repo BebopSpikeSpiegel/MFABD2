@@ -421,7 +421,7 @@
             "IcoHand_PC2.png"
         ],
         "threshold": [
-            0.7
+            0.85
         ]
     },
     "Collect_FindTeleporCircle": {
