@@ -4,6 +4,7 @@
 from .cartridge_lib import *
 from .pipeline_manager import *
 from .smart_scroller import *
+from .smart_action import *
 from .ocr_decision import *
 from .string_processor import *
 from .arbitrage_result import *
