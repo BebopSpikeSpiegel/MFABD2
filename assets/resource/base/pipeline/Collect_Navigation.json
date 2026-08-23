@@ -852,17 +852,8 @@
     },
     "Collect_MapRight": {
         "desc": "详细地图内右图标，目的右移动1格[缺陷，此步骤缺乏验证方法]",
-        "recognition": "TemplateMatch",
-        "roi": [
-            838,
-            311,
-            418,
-            63
-        ],
-        "template": [
-            "TpMapRight.png"
-        ],
-        "green_mask": true,
+        "recognition": "Or",
+        "any_of": ["Rec_AreaMap_ButtRight_Tmp"],
         "action": "Custom",
         "custom_action": "SmartAction",
         "custom_action_param": {
