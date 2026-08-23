@@ -1465,8 +1465,16 @@
     },
     "Event_Battle_TabAutoBattle_ChangeDifficulty_TryGeneral": {
         "desc": "点击普通战斗",
-        "recognition": "Or",
-        "any_of": ["Event_Battle_TabAutoBattle_ChangeDifficulty_TryGeneral"],
+        "recognition": "OCR",
+        "roi": [
+            69,
+            365,
+            1179,
+            324
+        ],
+        "expected": [
+            "普通"
+        ],
         "action": "Click",
         "target_offset": [
             5,
