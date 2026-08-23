@@ -224,6 +224,31 @@
         ],
         "focus": "确认区域地图tp1"
     },
+    "Collect_ClickTeleporOccupy": {
+        "desc": "区域地图传送阵上站了人,遮蔽了传送图标。第一图判定用。",
+        "recognition": "TemplateMatch",
+        "roi": [
+            328,
+            89,
+            633,
+            527
+        ],
+        "template": "TeleporZero.png",
+        "green_mask": true,
+        "action": "Click",
+        "target": [
+            120,
+            35
+        ],
+        "post_delay": 5000,
+        "next": [
+            "[Anchor]Arbitrage5",
+            "Collect_Skill_Start",
+            "Collect_ClickTeleporOccupy",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "CM.N.区域地图.sp.人物已在传送阵"
+    },
     "Collect_TargetMap2": {
         "desc": "详细地图确定位置2",
         "recognition": "OCR",
@@ -445,7 +470,8 @@
         ],
         "next": [
             "Collect_TargetMap2",
-            "Collect_TargetMap1_Special_Right"
+            "Collect_TargetMap1_Special_Right",
+            "[JumpBack]Collect_ClickTelepor_ButNotActive"
         ]
     },
     "Collect_TargetMap2_Special_Right": {
@@ -460,7 +486,8 @@
         "expected": [
             "施塔因之塔第8层",
             "施塔因之塔第8層",
-            "施塔因之塔宿舍"
+            "施塔因之塔宿舍",
+            "儿童房"
         ],
         "action": "Click",
         "target": [
@@ -471,7 +498,8 @@
         ],
         "next": [
             "Collect_TargetMap3",
-            "Collect_TargetMap2_Special_Right"
+            "Collect_TargetMap2_Special_Right",
+            "[JumpBack]Collect_ClickTelepor_ButNotActive"
         ]
     },
     "Collect_TargetMap4_Special": {
@@ -562,8 +590,7 @@
         ],
         "expected": [
             "学校1楼",
-            "学校2楼",
-            "学校3楼"
+            "雷瓦汀据点"
         ],
         "next": [
             "Collect_ClickTeleporCircleIco"
@@ -592,6 +619,7 @@
         "inverse": true,
         "post_delay": 1000,
         "next": [
+            "Collect_ClickTeleporOccupy",
             "Collect_TeleporNotFind_Right",
             "Collect_TeleporNotFind_NORight"
         ],
@@ -755,7 +783,8 @@
         "next": [
             "Collect_Skill_Start",
             "Collect_ClickTelepor_TargetClass_White",
-            "[JumpBack]Global_WaitingForLoading"
+            "[JumpBack]Global_WaitingForLoading",
+            "Collect_ClickTelepor_Abnormal_Overlap"
         ],
         "focus": "CM.N.区域地图.tp1.找到传送阵图标"
     },
@@ -822,9 +851,41 @@
     },
     "Collect_MapRight": {
         "desc": "详细地图内右图标，目的右移动1格[缺陷，此步骤缺乏验证方法]",
-        "recognition": "Or",
-        "any_of": ["Rec_AreaMap_ButtRight_Tmp"],
-        "action": "Click",
+        "recognition": "TemplateMatch",
+        "roi": [
+            838,
+            311,
+            418,
+            63
+        ],
+        "template": [
+            "TpMapRight.png"
+        ],
+        "green_mask": true,
+        "action": "Custom",
+        "custom_action": "SmartAction",
+        "custom_action_param": {
+            "proxy_node": "Agt_Proxy_Blank",
+            "proxy_override": {
+                "action": "Click",
+                "target": [
+                    975,
+                    342,
+                    3,
+                    2
+                ],
+                "post_delay": 500
+            },
+            "on_changed": "next",
+            "on_unchanged": "loop",
+            "loop_limit": 4,
+            "detect_roi": [
+                463,
+                622,
+                368,
+                47
+            ]
+        },
         "post_delay": 5000
     },
     "Collect_FindTeleporCircle0.9": {
@@ -924,7 +985,6 @@
     },
     "Collect_PackEnd_Ck_OnlyOnce": {
         "desc": "单次运行时,标记已完成",
-        "enabled": false,
         "action": "Custom",
         "custom_action": "MarkComplete",
         "custom_action_param": {
