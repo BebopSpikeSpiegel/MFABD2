@@ -1,0 +1,45 @@
+[2026-08-24 04:21:25.329][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 确认区域地图tp2
+[2026-08-24 04:21:26.105][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] CM.N.区域地图.tp1.找到传送阵图标
+[2026-08-24 04:21:26.661][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] CM.N.PC:传送阵图标色核门
+[2026-08-24 04:21:27.141][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] CM.N.[WRN]PC:首选传送阵为灰色未激活阵,结束本卡带
+[2026-08-24 04:21:28.281][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] CBB.[WRN]中继特殊结束-不存在右换页
+[2026-08-24 04:21:30.344][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] GO.复位到箱庭-开始
+[2026-08-24 04:21:31.011][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] G=1.页面非预期，点击返回按钮
+[2026-08-24 04:21:35.718][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] GO.复位到箱庭-已确认
+[2026-08-24 04:21:37.054][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] GO.调出快速卡带
+[2026-08-24 04:21:38.567][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] GO.快速卡带调出成功
+[2026-08-24 04:21:39.256][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] QCB.确认快速卡带
+[2026-08-24 04:21:39.756][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] CM.卡带内流程结束-执行完成打标记
+[2026-08-24 04:21:39.770][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] [Py] 标记更新：Character_7_合约之战@g_weekly
+[2026-08-24 04:21:39.771][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🟣 >>> [Py] ✅ 批量标记完成：已更新 1 个任务的时间戳 -> 2026-08-24 04:21:39
+[2026-08-24 04:21:41.563][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] QCB.确认快速卡带
+[2026-08-24 04:21:42.073][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] CM.卡带内流程结束-执行完成打标记
+[2026-08-24 04:21:42.090][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] [Py] 标记更新：Character_7_合约之战@g_weekly
+[2026-08-24 04:21:42.091][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🟣 >>> [Py] ✅ 批量标记完成：已更新 1 个任务的时间戳 -> 2026-08-24 04:21:42
+[2026-08-24 04:21:42.349][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🔴 [检查拦截] LocPage_SmartSwip（0/0）已达上限
+[2026-08-24 04:21:42.425][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🔴 [检查拦截] PackLocation_ToggleSwitch（1/1）已达上限
+[2026-08-24 04:21:42.774][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] CM.L.快速卡带盒定位-位置8
+[2026-08-24 04:21:42.801][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🧹 [重置完成] 已清零标签：['PackLocation_ToggleSwitch']
+[2026-08-24 04:21:43.068][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🔴 [检查拦截] LocPage_SmartSwip（0/0）已达上限
+[2026-08-24 04:21:43.134][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🟢 [检查通过] PackLocation_ToggleSwitch（0/1)
+[2026-08-24 04:21:43.191][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 📊 [数值变更] PackLocation_ToggleSwitch：0 -> 1（变动：+1)
+[2026-08-24 04:21:45.513][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🔴 [检查拦截] LocPage_SmartSwip（0/0）已达上限
+[2026-08-24 04:21:45.582][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🔴 [检查拦截] PackLocation_ToggleSwitch（1/1）已达上限
+[2026-08-24 04:21:45.928][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] CM.L.快速卡带盒定位-位置9
+[2026-08-24 04:21:45.954][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🧹 [重置完成] 已清零标签：['PackLocation_ToggleSwitch']
+[2026-08-24 04:21:46.210][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🔴 [检查拦截] LocPage_SmartSwip（0/0）已达上限
+[2026-08-24 04:21:46.279][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🟢 [检查通过] PackLocation_ToggleSwitch（0/1)
+[2026-08-24 04:21:46.349][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 📊 [数值变更] PackLocation_ToggleSwitch：0 -> 1（变动：+1)
+[2026-08-24 04:21:48.747][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🔴 [检查拦截] LocPage_SmartSwip（0/0）已达上限
+[2026-08-24 04:21:48.821][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🔴 [检查拦截] PackLocation_ToggleSwitch（1/1）已达上限
+[2026-08-24 04:21:49.185][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] CM.L.快速卡带盒定位-位置10
+[2026-08-24 04:21:49.210][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🧹 [重置完成] 已清零标签：['PackLocation_ToggleSwitch']
+[2026-08-24 04:21:49.474][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🔴 [检查拦截] LocPage_SmartSwip（0/0）已达上限
+[2026-08-24 04:21:49.537][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🟢 [检查通过] PackLocation_ToggleSwitch（0/1)
+[2026-08-24 04:21:49.590][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 📊 [数值变更] PackLocation_ToggleSwitch：0 -> 1（变动：+1)
+[2026-08-24 04:21:52.015][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🔴 [检查拦截] LocPage_SmartSwip（0/0）已达上限
+[2026-08-24 04:21:52.086][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] 🔴 [检查拦截] PackLocation_ToggleSwitch（1/1）已达上限
+[2026-08-24 04:21:53.149][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] GO.点击返回按钮
+[2026-08-24 04:21:58.335][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] GO.调出快速卡带
+[2026-08-24 04:21:59.860][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] GO.快速卡带调出成功
+[2026-08-24 04:22:00.532][INF] [cfg=Default][inst=小工具/8b10acf9][src=Monitor][op=MonitorLog] [Record] CM.L.调度器
