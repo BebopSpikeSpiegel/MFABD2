@@ -471,13 +471,40 @@
             212,
             175
         ],
+        "post_delay": 8000,
         "next": [
-            "Weekly_VisitCabin_Like1",
+            "Weekly_VisitCabin_ModEnt",
             "Weekly_VisitCabin_ModChg"
         ],
         "focus": "WVM.随机mod"
     },
+    "Weekly_VisitCabin_ModEnt": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "sub_name": "OCR",
+                "recognition": "ColorMatch",
+                "roi": "Weekly_VisitCabin_ModChg",
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "Sub_Ocr_Enable_Clr"
+        ],
+        "next": [
+            "[JumpBack]Weekly_VisitCabin_Like1",
+            "Weekly_VisitCabin_End"
+        ]
+    },
     "Weekly_VisitCabin_Like1": {
+        "max_hit": 4,
         "recognition": "OCR",
         "roi": [
             946,
@@ -496,7 +523,8 @@
         "post_delay": 2000,
         "next": [
             "Weekly_VisitCabin_Like1Chg"
-        ]
+        ],
+        "focus": "小屋点赞-up"
     },
     "Weekly_VisitCabin_Like1Chg": {
         "recognition": "Or",
@@ -507,112 +535,7 @@
             658
         ],
         "post_delay": 8000,
-        "next": [
-            "Weekly_VisitCabin_Like2"
-        ]
-    },
-    "Weekly_VisitCabin_Like2": {
-        "recognition": "OCR",
-        "roi": [
-            946,
-            597,
-            263,
-            106
-        ],
-        "expected": [
-            "再次探查"
-        ],
-        "action": "Click",
-        "target": [
-            1144,
-            94
-        ],
-        "post_delay": 2000,
-        "next": [
-            "Weekly_VisitCabin_Like2Chg"
-        ]
-    },
-    "Weekly_VisitCabin_Like2Chg": {
-        "roi": [
-            946,
-            597,
-            263,
-            106
-        ],
-        "expected": [
-            "再次探查"
-        ],
-        "action": "Click",
-        "target": [
-            850,
-            658
-        ],
-        "post_delay": 8000,
-        "next": [
-            "Weekly_VisitCabin_Like3"
-        ]
-    },
-    "Weekly_VisitCabin_Like3": {
-        "recognition": "OCR",
-        "roi": [
-            946,
-            597,
-            263,
-            106
-        ],
-        "expected": [
-            "再次探查"
-        ],
-        "action": "Click",
-        "target": [
-            1144,
-            94
-        ],
-        "post_delay": 2000,
-        "next": [
-            "Weekly_VisitCabin_Like3Chg"
-        ]
-    },
-    "Weekly_VisitCabin_Like3Chg": {
-        "roi": [
-            946,
-            597,
-            263,
-            106
-        ],
-        "expected": [
-            "再次探查"
-        ],
-        "action": "Click",
-        "target": [
-            850,
-            658
-        ],
-        "post_delay": 8000,
-        "next": [
-            "Weekly_VisitCabin_Like4"
-        ]
-    },
-    "Weekly_VisitCabin_Like4": {
-        "recognition": "OCR",
-        "roi": [
-            946,
-            597,
-            263,
-            106
-        ],
-        "expected": [
-            "再次探查"
-        ],
-        "action": "Click",
-        "target": [
-            1144,
-            94
-        ],
-        "post_delay": 2000,
-        "next": [
-            "Weekly_VisitCabin_End"
-        ]
+        "focus": "小屋点赞-切换"
     },
     "Weekly_VisitCabin_End": {
         "action": "Custom",
@@ -690,12 +613,6 @@
             "card_name": "UI_Arcade",
             "cycle_type": "g_weekly"
         },
-        "target_offset": [
-            3,
-            -3,
-            0,
-            0
-        ],
         "next": [
             "Global_ToHomePage"
         ],
