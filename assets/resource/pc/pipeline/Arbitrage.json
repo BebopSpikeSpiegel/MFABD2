@@ -743,30 +743,34 @@
         ]
     },
     "Arbitrage_Select_Swip": {
-        "desc": "商店卡带列表滑动。|PC 覆盖:base swipe 落点在 PC 上位于商品格区(会滚错面板),移进侧栏;detect_roi 同步移侧栏,其余参数沿 base。|本节点的门卫 OCR('购买/出售'页签)不是自带字段,而是经 any_of 复用 Arbitrage_Merchant_Menu——该门卫的 roi 修复在那个节点上完成,此处无需也不该另配 roi。",
+        "desc": "商店卡带列表滑动。|PC 覆盖:base swipe 落点在 PC 上位于商品格区(会滚错面板),移进侧栏;detect_roi 同步移侧栏,其余参数沿 base。|本节点的门卫 OCR('购买/出售'页签)不是自带字段,而是经 any_of 复用 Arbitrage_Merchant_Menu——该门卫的 roi 修复在那个节点上完成,此处无需也不该另配 roi。|[2026-08-23验尸] 上游bfde3d5(08-15)把base迁到SmartAction的proxy_override参数形,本PC覆盖仍是旧SmartSwipe形(顶层begin/end+retry_times+Custom_Proxy_Swipe);custom_action_param整字段替换→proxy_override被抹,代理节点无坐标,MaaFw在全屏框内随机取点滑(maafw实录begin[611,554]/[761,7]),diff=0.00即判到底.本次重写为新形:坐标入proxy_override(代理换Agt_Proxy_Blank并补post_delay1000),retry_times2→unchanged_streak3(=1+n,恰同base).",
         "custom_action_param": {
-            "action": "Swipe",
-            "begin": [
-                200,
-                660
-            ],
+            "proxy_node": "Agt_Proxy_Blank",
+            "proxy_override": {
+                "action": "Swipe",
+                "begin": [
+                    200,
+                    660
+                ],
+                "end": [
+                    200,
+                    135
+                ],
+                "duration": 600,
+                "end_hold": 1000,
+                "post_delay": 1000
+            },
             "detect_roi": [
                 150,
                 104,
                 60,
                 120
             ],
-            "duration": 600,
-            "end": [
-                200,
-                135
-            ],
-            "end_hold": 1000,
-            "focus": "Arb.商店列表滑动",
-            "proxy_node": "Custom_Proxy_Swipe",
-            "retry_times": 2,
+            "threshold": 3.0,
             "settle_delay": 500,
-            "threshold": 3.0
+            "on_changed": "next",
+            "on_unchanged": "error",
+            "unchanged_streak": 3
         }
     },
     "Arbitrage_Merchant_BuyMsg": {
