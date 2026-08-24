@@ -333,8 +333,61 @@
         ]
     },
     "Collect_ClickTeleporCircleIco": {
+        "desc": "[PC覆盖·2026-08-23] next 在 Purple 之后、White 之前插入灰阵门卫 Collect_ClickTelepor_TargetClass_Inactive_PC(模板继承 base 语义:PC 模板 TpCircleMap_PC 对灰色未激活阵亦命中 0.953)。",
         "template": [
             "TpCircleMap_PC.png"
+        ],
+        "next": [
+            "Collect_ClickTelepor_TargetClass_Purple",
+            "Collect_ClickTelepor_TargetClass_Inactive_PC",
+            "Collect_ClickTelepor_TargetClass_White"
+        ]
+    },
+    "Collect_ClickTelepor_TargetClass_Inactive_PC": {
+        "desc": "[PC新增·2026-08-23 v3] 灰阵门卫·第一段(区域图仍开着的前提门):Or 再跑一次 Collect_ClickTeleporCircleIco(模板命中=区域图开着且有图标,同时刷新其 box 供下游按名引用),next 只放取反色核节点;色核不命中(图标为激活阵)→1.5s 超时→on_error 回 White 正常点击。|为什么要两段:v2 单节点取反色核直接挂候选表,07:14:54 Story_15 实录误报——tp2 点击已传送成功、区域图已关,Skill_Start 那一刻没认到图钉,取反色核拿旧框在野外数白像素(count 5)→误判灰阵→提前 OperationsEnd(靠状态机守护兜回)。离线验证(MaaMCP run_pipeline,08-23 07:40):裸取反色核在野外必命中(复现误报);And[模板,取反色核] 不可用——inverse 在 And 子节点内不生效(两个单跑必命中的取反节点组 And 不命中)。",
+        "recognition": "Or",
+        "any_of": [
+            "Collect_ClickTeleporCircleIco"
+        ],
+        "timeout": 1500,
+        "next": [
+            "Collect_ClickTelepor_Inactive_Color_PC"
+        ],
+        "on_error": [
+            "Collect_ClickTelepor_TargetClass_White",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "CM.N.PC:传送阵图标色核门"
+    },
+    "Collect_ClickTelepor_Inactive_Color_PC": {
+        "desc": "[PC新增·2026-08-23] 灰阵门卫·第二段:对 Collect_ClickTeleporCircleIco 命中框做亮白像素计数取反(激活阵=白符号+黑底+金环,灰阵=暗灰符号),白像素<20 即灰阵→走 ButNotActive 同一出口结束本卡带。离线量化(720 帧 19x20 框 min(R,G,B)>=215)灰 0 / 金 81;实机 maafw ColorMatch 计数灰阵 5。只会在第一段门(模板仍命中)之后被评估。止血性质:同图另有激活未访阵时本卡带会提前结束;根治(跳过灰阵选下一激活阵/White 挂 max_hit)归 base。",
+        "recognition": "ColorMatch",
+        "roi": "Collect_ClickTeleporCircleIco",
+        "lower": [
+            200,
+            200,
+            200
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 20,
+        "inverse": true,
+        "next": [
+            "Collect_OperationsMain_OperationsEnd"
+        ],
+        "focus": "CM.N.[WRN]PC:首选传送阵为灰色未激活阵,结束本卡带"
+    },
+    "Collect_ClickTelepor_TargetClass_White": {
+        "desc": "[PC覆盖·2026-08-23] 仅改 next:在自环候选(本节点)之前插入灰阵门卫,Skill_Start(已传送)仍优先。base 该节点无 max_hit,点灰阵无效时自环无界(08-23 02:46~07:00 实录 2778 圈)。",
+        "next": [
+            "[Anchor]Arbitrage5",
+            "Collect_Skill_Start",
+            "Collect_ClickTelepor_TargetClass_Inactive_PC",
+            "Collect_ClickTelepor_TargetClass_White",
+            "[JumpBack]Global_WaitingForLoading"
         ]
     },
     "Collect_ClickTelepor_ButNotActive": {
