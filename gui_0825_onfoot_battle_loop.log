@@ -1,0 +1,68 @@
+GO.调出快速卡带
+GO.快速卡带调出成功
+QCB.确认快速卡带
+CM.卡带内流程结束-执行完成打标记
+[Py] 标记更新：Story_11_虚假游戏@g_weekly
+[Py] ✅ 批量标记完成：已更新 1 个任务的时间戳 -> 2026-08-25 21:40:03
+🟢 [检查通过] LocPage_SmartSwip（0/1)
+CL.M.智能翻页,到第2页.
+[Py] ✅ 滑动成功（Diff：83.66 > 3.0)
+📊 [数值变更] LocPage_SmartSwip：0 -> 1（变动：+1)
+🔴 [检查拦截] LocPage_SmartSwip（1/1）已达上限
+CM.L.当前卡带位置探针存在
+CM.L.快速卡带盒定位-位置2
+🧹 [重置完成] 已清零标签：['PackLocation_ToggleSwitch']
+🔴 [检查拦截] LocPage_SmartSwip（1/1）已达上限
+🟢 [检查通过] PackLocation_ToggleSwitch（0/1)
+📊 [数值变更] PackLocation_ToggleSwitch：0 -> 1（变动：+1)
+🔴 [检查拦截] LocPage_SmartSwip（1/1）已达上限
+🔴 [检查拦截] PackLocation_ToggleSwitch（1/1）已达上限
+CM.L.快速卡带盒定位-位置3
+🧹 [重置完成] 已清零标签：['PackLocation_ToggleSwitch']
+🔴 [检查拦截] LocPage_SmartSwip（1/1）已达上限
+🟢 [检查通过] PackLocation_ToggleSwitch（0/1)
+📊 [数值变更] PackLocation_ToggleSwitch：0 -> 1（变动：+1)
+检查：Story_12_黑羽毛  （策略：g_weekly） 
+[Py] 🔧 已改写 1 个节点（登记还原点 0 个）：['Collect_PackEnd_Ck']
+GO.等待卡带or转场载入
+CM.N.箱庭模块启动
+🧹 [重置完成] 已清零标签：['LocPage_SmartSwip']
+CM.从传送按钮打开区域地图-图像比特检测
+CM.N.箱庭地图内找到传送阵-按钮标
+[SmartAction:Collect_FindTeleporCircle0.9] ✅ 第1轮 画面已改变（diff=94.54 ≥ 3.0）→ next
+确认区域地图tp1
+CM.N.区域地图.tp1.找到传送阵图标
+CM.N.PC:传送阵图标色核门
+CM.N.区域地图.tp1.选择首选传送阵图标
+CSB.技能组调用开始
+CSB.技能页3-正确
+SCB.'探查'技能施放(无判定),栏位1-1
+SCB.'探查'技能施放-通过
+CSB.施放'吸取'技能,栏位3-2
+CSB.技能组复位-色核通过
+CFB.传送技能亮-尝试
+CFB.技能'传送'已配置，栏位3-1
+CTOB.徒步前往传送阵
+CTOB.打开导航地图
+CTOB.确认导航地图界面打开
+CTOB.导航地图判定为最左
+CTOB.导航地图右移1次
+CTOB.导航地图.tp1.找到传送阵图标
+CBB.[WRN]未识别到传送阵，执行特殊换页（正常不应该触发）
+CBB.[WRN]特殊换页-不存在右换页-方案2
+CBB.[WRN]未识别到传送阵，执行特殊换页（正常不应该触发）
+CBB.[WRN]特殊换页-不存在右换页-方案2
+CBB.[WRN]未识别到传送阵，执行特殊换页（正常不应该触发）
+CBB.[WRN]特殊换页-不存在右换页-方案2
+CBB.[WRN]未识别到传送阵，执行特殊换页（正常不应该触发）
+CBB.[WRN]特殊换页-不存在右换页-方案2
+CBB.[WRN]未识别到传送阵，执行特殊换页（正常不应该触发）
+CBB.[WRN]特殊换页-不存在右换页-方案2
+CBB.[WRN]未识别到传送阵，执行特殊换页（正常不应该触发）
+CBB.[WRN]特殊换页-不存在右换页-方案2
+CBB.[WRN]未识别到传送阵，执行特殊换页（正常不应该触发）
+CBB.[WRN]特殊换页-不存在右换页-方案2
+CBB.[WRN]未识别到传送阵，执行特殊换页（正常不应该触发）
+CBB.[WRN]特殊换页-不存在右换页-方案2
+CBB.[WRN]未识别到传送阵，执行特殊换页（正常不应该触发）
+CBB.[WRN]特殊换页-不存在右换页-方案2
