@@ -280,9 +280,20 @@
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
-            "Collect_TeleporCircle_OnFoot_GoinNviMap"
+            "Collect_TeleporCircle_OnFoot_Skill_Patch"
         ],
         "focus": "CTOB.徒步前往传送阵"
+    },
+    "Collect_TeleporCircle_OnFoot_Skill_Patch": {
+        "desc": "步行寻回出发前调用一次技能组(含压制),出口锚定到打开导航地图。比照同文件特殊地图模块 Collect_IM_Skill_1_Patch 的既有写法;不设 CheckTag 一次门是刻意的——寻回可复发且压制buff会过期,允许重调",
+        "anchor": {
+            "OnFoot_Skill": "Collect_TeleporCircle_OnFoot_GoinNviMap"
+        },
+        "next": [
+            "Collect_Skill_Start",
+            "[JumpBack]Global_ToSandBox"
+        ],
+        "focus": "CTOB.出发前技能调用,出口锚定到导航地图"
     },
     "Collect_TeleporCircle_OnFoot_GoinNviMap": {
         "desc": "点击左上地图",
@@ -298,6 +309,9 @@
             34,
             38
         ],
+        "anchor": {
+            "OnFoot_Skill": ""
+        },
         "post_delay": 2500,
         "next": [
             "Collect_TeleporCircle_OnFoot_NviMap",
