@@ -258,7 +258,7 @@
                 "钓鱼地点",
                 "目标次数"
             ],
-            "description": "自动导航至指定钓鱼点，持续钓鱼至目标条数后结束。<br>注意：受鱼类判定复杂度影响，成功率因鱼种而异。适合挂机刷普通鱼类经验与兑换币。<br>Powered by XiaoXKKK"
+            "description": "自动导航至指定钓鱼点，持续钓鱼至目标条数后结束。<br>注意：受鱼类判定复杂度影响，成功率因鱼种而异。适合挂机刷普通鱼类经验与兑换币。<br><span style=\"color:Crimson;font-size:12px\">钓鱼模块重构进行中，当前为先行版，行为与参数可能随后续版本调整。</span>"
         },
         {
             "name": "[全局]结束游戏",
@@ -2017,7 +2017,7 @@
     },
     "interface_version": 2,
     "name": "MFABD2",
-    "title": "MFABD2 | 棕色尘埃2自动化助手(sunyink/MFABD2)v0.0.20 | 游戏版本：20260604 ( Casino Party )",
+    "title": "MFABD2 | 棕色尘埃2自动化助手(sunyink/MFABD2)v0.0.20 | 游戏版本：20260813 ( The Sunny Smile )",
     "github": "https://github.com/sunyink/MFABD2",
     "mirrorchyan_rid": "MFABD2",
     "mirrorchyan_multiplatform": true,
