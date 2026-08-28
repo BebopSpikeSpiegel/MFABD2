@@ -752,7 +752,7 @@
         "focus": "CM.N.区域地图.tp1.选择首选传送阵图标"
     },
     "Collect_Skill_Entry": {
-        "desc": "[入口]调用快捷技能模块,传入状态参数。当前只传出口锚OnFoot_Skill→Collect_Skill_Egress,清锚由Egress自己做。【识别不可改成DirectHit】它同时兼任'确实已进箱庭'的门禁,必中会让上游调用点的自引用重试永远轮不到。",
+        "desc": "[入口]调用快捷技能模块,传入状态参数。当前只传出口锚QuickSkill_Egress→Collect_Skill_Egress,清锚由Egress自己做。【识别不可改成DirectHit】它同时兼任'确实已进箱庭'的门禁,必中会让上游调用点的自引用重试永远轮不到。",
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Pin_Tpl",
@@ -760,7 +760,7 @@
         ],
         "pre_delay": 0,
         "anchor": {
-            "OnFoot_Skill": "Collect_Skill_Egress"
+            "QuickSkill_Egress": "Collect_Skill_Egress"
         },
         "post_delay": 0,
         "next": ["Collect_Skill_Start"]
@@ -786,7 +786,7 @@
         ],
         "count": 200,
         "anchor": {
-            "OnFoot_Skill": ""
+            "QuickSkill_Egress": ""
         },
         "timeout": 5000,
         "next": [

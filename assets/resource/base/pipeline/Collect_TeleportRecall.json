@@ -637,7 +637,7 @@
         ]
     },
     "Collect_IM_Skill_1_Patch": {
-        "anchor": {"OnFoot_Skill": "Collect_IM_GoinNviMap"},
+        "anchor": {"QuickSkill_Egress": "Collect_IM_GoinNviMap"},
         "next": [
             "Collect_Skill_Start",
             "[JumpBack]Global_ToSandBox"
@@ -645,7 +645,7 @@
         "focus": "第一次技能调用,结束后出口锚定到小地图"
     },
     "Collect_IM_Skill_End_Patch": {
-        "anchor": {"OnFoot_Skill": "Collect_IM_Closure"},
+        "anchor": {"QuickSkill_Egress": "Collect_IM_Closure"},
         "next": [
             "Collect_Skill_Start",
             "[JumpBack]Global_ToSandBox"
@@ -661,7 +661,7 @@
             "Rec_SandBox_Run_Tpl"
         ],
         "anchor": {
-            "OnFoot_Skill": ""
+            "QuickSkill_Egress": ""
         },
         "next": ["Collect_IM_Reset"],
         "focus": "[特殊地图]-步行吸取模块完成"
@@ -695,7 +695,7 @@
             34,
             38
         ],
-        "anchor": {"OnFoot_Skill": ""},
+        "anchor": {"QuickSkill_Egress": ""},
         "next": [
             "Collect_IM_GoinNviMap_Enter",
             "Collect_IM_GoinNviMap"
@@ -1126,7 +1126,7 @@
             4
         ],
         "anchor": {
-            "OnFoot_Skill": "Collect_IM_Closure",
+            "QuickSkill_Egress": "Collect_IM_Closure",
             "ExplorationBoard_Arrived": "Collect_TeleporCircle_OnFoot_GoinNviMap"
         },
         "timeout": 5000,
@@ -1703,7 +1703,7 @@
             "reset_tags": ["IM_Skill_OnlyOnec"]
         },
         "anchor": {
-            "OnFoot_Skill": ""
+            "QuickSkill_Egress": ""
         },
         "next": ["Collect_ReturnToExplorationBoard"],
         "focus": "利用公告板返回主城"
