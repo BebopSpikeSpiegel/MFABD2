@@ -7,7 +7,7 @@
             6
         ]
     },
-    "Collect_Skill1": {
+    "Collect_Skill3_1": {
         "recognition": "Or",
         "any_of": [
             "Rec_<Setup_SkillScan_Skill1>_Tpl"
@@ -19,7 +19,7 @@
             11
         ]
     },
-    "Collect_Skill1_Used": {
+    "Collect_Skill3_1_Used": {
         "roi": [
             1017,
             629,
@@ -28,7 +28,7 @@
         ]
     },
     "Collect_Skill3_1_Nothing": {
-        "desc": "[PC覆盖·2026-08-28] 原 roi 是 [1002,651,10,10],那是 base Collect_Skill1 的 target 不是 roi——10x10 装不下 28x29 的 Skill-Nothing_PC.png,本判定从来没命中过。改为与 3-1 栏位本体对齐(取 Collect_Skill1_Used 的框)。",
+        "desc": "[PC覆盖·2026-08-28] 原 roi 是 [1002,651,10,10],那是 base Collect_Skill3_1 的 target 不是 roi——10x10 装不下 28x29 的 Skill-Nothing_PC.png,本判定从来没命中过。改为与 3-1 栏位本体对齐(取 Collect_Skill3_1_Used 的框)。",
         "roi": [
             1017,
             629,
