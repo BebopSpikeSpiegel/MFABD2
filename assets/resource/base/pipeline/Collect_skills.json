@@ -116,7 +116,7 @@
         "focus": "CSB.'探查'技能施放-通过"
     },
     "Collect_Skill3_1_Nothing": {
-        "desc": "3-1'探查'栏位为空。roi 与本栏位本体 Collect_Skill3_1 对齐；后链等同 Collect_Skill3_1_Used，跳过本栏位继续吸取。",
+        "desc": "3-1'探查'栏位为空。roi 是本栏位本体 Collect_Skill3_1 的框往外放了一圈(80x85 罩住 66x67),PC 覆盖侧则与本体同框；后链等同 Collect_Skill3_1_Used，跳过本栏位继续吸取。",
         "recognition": "TemplateMatch",
         "roi": [
             963,

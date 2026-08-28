@@ -242,7 +242,7 @@
         ],
         "post_delay": 5000,
         "next": [
-            "[Anchor]Arbitrage5",
+            "[Anchor]SandBox_Bypass",
             "Collect_Skill_Entry",
             "Collect_ClickTeleporOccupy",
             "[JumpBack]Global_WaitingForLoading"
@@ -730,7 +730,7 @@
         "action": "Click",
         "post_delay": 5000,
         "next": [
-            "[Anchor]Arbitrage5",
+            "[Anchor]SandBox_Bypass",
             "Collect_Skill_Entry",
             "Collect_ClickTelepor_TargetClass_PurpleProcess",
             "[JumpBack]Global_WaitingForLoading"
@@ -744,7 +744,7 @@
         "action": "Click",
         "post_delay": 5000,
         "next": [
-            "[Anchor]Arbitrage5",
+            "[Anchor]SandBox_Bypass",
             "Collect_Skill_Entry",
             "Collect_ClickTelepor_TargetClass_White",
             "[JumpBack]Global_WaitingForLoading"
@@ -842,6 +842,7 @@
         ],
         "post_delay": 5000,
         "next": [
+            "[Anchor]SandBox_Bypass",
             "Collect_Skill_Entry",
             "Collect_ClickTelepor_TargetClass_White",
             "[JumpBack]Global_WaitingForLoading",
@@ -872,6 +873,7 @@
         ],
         "post_wait_freezes": 1500,
         "next": [
+            "[Anchor]SandBox_Bypass",
             "Collect_Skill_Entry",
             "Collect_ClickBackOnSecureMap"
         ],
@@ -1162,7 +1164,7 @@
                 "I"
             ]
         ],
-        "anchor": {"Arbitrage5": "Collect_Special_M14_NviMap_Open"},
+        "anchor": {"SandBox_Bypass": "Collect_Special_M14_NviMap_Open"},
         "post_delay": 200,
         "timeout": 3000,
         "next": [
@@ -1195,7 +1197,7 @@
             34,
             38
         ],
-        "anchor": {"Arbitrage5": ""},
+        "anchor": {"SandBox_Bypass": ""},
         "post_delay": 2500,
         "timeout": 5000,
         "next": ["Collect_Special_M14_NviMap_Enter"],
