@@ -33,7 +33,7 @@
             "Rec_SandBox_Run_Tpl"
         ],
         "anchor": {
-            "OnFoot_Skill": "Collect_Story14_OpenNviMap_Left"
+            "QuickSkill_Egress": "Collect_Story14_OpenNviMap_Left"
         },
         "next": ["Collect_Skill_Start"],
         "focus": "C14.采集探索告示板所在区域"
@@ -99,7 +99,7 @@
             "Rec_SandBox_Run_Tpl"
         ],
         "anchor": {
-            "OnFoot_Skill": "Collect_Story14_ReturnBoard_AfterLeft"
+            "QuickSkill_Egress": "Collect_Story14_ReturnBoard_AfterLeft"
         },
         "next": ["Collect_Skill_Start"],
         "focus": "C14.采集剑之神殿左侧回廊"
@@ -178,7 +178,7 @@
             "Rec_SandBox_Run_Tpl"
         ],
         "anchor": {
-            "OnFoot_Skill": "Collect_IM_Closure"
+            "QuickSkill_Egress": "Collect_IM_Closure"
         },
         "next": ["Collect_Skill_Start"],
         "focus": "C14.采集剑之神殿中央回廊"
