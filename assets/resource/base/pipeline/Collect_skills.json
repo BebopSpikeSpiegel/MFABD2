@@ -39,12 +39,12 @@
             "[JumpBack]Setup_Entry5",
             "Collect_Skill3_2_Depleted",
             "Collect_Skill3_1_Nothing",
-            "Collect_Skill1_Used",
-            "Collect_Skill1"
+            "Collect_Skill3_1_Used",
+            "Collect_Skill3_1"
         ],
         "focus": "CSB.技能页3-正确"
     },
-    "Collect_Skill1": {
+    "Collect_Skill3_1": {
         "desc": "技能1设定为探查。识别位，技能环左1",
         "recognition": "TemplateMatch",
         "roi": [
@@ -65,12 +65,12 @@
         ],
         "post_delay": 2000,
         "next": [
-            "Collect_Skill1_Used",
-            "Collect_Skill1"
+            "Collect_Skill3_1_Used",
+            "Collect_Skill3_1"
         ],
         "focus": "CSB.'探查'技能施放(无判定),栏位3-1"
     },
-    "Collect_Skill1_Used": {
+    "Collect_Skill3_1_Used": {
         "recognition": "OCR",
         "roi": [
             970,
@@ -116,7 +116,7 @@
         "focus": "CSB.'探查'技能施放-通过"
     },
     "Collect_Skill3_1_Nothing": {
-        "desc": "3-1'探查'栏位为空。roi 与本栏位本体 Collect_Skill1 对齐；后链等同 Collect_Skill1_Used，跳过本栏位继续吸取。",
+        "desc": "3-1'探查'栏位为空。roi 与本栏位本体 Collect_Skill3_1 对齐；后链等同 Collect_Skill3_1_Used，跳过本栏位继续吸取。",
         "recognition": "TemplateMatch",
         "roi": [
             963,
