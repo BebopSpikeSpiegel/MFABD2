@@ -381,10 +381,10 @@
         "focus": "CM.N.[WRN]PC:首选传送阵为灰色未激活阵,结束本卡带"
     },
     "Collect_ClickTelepor_TargetClass_White": {
-        "desc": "[PC覆盖·2026-08-23] 仅改 next:在自环候选(本节点)之前插入灰阵门卫,Skill_Start(已传送)仍优先。base 该节点无 max_hit,点灰阵无效时自环无界(08-23 02:46~07:00 实录 2778 圈)。",
+        "desc": "[PC覆盖·2026-08-23] 仅改 next:在自环候选(本节点)之前插入灰阵门卫,技能调用(已传送)仍优先。base 该节点无 max_hit,点灰阵无效时自环无界(08-23 02:46~07:00 实录 2778 圈)。⚠️本覆盖是 base next 的整份快照(规则f),base 改这条链必须同步这里——08-28 技能模块入口化时第2项已由 Collect_Skill_Start 改为 Collect_Skill_Entry。",
         "next": [
             "[Anchor]Arbitrage5",
-            "Collect_Skill_Start",
+            "Collect_Skill_Entry",
             "Collect_ClickTelepor_TargetClass_Inactive_PC",
             "Collect_ClickTelepor_TargetClass_White",
             "[JumpBack]Global_WaitingForLoading"
@@ -438,6 +438,15 @@
             298,
             847,
             84
+        ]
+    },
+    "Collect_Skill_Egress": {
+        "desc": "[PC覆盖]随base改名自Collect_Skill_End,原覆盖在pc/Collect_skills.json,跟着本体迁到本文件。只改roi。",
+        "roi": [
+            1204,
+            661,
+            25,
+            28
         ]
     },
     "Collect_MapRight": {

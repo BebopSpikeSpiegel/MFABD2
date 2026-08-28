@@ -396,54 +396,19 @@
         "focus": "CSB.[WRM]'吸取'技能施放错误"
     },
     "Collect_Skill_TapReset": {
-        "desc": "第一页技能点击现在已不需要，保留结构备用。【出口锚'OnFoot_Skill'由步行吸取模块声明并自行清锚;未设锚时走Collect_Skill_End】",
+        "desc": "技能模块唯一出口,纯锚点出口。第一页技能点击现在已不需要，保留结构备用。【出口锚'OnFoot_Skill'一律由调用方声明、由其出口节点自行清锚:卡带主线=Collect_Skill_Entry→Collect_Skill_Egress,步行吸取=Collect_IM_Skill_*_Patch。未声明=没人接,超时落on_error复位退栈——这是有意的,不要往next里补写死的出口】",
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Pin_Tpl"
         ],
         "timeout": 10000,
         "next": [
-            "[Anchor]OnFoot_Skill",
-            "Collect_Skill_End",
-            "Collect_Skill_TapReset"
+            "[Anchor]OnFoot_Skill"
         ],
         "on_error": [
             "[JumpBack]Global_QuickCart_MenuReset",
             "Global_Null"
         ]
-    },
-    "Collect_Skill_End": {
-        "desc": "技能页1，结束复位色核识别",
-        "recognition": "ColorMatch",
-        "roi": [
-            1173,
-            633,
-            59,
-            60
-        ],
-        "lower": [
-            192,
-            141,
-            23
-        ],
-        "upper": [
-            223,
-            194,
-            129
-        ],
-        "count": 200,
-        "timeout": 5000,
-        "next": [
-            "Collect_OperationsMain_OperationsEnd",
-            "[JumpBack]Collect_FindTeleporCircle0.9",
-            "[JumpBack]Collect_FindTeleporCircle"
-        ],
-        "on_error": [
-            "Collect_ForceTeleporCircle",
-            "Global_Null_Exception",
-            "Global_Null_Panic"
-        ],
-        "focus": "CSB.技能组复位-色核通过"
     },
     "Collect_Skill_KillFocus": {
         "action": "StopTask",

@@ -243,7 +243,7 @@
         "post_delay": 5000,
         "next": [
             "[Anchor]Arbitrage5",
-            "Collect_Skill_Start",
+            "Collect_Skill_Entry",
             "Collect_ClickTeleporOccupy",
             "[JumpBack]Global_WaitingForLoading"
         ],
@@ -731,7 +731,7 @@
         "post_delay": 5000,
         "next": [
             "[Anchor]Arbitrage5",
-            "Collect_Skill_Start",
+            "Collect_Skill_Entry",
             "Collect_ClickTelepor_TargetClass_PurpleProcess",
             "[JumpBack]Global_WaitingForLoading"
         ],
@@ -745,11 +745,61 @@
         "post_delay": 5000,
         "next": [
             "[Anchor]Arbitrage5",
-            "Collect_Skill_Start",
+            "Collect_Skill_Entry",
             "Collect_ClickTelepor_TargetClass_White",
             "[JumpBack]Global_WaitingForLoading"
         ],
         "focus": "CM.N.区域地图.tp1.选择首选传送阵图标"
+    },
+    "Collect_Skill_Entry": {
+        "desc": "[入口]调用快捷技能模块,传入状态参数。当前只传出口锚OnFoot_Skill→Collect_Skill_Egress,清锚由Egress自己做。【识别不可改成DirectHit】它同时兼任'确实已进箱庭'的门禁,必中会让上游调用点的自引用重试永远轮不到。",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "pre_delay": 0,
+        "anchor": {
+            "OnFoot_Skill": "Collect_Skill_Egress"
+        },
+        "post_delay": 0,
+        "next": ["Collect_Skill_Start"]
+    },
+    "Collect_Skill_Egress": {
+        "desc": "[出口]技能模块返回卡带主线:确认技能页已复位(色核)→清出口锚→继续切图。原名Collect_Skill_End,自Collect_skills.json迁入——它做的是导航的事,不属于技能模块。",
+        "recognition": "ColorMatch",
+        "roi": [
+            1173,
+            633,
+            59,
+            60
+        ],
+        "lower": [
+            192,
+            141,
+            23
+        ],
+        "upper": [
+            223,
+            194,
+            129
+        ],
+        "count": 200,
+        "anchor": {
+            "OnFoot_Skill": ""
+        },
+        "timeout": 5000,
+        "next": [
+            "Collect_OperationsMain_OperationsEnd",
+            "[JumpBack]Collect_FindTeleporCircle0.9",
+            "[JumpBack]Collect_FindTeleporCircle"
+        ],
+        "on_error": [
+            "Collect_ForceTeleporCircle",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "CSB.技能组复位-色核通过"
     },
     "Collect_ClickTelepor_ButNotActive": {
         "desc": "如果传送阵没有激活,需要从这里决定中断",
@@ -792,7 +842,7 @@
         ],
         "post_delay": 5000,
         "next": [
-            "Collect_Skill_Start",
+            "Collect_Skill_Entry",
             "Collect_ClickTelepor_TargetClass_White",
             "[JumpBack]Global_WaitingForLoading",
             "Collect_ClickTelepor_Abnormal_Overlap"
@@ -822,7 +872,7 @@
         ],
         "post_wait_freezes": 1500,
         "next": [
-            "Collect_Skill_Start",
+            "Collect_Skill_Entry",
             "Collect_ClickBackOnSecureMap"
         ],
         "focus": "CM.N.区域地图.tp1.已正确"
