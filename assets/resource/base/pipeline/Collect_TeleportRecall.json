@@ -555,9 +555,23 @@
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Pin_Tpl",
-            "Rec_SandBox_Run_Tpl"
+            "Rec_SandBox_Run_Tpl",
+            {
+                "recognition": "Custom",
+                "custom_recognition": "CheckTag",
+                "custom_recognition_param": {
+                    "tag": "IM_Skill_End",
+                    "max": 1
+                }
+            }
         ],
-        "next": ["Collect_IM_OnFoot_NviMap_SkillEnd"]
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "IM_Skill_End",
+            "value": 1
+        },
+        "next": ["Collect_IM_Skill_End_Patch"]
     },
     "Collect_IM_OnFoot_Skill_OnlyOnec": {
         "desc": "计数器清零外置版本,用于阶梯call",
