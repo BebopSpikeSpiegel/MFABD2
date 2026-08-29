@@ -1140,21 +1140,41 @@
             4
         ],
         "anchor": {
-            "QuickSkill_Egress": "Collect_IM_Closure",
+            "QuickSkill_Egress": "Collect_IM_OnFoot_NviMap_M14_Egress",
             "ExplorationBoard_Arrived": "Collect_TeleporCircle_OnFoot_GoinNviMap"
         },
         "timeout": 5000,
         "next": [
             "[JumpBack]Collect_IM_OnFoot_Moveing",
-            "[JumpBack]Collect_IM_OnFoot_Skill_OnlyOnec",
+            "Collect_IM_OnFoot_Skill_OnlyOnec",
             "[JumpBack]Collect_IM_Move_MGS",
             "[JumpBack]Global_WaitingForLoading",
-            "Collect_OnFoot_Board"
+            "Collect_IM_OnFoot_NviMap_M14_Egress"
         ],
         "on_error": [
             "Collect_IM_OnFoot_NviMap_Sub_Err",
             "Global_Null"
         ]
+    },
+    "Collect_IM_OnFoot_NviMap_M14_Egress": {
+        "desc": "[出口]旁路M14结束",
+        "recognition": "Or",
+        "any_of": [
+            "Global_QuickCart_MenuReset_Ocr",
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "action": "Custom",
+        "custom_action": "PatchPipeline",
+        "custom_action_param": {
+            "reset_tags": ["IM_Skill_OnlyOnec"]
+        },
+        "anchor": {
+            "QuickSkill_Egress": ""
+        },
+        "timeout": 10000,
+        "next": ["Collect_OnFoot_Board"],
+        "on_error": ["[JumpBack]Global_ToSandBox"]
     },
     "Collect_IM_OnFoot_NviMap_E05_A2": {
         "recognition": "And",
