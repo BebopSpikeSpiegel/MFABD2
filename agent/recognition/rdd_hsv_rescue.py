@@ -22,6 +22,16 @@ import numpy as np
 
 DEFAULT_RESCUE_CONFIG: Dict[str, Any] = {
     "mode": "off",
+    # 入口开关：一个前缀 entry_*，字母序下三个挨在一起且排在 max_* 之前。
+    # 取值 off/shadow/active/inherit；inherit = 跟随全局 mode。
+    # 缺省值即目标状态 —— 没写这三个键的 pipeline(如另一分支的 pc 包 preset)
+    # 直接得到安全配置，不必逐包同步才生效：
+    #   · aspect     inherit：v3 原有入口，行为与加入口之前逐位一致
+    #   · confidence inherit：全语料 16 次触发 0 误救后放行(见契约 §12)
+    #   · rej        shadow ：只有 1 条疑似样本，证据不足，只记录不改判
+    "entry_aspect": "inherit",
+    "entry_confidence": "inherit",
+    "entry_confidence_rej": "shadow",
     "max_delta_s": 110,     # 护栏，非工作点
     "max_delta_v": 110,     # 护栏，非工作点
     "max_full_runs": 12,
@@ -31,6 +41,23 @@ DEFAULT_RESCUE_CONFIG: Dict[str, Any] = {
 }
 
 _MODES = {"off", "shadow", "active"}
+_ENTRY_MODES = _MODES | {"inherit"}
+
+# 入口表：baseline 卡在哪一步 → 依次试哪些入口。
+# 每项 = (配置键, 父块来源)。来源即 _detect_once 给 eligible_parents 打的"来源"标签。
+#
+#   A entry_aspect         长宽比闸拒绝的块（v3 原有的唯一入口）
+#   B entry_confidence     过闸、打过分、但分不够的块
+#   C entry_confidence_rej 打分不足帧里，同帧被长宽比拒的块（B 无解后的兜底）
+#
+# A 与 B/C 互斥不是约定而是结构事实：_diagnose 里 aspect_pass==0 才返回 "aspect"，
+# 而没有块过闸就没有块被打分(scored=0) ⇒ stage=="aspect" 时来源 confidence 的父块必为空。
+# 故新增 B/C 对既有 aspect 触发帧的父块集合、排序与预算**逐位无影响**。
+ENTRY_PLANS: Dict[str, Tuple[Tuple[str, str], ...]] = {
+    "aspect": (("entry_aspect", "aspect"),),
+    "confidence": (("entry_confidence", "confidence"),
+                   ("entry_confidence_rej", "aspect")),
+}
 
 # 已废弃的配置键：出现时忽略而非报错，避免旧 pipeline 直接 fail closed。
 _OBSOLETE_KEYS = ("max_states",)
@@ -66,6 +93,11 @@ def normalize_rescue_config(raw: Any) -> Tuple[Dict[str, Any], Optional[str]]:
         if cfg["mode"] not in _MODES:
             raise ValueError("mode 仅支持 off/shadow/active")
 
+        for key in ("entry_aspect", "entry_confidence", "entry_confidence_rej"):
+            cfg[key] = str(cfg[key]).strip().lower()
+            if cfg[key] not in _ENTRY_MODES:
+                raise ValueError(f"{key} 仅支持 off/shadow/active/inherit")
+
         for key in ("max_delta_s", "max_delta_v", "max_full_runs",
                     "min_stable_states", "max_parents", "time_budget_ms"):
             cfg[key] = int(cfg[key])
@@ -92,6 +124,29 @@ def normalize_rescue_config(raw: Any) -> Tuple[Dict[str, Any], Optional[str]]:
         disabled = dict(DEFAULT_RESCUE_CONFIG)
         return disabled, str(exc)
     return cfg, None
+
+
+def resolve_entry_plan(
+    cfg: Dict[str, Any], stage: str,
+) -> List[Tuple[str, str, str]]:
+    """baseline 卡在 stage → 本次要依次试的入口 [(配置键, 父块来源, 生效mode)]。
+
+    已过滤掉 off 的入口；返回空表即本帧不搜索。顺序即执行顺序，**不得乱序或并发**：
+    「顺序敏感」是四件套里要 fail closed 的项目之一。
+    """
+    # mode 是硬总开关：off 时任何入口都不跑，哪怕它自己写着 active。
+    # 否则"把救援整个关掉"这件事就没有单一开关可用了（契约 §6：off = 零搜索）。
+    if cfg.get("mode", "off") == "off":
+        return []
+
+    plan: List[Tuple[str, str, str]] = []
+    for key, source in ENTRY_PLANS.get(stage, ()):
+        mode = cfg.get(key, "inherit")
+        if mode == "inherit":
+            mode = cfg.get("mode", "off")
+        if mode in ("shadow", "active"):
+            plan.append((key, source, mode))
+    return plan
 
 
 def strict_profile(
@@ -257,18 +312,39 @@ def sort_parents(parents: Sequence[dict]) -> List[dict]:
     return sorted(parents, key=key)
 
 
-def boxes_agree(boxes: Sequence[Sequence[int]], min_iou: float = 0.5,
-                max_center_shift: float = 2.5) -> bool:
-    """多个切法命中的框是否指向同一处。分散即视为方向歧义，一律拒绝。"""
+def boxes_agree(boxes: Sequence[Sequence[int]], min_iou: float = 0.5) -> bool:
+    """多个**切法**命中的框是否指向同一处。分散即视为方向歧义，一律拒绝。
+
+    只用 IoU，**不用中心位移**：IoU ≥ 0.5 意味着一半以上面积重合，两个指向不同红块的
+    框不可能满足（不重叠时 IoU = 0），所以 IoU 独立就完整表达了"是否同一处"。
+
+    为什么曾经有第二道中心位移闸、又为什么要去掉：那对常数（`min_iou=0.5` /
+    `max_center_shift=2.5`）原本是 `select_stable_winner` 的，用于判**相邻档位**是否
+    命中同一处 —— 相邻档 ΔS 只差几个单位，切净程度几乎一样，框应当高度一致，
+    2.5 像素是合理的严格判据。本函数判的是**不同切法**，而亮度与饱和是两个完全不同的
+    收紧方向，切净程度天然可以差很多，同一把尺子就把"同一目标、切得不一样干净"
+    误判成了"指向不同位置"。
+
+    实测 `GachaADV_Location1[315,130,47,42]`（2026-08-29 真机）：
+        亮度 Δ[0,55]  → [19,7,24,17]   ← 左边多包 6px 木纹，没切干净
+        饱和 Δ[29,0]  → [25,6,18,18]
+        双切 Δ[29,55] → [25,7,18,17]
+    饱和与双切 IoU 0.944、中心差 0.5（几乎逐位一致）；亮度对另两者 IoU 0.718/0.750
+    全部过闸，却因中心位移 3.0 > 2.5 被判方向歧义，救援 fail closed。
+
+    `select_stable_winner` 那处**维持绝对 2.5 不动** —— 那里的场景没有这个错配。
+
+    **两两比较，不是"都跟第一个比"**：IoU ≥ 0.5 不满足传递性。反例
+    `A=(0,0,100,100) B=(0,0,50,100) C=(50,0,50,100)`：B、C 各占 A 的一半，
+    IoU(A,B)=IoU(A,C)=0.5 都过闸，而 B∩C=∅ —— 只跟 first 比就会把两个不相干的
+    目标判成"同一处"。这个反例要求 B、C 恰好把 A 二等分且都是 A 的子集，外接框
+    实际取不到；但闸门的语义应当就是它字面上的意思，n=3 的两两比较也没有代价。
+    """
     if len(boxes) <= 1:
         return True
-    first = boxes[0]
-    for other in boxes[1:]:
-        if _box_iou(first, other) < min_iou:
-            return False
-        if _center_distance(first, other) > max_center_shift:
-            return False
-    return True
+    return all(_box_iou(left, right) >= min_iou
+               for i, left in enumerate(boxes)
+               for right in boxes[i + 1:])
 
 
 def lineage_parent(
@@ -284,6 +360,33 @@ def lineage_parent(
         return None
     parent = next(iter(labels))
     return parent if parent in eligible else None
+
+
+def cut_happened(candidate_box: Sequence[int], parent_geo: Dict[str, Any]) -> bool:
+    """候选是否真的从父块里"切"出来了 —— 外接框与父块逐位相同即判定没切开。
+
+    救援的定义是「删低质红像素 → 切断连片 → 重跑原链」。若候选外接框与父块完全
+    相同，说明一次连片都没切断，分数的变化只能来自白芯像素的增减 —— 那等价于
+    契约 §4.5 明令禁止的「给救援候选补分」，只是绕道由 HSV 收紧实现。
+
+    这道闸与四件套(严格子集/血统同源/跨档稳定/唯一性)防的不是同一类事：四件套防
+    「偶然撞出一个答案」，而整片红背景是**稳定地**撞出错答案 —— 越收紧越稳定，四件套
+    全部放行。实测 Daily_EnterUnion[250,72,30,32]：fill 0.79 的整片红背景，收紧后
+    760→723 像素、外接框一动没动，conf 却从 0.37 跳到 0.674。
+
+    判据是纯几何恒等比较，不含任何来自样本的常数（契约 §9）。已知软肋：外接框只缩
+    1 像素也算"切开了"。要收紧只能引入比例阈值，那就是样本常数，故维持现状，
+    靠语料继续暴露形态。
+
+    ⚠️ **两个入参必须同坐标系，调用方负责换算。** 现行约定是 ROI 局部坐标：
+    `_detect_once` 产出的 geometry 只存局部坐标（`rx`/`ry` 仅进 `result_box`，不进
+    geometry），`_rescue_try` 把内层候选加回 `x0`/`y0` 换成同一系再送进来。真要把
+    偏移塞进 geometry，这里会静默恒不相等 —— 整片红背景那类误救就再也拦不住了。
+    """
+    box = tuple(int(v) for v in candidate_box)
+    parent = (int(parent_geo["x"]), int(parent_geo["y"]),
+              int(parent_geo["w"]), int(parent_geo["h"]))
+    return box != parent
 
 
 def _box_iou(a: Sequence[int], b: Sequence[int]) -> float:
