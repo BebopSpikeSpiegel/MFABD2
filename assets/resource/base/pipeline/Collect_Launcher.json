@@ -199,6 +199,7 @@
         ]
     },
     "Collect_FeatureSwitch_ManagerPack": {
+        "desc": "店长游戏卡类的启用开关,当前整类关闭。⚠️要启用先把 Pack_Manager_SimpleDone 加进 Collect_AllLibGone 的 targets——那个总闸现在只数故事/角色/活动三类,三类做完就会退栈收尾,本类会被整类漏掉。",
         "enabled": false,
         "max_hit": 1,
         "anchor": {
