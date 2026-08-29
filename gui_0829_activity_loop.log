@@ -1,0 +1,115 @@
+11:35:12.589GO.复位到主菜单-已确认
+11:35:14.064[RedDotDetector] hit | box=(25, 9, 10, 10) conf=0.657 {'gap': 0.25, 'vert': 1.0, 'white': 0.34, 'cent': 1.0}
+11:35:14.180[RedDotDetector] [preset:Agt_RedDot_Preset] hit -> (1080, 19, 10, 10)
+11:35:14.724[RedDotDetector] hit | box=(25, 9, 10, 10) conf=0.657 {'gap': 0.25, 'vert': 1.0, 'white': 0.34, 'cent': 1.0}
+11:35:14.840[RedDotDetector] [preset:Agt_RedDot_Preset] hit -> (1080, 19, 10, 10)
+11:35:15.102GM.新邮件红点确认
+11:35:17.277GM.邮箱页面已确认
+11:35:17.963GM.一般邮件领取
+11:35:20.388GM.邮件已收取
+11:35:21.601⚠️ >>> [RedDotDetector] miss@red_mask | HSV 没框到红色
+11:35:21.665⚠️ >>> [RedDotDetector] miss@preset | Mail_TabBus via Agt_RedDot_Preset
+11:35:21.916GM.通常结束
+11:35:22.503GO.复位到主菜单-开始
+11:35:23.367G=1.页面非预期，点击返回按钮
+11:35:26.883GO.复位到主菜单-已确认
+11:35:27.150⚠️ >>> [RedDotDetector] miss@red_mask | HSV 没框到红色
+11:35:27.247⚠️ >>> [RedDotDetector] miss@preset | Mail_NewRed via Agt_RedDot_Preset
+11:35:29.127⚠️ >>> [RedDotDetector] miss@interior | 红块内无封闭白芯
+11:35:29.265⚠️ >>> [RedDotDetector] miss@preset | Activities_Call_Mail_Start via Agt_RedDot_Preset
+11:35:29.322[RedDotDetector] hit | box=(11, 11, 11, 10) conf=0.673 {'gap': 0.0, 'vert': 1.0, 'white': 0.41, 'cent': 1.0}
+11:35:29.454[RedDotDetector] [preset:Agt_RedDot_Preset] hit -> (604, 636, 11, 10)
+11:35:29.725AA.有可关注活动
+11:35:35.168AA.进入活动页
+11:35:35.417[RedDotDetector] hit | box=(335, 398, 12, 12) conf=0.671 {'gap': 0.29, 'vert': 1.0, 'white': 0.36, 'cent': 1.0}
+11:35:35.744GA.搜寻活动
+11:35:39.749GA.发现活动-常规
+11:35:44.775AA.进入活动页
+11:35:45.123⚠️ >>> [RedDotDetector] miss@confidence | 打分不足
+11:35:45.601GA.滑动寻找活动
+11:35:50.063[SmartAction:Activities_Slip] ✅ 第1轮 画面已改变（diff=71.77 ≥ 2.0）→ next
+11:35:50.311[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:35:50.638GA.搜寻活动
+11:35:54.709GA.发现活动-常规
+11:35:57.277AA.进入活动页
+11:35:57.544[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:35:57.874GA.搜寻活动
+11:36:01.878GA.发现活动-常规
+11:36:04.453AA.进入活动页
+11:36:04.709[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:36:05.035GA.搜寻活动
+11:36:09.232GA.发现活动-常规
+11:36:11.806AA.进入活动页
+11:36:12.058[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:36:12.390GA.搜寻活动
+11:36:16.454GA.发现活动-常规
+11:36:19.055AA.进入活动页
+11:36:19.300[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:36:19.629GA.搜寻活动
+11:36:23.775GA.发现活动-常规
+11:36:26.393AA.进入活动页
+11:36:26.642[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:36:26.971GA.搜寻活动
+11:36:31.086GA.发现活动-常规
+11:36:33.681AA.进入活动页
+11:36:33.931[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:36:34.261GA.搜寻活动
+11:36:38.357GA.发现活动-常规
+11:36:40.982AA.进入活动页
+11:36:41.229[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:36:41.569GA.搜寻活动
+11:36:45.725GA.发现活动-常规
+11:36:48.331AA.进入活动页
+11:36:48.577[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:36:48.910GA.搜寻活动
+11:36:53.069GA.发现活动-常规
+11:36:55.664AA.进入活动页
+11:36:55.913[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:36:56.252GA.搜寻活动
+11:37:00.483GA.发现活动-常规
+11:37:03.118AA.进入活动页
+11:37:03.365[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:37:03.693GA.搜寻活动
+11:37:07.875GA.发现活动-常规
+11:37:10.482AA.进入活动页
+11:37:10.736[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:37:11.071GA.搜寻活动
+11:37:15.325GA.发现活动-常规
+11:37:17.916AA.进入活动页
+11:37:18.167[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:37:18.498GA.搜寻活动
+11:37:22.732GA.发现活动-常规
+11:37:25.357AA.进入活动页
+11:37:25.606[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:37:25.942GA.搜寻活动
+11:37:30.093GA.发现活动-常规
+11:37:32.687AA.进入活动页
+11:37:32.937[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:37:33.282GA.搜寻活动
+11:37:37.772GA.发现活动-常规
+11:37:40.404AA.进入活动页
+11:37:40.655[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:37:40.991GA.搜寻活动
+11:37:45.070GA.发现活动-常规
+11:37:47.648AA.进入活动页
+11:37:47.899[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:37:48.230GA.搜寻活动
+11:37:52.372GA.发现活动-常规
+11:37:54.947AA.进入活动页
+11:37:55.197[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:37:55.517GA.搜寻活动
+11:37:59.574GA.发现活动-常规
+11:38:02.107AA.进入活动页
+11:38:02.357[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:38:02.667GA.搜寻活动
+11:38:06.637GA.发现活动-常规
+11:38:09.187AA.进入活动页
+11:38:09.431[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:38:09.748GA.搜寻活动
+11:38:13.691GA.发现活动-常规
+11:38:16.227AA.进入活动页
+11:38:16.478[RedDotDetector] hit | box=(335, 241, 9, 13) conf=0.503 {'gap': 0.0, 'vert': 1.0, 'white': 0.04, 'cent': 0.89}
+11:38:16.792GA.搜寻活动
+11:38:20.817GA.发现活动-常规
+11:38:57.326GO.复位到主菜单-开始
+11:38:58.233G=1.页面非预期，点击返回按钮
