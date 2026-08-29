@@ -446,6 +446,50 @@
             }
         ]
     },
+    "Collect_OnFoot_Skill3_5_Again": {
+        "all_of": [
+            {
+                "sub_name": "TemplateMatch",
+                "recognition": "TemplateMatch",
+                "roi": [
+                    1160,
+                    492,
+                    74,
+                    70
+                ],
+                "template": [
+                    "Skill3-5 GE.png"
+                ],
+                "green_mask": true
+            },
+            {
+                "sub_name": "ColorMatch",
+                "recognition": "ColorMatch",
+                "roi": [
+                    1195,
+                    524,
+                    8,
+                    10
+                ],
+                "method": 40,
+                "lower": [
+                    [
+                        0,
+                        0,
+                        240
+                    ]
+                ],
+                "upper": [
+                    [
+                        30,
+                        3,
+                        255
+                    ]
+                ],
+                "count": 30
+            }
+        ]
+    },
     "Collect_OnFoot_Skill3_1_Again": {
         "all_of": [
             {
