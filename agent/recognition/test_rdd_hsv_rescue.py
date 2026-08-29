@@ -290,6 +290,17 @@ class CutpointAndCandidateTest(unittest.TestCase):
         # 真歧义仍拒：两个不重叠的红块 IoU = 0
         self.assertFalse(boxes_agree([bright, (60, 60, 18, 18)]))
 
+    def test_boxes_agree_checks_every_pair(self):
+        """IoU ≥ 0.5 不传递：只跟第一个比会漏判。
+
+        B、C 各占 A 的一半且都是 A 的子集，IoU(A,B)=IoU(A,C)=0.5 双双过闸，
+        而 B∩C=∅ —— 它们指向的是两个不相干的位置。
+        """
+        whole = (0, 0, 100, 100)
+        left = (0, 0, 50, 100)
+        right = (50, 0, 50, 100)
+        self.assertFalse(boxes_agree([whole, left, right]))
+
 
 class LineageAndStabilityTest(unittest.TestCase):
     def test_lineage_requires_one_eligible_parent(self):

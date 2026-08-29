@@ -333,11 +333,18 @@ def boxes_agree(boxes: Sequence[Sequence[int]], min_iou: float = 0.5) -> bool:
     全部过闸，却因中心位移 3.0 > 2.5 被判方向歧义，救援 fail closed。
 
     `select_stable_winner` 那处**维持绝对 2.5 不动** —— 那里的场景没有这个错配。
+
+    **两两比较，不是"都跟第一个比"**：IoU ≥ 0.5 不满足传递性。反例
+    `A=(0,0,100,100) B=(0,0,50,100) C=(50,0,50,100)`：B、C 各占 A 的一半，
+    IoU(A,B)=IoU(A,C)=0.5 都过闸，而 B∩C=∅ —— 只跟 first 比就会把两个不相干的
+    目标判成"同一处"。这个反例要求 B、C 恰好把 A 二等分且都是 A 的子集，外接框
+    实际取不到；但闸门的语义应当就是它字面上的意思，n=3 的两两比较也没有代价。
     """
     if len(boxes) <= 1:
         return True
-    first = boxes[0]
-    return all(_box_iou(first, other) >= min_iou for other in boxes[1:])
+    return all(_box_iou(left, right) >= min_iou
+               for i, left in enumerate(boxes)
+               for right in boxes[i + 1:])
 
 
 def lineage_parent(
@@ -370,6 +377,11 @@ def cut_happened(candidate_box: Sequence[int], parent_geo: Dict[str, Any]) -> bo
     判据是纯几何恒等比较，不含任何来自样本的常数（契约 §9）。已知软肋：外接框只缩
     1 像素也算"切开了"。要收紧只能引入比例阈值，那就是样本常数，故维持现状，
     靠语料继续暴露形态。
+
+    ⚠️ **两个入参必须同坐标系，调用方负责换算。** 现行约定是 ROI 局部坐标：
+    `_detect_once` 产出的 geometry 只存局部坐标（`rx`/`ry` 仅进 `result_box`，不进
+    geometry），`_rescue_try` 把内层候选加回 `x0`/`y0` 换成同一系再送进来。真要把
+    偏移塞进 geometry，这里会静默恒不相等 —— 整片红背景那类误救就再也拦不住了。
     """
     box = tuple(int(v) for v in candidate_box)
     parent = (int(parent_geo["x"]), int(parent_geo["y"]),
