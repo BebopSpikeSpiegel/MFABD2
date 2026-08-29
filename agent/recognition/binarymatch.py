@@ -19,11 +19,13 @@ from .rdd_hsv_rescue import (
     DIRECTIONS,
     boxes_agree,
     channel_cutpoints,
+    cut_happened,
     direction_deltas,
     is_strict_mask,
     lineage_parent,
     neighbor_states,
     normalize_rescue_config,
+    resolve_entry_plan,
     select_stable_winner,
     sort_parents,
     strict_profile,
@@ -918,26 +920,30 @@ class RedDotDetector(CustomRecognition):
 
         stage, hint = self._diagnose(baseline["stat"], area_min, area_max, min_conf)
         rescue = None
-        if stage == "aspect" and rescue_cfg["mode"] != "off":
+        # 入口序列由 stage + entry_* 三态开关决定；空表 = 本帧不搜索(等价旧的 off)。
+        entries = resolve_entry_plan(rescue_cfg, stage)
+        if entries:
             try:
                 rescue = self._run_hsv_rescue(
                     hsv_np=hsv_np, baseline=baseline, hsv_ranges=hsv_ranges,
                     area_range=(area_min, area_max), aspect_range=(asp_lo, asp_hi),
                     gap_ratio=gap_ratio, min_conf=min_conf, rx=rx, ry=ry,
-                    config=rescue_cfg,
+                    config=rescue_cfg, entries=entries,
                 )
             except Exception:
                 rescue = {
                     "模式": rescue_cfg["mode"], "结论": _RESCUE_DECISION_CN["error"],
                     "说明": _RESCUE_HINT_CN["error"], "停因": "异常",
-                    "_decision": "error", "_winner": None,
+                    "_decision": "error", "_winner": None, "_entry_mode": None,
                     "错误": traceback.format_exc().strip().splitlines()[-1],
                 }
                 print(f"[RedDotDetector] HSV 救援异常，保持 baseline miss:\n"
                       f"{traceback.format_exc()}")
             self._log_rescue(node, rescue)
             winner = rescue.get("_winner")
-            if (winner is not None and rescue_cfg["mode"] == "active"
+            # 改判权归**胜出入口自己的 mode**，不是全局 mode —— 这样才能让
+            # entry_aspect 保持 active 的同时把新入口先挂 shadow 灰度。
+            if (winner is not None and rescue.get("_entry_mode") == "active"
                     and rescue.get("_decision") == "stable_hit"):
                 confirmed = self._rescue_confirm_full(
                     hsv_np=hsv_np, winner=winner,
@@ -1009,7 +1015,7 @@ class RedDotDetector(CustomRecognition):
                         "area": area, "aspect": aspect,
                         "fill": round(area / max(bw * bh, 1), 2)}
             if not (asp_lo <= aspect <= asp_hi):
-                eligible_parents.append(geometry)
+                eligible_parents.append({**geometry, "来源": "aspect"})
                 stat["aspect_rej_n"] = stat.get("aspect_rej_n", 0) + 1
                 rej = stat.setdefault("aspect_rej", [])
                 if len(rej) < _ASPECT_REJ_KEEP:
@@ -1043,7 +1049,12 @@ class RedDotDetector(CustomRecognition):
                 best_box_local = (bx0, by0, bw, bh)
 
             stat["scored"] += 1
-            if conf >= min_conf:
+            if conf < min_conf:
+                # 过了形状闸、有封闭白芯、但分不够。连片时封闭区取到的是整个连片块的
+                # 杂散空洞（竖长/偏白一起塌），与"就是杂红"外观相同，baseline 分不出来。
+                # 交给救援的 B 入口去证伪：切不开就维持 miss。见 ENTRY_PLANS。
+                eligible_parents.append({**geometry, "来源": "confidence"})
+            else:
                 candidate = {
                     "scan_index": i,
                     "label": i,
@@ -1133,32 +1144,48 @@ class RedDotDetector(CustomRecognition):
         if not is_strict_mask(out["red_mask"], sub_base_mask):
             return None, "子集", red_px
 
+        uncut = False
         for cand in out["candidates"]:
             if lineage_parent(cand["blob_mask"], sub_base_lab,
                               [geo["label"]]) != geo["label"]:
                 continue
             bx, by, bw, bh = cand["box_local"]
-            cand["box_local"] = (bx + x0, by + y0, bw, bh)   # 换回 ROI 坐标系
+            box_roi = (bx + x0, by + y0, bw, bh)             # 换回 ROI 坐标系
+            if not cut_happened(box_roi, geo):
+                # 外接框与父块逐位相同 = 一次连片都没切断，判据与理由见 cut_happened。
+                uncut = True
+                continue
+            cand["box_local"] = box_roi
             cand["profile"] = profile
             return cand, None, red_px
 
         # 没有血统合格的候选：借 baseline 同一套诊断词表说明卡在哪步，
         # 好让 aspect(切得不够狠) 与 interior/red_mask(切过头) 一眼可分。
+        if uncut:
+            return None, "未切开", red_px
         if out["candidates"]:
             return None, "血统", red_px
         stage, _ = self._diagnose(out["stat"], area_range[0], area_range[1], min_conf)
         return None, stage, red_px
 
     def _run_hsv_rescue(self, *, hsv_np, baseline, hsv_ranges, area_range,
-                        aspect_range, gap_ratio, min_conf, rx, ry, config):
+                        aspect_range, gap_ratio, min_conf, rx, ry, config,
+                        entries):
         """严格 HSV 救援：切点由父块自身分布算出，局部重跑，跨档复现验收。
 
-        流程（每个被长宽比闸拒的父块，按"像不像红点"排序后依次处理）：
+        流程（每个候选父块，按"像不像红点"排序后依次处理）：
           1. 取该父块像素，两个通道各做一次直方图 → Otsu 切点（微秒级）
           2. 三个切法(只切亮度/只切饱和/双切)各跑一次**主档**
           3. 命中位置一致 → 取增量最小的切法；位置分散 → 判方向歧义，拒绝
           4. 对选中切法补跑上下**陪跑档**，交 select_stable_winner 判跨档稳定
         任一环节失败即换下一个父块；预算耗尽维持 baseline miss。
+
+        `entries` 是 resolve_entry_plan 给出的入口序列 [(配置键, 父块来源, mode)]，
+        决定"父块从哪来"。处理与出口只有一份，入口多开也不复制。三条纪律：
+          · 顺序固定，按 entries 给的次序依次试，不并发、不乱序；
+          · 预算(max_parents/max_full_runs/time_budget_ms)**全局共享**，
+            不随入口数增长 —— 否则入口越多越容易撞出一个偶然能过的答案；
+          · 各入口父块来源互斥，同一父块不会被两个入口各试一遍。
         """
         started = time.perf_counter()
         budget_ms = config["time_budget_ms"]
@@ -1169,16 +1196,25 @@ class RedDotDetector(CustomRecognition):
         def elapsed():
             return round((time.perf_counter() - started) * 1000, 2)
 
-        parents = sort_parents(baseline["eligible_parents"])
+        # 入口内部各自排序；入口之间保持 entries 的次序。合并成一条序列后，
+        # 下面的循环与预算记账维持单路时的原样(全局累计)。
+        plan = []
+        for entry_key, source, entry_mode in entries:
+            group = [p for p in baseline["eligible_parents"]
+                     if p.get("来源", "aspect") == source]
+            for geo in sort_parents(group):
+                plan.append((entry_key, entry_mode, geo))
+
         parent_rows, attempts = [], []
         full_runs = 0
         tried_parents = 0
         winner = decision = support = None
         cutpoints = win_direction = win_main = None
+        win_entry = win_entry_mode = None
         stop_reason = "父块用尽"
 
-        for geo in parents:
-            row = {"序": len(parent_rows) + 1,
+        for entry_key, entry_mode, geo in plan:
+            row = {"序": len(parent_rows) + 1, "入口": entry_key,
                    "几何": f"{geo['w']}x{geo['h']}", "面积": geo["area"],
                    "长宽比": geo["aspect"], "填充": geo["fill"], "试了": False}
             parent_rows.append(row)
@@ -1274,6 +1310,7 @@ class RedDotDetector(CustomRecognition):
             if cand_decision == "stable_hit":
                 winner = cand_winner
                 win_main = (ds, dv)
+                win_entry, win_entry_mode = entry_key, entry_mode
                 stop_reason = "稳定命中"
             else:
                 row["跳过"] = cand_decision
@@ -1288,13 +1325,19 @@ class RedDotDetector(CustomRecognition):
             "耗时ms": elapsed(),
             "切点": cutpoints,
             "尝试": attempts,
-            "父块": {"总数": len(parents), "已试": tried_parents,
-                     "跳过": len(parents) - tried_parents, "明细": parent_rows},
+            # "生效" = 胜出入口自己的 mode。它才是"改不改判"的依据，与顶层"模式"
+            # (全局 mode)可以不同 —— 后者留作向后兼容，别拿它解释改判行为。
+            "入口": {"计划": [f"{k}({m})" for k, _, m in entries],
+                     "胜出": win_entry, "生效": win_entry_mode},
+            "父块": {"总数": len(plan), "已试": tried_parents,
+                     "跳过": len(plan) - tried_parents, "明细": parent_rows},
             "预算": {"重跑": full_runs, "上限": config["max_full_runs"],
                      "耗时ms": elapsed(), "上限ms": budget_ms},
             "停因": stop_reason,
             "_decision": decision,
             "_winner": winner,
+            # 胜出入口自己的 mode 决定能否改判：允许 A 保持 active、B/C 先 shadow。
+            "_entry_mode": win_entry_mode,
         }
         if winner is not None:
             public["胜出"] = {
@@ -1346,7 +1389,11 @@ class RedDotDetector(CustomRecognition):
         if not rescue:
             return
         budget = rescue.get("预算") or {}
-        head = f"[RedDotDetector] 救援 {node} | {rescue.get('结论')}"
+        entry = (rescue.get("入口") or {})
+        # 入口标识必须进摘要：多入口下"救没救到"和"哪个入口救到的"是两回事，
+        # 只印结论会让 B/C 的表现混在一起，没法判断该给哪个入口调 mode。
+        entry_tag = entry.get("胜出") or "/".join(entry.get("计划") or []) or "-"
+        head = f"[RedDotDetector] 救援 {node} | {rescue.get('结论')} | 入口={entry_tag}"
         win = rescue.get("胜出")
         if win:
             tail = (f"{win['方向']}ΔS{win['采纳增量'][0]}/ΔV{win['采纳增量'][1]} "
@@ -1661,8 +1708,10 @@ class RedDotDetector(CustomRecognition):
         if stat["max_inner_px"] == 0:
             return "interior", "红块内无封闭非红区(无感叹号轮廓)：roi 偏移 / 红圈破损 / 被模糊填满"
         return "confidence", (f"最高置信 {stat.get('conf')} < sc_min_conf({min_conf})；"
-                              f"分项 {stat.get('parts')}；降低 sc_min_conf 提召回，"
-                              f"或检查偏白/竖向是否被模糊吃掉")
+                              f"分项 {stat.get('parts')}；竖长与偏白同时塌下来，多是连片"
+                              f"把封闭区搅成杂散空洞(由 flt_hsv_rescue 的 entry_confidence "
+                              f"切开重跑)；只有真·模糊边界样本才是分数本身不够。"
+                              f"两种情况都不要降 sc_min_conf")
 
     def _miss(self, mode: str, stage: str, hint: str, stat: dict, params: dict,
               dbg_text: str = None, min_conf=None, extra: dict = None):
@@ -1696,8 +1745,10 @@ class RedDotDetector(CustomRecognition):
         tail = ""
         if rescue.get("结论") == "稳定命中":
             win = rescue.get("胜出") or {}
+            entry = rescue.get("入口") or {}
             tail = (f"｜严格HSV救援已找到稳定解 box={win.get('框')} 分{win.get('分')}"
-                    f"，当前 mode={rescue.get('模式')} 不改判")
+                    f"，当前 {entry.get('胜出') or 'mode'}"
+                    f"={entry.get('生效') or rescue.get('模式')} 不改判")
         elif rescue.get("结论") == "复核不一致":
             win = rescue.get("胜出") or {}
             tail = (f"｜严格HSV救援局部解 box={win.get('框')} 未能在整幅 ROI 复现"
