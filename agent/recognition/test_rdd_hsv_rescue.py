@@ -23,12 +23,14 @@ try:
     from .rdd_hsv_rescue import (
         boxes_agree,
         channel_cutpoints,
+        cut_happened,
         direction_deltas,
         is_strict_mask,
         lineage_parent,
         neighbor_states,
         normalize_rescue_config,
         otsu_threshold,
+        resolve_entry_plan,
         select_stable_winner,
         sort_parents,
         strict_profile,
@@ -37,12 +39,14 @@ except ImportError:
     from rdd_hsv_rescue import (
         boxes_agree,
         channel_cutpoints,
+        cut_happened,
         direction_deltas,
         is_strict_mask,
         lineage_parent,
         neighbor_states,
         normalize_rescue_config,
         otsu_threshold,
+        resolve_entry_plan,
         select_stable_winner,
         sort_parents,
         strict_profile,
@@ -69,6 +73,62 @@ class RescueConfigTest(unittest.TestCase):
 
         config, error = normalize_rescue_config(
             {"mode": "active", "max_parents": 100})
+        self.assertIsNotNone(error)
+        self.assertEqual(config["mode"], "off")
+
+    def test_entry_defaults_are_the_target_state(self):
+        """不写 entry_* 时缺省值就是目标状态：aspect 行为不变、rej 只观测。"""
+        config, error = normalize_rescue_config({"mode": "active"})
+        self.assertIsNone(error)
+        self.assertEqual(config["entry_aspect"], "inherit")
+        self.assertEqual(config["entry_confidence"], "inherit")
+        self.assertEqual(config["entry_confidence_rej"], "shadow")
+        # aspect 帧：与加入口之前逐位一致(唯一入口、active)
+        self.assertEqual(
+            resolve_entry_plan(config, "aspect"),
+            [("entry_aspect", "aspect", "active")])
+        # confidence 帧：主诉入口可改判，兜底入口只观测
+        self.assertEqual(
+            resolve_entry_plan(config, "confidence"),
+            [("entry_confidence", "confidence", "active"),
+             ("entry_confidence_rej", "aspect", "shadow")])
+
+    def test_entry_switch_overrides_global_mode(self):
+        """分开关的意义就在于：A 保持 active 的同时把新入口挂 shadow / 关掉。"""
+        config, error = normalize_rescue_config({
+            "mode": "active", "entry_confidence": "shadow",
+            "entry_confidence_rej": "off"})
+        self.assertIsNone(error)
+        self.assertEqual(
+            resolve_entry_plan(config, "confidence"),
+            [("entry_confidence", "confidence", "shadow")])
+        # aspect 帧不受新开关影响
+        self.assertEqual(
+            resolve_entry_plan(config, "aspect"),
+            [("entry_aspect", "aspect", "active")])
+
+    def test_entry_plan_order_is_confidence_then_rej(self):
+        """入口顺序固定：主诉(打分不足的块)先试，同帧被拒块兜底。"""
+        config, _ = normalize_rescue_config({"mode": "active"})
+        self.assertEqual(
+            [k for k, _, _ in resolve_entry_plan(config, "confidence")],
+            ["entry_confidence", "entry_confidence_rej"])
+
+    def test_entry_plan_empty_when_off(self):
+        config, _ = normalize_rescue_config({"mode": "off"})
+        self.assertEqual(resolve_entry_plan(config, "aspect"), [])
+        self.assertEqual(resolve_entry_plan(config, "confidence"), [])
+        # mode 是硬总开关：入口自己写 active 也压不过它
+        config, _ = normalize_rescue_config(
+            {"mode": "off", "entry_confidence": "active"})
+        self.assertEqual(resolve_entry_plan(config, "confidence"), [])
+        # 没有入口表的阶段(red_mask/area/interior)一律不搜索
+        config, _ = normalize_rescue_config({"mode": "active"})
+        self.assertEqual(resolve_entry_plan(config, "interior"), [])
+
+    def test_invalid_entry_value_fails_closed(self):
+        config, error = normalize_rescue_config(
+            {"mode": "active", "entry_confidence": "yes"})
         self.assertIsNotNone(error)
         self.assertEqual(config["mode"], "off")
 
@@ -198,6 +258,16 @@ class CutpointAndCandidateTest(unittest.TestCase):
         order = [p["label"] for p in sort_parents(parents)]
         self.assertEqual(order[0], 2)
         self.assertEqual(order[-1], 1)
+
+    def test_cut_happened_rejects_identical_box(self):
+        """外接框与父块逐位相同 = 一次连片都没切断，不算救援成立。"""
+        parent = {"x": 0, "y": 0, "w": 30, "h": 32}
+        self.assertFalse(cut_happened((0, 0, 30, 32), parent))
+        # 真救援：连片被切开，框实质缩小（GachaADV_Location1 实测形态）
+        self.assertTrue(cut_happened((25, 7, 18, 17),
+                                     {"x": 8, "y": 7, "w": 35, "h": 29}))
+        # 尺寸相同但位置移动，也算切开了（父块像素被删后整体挪位）
+        self.assertTrue(cut_happened((1, 0, 30, 32), parent))
 
     def test_boxes_agree_rejects_scattered_hits(self):
         same = [(10, 10, 12, 12), (10, 11, 12, 12)]
