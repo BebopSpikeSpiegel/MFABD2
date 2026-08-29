@@ -312,18 +312,32 @@ def sort_parents(parents: Sequence[dict]) -> List[dict]:
     return sorted(parents, key=key)
 
 
-def boxes_agree(boxes: Sequence[Sequence[int]], min_iou: float = 0.5,
-                max_center_shift: float = 2.5) -> bool:
-    """多个切法命中的框是否指向同一处。分散即视为方向歧义，一律拒绝。"""
+def boxes_agree(boxes: Sequence[Sequence[int]], min_iou: float = 0.5) -> bool:
+    """多个**切法**命中的框是否指向同一处。分散即视为方向歧义，一律拒绝。
+
+    只用 IoU，**不用中心位移**：IoU ≥ 0.5 意味着一半以上面积重合，两个指向不同红块的
+    框不可能满足（不重叠时 IoU = 0），所以 IoU 独立就完整表达了"是否同一处"。
+
+    为什么曾经有第二道中心位移闸、又为什么要去掉：那对常数（`min_iou=0.5` /
+    `max_center_shift=2.5`）原本是 `select_stable_winner` 的，用于判**相邻档位**是否
+    命中同一处 —— 相邻档 ΔS 只差几个单位，切净程度几乎一样，框应当高度一致，
+    2.5 像素是合理的严格判据。本函数判的是**不同切法**，而亮度与饱和是两个完全不同的
+    收紧方向，切净程度天然可以差很多，同一把尺子就把"同一目标、切得不一样干净"
+    误判成了"指向不同位置"。
+
+    实测 `GachaADV_Location1[315,130,47,42]`（2026-08-29 真机）：
+        亮度 Δ[0,55]  → [19,7,24,17]   ← 左边多包 6px 木纹，没切干净
+        饱和 Δ[29,0]  → [25,6,18,18]
+        双切 Δ[29,55] → [25,7,18,17]
+    饱和与双切 IoU 0.944、中心差 0.5（几乎逐位一致）；亮度对另两者 IoU 0.718/0.750
+    全部过闸，却因中心位移 3.0 > 2.5 被判方向歧义，救援 fail closed。
+
+    `select_stable_winner` 那处**维持绝对 2.5 不动** —— 那里的场景没有这个错配。
+    """
     if len(boxes) <= 1:
         return True
     first = boxes[0]
-    for other in boxes[1:]:
-        if _box_iou(first, other) < min_iou:
-            return False
-        if _center_distance(first, other) > max_center_shift:
-            return False
-    return True
+    return all(_box_iou(first, other) >= min_iou for other in boxes[1:])
 
 
 def lineage_parent(

@@ -276,6 +276,20 @@ class CutpointAndCandidateTest(unittest.TestCase):
         self.assertFalse(boxes_agree(apart))
         self.assertTrue(boxes_agree([(0, 0, 5, 5)]))
 
+    def test_boxes_agree_tolerates_uneven_cut(self):
+        """不同切法切净程度不同 → 框一大一小、中心偏移，但仍是同一个目标。
+
+        GachaADV_Location1 真机实测三框：亮度那档左边多包 6px 木纹没切干净，
+        中心比另两档偏 3.0px。旧判据(中心位移 ≤2.5)据此判方向歧义、救援 fail closed，
+        而 IoU 0.718/0.750 说明它们大量重合，本就是同一处。
+        """
+        bright = (19, 7, 24, 17)      # 没切干净
+        sat = (25, 6, 18, 18)
+        both = (25, 7, 18, 17)
+        self.assertTrue(boxes_agree([bright, sat, both]))
+        # 真歧义仍拒：两个不重叠的红块 IoU = 0
+        self.assertFalse(boxes_agree([bright, (60, 60, 18, 18)]))
+
 
 class LineageAndStabilityTest(unittest.TestCase):
     def test_lineage_requires_one_eligible_parent(self):
