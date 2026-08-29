@@ -22,7 +22,7 @@
         "anchor": {
             "ExplorationBoard_Arrived": "Collect_Story14_Board_Arrived"
         },
-        "next": ["Collect_ReturnToExplorationBoard"],
+        "next": ["Collect_WayPoint_Entry"],
         "focus": "C14.先回到探索告示板"
     },
     "Collect_Story14_Board_Arrived": {
@@ -114,7 +114,7 @@
         "anchor": {
             "ExplorationBoard_Arrived": "Collect_Story14_OpenNviMap_Central"
         },
-        "next": ["Collect_ReturnToExplorationBoard"],
+        "next": ["Collect_WayPoint_Entry"],
         "focus": "C14.返回探索告示板重置中央回廊起点"
     },
     "Collect_Story14_OpenNviMap_Central": {
