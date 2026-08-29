@@ -33,6 +33,17 @@
             ]
         },
         {
+            "name": "PlayCover",
+            "label": "PlayCover(iOS)",
+            "path": [
+                "./resource/base",
+                "./resource/playcover"
+            ],
+            "controller": [
+                "PlayCover"
+            ]
+        },
+        {
             "name": "PC",
             "path": [
                 "./resource/base",
@@ -156,6 +167,7 @@
             ],
             "option": [
                 "末日之书",
+                "小屋点赞",
                 "周常钓鱼"
             ],
             "description": "每周执行：访问<code>街机页面</code>、在<code>我的小屋</code>对随机访客点赞4次、打1轮<code>末日之书</code>、<code>钓鱼</code>1条。<br>周期触发器已实装，同周期内不会重复执行。"
@@ -252,7 +264,8 @@
             "name": "[半自动]自动钓鱼",
             "entry": "Fishing_Entry",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "option": [
                 "钓鱼地点",
@@ -1259,6 +1272,24 @@
                 }
             ]
         },
+        "小屋点赞": {
+            "type": "switch",
+            "description": "在<code>我的小屋</code>对随机访客点赞4次。账号未解锁小屋时请关闭。",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {}
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "Weekly_VisitCabin_Hub": {
+                            "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
         "周常钓鱼": {
             "description": "钓鱼1条，满足每周任务计数。关闭后跳过此项。",
             "type": "switch",
@@ -1526,11 +1557,17 @@
                     "name": "No",
                     "pipeline_override": {
                         "Arbitrage_Cooking_NubMenu_Max": {
-                            "action": "Click",
-                            "target": [
-                                576,
-                                563
-                            ]
+                            "recognition": "OCR",
+                            "roi": [
+                                415,
+                                520,
+                                220,
+                                100
+                            ],
+                            "expected": [
+                                "MAX"
+                            ],
+                            "action": "Click"
                         }
                     }
                 }
