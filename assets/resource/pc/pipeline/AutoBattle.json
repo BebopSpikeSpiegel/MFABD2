@@ -33,12 +33,20 @@
             79
         ]
     },
-    "AutoBattle_ClickAutoButt": {
+    "AutoBattle_ClickAutoButt_Tpl": {
         "roi": [
-            895,
-            0,
-            349,
-            82
+            813,
+            2,
+            444,
+            81
+        ]
+    },
+    "Rec_<AutoButt_Csm>_Tpl": {
+        "roi": [
+            813,
+            2,
+            444,
+            81
         ]
     },
     "AutoBattle_Settlement_Victory": {
