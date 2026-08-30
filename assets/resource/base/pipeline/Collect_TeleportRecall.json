@@ -763,7 +763,8 @@
             ],
             "reset_tags": [
                 "IM_Skill_1",
-                "IM_Skill_End"
+                "IM_Skill_End",
+                "NviMap_Sub_Err"
             ]
         },
         "focus": "步行吸取环境复位"
@@ -1967,23 +1968,60 @@
         "pre_delay": 1500,
         "timeout": 5000,
         "next": [
-            "Collect_WayPoint_TeleporCircle",
+            "Collect_WayPoint_Arrived_Verify",
             "[JumpBack][Anchor]ExplorationBoard_Arrived"
         ],
         "focus": "CTB.已回到探索告示板"
     },
-    "Collect_WayPoint_TeleporCircle": {
+    "Collect_WayPoint_Arrived_Verify": {
+        "desc": "已识别到踩传送阵?继续验证",
         "recognition": "Or",
         "any_of": [
             "Collect_TeleporCircle_Ico_Enter",
             "Collect_FindTeleporCircle"
         ],
         "action": "Custom",
-        "custom_action": "ResetTag",
+        "custom_action": "SmartAction",
         "custom_action_param": {
-            "reset_tags": ["Battle_Count"]
+            "proxy_node": "Collect_TeleporCircle_Ico_Enter",
+            "detect_roi": [
+                838,
+                533,
+                69,
+                62
+            ],
+            "threshold": 3.0,
+            "settle_delay": 1500,
+            "on_changed": "next",
+            "on_unchanged": "loop",
+            "loop_limit": 5,
+            "loop_exhausted": "error"
         },
-        "anchor": {"ExplorationBoard_Arrived": ""}
+        "post_delay": 2000,
+        "timeout": 8000,
+        "next": [
+            "Collect_WayPoint_Arrived_Succeed",
+            "Collect_WayPoint_Arrived_Fail_1"
+        ],
+        "on_error": [
+            "[JumpBack][Anchor]ExplorationBoard_Arrived",
+            "Global_Null"
+        ]
+    },
+    "Collect_WayPoint_Arrived_Fail_1": {
+        "desc": "上游点击后,有返回按钮.说明开启了某个对话",
+        "recognition": "Or",
+        "any_of": ["Global_BackPageHub_Once"],
+        "next": [
+            "[JumpBack]Global_ToSandBox",
+            "[JumpBack][Anchor]ExplorationBoard_Arrived"
+        ]
+    },
+    "Collect_WayPoint_Arrived_Succeed": {
+        "recognition": "Or",
+        "any_of": ["Collect_OperationsMain_ToAreaMap"],
+        "anchor": {"ExplorationBoard_Arrived": ""},
+        "next": ["Global_ToSandBox"]
     },
     "Collect_WayPoint_ExplorationBoard_Arrived": {
         "desc": "点击左上地图",
