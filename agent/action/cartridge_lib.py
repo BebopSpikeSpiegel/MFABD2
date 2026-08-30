@@ -7,6 +7,7 @@ import utils
 # ✅ 引入存档工具
 # (不需要改 persistent_store.py，它负责底层读写，这里负责业务逻辑)
 from utils.persistent_store import PersistentStore
+from utils.account_sync import sync_from_context
 
 # --- MFA 核心库 ---
 from maa.custom_action import CustomAction
@@ -674,20 +675,34 @@ class CooldownManager:
 
 manager = CooldownManager()
 
-# Action 注册 (无需修改)
+# ==============================================================================
+# 存档号同步的 pull 路径
+# ==============================================================================
+# 本文件是全仓唯一实际读写存档的业务代码（其余 PersistentStore 调用点只是
+# main.py 的启动挂载与 SwitchAccountCheckpoint 的 push 同步）。所以在这三个
+# 注册入口各同步一次，就覆盖了全部存档读写 —— 用户从哪个 task 起跑都不会用错档，
+# 不必依赖 `Env_AccountSave_Switch` 节点被执行。
+#
+# sync_from_context 承诺永不抛异常，且值相同时零副作用，可以裸调。
+# 详见 utils/account_sync.py。
+# ==============================================================================
+
 @AgentServer.custom_action("CheckCoolDown")
 class CheckCoolDownAction(CustomAction):
     def run(self, context: Context, argv: CustomAction.RunArg):
+        sync_from_context(context, where="CheckCoolDown/action")
         return manager.check_availability(argv)
 
 @AgentServer.custom_action("MarkComplete")
 class MarkCompleteAction(CustomAction):
     def run(self, context: Context, argv: CustomAction.RunArg):
+        sync_from_context(context, where="MarkComplete")
         return manager.mark_complete(argv)
-    
+
 @AgentServer.custom_recognition("CheckCoolDown")
 class CheckCoolDownRecognition(CustomRecognition):
     def analyze(self, context: Context, argv: CustomRecognition.AnalyzeArg):
+        sync_from_context(context, where="CheckCoolDown/reco")
         try:
             # 1. 获取参数 (Recognition 的参数名为 custom_recognition_param)
             params = json.loads(argv.custom_recognition_param)
