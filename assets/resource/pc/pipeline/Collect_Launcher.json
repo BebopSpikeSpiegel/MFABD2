@@ -1,31 +1,4 @@
 {
-    "Collect_Pack_Story_14": {
-        "desc": "[PC] 剧情卡带 14 使用左右回廊专用采集流程。",
-        "next": [
-            "Collect_Pack_Story14_Click"
-        ]
-    },
-    "Collect_Pack_Story14_Click": {
-        "desc": "[PC] 点击剧情卡带 14，并进入专用采集流程；不修改全部卡带共用的 Collect_Pack_Click。",
-        "recognition": "Or",
-        "any_of": [
-            "Collect_QuickCart_Menu"
-        ],
-        "action": "Click",
-        "target": "[Anchor]Pack_Click",
-        "target_offset": [
-            -10,
-            15,
-            0,
-            0
-        ],
-        "post_delay": 5000,
-        "next": [
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_Story14_Init",
-            "Collect_Pack_Story14_Click"
-        ]
-    },
     "Collect_Sandplay": {
         "target": [
             1214,

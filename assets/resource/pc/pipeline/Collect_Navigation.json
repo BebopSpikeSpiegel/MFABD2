@@ -89,6 +89,7 @@
             "贫民区",
             "貧民區",
             "剑之神殿左侧回廊",
+            "劍之神殿左側迴廊",
             "童话镇旅馆",
             "第一记忆空间",
             "第一個記憶空間",
@@ -153,6 +154,7 @@
             "隐藏神殿",
             "盗贼据点",
             "剑之神殿右侧回廊",
+            "劍之神殿右側迴廊",
             "雷瓦汀据点",
             "雷瓦汀祕密基地",
             "战斗II",
@@ -343,43 +345,6 @@
             "Collect_ClickTelepor_TargetClass_White"
         ]
     },
-    "Collect_ClickTelepor_TargetClass_Inactive_PC": {
-        "desc": "[PC新增·2026-08-23 v3] 灰阵门卫·第一段(区域图仍开着的前提门):Or 再跑一次 Collect_ClickTeleporCircleIco(模板命中=区域图开着且有图标,同时刷新其 box 供下游按名引用),next 只放取反色核节点;色核不命中(图标为激活阵)→1.5s 超时→on_error 回 White 正常点击。|为什么要两段:v2 单节点取反色核直接挂候选表,07:14:54 Story_15 实录误报——tp2 点击已传送成功、区域图已关,Skill_Start 那一刻没认到图钉,取反色核拿旧框在野外数白像素(count 5)→误判灰阵→提前 OperationsEnd(靠状态机守护兜回)。离线验证(MaaMCP run_pipeline,08-23 07:40):裸取反色核在野外必命中(复现误报);And[模板,取反色核] 不可用——inverse 在 And 子节点内不生效(两个单跑必命中的取反节点组 And 不命中)。",
-        "recognition": "Or",
-        "any_of": [
-            "Collect_ClickTeleporCircleIco"
-        ],
-        "timeout": 1500,
-        "next": [
-            "Collect_ClickTelepor_Inactive_Color_PC"
-        ],
-        "on_error": [
-            "Collect_ClickTelepor_TargetClass_White",
-            "[JumpBack]Global_WaitingForLoading"
-        ],
-        "focus": "CM.N.PC:传送阵图标色核门"
-    },
-    "Collect_ClickTelepor_Inactive_Color_PC": {
-        "desc": "[PC新增·2026-08-23] 灰阵门卫·第二段:对 Collect_ClickTeleporCircleIco 命中框做亮白像素计数取反(激活阵=白符号+黑底+金环,灰阵=暗灰符号),白像素<20 即灰阵→走 ButNotActive 同一出口结束本卡带。离线量化(720 帧 19x20 框 min(R,G,B)>=215)灰 0 / 金 81;实机 maafw ColorMatch 计数灰阵 5。只会在第一段门(模板仍命中)之后被评估。止血性质:同图另有激活未访阵时本卡带会提前结束;根治(跳过灰阵选下一激活阵/White 挂 max_hit)归 base。",
-        "recognition": "ColorMatch",
-        "roi": "Collect_ClickTeleporCircleIco",
-        "lower": [
-            200,
-            200,
-            200
-        ],
-        "upper": [
-            255,
-            255,
-            255
-        ],
-        "count": 20,
-        "inverse": true,
-        "next": [
-            "Collect_OperationsMain_OperationsEnd"
-        ],
-        "focus": "CM.N.[WRN]PC:首选传送阵为灰色未激活阵,结束本卡带"
-    },
     "Collect_ClickTelepor_TargetClass_White": {
         "desc": "[PC覆盖·2026-08-23] 仅改 next:在自环候选(本节点)之前插入灰阵门卫,技能调用(已传送)仍优先。base 该节点无 max_hit,点灰阵无效时自环无界(08-23 02:46~07:00 实录 2778 圈)。⚠️本覆盖是 base next 的整份快照(规则f),base 改这条链必须同步这里——08-28 技能模块入口化时第2项已由 Collect_Skill_Start 改为 Collect_Skill_Entry。",
         "next": [
@@ -388,6 +353,15 @@
             "Collect_ClickTelepor_TargetClass_Inactive_PC",
             "Collect_ClickTelepor_TargetClass_White",
             "[JumpBack]Global_WaitingForLoading"
+        ]
+    },
+    "Collect_Skill_Egress": {
+        "desc": "[PC覆盖]随base改名自Collect_Skill_End,原覆盖在pc/Collect_skills.json,跟着本体迁到本文件。只改roi。",
+        "roi": [
+            1204,
+            661,
+            25,
+            28
         ]
     },
     "Collect_ClickTelepor_ButNotActive": {
@@ -440,22 +414,13 @@
             84
         ]
     },
-    "Collect_Skill_Egress": {
-        "desc": "[PC覆盖]随base改名自Collect_Skill_End,原覆盖在pc/Collect_skills.json,跟着本体迁到本文件。只改roi。",
-        "roi": [
-            1204,
-            661,
-            25,
-            28
-        ]
-    },
     "Collect_MapRight": {
         "custom_action_param": {
             "detect_roi": [
-                462,
-                638,
-                360,
-                38
+                454,
+                175,
+                369,
+                314
             ],
             "loop_limit": 4,
             "on_changed": "next",
@@ -470,7 +435,8 @@
                     3,
                     3
                 ]
-            }
+            },
+            "settle_delay": 1000
         }
     },
     "Collect_FindTeleporCircle0.9": {
@@ -552,6 +518,67 @@
             "安全"
         ]
     },
+    "Collect_TargetMap_Special_M14": {
+        "roi": [
+            452,
+            638,
+            378,
+            40
+        ],
+        "expected": [
+            "剑之神殿右侧回廊",
+            "劍之神殿右側迴廊"
+        ]
+    },
+    "Collect_Special_M14_NviMap_Open": {
+        "target": [
+            132,
+            103,
+            10,
+            10
+        ]
+    },
+    "Collect_ClickTelepor_TargetClass_Inactive_PC": {
+        "desc": "[PC新增·2026-08-23 v3] 灰阵门卫·第一段(区域图仍开着的前提门):Or 再跑一次 Collect_ClickTeleporCircleIco(模板命中=区域图开着且有图标,同时刷新其 box 供下游按名引用),next 只放取反色核节点;色核不命中(图标为激活阵)→1.5s 超时→on_error 回 White 正常点击。|为什么要两段:v2 单节点取反色核直接挂候选表,07:14:54 Story_15 实录误报——tp2 点击已传送成功、区域图已关,Skill_Start 那一刻没认到图钉,取反色核拿旧框在野外数白像素(count 5)→误判灰阵→提前 OperationsEnd(靠状态机守护兜回)。离线验证(MaaMCP run_pipeline,08-23 07:40):裸取反色核在野外必命中(复现误报);And[模板,取反色核] 不可用——inverse 在 And 子节点内不生效(两个单跑必命中的取反节点组 And 不命中)。",
+        "recognition": "Or",
+        "any_of": [
+            "Collect_ClickTeleporCircleIco"
+        ],
+        "timeout": 1500,
+        "next": [
+            "Collect_ClickTelepor_Inactive_Color_PC"
+        ],
+        "on_error": [
+            "Collect_ClickTelepor_TargetClass_White",
+            "[JumpBack]Global_WaitingForLoading"
+        ],
+        "focus": "CM.N.PC:传送阵图标色核门"
+    },
+    "Collect_ClickTelepor_Inactive_Color_PC": {
+        "desc": "[PC新增·2026-08-23] 灰阵门卫·第二段:对 Collect_ClickTeleporCircleIco 命中框做亮白像素计数取反(激活阵=白符号+黑底+金环,灰阵=暗灰符号),白像素<20 即灰阵→走 ButNotActive 同一出口结束本卡带。离线量化(720 帧 19x20 框 min(R,G,B)>=215)灰 0 / 金 81;实机 maafw ColorMatch 计数灰阵 5。只会在第一段门(模板仍命中)之后被评估。止血性质:同图另有激活未访阵时本卡带会提前结束;根治(跳过灰阵选下一激活阵/White 挂 max_hit)归 base。",
+        "recognition": "ColorMatch",
+        "roi": "Collect_ClickTeleporCircleIco",
+        "lower": [
+            [
+                200,
+                200,
+                200
+            ]
+        ],
+        "upper": [
+            [
+                255,
+                255,
+                255
+            ]
+        ],
+        "count": 20,
+        "inverse": true,
+        "next": [
+            "Collect_OperationsMain_OperationsEnd"
+        ],
+        "focus": "CM.N.[WRN]PC:首选传送阵为灰色未激活阵,结束本卡带"
+    },
     "Collect_Telepor_Retry_PC": {
         "desc": "[PC新增·2026-07-27] 区域地图选点空转救援垫。同 Global_ResetChain_Retry_PC / Arbitrage_Chain_Retry_PC 哲学:无自定义 on_error 的节点超时会走 MFA 默认 Global_Null 兜底,表现为无声空转或假成功。本节点 DirectHit 恒中,先点通用返回键退出区域地图,把控制权交回上层链重新判定(跑商侧即可重新评估 Arbitrage_Sandplay_SeeMerchant——'探查'揭示地图后原本没有任何路径回去重评,这正是 07-27 空转 6 分钟的放大器);max_hit 2 耗尽后不再命中→流程以失败终止,绝不再无声空转。",
         "max_hit": 2,
@@ -560,92 +587,5 @@
             "[JumpBack]Global_BackPageHub_Once"
         ],
         "focus": "CTB.[WRN]PC.区域地图选点空转,退出重试(上限2次)"
-    },
-    "Collect_WayPoint_Entry": {
-        "desc": "[PC通用] 从任意采集箱庭打开左上寻路列表并返回探索告示板；目标项由文字定位，不依赖列表长度。",
-        "recognition": "Or",
-        "any_of": [
-            "Rec_SandBox_Pin_Tpl",
-            "Rec_SandBox_Run_Tpl"
-        ],
-        "timeout": 5000,
-        "next": [
-            "Collect_WayPoint_Board",
-            "Collect_WayPoint_Open"
-        ],
-        "on_error": [
-            "Global_Null_Exception",
-            "Global_Null_Panic"
-        ],
-        "focus": "CTB.PC.回到探索告示板"
-    },
-    "Collect_WayPoint_Open": {
-        "desc": "[PC通用] 识别并点击小地图旁的寻路按钮，展开可前往地点列表。",
-        "max_hit": 4,
-        "recognition": "TemplateMatch",
-        "roi": [
-            165,
-            50,
-            190,
-            60
-        ],
-        "template": [
-            "Nvi_SandGuideButt_PC.png"
-        ],
-        "green_mask": true,
-        "pre_delay": 500,
-        "action": "Click",
-        "post_delay": 800,
-        "timeout": 5000,
-        "next": [
-            "Collect_WayPoint_Board"
-        ],
-        "on_error": [
-            "Global_Null_Exception",
-            "Global_Null_Panic"
-        ],
-        "focus": "CTB.PC.展开寻路列表"
-    },
-    "Collect_WayPoint_Board": {
-        "desc": "[PC通用] 在整个可变长度下拉列表内 OCR 定位并点击探索告示板。",
-        "max_hit": 4,
-        "recognition": "OCR",
-        "roi": [
-            205,
-            25,
-            180,
-            600
-        ],
-        "expected": [
-            "探索告示板",
-            "探索佈告欄"
-        ],
-        "action": "Click",
-        "post_delay": 1500,
-        "timeout": 1500,
-        "next": [
-            "[JumpBack]Collect_IM_Move_MGS",
-            "[JumpBack]Collect_IM_OnFoot_Moveing",
-            "[JumpBack]Global_WaitingForLoading",
-            "Collect_WayPoint_Arrived"
-        ],
-        "on_error": [
-            "Global_Null_Exception",
-            "Global_Null_Panic"
-        ],
-        "focus": "CTB.PC.选择探索告示板"
-    },
-    "Collect_WayPoint_Arrived": {
-        "desc": "[PC通用] 自动移动结束并回到探索告示板；调用方可设置 ExplorationBoard_Arrived 锚点继续。",
-        "recognition": "Or",
-        "any_of": [
-            "Rec_SandBox_Pin_Tpl",
-            "Rec_SandBox_Run_Tpl"
-        ],
-        "pre_delay": 1500,
-        "next": [
-            "[Anchor]ExplorationBoard_Arrived"
-        ],
-        "focus": "CTB.PC.已回到探索告示板"
     }
 }

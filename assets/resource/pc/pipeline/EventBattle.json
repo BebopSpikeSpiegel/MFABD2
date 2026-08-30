@@ -426,6 +426,12 @@
             "小活動"
         ]
     },
+    "Event_Battle_TabAutoBattle_ChangeDifficulty_TryGeneral": {
+        "expected": [
+            "普通",
+            "一般"
+        ]
+    },
     "SeasonEvent_ReMamono_Enter": {
         "desc": "",
         "roi": [
