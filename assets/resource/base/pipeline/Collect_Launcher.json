@@ -2836,6 +2836,7 @@
             0,
             0
         ],
+        "anchor": {"ExplorationBoard_Arrived": ""},
         "post_delay": 5000,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
