@@ -1242,7 +1242,7 @@
         "action": "Custom",
         "custom_action": "ResetTag",
         "custom_action_param": {
-            "reset_tags": ["IM_Skill_OnlyOnec"]
+            "tags": ["IM_Skill_OnlyOnec"]
         },
         "anchor": {
             "QuickSkill_Egress": ""
@@ -1488,17 +1488,8 @@
     },
     "Collect_TeleporCircle_OnFoot_TPIco_Click": {
         "desc": "寻找当前页面传送阵图标",
-        "recognition": "TemplateMatch",
-        "roi": [
-            197,
-            76,
-            440,
-            535
-        ],
-        "template": [
-            "Nvi_TpCircleMap.png"
-        ],
-        "green_mask": true,
+        "recognition": "Or",
+        "any_of": ["Collect_TeleporCircle_OnFoot_TPIco"],
         "action": "Click",
         "post_delay": 2000,
         "next": [
