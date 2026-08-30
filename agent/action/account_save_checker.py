@@ -31,9 +31,11 @@ class SwitchAccountCheckpointAction(CustomAction):
         「两条路读到不同值」。本节点是 custom_action_param 的唯一载体，
         所以 argv 与 context 读到的本就是同一份数据。
 
-        恒返回 True 的理由：存档同步失败不该让整条业务链作废 ——
-        失败时 sync_from_context 已发出告警且**保持存档号不变**
-        （绝不回落成 0 号档），继续跑不会写错档。
+        恒返回 True 的理由：存档同步失败不该让整条业务链作废。失败时
+        sync_from_context 已发出告警且保持存档号不变，**不会因为回落默认档
+        而写错**；但这不等于"一定写对" —— 若此前曾成功切到过别的档，保持
+        不变同样可能是错的档。为什么仍然选择放行而不是拦截，见
+        utils/account_sync.py 的「失败时为什么不拦截业务」一节。
         """
         try:
             sync_from_context(context, where="SwitchAccountCheckpoint")

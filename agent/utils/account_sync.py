@@ -22,6 +22,32 @@ task 运行时这个节点上的 account_id 都已是最新值，**无需该节�
 
 幂等由 PersistentStore.switch_account 保证：它按值比较，相同则什么都不做，
 不打日志、不重挂路径。所以"每次都同步"的成本约等于零。
+
+失败时为什么不拦截业务
+----------------------
+PR #478 的两个机审工具都提过同一条：同步失败时保留旧存档号，后续 CheckCoolDown /
+MarkComplete 会把当前 task 的进度写进上一个 task 用的存档，建议同步失败就返回 False、
+不执行业务。这条**不采纳**，理由有三：
+
+1. 它的前提（"某个 task 缺少该节点"）不成立。`Env_AccountSave_Switch` 定义在
+   `assets/resource/base/pipeline/Dummy.json`，是**资源级**节点，随 base 资源包全局
+   加载；pipeline_override 只改它的值，不决定它存不存在。而内核
+   `Context::get_pipeline_data`（Context.cpp:324-350）查不到 override 会**回落到资源**。
+   所以任何 task 都读得到，最差是读到资源里的默认 `{"account_id": "0"}`。
+2. 于是本函数返回 False 只可能是**全局性**故障（节点被删/改名、get_node_data API 变了）。
+   那种情况下第一个 task 就会失败，_current_account_id 还停在启动默认值，
+   压根构造不出机审设想的"A 成功、B 失败"组合。
+3. 真拦截了，后果更糟且更难查：CheckCoolDown 返回未命中会让父节点跳过候选、整个模块
+   静默跳过；MarkComplete 返回 False 会让节点进错误态静默出栈 —— 任务做了却没标记，
+   下次重复做。而这与 cartridge_lib 既有的「失败开放」哲学相反（见该文件头部注释，
+   那里明确写了三处一致、要改得一起评估）。
+
+⚠️ 一个机审没提、但方向相反且更真实的风险：若「存档名称」的 override 因故**没有**被
+合并进某个 task，本函数会读到资源里的默认值 "0" 并**主动把档切成 0** —— 那才是会实际
+发生的串档路径。当前不会触发，因为「存档名称」是 input 类型且**没有 controller /
+resource 限制**，MFAAvalonia 的 ProcessOptions 走 input 分支时有默认值兜底、恒生成
+override。**所以不要给 interface.json 里的「存档名称」加 controller 或 resource 字段** ——
+一旦加了，不适用的那些 task 就会读到默认值 0 而误切档，且没有任何告警。
 """
 
 from . import mfaalog as logger
