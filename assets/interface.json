@@ -54,6 +54,17 @@
             ]
         },
         {
+            "name": "PlayCover",
+            "label": "PlayCover(iOS)",
+            "path": [
+                "./resource/base",
+                "./resource/playcover"
+            ],
+            "controller": [
+                "PlayCover"
+            ]
+        },
+        {
             "name": "PC",
             "path": [
                 "./resource/base",
@@ -317,7 +328,8 @@
             "name": "[半自动]自动钓鱼",
             "entry": "Fishing_Entry",
             "controller": [
-                "Adb"
+                "Adb",
+                "PlayCover"
             ],
             "option": [
                 "钓鱼地点",
