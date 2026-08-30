@@ -112,14 +112,13 @@
         "recognition": "OCR",
         "roi": [
             760,
-            169,
-            45,
-            26
+            164,
+            202,
+            36
         ],
         "expected": [
             "基础"
-        ],
-        "only_rec": true
+        ]
     },
     "Pass_GetAll": {
         "desc": "全部获得",
