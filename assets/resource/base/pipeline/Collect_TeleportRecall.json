@@ -1881,28 +1881,6 @@
         "post_delay": 800,
         "focus": "CTB.展开寻路列表"
     },
-    "Collect_WayPoint_Open_Dit": {
-        "desc": "次选.间接识别,确认小地图为最小状态,直接点击目标 | 特征图可以直接用",
-        "recognition": "TemplateMatch",
-        "roi": [
-            208,
-            162,
-            42,
-            42
-        ],
-        "template": [
-            "UI_miniMap_B.png"
-        ],
-        "action": "Click",
-        "target": [
-            232,
-            88,
-            2,
-            2
-        ],
-        "post_delay": 800,
-        "focus": "CTB.展开寻路列表-间接"
-    },
     "Collect_WayPoint_Hunt": {
         "desc": "首选.在整个可变长度下拉列表内 OCR 定位-狩猎场.会直接被投放到传送阵上",
         "recognition": "OCR",
