@@ -201,6 +201,7 @@
     },
     "Collect_ForceTeleporCircle_Succeed": {
         "desc": "传送阵,通过技能传送出口,完成,",
+        "anchor": {"OnFoot_SkillCircle_Try": ""},
         "focus": "CTB.通过传送阵归位结束"
     },
     "Collect_ForceTeleporCircle_No": {
@@ -279,13 +280,18 @@
     "Collect_TeleporCircle_OnFoot_Start": {
         "recognition": "DirectHit",
         "action": "DoNothing",
+        "anchor": {
+            "IntSubMenu_ErrReturn": "Collect_TeleporCircle_OnFoot_Start",
+            "OnFoot_SkillCircle_Try": "Collect_OnFoot_Skill3_4",
+            "Return_Type": "Collect_TeleporCircle_OnlyFoot_Entry"
+        },
         "next": [
             "Collect_TeleporCircle_OnFoot_GoinNviMap"
         ],
         "focus": "CTOB.徒步前往传送阵"
     },
     "Collect_TeleporCircle_OnFoot_GoinNviMap": {
-        "desc": "点击左上地图",
+        "desc": "点左上小地图开导航地图",
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Pin_Tpl",
@@ -322,12 +328,78 @@
         "next": [
             "Collect_TeleporCircle_OnFoot_TPIco",
             "Collect_InitiatingManual_Onfoot_Start",
-            "Collect_TeleporCircle_OnFoot_StateResolGroup_Step1_Lift",
-            "Collect_TeleporCircle_OnFoot_StateResolGroup_Step1_Right"
+            "Collect_TeleporCircle_OnFoot_Sandbox",
+            "[JumpBack]Global_ToSandBox"
         ],
         "focus": "CTOB.确认导航地图界面打开"
     },
+    "Collect_TeleporCircle_OnFoot_Sandbox": {
+        "recognition": "Or",
+        "any_of": ["Global_ToSandBox_Enter"],
+        "next": [
+            "Collect_WayPoint_Entry",
+            "Collect_TeleporCircle_OnlyFoot_Entry"
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_Entry": {
+        "desc": "[入口]手动返回传送阵",
+        "anchor": "IntSubMenu_ErrReturn",
+        "next": [
+            "Collect_WayPoint_Entry",
+            "Collect_TeleporCircle_OnlyFoot_Entry"
+        ]
+    },
+    "Collect_TeleporCircle_OnlyFoot_Entry": {
+        "desc": "[入口]纯步行返回传送阵",
+        "recognition": "Or",
+        "any_of": [
+            {
+                "recognition": "OCR",
+                "roi": [
+                    305,
+                    146,
+                    85,
+                    74
+                ],
+                "expected": [
+                    "自动狩猎",
+                    "离开"
+                ]
+            }
+        ],
+        "next": [
+            "Collect_TeleporCircle_OnFoot_ToNavMap"
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_ToNavMap": {
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "action": "Click",
+        "target": [
+            148,
+            119,
+            34,
+            38
+        ],
+        "post_delay": 2500,
+        "next": [
+            "Collect_TeleporCircle_OnFoot_ToNavMap_CK",
+            "Collect_TeleporCircle_OnFoot_ToNavMap"
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_ToNavMap_CK": {
+        "recognition": "Or",
+        "any_of": ["Collect_TeleporCircle_OnFoot_NviMap"],
+        "next": [
+            "Collect_TeleporCircle_OnFoot_StateResolGroup_Step1_Lift",
+            "Collect_TeleporCircle_OnFoot_StateResolGroup_Step1_Right"
+        ]
+    },
     "Collect_InitiatingManual_Onfoot_Start": {
+        "desc": "[入口]IM=特殊步行.吸取地图",
         "recognition": "OCR",
         "roi": [
             175,
@@ -336,6 +408,7 @@
             64
         ],
         "expected": [
+            "剑之神殿右侧回廊",
             "泳池派对场",
             "派对会场角落",
             "海岸沙滩",
@@ -346,6 +419,7 @@
             "泼水音乐节活动"
         ],
         "next": [
+            "Collect_IM_OnFoot_NviMap_M14",
             "Collect_IM_OnFoot_NviMap_E01_A1",
             "Collect_IM_OnFoot_NviMap_E01_B1",
             "Collect_IM_OnFoot_NviMap_E03_A1",
@@ -484,7 +558,7 @@
             0,
             0
         ],
-        "post_delay": 2000,
+        "post_delay": 1000,
         "timeout": 8000,
         "next": [
             "[JumpBack]Collect_IM_OnFoot_Moveing",
@@ -533,6 +607,7 @@
             5,
             7
         ],
+        "post_delay": 1000,
         "next": [
             "[JumpBack]Collect_IM_OnFoot_Moveing",
             "Collect_IM_OnFoot_NviMap_2_Move_End",
@@ -553,28 +628,67 @@
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Pin_Tpl",
-            "Rec_SandBox_Run_Tpl"
+            "Rec_SandBox_Run_Tpl",
+            {
+                "recognition": "Custom",
+                "custom_recognition": "CheckTag",
+                "custom_recognition_param": {
+                    "tag": "IM_Skill_End",
+                    "max": 1
+                }
+            }
         ],
-        "next": ["Collect_IM_OnFoot_NviMap_SkillEnd"]
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "IM_Skill_End",
+            "value": 1
+        },
+        "next": ["Collect_IM_Skill_End_Patch"]
+    },
+    "Collect_IM_OnFoot_Skill_OnlyOnec": {
+        "desc": "计数器清零外置版本,用于阶梯call",
+        "recognition": "And",
+        "all_of": [
+            "Rec_SandBox_Pin_Tpl",
+            {
+                "recognition": "Custom",
+                "custom_recognition": "CheckTag",
+                "custom_recognition_param": {
+                    "tag": "IM_Skill_OnlyOnec",
+                    "max": 1
+                }
+            }
+        ],
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "IM_Skill_OnlyOnec",
+            "value": 1
+        },
+        "next": [
+            "Collect_Skill_Start",
+            "[JumpBack]Global_ToSandBox"
+        ]
     },
     "Collect_IM_Move_MGS": {
         "recognition": "OCR",
         "roi": [
-            672,
-            384,
-            125,
-            123
+            623,
+            352,
+            198,
+            173
         ],
         "expected": [
+            "生成",
             "确认"
         ],
         "action": "Click",
-        "post_wait_freezes": 5000,
-        "post_delay": 1000,
+        "post_delay": 5000,
         "focus": "确认弹框"
     },
     "Collect_IM_OnFoot_NviMap_Skill01": {
-        "desc": "计数器模块,单独一次进入,呼叫skill",
+        "desc": "计数器模块,单独一次进入,呼叫skill|从区域图,最后返回区域图",
         "recognition": "Custom",
         "custom_recognition": "CheckTag",
         "custom_recognition_param": {
@@ -610,7 +724,7 @@
         ]
     },
     "Collect_IM_Skill_1_Patch": {
-        "anchor": {"OnFoot_Skill": "Collect_IM_GoinNviMap"},
+        "anchor": {"QuickSkill_Egress": "Collect_IM_GoinNviMap"},
         "next": [
             "Collect_Skill_Start",
             "[JumpBack]Global_ToSandBox"
@@ -618,7 +732,7 @@
         "focus": "第一次技能调用,结束后出口锚定到小地图"
     },
     "Collect_IM_Skill_End_Patch": {
-        "anchor": {"OnFoot_Skill": "Collect_IM_Closure"},
+        "anchor": {"QuickSkill_Egress": "Collect_IM_Closure"},
         "next": [
             "Collect_Skill_Start",
             "[JumpBack]Global_ToSandBox"
@@ -633,7 +747,9 @@
             "Rec_SandBox_Pin_Tpl",
             "Rec_SandBox_Run_Tpl"
         ],
-        "anchor": {"OnFoot_Skill": ""},
+        "anchor": {
+            "QuickSkill_Egress": ""
+        },
         "next": ["Collect_IM_Reset"],
         "focus": "[特殊地图]-步行吸取模块完成"
     },
@@ -647,7 +763,8 @@
             ],
             "reset_tags": [
                 "IM_Skill_1",
-                "IM_Skill_End"
+                "IM_Skill_End",
+                "NviMap_Sub_Err"
             ]
         },
         "focus": "步行吸取环境复位"
@@ -666,7 +783,7 @@
             34,
             38
         ],
-        "anchor": {"OnFoot_Skill": ""},
+        "anchor": {"QuickSkill_Egress": ""},
         "next": [
             "Collect_IM_GoinNviMap_Enter",
             "Collect_IM_GoinNviMap"
@@ -801,7 +918,7 @@
             "战斗区"
         ],
         "action": "Click",
-        "post_delay": 2000,
+        "post_delay": 1000,
         "timeout": 8000,
         "next": [
             "[JumpBack]Collect_IM_OnFoot_Moveing",
@@ -832,6 +949,7 @@
             2,
             2
         ],
+        "post_delay": 1000,
         "next": [
             "[JumpBack]Collect_IM_OnFoot_Moveing",
             "Collect_IM_OnFoot_NviMap_2_Move_End",
@@ -1047,6 +1165,91 @@
             "Global_Null_Panic"
         ],
         "focus": "CTB.特殊地图-戏水女王-01"
+    },
+    "Collect_IM_OnFoot_NviMap_M14": {
+        "desc": "主线14,剑之神殿右侧回廊",
+        "recognition": "OCR",
+        "roi": [
+            175,
+            10,
+            346,
+            64
+        ],
+        "expected": [
+            "剑之神殿右侧回廊"
+        ],
+        "action": "Custom",
+        "custom_action": "PatchPipeline",
+        "custom_action_param": {
+            "target": "Collect_IM_Closure",
+            "patch": {
+                "action": "Custom",
+                "custom_action": "MarkComplete",
+                "custom_action_param": {
+                    "card_name": "Story_14_神圣审判",
+                    "cycle_type": "g_weekly"
+                }
+            }
+        },
+        "timeout": 5000,
+        "next": [
+            "Collect_IM_OnFoot_NviMap_M14_A1_Move"
+        ],
+        "on_error": [
+            "Global_QuickCart_MenuReset",
+            "[JumpBack]Global_ToSandBox",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "CTB.特殊地图-神圣审判"
+    },
+    "Collect_IM_OnFoot_NviMap_M14_A1_Move": {
+        "max_hit": 5,
+        "recognition": "And",
+        "all_of": ["Collect_TeleporCircle_OnFoot_NviMap"],
+        "action": "Click",
+        "target": [
+            221,
+            483,
+            3,
+            4
+        ],
+        "anchor": {
+            "QuickSkill_Egress": "Collect_IM_OnFoot_NviMap_M14_Egress"
+        },
+        "post_delay": 1000,
+        "timeout": 5000,
+        "next": [
+            "[JumpBack]Collect_IM_OnFoot_Moveing",
+            "Collect_IM_OnFoot_Skill_OnlyOnec",
+            "[JumpBack]Collect_IM_Move_MGS",
+            "[JumpBack]Global_WaitingForLoading",
+            "Collect_IM_OnFoot_NviMap_M14_Egress"
+        ],
+        "on_error": [
+            "Collect_IM_OnFoot_NviMap_Sub_Err",
+            "Global_Null"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_M14_Egress": {
+        "desc": "[出口]旁路M14结束",
+        "recognition": "Or",
+        "any_of": [
+            "Global_QuickCart_MenuReset_Ocr",
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "action": "Custom",
+        "custom_action": "ResetTag",
+        "custom_action_param": {
+            "tags": ["IM_Skill_OnlyOnec"]
+        },
+        "anchor": {
+            "QuickSkill_Egress": ""
+        },
+        "timeout": 10000,
+        "next": ["Collect_TeleporCircle_OnFoot_Entry"],
+        "on_error": ["[JumpBack]Global_ToSandBox"]
     },
     "Collect_IM_OnFoot_NviMap_E05_A2": {
         "recognition": "And",
@@ -1278,14 +1481,27 @@
             "Nvi_TpCircleMap.png"
         ],
         "green_mask": true,
-        "action": "Click",
-        "post_delay": 3000,
         "next": [
-            "Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu",
-            "Collect_TeleporCircle_OnFoot_TPIcoCk",
-            "Collect_TeleporCircle_OnFoot_TPIco"
+            "Collect_TeleporCircle_OnFoot_TPIco_Click"
         ],
         "focus": "CTOB.导航地图.tp1.找到传送阵图标"
+    },
+    "Collect_TeleporCircle_OnFoot_TPIco_Click": {
+        "desc": "寻找当前页面传送阵图标",
+        "recognition": "Or",
+        "any_of": ["Collect_TeleporCircle_OnFoot_TPIco"],
+        "action": "Click",
+        "post_delay": 2000,
+        "next": [
+            "Collect_ForceTelepor_FindTeleporCircle",
+            "[Anchor]OnFoot_SkillCircle_Try",
+            "Collect_TeleporCircle_OnFoot_Skirmish",
+            "[JumpBack]Collect_TeleporCircle_OnFoot_LoopFoot",
+            "Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu",
+            "[JumpBack]Collect_IM_Move_MGS",
+            "Collect_TeleporCircle_OnFoot_TPIco_Click"
+        ],
+        "focus": "CTOB.导航地图.tp1.找到传送阵图标-点击"
     },
     "Collect_TeleporCircle_OnFoot_TPIco_Mirror": {
         "desc": "_TPIco的同等镜像节点,用于某些Error管路,使用其他中断方法恢复到next同样节点冲突",
@@ -1294,8 +1510,6 @@
         "action": "Click",
         "post_delay": 3000,
         "next": [
-            "Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu",
-            "Collect_TeleporCircle_OnFoot_TPIcoCk",
             "Collect_TeleporCircle_OnFoot_TPIco"
         ],
         "focus": "CTOB.导航地图.异常恢复-找到传送阵图标"
@@ -1314,31 +1528,62 @@
         ],
         "action": "Click",
         "post_delay": 800,
+        "timeout": 5000,
         "next": [
-            "Collect_TeleporCircle_OnFoot_TPIcoCk"
-        ]
-    },
-    "Collect_TeleporCircle_OnFoot_TPIcoCk": {
-        "recognition": "OCR",
-        "roi": [
-            623,
-            352,
-            198,
-            173
+            "[JumpBack]Collect_IM_Move_MGS",
+            "Collect_ForceTelepor_FindTeleporCircle",
+            "[Anchor]OnFoot_SkillCircle_Try",
+            "Collect_TeleporCircle_OnFoot_Skirmish",
+            "[JumpBack]Collect_TeleporCircle_OnFoot_LoopFoot",
+            "[JumpBack]Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu_TryAgain"
         ],
-        "expected": [
-            "生成",
-            "确认"
+        "on_error": ["Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu_ERR"]
+    },
+    "Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu_TryAgain": {
+        "desc": "游戏bug,第一次点开小地图时点击子按钮没反应",
+        "recognition": "And",
+        "all_of": [
+            "Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu",
+            {
+                "recognition": "Custom",
+                "custom_recognition": "CheckTag",
+                "custom_recognition_param": {
+                    "tag": "NviMap_Sub_Err",
+                    "max": 5
+                }
+            }
         ],
         "action": "Click",
-        "post_delay": 2000,
+        "post_delay": 800,
+        "next": ["Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu_TryAgain_Up"]
+    },
+    "Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu_TryAgain_Up": {
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "UpdateTag",
+        "custom_action_param": {
+            "tag": "NviMap_Sub_Err",
+            "value": 1
+        },
+        "post_delay": 0
+    },
+    "Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu_ERR": {
         "next": [
-            "Collect_ForceTelepor_FindTeleporCircle",
-            "Collect_OnFoot_Skill3_4",
-            "Collect_TeleporCircle_OnFoot_Skirmish",
-            "[JumpBack]Collect_TeleporCircle_OnFoot_LoopFoot"
-        ],
-        "focus": "CTOB.传送阵目标确认"
+            "Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu_ERR_Sandbox",
+            "[JumpBack]Global_BackPageHub_Once"
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu_ERR_Sandbox": {
+        "recognition": "Or",
+        "any_of": ["Global_ToSandBox_Enter"],
+        "action": "Custom",
+        "custom_action": "ResetTag",
+        "custom_action_param": {
+            "tags": [
+                "NviMap_Sub_Err"
+            ]
+        },
+        "next": ["[Anchor]IntSubMenu_ErrReturn"]
     },
     "Collect_OnFoot_Skill3_4": {
         "desc": "跑路过程中不断尝试能否使用传送阵提前结束过程,可以设置IF开关启停",
@@ -1399,12 +1644,15 @@
             "AutoNvi_ico.png"
         ],
         "action": "DoNothing",
-        "post_delay": 5000,
-        "timeout": 2000,
-        "next": [
-            "Collect_OnFoot_Skill3_1_Again",
-            "Collect_OnFoot_Skill3_5_Again"
-        ],
+        "post_wait_freezes": {
+            "time": 2000,
+            "target": [
+                595,
+                519,
+                113,
+                111
+            ]
+        },
         "focus": "COTB.行路中..."
     },
     "Collect_OnFoot_Skill3_5_Again": {
@@ -1449,49 +1697,6 @@
         "action": "Click",
         "post_delay": 2000,
         "focus": "CTOB.行路中施放'压制'"
-    },
-    "Collect_OnFoot_Skill3_1_Again": {
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1051,
-                    400,
-                    81,
-                    86
-                ],
-                "template": [
-                    "Skill3-1.png"
-                ]
-            },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    1086,
-                    428,
-                    10,
-                    2
-                ],
-                "method": 40,
-                "lower": [
-                    0,
-                    0,
-                    200
-                ],
-                "upper": [
-                    180,
-                    20,
-                    255
-                ],
-                "count": 10
-            }
-        ],
-        "action": "Click",
-        "target": [
-            1088,
-            444
-        ]
     },
     "Collect_TeleporCircle_OnFoot_Skirmish": {
         "recognition": "TemplateMatch",
@@ -1584,6 +1789,7 @@
         "desc": "发现传送按钮标,（步行到终点）模块出口",
         "recognition": "Or",
         "any_of": ["Collect_FindTeleporCircle0.9"],
+        "anchor": {"IntSubMenu_ErrReturn": ""},
         "focus": "CTOB.到达传送阵-按钮标,End"
     },
     "Rec_NavMap_Lift": {
@@ -1635,5 +1841,250 @@
         "expected": [
             "自动移动中"
         ]
+    },
+    "Collect_WayPoint_Entry": {
+        "desc": "从任意采集箱庭打开左上寻路列表并返回探索告示板；目标项由文字定位，不依赖列表长度。",
+        "recognition": "Or",
+        "any_of": [
+            "Collect_WayPoint_Open_Tpl",
+            "Collect_WayPoint_Csm"
+        ],
+        "anchor": {
+            "IntSubMenu_ErrReturn": "Collect_WayPoint_Entry",
+            "OnFoot_SkillCircle_Try": ""
+        },
+        "next": [
+            "Collect_WayPoint_Hunt",
+            "Collect_WayPoint_Board",
+            "Collect_WayPoint_Inn",
+            "[JumpBack]Collect_WayPoint_Open_Tpl",
+            "[JumpBack]Collect_WayPoint_Csm",
+            "[JumpBack]QuickHunt_MIniMap_locErr"
+        ],
+        "on_error": ["Collect_TeleporCircle_OnlyFoot_Entry"],
+        "focus": "CTB.回到探索告示板"
+    },
+    "Collect_WayPoint_Csm": {
+        "desc": "首选Csm.识别点击小地图旁的寻路按钮，展开可前往地点列表。",
+        "recognition": "Custom",
+        "custom_recognition": "HSVShapeMatching",
+        "custom_recognition_param": {
+            "hsv_map": {
+                "Rec_<WayPoint_Csm>_Tpl": {
+                    "lower": [
+                        0,
+                        0,
+                        230
+                    ],
+                    "upper": [
+                        180,
+                        25,
+                        255
+                    ]
+                }
+            },
+            "edge_assist": true
+        },
+        "action": "Click",
+        "post_delay": 800
+    },
+    "Rec_<WayPoint_Csm>_Tpl": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            165,
+            50,
+            190,
+            60
+        ],
+        "template": [
+            "Binary/UI_SandGuideButt_Bin.png"
+        ]
+    },
+    "Collect_WayPoint_Open_Tpl": {
+        "desc": "首选.点击小地图旁的寻路按钮，展开可前往地点列表。",
+        "recognition": "TemplateMatch",
+        "roi": [
+            165,
+            50,
+            190,
+            60
+        ],
+        "template": [
+            "Nvi_SandGuideButt.png"
+        ],
+        "action": "Click",
+        "post_delay": 800,
+        "focus": "CTB.展开寻路列表"
+    },
+    "Collect_WayPoint_Hunt": {
+        "desc": "首选.在整个可变长度下拉列表内 OCR 定位-狩猎场.会直接被投放到传送阵上",
+        "recognition": "OCR",
+        "roi": [
+            247,
+            59,
+            201,
+            440
+        ],
+        "expected": [
+            "狩猎场",
+            "狩獵場"
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "[JumpBack]Collect_IM_Move_MGS",
+            "[JumpBack]Collect_IM_OnFoot_Moveing",
+            "[JumpBack]Global_WaitingForLoading",
+            "Collect_WayPoint_Arrived"
+        ],
+        "focus": "CTB.选择狩猎场"
+    },
+    "Collect_WayPoint_Board": {
+        "desc": "在整个可变长度下拉列表内 OCR 定位并点击探索告示板。",
+        "max_hit": 4,
+        "recognition": "OCR",
+        "roi": [
+            247,
+            59,
+            201,
+            440
+        ],
+        "expected": [
+            "探索告示板",
+            "探索佈告欄"
+        ],
+        "action": "Click",
+        "anchor": {
+            "ExplorationBoard_Arrived": "Collect_WayPoint_ExplorationBoard_Arrived"
+        },
+        "post_delay": 1000,
+        "next": [
+            "[JumpBack]Collect_IM_Move_MGS",
+            "[JumpBack]Collect_IM_OnFoot_Moveing",
+            "[JumpBack]Global_WaitingForLoading",
+            "Collect_WayPoint_Arrived"
+        ],
+        "focus": "CTB.选择探索告示板"
+    },
+    "Collect_WayPoint_Inn": {
+        "desc": "首选.在整个可变长度下拉列表内 OCR 定位-旅馆.",
+        "recognition": "OCR",
+        "roi": [
+            247,
+            59,
+            201,
+            440
+        ],
+        "expected": [
+            "旅馆",
+            "旅館"
+        ],
+        "action": "Click",
+        "anchor": {
+            "ExplorationBoard_Arrived": "Collect_WayPoint_ExplorationBoard_Arrived"
+        },
+        "post_delay": 1000,
+        "next": [
+            "[JumpBack]Collect_IM_Move_MGS",
+            "[JumpBack]Collect_IM_OnFoot_Moveing",
+            "[JumpBack]Global_WaitingForLoading",
+            "Collect_WayPoint_Arrived"
+        ],
+        "focus": "CTB.选择旅馆"
+    },
+    "Collect_WayPoint_Arrived": {
+        "desc": "自动移动结束并回到探索告示板；调用方可设置 ExplorationBoard_Arrived 锚点继续。",
+        "recognition": "And",
+        "all_of": [
+            "Rec_SandBox_Pin3_Tpl",
+            "Sub_SandBox_Pin3_Bright_Clr"
+        ],
+        "pre_delay": 1500,
+        "timeout": 5000,
+        "next": [
+            "Collect_WayPoint_Arrived_Verify",
+            "[JumpBack][Anchor]ExplorationBoard_Arrived"
+        ],
+        "focus": "CTB.已回到探索告示板"
+    },
+    "Collect_WayPoint_Arrived_Verify": {
+        "desc": "已识别到踩传送阵?继续验证",
+        "recognition": "Or",
+        "any_of": [
+            "Collect_TeleporCircle_Ico_Enter",
+            "Collect_FindTeleporCircle"
+        ],
+        "action": "Custom",
+        "custom_action": "SmartAction",
+        "custom_action_param": {
+            "proxy_node": "Collect_TeleporCircle_Ico_Enter",
+            "detect_roi": [
+                838,
+                533,
+                69,
+                62
+            ],
+            "threshold": 3.0,
+            "settle_delay": 1500,
+            "on_changed": "next",
+            "on_unchanged": "loop",
+            "loop_limit": 5,
+            "loop_exhausted": "error"
+        },
+        "post_delay": 2000,
+        "timeout": 8000,
+        "next": [
+            "Collect_WayPoint_Arrived_Succeed",
+            "Collect_WayPoint_Arrived_Fail_1"
+        ],
+        "on_error": [
+            "[JumpBack][Anchor]ExplorationBoard_Arrived",
+            "Global_Null"
+        ]
+    },
+    "Collect_WayPoint_Arrived_Fail_1": {
+        "desc": "上游点击后,有返回按钮.说明开启了某个对话",
+        "recognition": "Or",
+        "any_of": ["Global_BackPageHub_Once"],
+        "next": [
+            "[JumpBack]Global_ToSandBox",
+            "[JumpBack][Anchor]ExplorationBoard_Arrived"
+        ]
+    },
+    "Collect_WayPoint_Arrived_Succeed": {
+        "recognition": "Or",
+        "any_of": ["Collect_OperationsMain_ToAreaMap"],
+        "anchor": {"ExplorationBoard_Arrived": ""},
+        "next": ["Global_ToSandBox"]
+    },
+    "Collect_WayPoint_ExplorationBoard_Arrived": {
+        "desc": "点击左上地图",
+        "recognition": "Or",
+        "any_of": [
+            "Collect_TeleporCircle_OnFoot_GoinNviMap"
+        ],
+        "action": "Click",
+        "target": [
+            148,
+            119,
+            34,
+            38
+        ],
+        "post_delay": 2500,
+        "next": [
+            "Collect_WayPoint_ExplorationBoard_Arrived_NavMap",
+            "Collect_WayPoint_ExplorationBoard_Arrived"
+        ]
+    },
+    "Collect_WayPoint_ExplorationBoard_Arrived_NavMap": {
+        "recognition": "Or",
+        "any_of": [
+            "Collect_TeleporCircle_OnFoot_NviMap"
+        ],
+        "next": [
+            "Collect_TeleporCircle_OnFoot_TPIco",
+            "[JumpBack]Collect_TeleporCircle_OnFoot_NviMapChange_Lift"
+        ],
+        "focus": "CTOB.确认导航地图界面打开"
     }
 }
