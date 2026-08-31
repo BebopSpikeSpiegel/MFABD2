@@ -1440,7 +1440,7 @@
                     "name": "Yes",
                     "pipeline_override": {},
                     "option": [
-                        "购买收藏扫描（每周|每次）"
+                        "购买收藏扫描频率"
                     ]
                 },
                 {
@@ -1488,13 +1488,13 @@
                 }
             ]
         },
-        "购买收藏扫描（每周|每次）": {
-            "type": "switch",
-            "default_case": "No",
-            "description": "关：每周仅扫描一次，完成后记录存档，本周内后续运行自动跳过。<br>开：每次运行均执行。",
+        "购买收藏扫描频率": {
+            "type": "select",
+            "default_case": "每周",
+            "description": "每周：周内仅扫描一次，完成后记录存档，本周内后续运行自动跳过。<br>每次：运行均执行。<br>从不：跳过选星，直接购买。",
             "cases": [
                 {
-                    "name": "Yes",
+                    "name": "每次",
                     "pipeline_override": {
                         "Arbitrage_Buy_ToSelect": {
                             "recognition": "DirectHit"
@@ -1502,8 +1502,16 @@
                     }
                 },
                 {
-                    "name": "No",
+                    "name": "每周",
                     "pipeline_override": {}
+                },
+                {
+                    "name": "从不",
+                    "pipeline_override": {
+                        "Arbitrage_Buy_ToSelect": {
+                            "enabled": false
+                        }
+                    }
                 }
             ]
         },
