@@ -3,9 +3,12 @@
         "focus": "占位符.需要正确的资源选择."
     },
     "Custom_Proxy_Swipe": {
-        "desc": "不要使用,不要删除。这是验证滑动custom的预留节点。",
+        "desc": "不要使用,不要删除。这是旧 SmartSwipe 的滑动代理节点,自带 post_delay:1000。仅剩 Collect_LocatePackFrame_Smart_Swip 在用,该处迁到 SmartAction 后连同 smart_scroller.py 一起删。新写请用 Agt_Proxy_Blank。",
         "action": "Swipe",
         "post_delay": 1000
+    },
+    "Agt_Proxy_Blank": {
+        "desc": "不要使用,不要删除。SmartAction 的空代理节点,全部内容由 custom_action_param.proxy_override 注入。这里必须保持真空——写任何 action/delay 都会在调用方没覆盖该字段时被意外继承。"
     },
     "Env_AccountSave_Switch": {
         "desc": "一个存储存档名称/呼叫检查动作的,可复用节点. | 默认节点为0,此时生成不带额外名称的存档文件.| max_hit,利用流程级变量只运行一次,流程结束会销毁",
@@ -83,6 +86,7 @@
         "action": "Click"
     },
     "Agt_RedDot_Preset": {
+        "desc": "通用红点预设。flt_hsv_rescue.entry_* 是严格HSV救援的入口开关,取值 off/shadow/active/inherit(跟随mode)。三个入口共用同一套处理与出口,只决定'父块从哪来':entry_aspect=长宽比闸拒绝的块(v3原有入口);entry_confidence=过闸打过分但分不够的块(多是连片把封闭区搅成杂散空洞,竖长与偏白一起塌);entry_confidence_rej=前者无解时回头搜同帧被长宽比拒的块(证据仅1条,固定shadow只记录不改判)。mode 是硬总开关,off 时三个入口一律不跑。预算(max_full_runs/time_budget_ms)全局共享,不随入口数增长。改这里之前先跑 agent/recognition/replay_rdd_samples.py 全语料回放,判据是 result_parity 100% 且救回的每一条经肉眼确认是真红点。",
         "recognition": "Custom",
         "custom_recognition": "RedDotDetector",
         "custom_recognition_param": {
@@ -117,6 +121,9 @@
             "sc_gap_ratio": 0.35,
             "flt_hsv_rescue": {
                 "mode": "active",
+                "entry_aspect": "inherit",
+                "entry_confidence": "inherit",
+                "entry_confidence_rej": "shadow",
                 "max_delta_s": 110,
                 "max_delta_v": 110,
                 "max_full_runs": 12,
@@ -162,6 +169,9 @@
             "sc_gap_ratio": 0.35,
             "flt_hsv_rescue": {
                 "mode": "active",
+                "entry_aspect": "inherit",
+                "entry_confidence": "inherit",
+                "entry_confidence_rej": "shadow",
                 "max_delta_s": 110,
                 "max_delta_v": 110,
                 "max_full_runs": 12,

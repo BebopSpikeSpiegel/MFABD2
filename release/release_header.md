@@ -43,4 +43,10 @@ Release 头部草稿 · 注入目标：GitHub Release Notes 顶部
 -->
 ---target: all---
 > 159 Moons of Grace , And miles to go with you.
+
+> 原资源过旧，直接下发公测。激进好过死定。
+---end---
+
+---target: stable---
+> 4.4.0附近版本,当前会激进更新,直到相关功能重新恢复稳定。
 ---end---

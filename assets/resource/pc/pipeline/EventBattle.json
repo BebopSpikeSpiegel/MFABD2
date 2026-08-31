@@ -90,7 +90,6 @@
         ]
     },
     "SeasonEvent_NormlBattle": {
-        "desc": "无自动战斗时,常规战斗会出现在ROI中被识别.注意普通战斗点击无AP确认框,直接进入战斗||偏移猜的",
         "roi": [
             802,
             635,
@@ -197,7 +196,6 @@
         ]
     },
     "Rec_<SeasonEvent_MamonoFollow_Practice>_Ocr_01": {
-        "desc": "魔兽尚未开放判定,位置1||全猜的",
         "roi": [
             913,
             10,
@@ -211,7 +209,6 @@
         "only_rec": false
     },
     "Rec_<SeasonEvent_MamonoFollow_Practice>_Ocr_02": {
-        "desc": "魔兽尚未开放判定,位置2||全猜的",
         "roi": [
             722,
             202,
@@ -220,7 +217,7 @@
         ],
         "expected": [
             "狩猎期间开始解除",
-            "狩獵期間開始"
+            "於狩獵期間起解鎖"
         ]
     },
     "Even_MamonoFollow_lv1_Ck": {
@@ -306,7 +303,6 @@
         ]
     },
     "SeasonEvent_MamonoFollow_Team_Troubleshoot": {
-        "desc": "有队伍漏配||偏移猜的",
         "roi": [
             502,
             219,
@@ -430,8 +426,14 @@
             "小活動"
         ]
     },
+    "Event_Battle_TabAutoBattle_ChangeDifficulty_TryGeneral": {
+        "expected": [
+            "普通",
+            "一般"
+        ]
+    },
     "SeasonEvent_ReMamono_Enter": {
-        "desc": "全猜的",
+        "desc": "",
         "roi": [
             880,
             132,
