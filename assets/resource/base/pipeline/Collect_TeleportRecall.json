@@ -283,7 +283,8 @@
         "anchor": {
             "IntSubMenu_ErrReturn": "Collect_TeleporCircle_OnFoot_Start",
             "OnFoot_SkillCircle_Try": "Collect_OnFoot_Skill3_4",
-            "Return_Type": "Collect_TeleporCircle_OnlyFoot_Entry"
+            "Return_Type": "Collect_TeleporCircle_OnlyFoot_Entry",
+            "Skill_Overpower": "Collect_OnFoot_Skill3_5_Again"
         },
         "next": [
             "Collect_TeleporCircle_OnFoot_GoinNviMap"
@@ -386,6 +387,7 @@
         ],
         "post_delay": 2500,
         "next": [
+            "[JumpBack][Anchor]Skill_Overpower",
             "Collect_TeleporCircle_OnFoot_ToNavMap_CK",
             "Collect_TeleporCircle_OnFoot_ToNavMap"
         ]
@@ -1754,7 +1756,10 @@
         "desc": "发现传送按钮标,（步行到终点）模块出口",
         "recognition": "Or",
         "any_of": ["Collect_FindTeleporCircle0.9"],
-        "anchor": {"IntSubMenu_ErrReturn": ""},
+        "anchor": {
+            "IntSubMenu_ErrReturn": "",
+            "Skill_Overpower": ""
+        },
         "focus": "CTOB.到达传送阵-按钮标,End"
     },
     "Rec_NavMap_Lift": {
@@ -1816,7 +1821,8 @@
         ],
         "anchor": {
             "IntSubMenu_ErrReturn": "Collect_WayPoint_Entry",
-            "OnFoot_SkillCircle_Try": ""
+            "OnFoot_SkillCircle_Try": "",
+            "Skill_Overpower": ""
         },
         "next": [
             "Collect_WayPoint_Hunt",
