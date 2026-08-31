@@ -62,10 +62,10 @@
     },
     "Collect_TeleporCircle_OnFoot_GoinNviMap": {
         "target": [
-            126,
-            97,
-            22,
-            33
+            132,
+            103,
+            10,
+            10
         ]
     },
     "Collect_TeleporCircle_OnFoot_NviMap": {
@@ -84,6 +84,14 @@
             "世界地圖"
         ]
     },
+    "Collect_TeleporCircle_OnFoot_ToNavMap": {
+        "target": [
+            132,
+            103,
+            10,
+            10
+        ]
+    },
     "Collect_InitiatingManual_Onfoot_Start": {
         "roi": [
             149,
@@ -92,6 +100,8 @@
             53
         ],
         "expected": [
+            "剑之神殿右侧回廊",
+            "劍之神殿右側迴廊",
             "泳池派对场",
             "泳池派對",
             "派对会场角落",
@@ -169,10 +179,10 @@
     },
     "Collect_IM_GoinNviMap": {
         "target": [
-            130,
-            105,
-            15,
-            16
+            132,
+            103,
+            10,
+            10
         ]
     },
     "Collect_IM_OnFoot_NviMap_E03_A1": {
@@ -291,6 +301,26 @@
             "潑水音樂節活動會場"
         ]
     },
+    "Collect_IM_OnFoot_NviMap_M14": {
+        "roi": [
+            149,
+            10,
+            372,
+            53
+        ],
+        "expected": [
+            "剑之神殿右侧回廊",
+            "劍之神殿右側迴廊"
+        ]
+    },
+    "Collect_IM_OnFoot_NviMap_M14_A1_Move": {
+        "target": [
+            183,
+            464,
+            2,
+            2
+        ]
+    },
     "Collect_IM_OnFoot_NviMap_E05_A2_Move": {
         "target": [
             504,
@@ -383,6 +413,14 @@
             48
         ]
     },
+    "Collect_TeleporCircle_OnFoot_TPIco": {
+        "roi": [
+            128,
+            76,
+            484,
+            535
+        ]
+    },
     "Collect_TeleporCircle_OnFoot_TPIcoCk_IntSubMenu": {
         "roi": [
             134,
@@ -393,14 +431,6 @@
         "expected": [
             "魔法阵",
             "魔法陣"
-        ]
-    },
-    "Collect_TeleporCircle_OnFoot_TPIcoCk": {
-        "expected": [
-            "生成",
-            "創建",
-            "确认",
-            "確認"
         ]
     },
     "Collect_OnFoot_Skill3_4": {
@@ -446,47 +476,12 @@
             }
         ]
     },
-    "Collect_OnFoot_Skill3_1_Again": {
-        "all_of": [
-            {
-                "sub_name": "TemplateMatch",
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1086,
-                    455,
-                    72,
-                    68
-                ],
-                "template": [
-                    "Skill3.png"
-                ]
-            },
-            {
-                "sub_name": "ColorMatch",
-                "recognition": "ColorMatch",
-                "roi": [
-                    1117,
-                    476,
-                    11,
-                    3
-                ],
-                "method": 40,
-                "lower": [
-                    [
-                        0,
-                        0,
-                        200
-                    ]
-                ],
-                "upper": [
-                    [
-                        180,
-                        20,
-                        255
-                    ]
-                ],
-                "count": 10
-            }
+    "Collect_TeleporCircle_OnFoot_LoopFoot": {
+        "roi": [
+            619,
+            636,
+            42,
+            42
         ]
     },
     "Collect_TeleporCircle_OnFoot_Skirmish": {
@@ -562,6 +557,85 @@
             "自動移動中"
         ]
     },
+    "Rec_<WayPoint_Csm>_Tpl": {
+        "roi": [
+            165,
+            50,
+            160,
+            45
+        ]
+    },
+    "Collect_WayPoint_Open_Tpl": {
+        "desc": "[PC] 小地图旁的寻路按钮。roi 与 base 逐字相同(端间通用,取自 #466 已删的 PC 实测值),仅换 PC 素材。",
+        "roi": [
+            165,
+            50,
+            160,
+            45
+        ],
+        "template": [
+            "Nvi_SandGuideButt_PC.png"
+        ],
+        "green_mask": true
+    },
+    "Collect_WayPoint_Hunt": {
+        "desc": "[PC] 同 Collect_WayPoint_Board 的下拉列表,base 三者共用同一 roi。",
+        "roi": [
+            205,
+            25,
+            180,
+            600
+        ]
+    },
+    "Collect_WayPoint_Board": {
+        "desc": "[PC] 寻路下拉列表在 PC 上更长且更靠上。roi 取自 #466 已删节点的 PC 实测值。",
+        "roi": [
+            205,
+            25,
+            180,
+            600
+        ],
+        "expected": [
+            "探索告示板",
+            "任務布告欄"
+        ]
+    },
+    "Collect_WayPoint_Inn": {
+        "desc": "[PC] 同 Collect_WayPoint_Board 的下拉列表,base 三者共用同一 roi。",
+        "roi": [
+            205,
+            25,
+            180,
+            600
+        ]
+    },
+    "Collect_WayPoint_Arrived_Verify": {
+        "custom_action_param": {
+            "detect_roi": [
+                907,
+                561,
+                70,
+                63
+            ],
+            "loop_exhausted": "error",
+            "loop_limit": 5,
+            "on_changed": "next",
+            "on_unchanged": "loop",
+            "proxy_node": "Collect_TeleporCircle_Ico_Enter",
+            "settle_delay": 1500,
+            "threshold": 3.0
+        }
+    },
+    "Collect_WayPoint_ExplorationBoard_Arrived": {
+        "target": [
+            132,
+            103,
+            10,
+            10
+        ]
+    },
+    "Collect_TeleporCircle_OnFoot_TPIcoCk": {},
+    "Collect_OnFoot_Skill3_1_Again": {},
     "Collect_OperationsMain_ToAreaMap": {
         "desc": "判断在区域地图(移动魔法阵)界面。|[PC覆盖·2026-07-13实录] base roi[183,11,249,53]左缘正好切'移'字左边条,OCR以0.989读成'多动魔法阵'→expected恒miss→传送阵界面死等(23:24实录)。roi左扩[150,11,280,53]罩全标题。注:节点属 Collect_Navigation,跑商链途经(节点命名空间全局合并)。",
         "roi": [

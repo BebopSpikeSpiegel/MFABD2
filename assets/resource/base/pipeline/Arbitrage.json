@@ -60,7 +60,7 @@
             "Rec_SandBox_Pin_Tpl",
             "Rec_SandBox_Run_Tpl"
         ],
-        "anchor": "Arbitrage5",
+        "anchor": "SandBox_Bypass",
         "post_delay": 1000,
         "next": [
             "[JumpBack]Arbitrage_Cooking_Weekly",
