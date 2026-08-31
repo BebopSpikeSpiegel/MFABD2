@@ -1656,44 +1656,9 @@
         "focus": "COTB.行路中..."
     },
     "Collect_OnFoot_Skill3_5_Again": {
-        "desc": "行路途中尝试施放'压制',降低撞怪。挂在行路循环里而非出发点:徒步线的进入条件本身就是 Collect_ForceTeleporCircle_No「技能变灰」,出发瞬间压制必在冷却,只有沿途周期性重试才等得到冷却结束。识别参数取自 Collect_Skill3_5,自带可用态色核,灰态(冷却/次数用尽)自跳过;不进技能组、不设 next,行为比照同文件 Collect_OnFoot_Skill3_1_Again",
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": "TemplateMatch",
-                "roi": [
-                    1140,
-                    442,
-                    81,
-                    87
-                ],
-                "template": [
-                    "Skill3-5 GE.png"
-                ],
-                "green_mask": true
-            },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    1181,
-                    486,
-                    7,
-                    9
-                ],
-                "method": 40,
-                "lower": [
-                    0,
-                    0,
-                    240
-                ],
-                "upper": [
-                    30,
-                    3,
-                    255
-                ],
-                "count": 30
-            }
-        ],
+        "desc": "行路途前尝试施放'压制',降低撞怪。一次性无cd，不可用变灰。",
+        "recognition": "Or",
+        "any_of": ["Collect_Skill3_5"],
         "action": "Click",
         "post_delay": 2000,
         "focus": "CTOB.行路中施放'压制'"
