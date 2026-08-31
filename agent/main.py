@@ -116,7 +116,7 @@ from maa.toolkit import Toolkit
 import action # action子文件夹:agent/action/__init__.py里声明的全部
 import recognition
 from utils.persistent_store import PersistentStore # Agent配置文件热备份
-from utils.instance_resolver import resolve_account_id  # [新增] 实例探测器
+from utils.instance_resolver import resolve_instance_id  # 实例身份探测(仅日志)
 from utils.host_watchdog import HostWatchdog, cleanup_socket_file  # 宿主(UI)存活守护
 import fishing_agent # 钓鱼~
 
@@ -128,8 +128,12 @@ def main():
     print(f"Agent 正在启动... 根目录: {project_root}")
 
     # =========================================================================
-    # [核心变更] 启动时一次性解析实例与存档号
+    # 启动时的实例探测与存档系统预热
     # =========================================================================
+    # 存档号**不在这里决定**。启动阶段拿不到 context，也就拿不到用户当前选的
+    # 存档号 —— 它由 utils/account_sync.py 在首个 custom 回调里从 context 读出
+    # 并切换（见该模块 docstring）。这里只用默认档预热一次，验证路径与读写权限。
+    #
     # 获取 socket_id (由 MaaFramework 传入)
     socket_id = sys.argv[-1] if len(sys.argv) >= 2 else ""
     # 去除可能的 "socket_id=" 前缀
@@ -138,16 +142,12 @@ def main():
 
     try:
         if socket_id:
-            account_id = resolve_account_id(socket_id, project_root)
-            if account_id != "0":
-                PersistentStore.switch_account(account_id)
-        
-        PersistentStore.load() 
-        mfaalog.info("✅ [Agent] 存档/备份系统已就绪")
-    except Exception as e:
-        mfaalog.error(f"⚠️ 存档解析或加载发生异常，降级使用默认存档 '0': {e}")
-        PersistentStore.switch_account("0")
+            resolve_instance_id(socket_id, project_root)  # 仅记日志，供多实例排查
+
         PersistentStore.load()
+        mfaalog.info("✅ [Agent] 存档/备份系统已就绪（存档号将在首个任务运行时确定）")
+    except Exception as e:
+        mfaalog.error(f"⚠️ 存档系统预热异常: {e}")
 
     # 1. 初始化 Toolkit (借鉴 B 项目)
     # AgentServer 模式下仅 set_log_dir 生效，其余被忽略（上游已知行为）

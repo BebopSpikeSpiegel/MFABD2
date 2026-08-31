@@ -195,7 +195,7 @@
         "roi": [
             309,
             72,
-            977,
+            971,
             634
         ]
     },
@@ -507,6 +507,12 @@
             "親密度加成"
         ]
     },
+    "Daily_Intimacy_Switch_Turn": {
+        "custom_recognition_param": {
+            "max": 8,
+            "tag": "Intimacy_Switch_Turn"
+        }
+    },
     "Daily_Intimacy_Set_FirstPerson": {
         "roi": [
             103,
@@ -538,7 +544,6 @@
         ]
     },
     "Daily_Intimacy_Turn_NextPerson": {
-        "max_hit": 8,
         "roi_offset": [
             0,
             75,

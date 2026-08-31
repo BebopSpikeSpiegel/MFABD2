@@ -211,7 +211,6 @@
         ],
         "next": [
             "Collect_TargetMap1_Special_Right",
-            "[JumpBack]Collect_ClickTeleporOccupy",
             "Collect_TargetMap2",
             "Collect_TargetMap3",
             "Collect_TargetMap4",
@@ -243,8 +242,8 @@
         ],
         "post_delay": 5000,
         "next": [
-            "[Anchor]Arbitrage5",
-            "Collect_Skill_Start",
+            "[Anchor]SandBox_Bypass",
+            "Collect_Skill_Entry",
             "Collect_ClickTeleporOccupy",
             "[JumpBack]Global_WaitingForLoading"
         ],
@@ -371,6 +370,7 @@
         "post_delay": 200,
         "timeout": 3000,
         "next": [
+            "Collect_TargetMap_Special_M14",
             "Collect_TargetMap4",
             "[JumpBack]Collect_TargetMap_Special_ClickTpCircleIco",
             "Collect_QuickCart_TargetMapEnd",
@@ -399,6 +399,7 @@
             47
         ],
         "expected": [
+            "被遗忘的神殿",
             "商场1楼",
             "妖怪镇"
         ],
@@ -487,7 +488,8 @@
         "expected": [
             "施塔因之塔第8层",
             "施塔因之塔第8層",
-            "施塔因之塔宿舍"
+            "施塔因之塔宿舍",
+            "儿童房"
         ],
         "action": "Click",
         "target": [
@@ -515,7 +517,7 @@
             "通往暗夜世界入口之路"
         ],
         "next": [
-            "Collect_TargetMap4"
+            "Collect_TargetMap3"
         ]
     },
     "Collect_MapRight_NoFind": {
@@ -590,8 +592,7 @@
         ],
         "expected": [
             "学校1楼",
-            "学校2楼",
-            "学校3楼"
+            "雷瓦汀据点"
         ],
         "next": [
             "Collect_ClickTeleporCircleIco"
@@ -620,6 +621,7 @@
         "inverse": true,
         "post_delay": 1000,
         "next": [
+            "Collect_ClickTeleporOccupy",
             "Collect_TeleporNotFind_Right",
             "Collect_TeleporNotFind_NORight"
         ],
@@ -728,8 +730,8 @@
         "action": "Click",
         "post_delay": 5000,
         "next": [
-            "[Anchor]Arbitrage5",
-            "Collect_Skill_Start",
+            "[Anchor]SandBox_Bypass",
+            "Collect_Skill_Entry",
             "Collect_ClickTelepor_TargetClass_PurpleProcess",
             "[JumpBack]Global_WaitingForLoading"
         ],
@@ -742,12 +744,62 @@
         "action": "Click",
         "post_delay": 5000,
         "next": [
-            "[Anchor]Arbitrage5",
-            "Collect_Skill_Start",
+            "[Anchor]SandBox_Bypass",
+            "Collect_Skill_Entry",
             "Collect_ClickTelepor_TargetClass_White",
             "[JumpBack]Global_WaitingForLoading"
         ],
         "focus": "CM.N.区域地图.tp1.选择首选传送阵图标"
+    },
+    "Collect_Skill_Entry": {
+        "desc": "[入口]调用快捷技能模块,传入状态参数。当前只传出口锚QuickSkill_Egress→Collect_Skill_Egress,清锚由Egress自己做。【识别不可改成DirectHit】它同时兼任'确实已进箱庭'的门禁,必中会让上游调用点的自引用重试永远轮不到。",
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "pre_delay": 0,
+        "anchor": {
+            "QuickSkill_Egress": "Collect_Skill_Egress"
+        },
+        "post_delay": 0,
+        "next": ["Collect_Skill_Start"]
+    },
+    "Collect_Skill_Egress": {
+        "desc": "[出口]技能模块返回卡带主线:确认技能页已复位(色核)→清出口锚→继续切图。原名Collect_Skill_End,自Collect_skills.json迁入——它做的是导航的事,不属于技能模块。",
+        "recognition": "ColorMatch",
+        "roi": [
+            1173,
+            633,
+            59,
+            60
+        ],
+        "lower": [
+            192,
+            141,
+            23
+        ],
+        "upper": [
+            223,
+            194,
+            129
+        ],
+        "count": 200,
+        "anchor": {
+            "QuickSkill_Egress": ""
+        },
+        "timeout": 5000,
+        "next": [
+            "Collect_OperationsMain_OperationsEnd",
+            "[JumpBack]Collect_FindTeleporCircle0.9",
+            "[JumpBack]Collect_FindTeleporCircle"
+        ],
+        "on_error": [
+            "Collect_ForceTeleporCircle",
+            "Global_Null_Exception",
+            "Global_Null_Panic"
+        ],
+        "focus": "CSB.技能组复位-色核通过"
     },
     "Collect_ClickTelepor_ButNotActive": {
         "desc": "如果传送阵没有激活,需要从这里决定中断",
@@ -790,7 +842,8 @@
         ],
         "post_delay": 5000,
         "next": [
-            "Collect_Skill_Start",
+            "[Anchor]SandBox_Bypass",
+            "Collect_Skill_Entry",
             "Collect_ClickTelepor_TargetClass_White",
             "[JumpBack]Global_WaitingForLoading",
             "Collect_ClickTelepor_Abnormal_Overlap"
@@ -820,13 +873,14 @@
         ],
         "post_wait_freezes": 1500,
         "next": [
-            "Collect_Skill_Start",
+            "[Anchor]SandBox_Bypass",
+            "Collect_Skill_Entry",
             "Collect_ClickBackOnSecureMap"
         ],
         "focus": "CM.N.区域地图.tp1.已正确"
     },
     "Collect_OperationsMain_OperationsEnd": {
-        "desc": "找到图钉 ，进入区域地图",
+        "desc": "确认区域地图，准备切图",
         "recognition": "Or",
         "any_of": ["Collect_OperationsMain_ToAreaMap"],
         "timeout": 3000,
@@ -862,10 +916,60 @@
         "desc": "详细地图内右图标，目的右移动1格[缺陷，此步骤缺乏验证方法]",
         "recognition": "Or",
         "any_of": ["Rec_AreaMap_ButtRight_Tmp"],
-        "action": "Click",
-        "post_delay": 5000
+        "action": "Custom",
+        "custom_action": "SmartAction",
+        "custom_action_param": {
+            "proxy_node": "Agt_Proxy_Blank",
+            "proxy_override": {
+                "action": "Click",
+                "target": [
+                    975,
+                    342,
+                    3,
+                    2
+                ],
+                "post_delay": 500
+            },
+            "settle_delay": 1000,
+            "on_changed": "next",
+            "on_unchanged": "loop",
+            "loop_limit": 4,
+            "detect_roi": [
+                454,
+                272,
+                369,
+                217
+            ]
+        }
     },
     "Collect_FindTeleporCircle0.9": {
+        "recognition": "And",
+        "all_of": ["Collect_TeleporCircle_Ico_Enter"],
+        "action": "Custom",
+        "custom_action": "SmartAction",
+        "custom_action_param": {
+            "proxy_node": "Collect_TeleporCircle_Ico_Enter",
+            "detect_roi": [
+                129,
+                105,
+                70,
+                66
+            ],
+            "threshold": 3.0,
+            "settle_delay": 1000,
+            "on_changed": "next",
+            "on_unchanged": "loop",
+            "loop_limit": 5,
+            "loop_exhausted": "error"
+        },
+        "timeout": 5000,
+        "on_error": [
+            "[JumpBack]Collect_Tab3_Ck",
+            "[JumpBack]Global_ToSandBox"
+        ],
+        "focus": "CM.从传送按钮打开区域地图-图像比特检测"
+    },
+    "Collect_TeleporCircle_Ico_Enter": {
         "desc": "0.9是否过高待评，图案两侧边缘有黑色纹路，另外有场景没有纹路（每日派遣），区别待深入考证",
         "recognition": "TemplateMatch",
         "roi": [
@@ -962,7 +1066,6 @@
     },
     "Collect_PackEnd_Ck_OnlyOnce": {
         "desc": "单次运行时,标记已完成",
-        "enabled": false,
         "action": "Custom",
         "custom_action": "MarkComplete",
         "custom_action_param": {
@@ -1022,5 +1125,94 @@
             "安全"
         ],
         "focus": "CM.N.卡带内流程进入END环节"
+    },
+    "Collect_TargetMap_Special_M14": {
+        "desc": "主线14单独旁路",
+        "recognition": "OCR",
+        "roi": [
+            408,
+            622,
+            466,
+            47
+        ],
+        "expected": [
+            "剑之神殿右侧回廊"
+        ],
+        "replace": [
+            [
+                "1",
+                "I"
+            ],
+            [
+                "T",
+                "I"
+            ],
+            [
+                "í",
+                "I"
+            ],
+            [
+                "!",
+                "I"
+            ],
+            [
+                "\\|",
+                "I"
+            ],
+            [
+                "l",
+                "I"
+            ]
+        ],
+        "anchor": {"SandBox_Bypass": "Collect_Special_M14_NviMap_Open"},
+        "post_delay": 200,
+        "timeout": 3000,
+        "next": [
+            "[JumpBack]Collect_ClickTelepor_ButNotActive",
+            "[JumpBack]Collect_Protection_ReturnToAreaMap",
+            "Collect_ClickTeleporCircleIco",
+            "Collect_Special_M14_NviMap_Open",
+            "[JumpBack]Collect_TeleporNotFind"
+        ],
+        "on_error": [
+            "[JumpBack]Global_ToSandBox",
+            "Collect_QuickCart_FastUI",
+            "Global_Null"
+        ],
+        "focus": "卡带EP.14单独旁路启动"
+    },
+    "Collect_Special_M14_NviMap_Open": {
+        "desc": "",
+        "max_hit": 3,
+        "recognition": "Or",
+        "any_of": [
+            "Rec_SandBox_Pin_Tpl",
+            "Rec_SandBox_Run_Tpl"
+        ],
+        "pre_delay": 2000,
+        "action": "Click",
+        "target": [
+            148,
+            119,
+            34,
+            38
+        ],
+        "anchor": {"SandBox_Bypass": ""},
+        "post_delay": 2500,
+        "timeout": 5000,
+        "next": ["Collect_Special_M14_NviMap_Enter"],
+        "focus": "C14.展开导航地图"
+    },
+    "Collect_Special_M14_NviMap_Enter": {
+        "desc": "点击导航地图左边的剑之神殿左侧回廊。",
+        "max_hit": 2,
+        "recognition": "And",
+        "all_of": ["Collect_TeleporCircle_OnFoot_NviMap"],
+        "post_delay": 1000,
+        "timeout": 5000,
+        "next": [
+            "Collect_InitiatingManual_Onfoot_Start"
+        ],
+        "focus": "C14.步行前往剑之神殿左侧回廊"
     }
 }

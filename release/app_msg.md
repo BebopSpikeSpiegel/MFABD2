@@ -44,17 +44,12 @@
 ---target: all---
 > 近期发版说明:
 
-> 正式版:UI改变因素必定不能跑时,不如直接下放公测版。 | 公测版:司职不变。 | 内测版:PC端适配过程中。
+> 正式版:UI改变因素必定不能跑时,不如直接下放公测版。 | 公测版:PC测试版改发公测渠道 | 内测版：暂停发放，预计会自动切公测。
 ---end---
+
 
 ---target: beta---
-> 公测版正在测试「红点识别」新模型:运行时会在软件目录 `debug\RedDotDetector_samples` 留存识别样本小图与记录(旁边的 `debug\RedDotDetector` 是失败快照)。
+> 已发现并尝试修正红点识别问题，欢迎积极反馈，尽早实现稳定。
 
-> 欢迎把这两个文件夹打包发回,帮助我们校准模型,感谢支持!
----end---
-
----target: alpha---
-> 公测版正在测试「红点识别」新模型:运行时会在软件目录 `debug\RedDotDetector_samples` 留存识别样本小图与记录(旁边的 `debug\RedDotDetector` 是失败快照)。
-
-> 欢迎把这两个文件夹打包发回,帮助我们校准模型,感谢支持!
+> Mac系统现可使用专有控制器 playcover 与其配套资源。相关配置方法见 [PlayCover 适配指南](https://github.com/sunyink/MFABD2/blob/develop/docs/zh_cn/PlayCover%E9%80%82%E9%85%8D%E6%8C%87%E5%8D%97.md)。由[@KoujiMinamoto](https://github.com/KoujiMinamoto)强力支援。
 ---end---
