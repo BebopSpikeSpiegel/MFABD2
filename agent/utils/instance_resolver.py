@@ -2,23 +2,31 @@
 """
 实例探测器 (Instance Resolver)
 ==============================
-在 Agent 启动时一次性解析当前进程归属的实例与用户存档号。
+解析当前 Agent 进程归属的 MFA 实例，**仅供日志排查多实例问题**。
 
 探测链路 (按优先级):
   1. 环境变量 MFA_INSTANCE_ID  → MFAAvalonia v2.11.3+ 注入 (首选)
      附带 MFA_INSTANCE_NAME    → 实例显示名称 (如 "配置 2")
   2. 日志反查 socket_id        → 从 MFA 日志提取 [inst=.../instance_id] (旧版降级)
-  3. 回退默认值 "default"
 
-拿到 instance_id 后:
-  → 读取 config/instances/{instance_id}.json
-  → 提取用户在「多存档」选项中填写的存档号
-  → 返回给 PersistentStore.switch_account()
+本模块不再解析存档号
+--------------------
+原先这里会去读 config/instances/{id}.json 里用户填的存档号。该实现遍历的是
+`TaskItems`，但「存档名称」挂在 global_option 下，MFAAvalonia 把它写进的是**另一个
+平级键 `GlobalOptionItems`** —— 于是那段代码永远找不到，恒返回 "0"，并附带一条
+误报的"防串档"警告。
+
+修它意味着在 py 侧重新实现一遍 MFAAvalonia 的 option 解析（index / sub_options /
+data 三层），而那套结构会随上游演进漂移，迟早再坏一次。正确的权威是运行时的
+`context.get_node_data`——它拿到的是经过完整 option 合并管线之后的值。
+
+所以存档号统一由 utils/account_sync.py 在 custom 回调里从 context 读取，
+本模块只留实例身份探测。多实例串档的风险也随之消失：每个实例的 context 里
+带的本就是它自己的存档号，不存在"回退到公共档"这回事。
 """
 
 import os
 import re
-import json
 from pathlib import Path
 from datetime import datetime
 
@@ -28,9 +36,9 @@ from . import mfaalog as logger
 # 公开接口
 # =============================================================================
 
-def resolve_account_id(socket_id: str, project_root: Path) -> str:
+def resolve_instance_id(socket_id: str, project_root: Path) -> str | None:
     """
-    【唯一外部调用入口】启动时一次性解析存档号。
+    解析当前进程归属的实例 ID，并记入日志。**不涉及存档号。**
 
     Parameters
     ----------
@@ -41,8 +49,8 @@ def resolve_account_id(socket_id: str, project_root: Path) -> str:
 
     Returns
     -------
-    str
-        存档号。找不到或单实例时返回 "0"。
+    str | None
+        实例 ID；未检测到多实例上下文时返回 None。
     """
     # ---- 第一优先: 环境变量 (MFAAvalonia v2.11.3+ 注入) ----
     instance_id = os.environ.get("MFA_INSTANCE_ID", "").strip()
@@ -50,32 +58,16 @@ def resolve_account_id(socket_id: str, project_root: Path) -> str:
         instance_name = os.environ.get("MFA_INSTANCE_NAME", "")
         logger.info(f"[Resolver] ✅ 从环境变量获取 instance_id = {instance_id}"
                     + (f" ({instance_name})" if instance_name else ""))
-    else:
-        # ---- 第二优先: 日志反查 (兼容未注入环境变量的旧版 MFAAvalonia) ----
-        instance_id = _find_instance_from_log(socket_id, project_root)
-        if instance_id:
-            logger.info(f"[Resolver] ✅ 从日志反查获取 instance_id = {instance_id}")
-        else:
-            logger.info("[Resolver] 未检测到多实例上下文，使用默认存档")
-            return "0"
+        return instance_id
 
-    # ---- 单实例判定: "default" 实例不需要额外存档号 ----
-    if instance_id == "default":
-        logger.info("[Resolver] 当前为默认实例 (default)，使用存档 0")
-        return "0"
+    # ---- 第二优先: 日志反查 (兼容未注入环境变量的旧版 MFAAvalonia) ----
+    instance_id = _find_instance_from_log(socket_id, project_root)
+    if instance_id:
+        logger.info(f"[Resolver] ✅ 从日志反查获取 instance_id = {instance_id}")
+        return instance_id
 
-    # ---- 从实例配置文件中提取用户自定义存档号 ----
-    account_id = _extract_account_from_config(instance_id, project_root)
-
-    # ---- 防串档警告: 非默认实例却回退到了公共存档 ----
-    if account_id == "0":
-        logger.warning(
-            f"[Resolver] ⚠️ 实例 [{instance_id}] 未配置独立存档号，将使用默认存档。"
-            f"多实例同时运行时可能串档！请在「启动脚本」→「多存档」→「存档名称」中为此实例设置不同的编号。"
-        )
-
-    logger.info(f"[Resolver] 📋 最终存档号 = {account_id} (instance={instance_id})")
-    return account_id
+    logger.info("[Resolver] 未检测到多实例上下文")
+    return None
 
 
 # =============================================================================
@@ -153,56 +145,3 @@ def _find_latest_log(log_dir: Path) -> Path | None:
     # 降级: 按修改时间取最新
     log_files = sorted(log_dir.glob("*.log"), key=lambda p: p.stat().st_mtime, reverse=True)
     return log_files[0] if log_files else None
-
-
-# =============================================================================
-# 配置文件解析
-# =============================================================================
-
-def _extract_account_from_config(instance_id: str, project_root: Path) -> str:
-    """
-    从 config/instances/{instance_id}.json 中提取用户自定义的存档号。
-
-    搜索逻辑:
-      遍历 TaskItems → option → 找到 name 包含 "多存档" 的选项
-      → 进入其 sub_options → 找到 data 中的 "账号多开配置" 字段
-
-    找不到时返回 "0"。
-    """
-    config_path = project_root / "config" / "instances" / f"{instance_id}.json"
-    if not config_path.is_file():
-        logger.warning(f"[Resolver] 实例配置不存在: {config_path}")
-        return "0"
-
-    try:
-        with open(config_path, "r", encoding="utf-8") as f:
-            config = json.load(f)
-    except Exception as e:
-        logger.warning(f"[Resolver] 读取实例配置失败: {e}")
-        return "0"
-
-    # 遍历所有 TaskItem 的 option 树
-    for task in config.get("TaskItems", []):
-        for option in task.get("option", []):
-            if "多存档" not in option.get("name", ""):
-                continue
-
-            # index=0 表示用户在 UI 中关闭了多存档开关
-            if not option.get("index"):
-                logger.info("[Resolver] 「多存档」选项已关闭 (index=0)，使用默认存档")
-                return "0"
-
-            # 找到「多存档」选项且已开启，向下搜索 sub_options
-            for sub in option.get("sub_options", []):
-                data = sub.get("data", {})
-                account = data.get("账号多开配置", "").strip()
-                if account:
-                    return account
-
-            # 「多存档」选项存在但用户未填写存档号
-            logger.info("[Resolver] 检测到「多存档」选项但未配置存档名称")
-            return "0"
-
-    # 该实例配置中没有「多存档」选项 (用户可能未勾选此任务)
-    logger.info("[Resolver] 实例配置中未找到「多存档」选项，使用默认存档")
-    return "0"

@@ -31,7 +31,11 @@ from recognition.binarymatch import (  # noqa: E402
     _SC_GAP_RATIO_DEFAULT,
     _SC_MIN_CONF,
 )
-from recognition.rdd_hsv_rescue import normalize_rescue_config  # noqa: E402
+from recognition.rdd_hsv_rescue import (  # noqa: E402
+    ENTRY_PLANS,
+    normalize_rescue_config,
+    resolve_entry_plan,
+)
 from recognition.rdd_sampler import MANIFEST_NAMES  # noqa: E402
 
 
@@ -64,7 +68,7 @@ def _recorded_rescue(entry):
     return entry.get("救援") or entry.get("rescue") or {}
 
 
-def _rescue_impossible(outcome, area_min, asp_lo, asp_hi):
+def _rescue_impossible(outcome, area_min, asp_lo, asp_hi, stage):
     """救援几何上不可能成功：每个被长宽比闸拒的父块，其合格后代的面积上确界都够不到下限。
 
     推导（`aspect = h / w`，救援是严格子集故 w'<=w、h'<=h，短边记 s=min(w,h)）：
@@ -82,8 +86,20 @@ def _rescue_impossible(outcome, area_min, asp_lo, asp_hi):
     注意本判据**不覆盖**"面积余量不足"的情形：父块面积仅略高于下限（实测 1.03~1.27 倍）
     时收紧必然跌破，但那取决于像素分布而非几何，无法只凭外接框断言。那类样本请用
     `--expect-rescue-node 节点名@x,y,w,h` 按 ROI 精确限定。
+
+    **只在 `stage == "aspect"` 时豁免。** 该阶段的父块结构上必然全是长宽比来源
+    （诊断为 aspect ⟺ 没有任何块过闸被打分 ⟹ confidence 来源必为空），推导覆盖完整。
+    而 `stage == "confidence"` 的帧上两种来源可以共存：若同帧恰好还有一个几何不可能的
+    长宽比父块，只看它就会把整个样本豁免掉，从而掩盖 entry_confidence 本该救回却没救回
+    的回归。confidence 那侧的父块在闸内，没有等价的几何上确界可推，宁可不豁免、报出
+    mismatch 让人看一眼。
     """
-    parents = outcome.get("eligible_parents") or []
+    if stage != "aspect":
+        return False
+    # 只对**长宽比闸拒绝**的父块成立：上面两条推导的前提就是"外接框已经出圈"。
+    # 有了上面的 stage 闸，这里的过滤是第二道保险（诊断口径若变，不至于静默套错公式）。
+    parents = [p for p in (outcome.get("eligible_parents") or [])
+               if p.get("来源", "aspect") == "aspect"]
     if not parents:
         return False
     for p in parents:
@@ -152,6 +168,13 @@ def replay(sample_dir, rescue=False, expected_rescue_nodes=()):
     total = parity = box_parity = rescue_stable = rescue_trigger = 0
     rescue_checks = rescue_pass = skipped_no_crop = skipped_crop_gone = 0
     rescue_exempt = 0
+    # 分入口/分阶段的明细：多入口后"触发了多少"是个混合数，只看总数看不出
+    # 是 entry_aspect 的老行为还是新入口在动。
+    rescue_trigger_by_stage: dict = {}
+    rescue_stable_by_entry: dict = {}
+    # 每条稳定命中的落点：救回的是不是真红点，回放器判不了(台账没有人工标注)，
+    # 只能把节点/框/分/图名摊出来供人肉眼核对。新入口上线前这一步不能省。
+    rescue_won: list = []
     checked_rescue_nodes = set()
     seen_nodes = set()          # 语料里出现过的节点名，用于区分"期望写错"与"语料不覆盖"
     mismatches = []
@@ -210,10 +233,14 @@ def replay(sample_dir, rescue=False, expected_rescue_nodes=()):
 
         rescue_result = None
         stable = False
-        if rescue and not outcome["hit"] and stage == "aspect":
-            rescue_trigger += 1
+        if rescue and not outcome["hit"] and stage in ENTRY_PLANS:
             raw_rescue = dict(params.get("flt_hsv_rescue") or fallback_rescue)
+            # 回放一律只观测：全局与各入口的 active 都压成 shadow，off 保持 off。
+            # 台账里可能带 active（真机跑的就是 active），照搬会让回放去走改判路径。
             raw_rescue["mode"] = "shadow"
+            for key in ("entry_aspect", "entry_confidence", "entry_confidence_rej"):
+                if str(raw_rescue.get(key, "inherit")).lower() == "active":
+                    raw_rescue[key] = "shadow"
             rescue_cfg, rescue_error = normalize_rescue_config(raw_rescue)
             if rescue_error:
                 mismatches.append({
@@ -221,24 +248,41 @@ def replay(sample_dir, rescue=False, expected_rescue_nodes=()):
                     "rescue_config_error": rescue_error,
                 })
                 continue
-            rescue_result = detector._run_hsv_rescue(
-                hsv_np=hsv_np, baseline=outcome, hsv_ranges=hsv_ranges,
-                area_range=(area_min, area_max),
-                aspect_range=(asp_lo, asp_hi),
-                gap_ratio=gap_ratio, min_conf=min_conf, rx=0, ry=0,
-                config=rescue_cfg,
-            )
-            stable = rescue_result.get("_decision") == "stable_hit"
-            if stable:
-                rescue_stable += 1
+            entries = resolve_entry_plan(rescue_cfg, stage)
+            if entries:
+                rescue_trigger += 1
+                rescue_trigger_by_stage[stage] = (
+                    rescue_trigger_by_stage.get(stage, 0) + 1)
+                rescue_result = detector._run_hsv_rescue(
+                    hsv_np=hsv_np, baseline=outcome, hsv_ranges=hsv_ranges,
+                    area_range=(area_min, area_max),
+                    aspect_range=(asp_lo, asp_hi),
+                    gap_ratio=gap_ratio, min_conf=min_conf, rx=0, ry=0,
+                    config=rescue_cfg, entries=entries,
+                )
+                stable = rescue_result.get("_decision") == "stable_hit"
+                if stable:
+                    rescue_stable += 1
+                    win_entry = (rescue_result.get("入口") or {}).get("胜出")
+                    rescue_stable_by_entry[win_entry] = (
+                        rescue_stable_by_entry.get(win_entry, 0) + 1)
+                    win = rescue_result.get("胜出") or {}
+                    rescue_won.append({
+                        "line": index, "entry": win_entry,
+                        "node": entry.get("node"), "roi": entry.get("roi"),
+                        "stage": stage, "box_local": win.get("框"),
+                        "conf": win.get("分"), "delta": win.get("采纳增量"),
+                        "recorded_result": entry.get("result"),
+                        "crop": os.path.basename(crop_path),
+                    })
 
         expected_rescue = entry.get("expected_rescue")
-        if (expected_rescue is None and not outcome["hit"] and stage == "aspect"
+        if (expected_rescue is None and not outcome["hit"] and stage in ENTRY_PLANS
                 and _expect_matches(expect_map, entry.get("node"),
                                     entry.get("roi"))):
             # 台账显式标注的 expected_rescue 一律尊重；只有由命令行推导出来的期望
             # 才走几何豁免——命令行是粗粒度猜测，人工标注不是。
-            if _rescue_impossible(outcome, area_min, asp_lo, asp_hi):
+            if _rescue_impossible(outcome, area_min, asp_lo, asp_hi, stage):
                 rescue_exempt += 1
             else:
                 expected_rescue = True
@@ -334,7 +378,10 @@ def replay(sample_dir, rescue=False, expected_rescue_nodes=()):
         "skipped_no_crop": skipped_no_crop,
         "skipped_crop_gone": skipped_crop_gone,
         "rescue_trigger": rescue_trigger,
+        "rescue_trigger_by_stage": rescue_trigger_by_stage,
         "rescue_stable": rescue_stable,
+        "rescue_stable_by_entry": rescue_stable_by_entry,
+        "rescue_won": rescue_won,
         "rescue_checks": rescue_checks,
         "rescue_pass": rescue_pass,
         "rescue_exempt": rescue_exempt,
