@@ -6,7 +6,7 @@
 
 1. <root>/resource/*/pipeline/**/*.json 与 <root>/resource/*/default_pipeline.json
    —— 删除 desc / doc 两个注释字段，并去掉 JSONC 风格的 // 与 /* */ 注释。
-2. <root>/agent/**/*.py —— 删除 # 注释，保留 docstring。
+2. <root>/agent/**/*.py —— 删除 # 注释与 docstring（模块/类/函数的文档字符串）。
 
 白名单之外的 json 一概碰不到：interface.json 在产物根、mfa_layout.json 在
 resource/ 根，都不在任何白名单目录内，将来 resource/ 下新增配置文件也天然安全。
@@ -21,6 +21,11 @@ cartridge_lib.py / ocr_decision.py 的 # 注释内部（是贴在注释里的 JS
 "expected": "[//?]"，正则删注释会把它腰斩。所以走字符串状态机词法扫描。
 当前仓库里 resource 下并无 JSONC 注释，这部分是为将来预留的。
 
+⚠️ docstring 是**语法结构**不是词法记号，tokenize 认不出它——三引号字符串在
+token 流里跟普通字符串一模一样。所以这部分走 ast：只认 Module / ClassDef /
+FunctionDef / AsyncFunctionDef 体内第一条语句是纯字符串常量的情形。
+函数体里只剩这一条时补 pass（否则语法错误），复用它原来的起始行以免行号错位。
+
 默认保留被删整行注释留下的空行，让产物与仓库源码**行号一一对应**——
 线上用户回传的 traceback 才能直接定位到仓库里的那一行。加 --squeeze 可关掉。
 
@@ -31,6 +36,7 @@ cartridge_lib.py / ocr_decision.py 的 # 注释内部（是贴在注释里的 JS
 from __future__ import annotations
 
 import argparse
+import ast
 import io
 import json
 import sys
@@ -208,11 +214,76 @@ def process_json(path: Path, stats: dict, dry_run: bool) -> None:
 # --------------------------------------------------------------------------
 
 
-def strip_py_comments(src: str, squeeze: bool) -> tuple[str, int]:
-    """删掉 # 注释，保留 docstring。返回 (新源码, 删除的注释数)。
+DOC_OWNERS = (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)
 
-    只信 tokenize 的 COMMENT token —— 字符串字面量、docstring、f-string 里的
-    # 都不会被误判，整除运算符 // 更是碰都不碰。
+
+def find_docstrings(src: str, lines: list[str]) -> tuple[list[tuple[ast.AST, ast.Expr]], list[str]]:
+    """找出可安全删除的 docstring。返回 ([(宿主, 语句)], 因形状不安全跳过的说明)。
+
+    剥离与收尾审计共用这一份判据，两边口径必须一致——否则「跳过没删」会被审计
+    当成残留报错，一个合法写法就能把构建卡死。
+
+    只认「体内第一条语句是纯字符串常量」的 ast 结构——类型注解里的字符串
+    （-> "str | None"）、赋值给变量的三引号文本都不在此列，碰都不会碰。
+
+    形状闸：docstring 必须独占它所在的整行区间（前后同行没有别的代码），
+    否则跳过。把定义和文档挤在同一行的那种写法删了就是空函数体，
+    与其猜怎么补，不如原样保留、让人看见。
+    """
+    hits: list[tuple[ast.AST, ast.Expr]] = []
+    skipped: list[str] = []
+    for node in ast.walk(ast.parse(src)):
+        if not isinstance(node, DOC_OWNERS) or not node.body:
+            continue
+        first = node.body[0]
+        if not isinstance(first, ast.Expr):
+            continue
+        if not (isinstance(first.value, ast.Constant) and isinstance(first.value.value, str)):
+            continue
+        head = lines[first.lineno - 1][: first.col_offset]
+        tail = lines[(first.end_lineno or first.lineno) - 1][first.end_col_offset :]
+        if head.strip() or tail.strip():
+            skipped.append(f"L{first.lineno}: docstring 与代码同行，保留")
+            continue
+        hits.append((node, first))
+    return hits, skipped
+
+
+def strip_py_docstrings(src: str, squeeze: bool) -> tuple[str, int, list[str]]:
+    """删掉 docstring。返回 (新源码, 删除条数, 跳过说明)。"""
+    lines = src.splitlines(keepends=True)
+    hits, skipped = find_docstrings(src, lines)
+    if not hits:
+        return src, 0, skipped
+
+    kill: dict[int, str | None] = {}  # 行号(1基) -> None=删成空行 / 字符串=替换成它
+    for node, first in hits:
+        for row in range(first.lineno, (first.end_lineno or first.lineno) + 1):
+            kill[row] = None
+        # 体里只有这一条 → 删完就是空体。模块可以为空，函数/类不行，补 pass。
+        if len(node.body) == 1 and not isinstance(node, ast.Module):  # type: ignore[attr-defined]
+            line = lines[first.lineno - 1]
+            eol = line[len(line.rstrip("\r\n")) :] or "\n"
+            kill[first.lineno] = f"{line[: first.col_offset]}pass{eol}"
+
+    out: list[str] = []
+    for idx, line in enumerate(lines, start=1):
+        if idx not in kill:
+            out.append(line)
+            continue
+        replacement = kill[idx]
+        if replacement is not None:
+            out.append(replacement)
+        elif not squeeze:
+            out.append(line[len(line.rstrip("\r\n")) :] or "\n")  # 留空行，行号对齐
+    return "".join(out), len(hits), skipped
+
+
+def strip_py_comments(src: str, squeeze: bool) -> tuple[str, int]:
+    """删掉 # 注释。返回 (新源码, 删除的注释数)。
+
+    只信 tokenize 的 COMMENT token —— 字符串字面量、f-string 里的 # 都不会被
+    误判，整除运算符 // 更是碰都不碰。docstring 由 strip_py_docstrings 单独处理。
     """
     lines = src.splitlines(keepends=True)
     cuts: dict[int, int] = {}  # 行号(1基) -> 注释起始列
@@ -243,12 +314,20 @@ def strip_py_comments(src: str, squeeze: bool) -> tuple[str, int]:
 
 def process_py(path: Path, stats: dict, dry_run: bool, squeeze: bool) -> None:
     src = path.read_text(encoding="utf-8-sig")
+    # 先 docstring 后 # 注释：docstring 靠 ast 的行号定位，必须在原始源码上算。
+    # 反过来先删注释会在 squeeze 模式下把行号挪走，ast 记的位置就全错了。
     try:
-        new_src, count = strip_py_comments(src, squeeze)
+        stage1, docs, skipped = strip_py_docstrings(src, squeeze)
+    except SyntaxError as e:
+        raise StripError(f"{path}: 解析失败（行 {e.lineno}）: {e.msg}") from e
+    for msg in skipped:
+        print(f"::warning::{path}: {msg}")
+    try:
+        new_src, count = strip_py_comments(stage1, squeeze)
     except tokenize.TokenError as e:
         raise StripError(f"{path}: 词法分析失败: {e}") from e
 
-    if not count:
+    if not count and not docs:
         stats["py_untouched"] += 1
         return
 
@@ -260,6 +339,7 @@ def process_py(path: Path, stats: dict, dry_run: bool, squeeze: bool) -> None:
 
     stats["py_changed"] += 1
     stats["comments"] += count
+    stats["docstrings"] += docs
     stats["bytes_saved"] += len(src.encode("utf-8")) - len(new_src.encode("utf-8"))
     if not dry_run:
         path.write_text(new_src, encoding="utf-8", newline="")
@@ -328,6 +408,15 @@ def audit(root: Path) -> tuple[list[str], int, int]:
                 continue
             if n:
                 problems.append(f"{path}: 仍残留 {n} 处 # 注释")
+            # docstring 用与剥离侧完全相同的判据复查：形状闸跳过的那些不算残留
+            # （它们剥离时已经打过 warning），否则一个合法的单行写法就能卡死构建。
+            try:
+                hits, _ = find_docstrings(src, src.splitlines(keepends=True))
+            except SyntaxError as e:
+                problems.append(f"{path}: 解析失败（行 {e.lineno}）: {e.msg}")
+                continue
+            if hits:
+                problems.append(f"{path}: 仍残留 {len(hits)} 条 docstring")
 
     return problems, total, checked
 
@@ -348,7 +437,18 @@ def main() -> int:
         return 1
 
     stats = dict.fromkeys(
-        ("desc", "doc", "comments", "json_changed", "json_untouched", "py_changed", "py_untouched", "bytes_saved"), 0
+        (
+            "desc",
+            "doc",
+            "comments",
+            "docstrings",
+            "json_changed",
+            "json_untouched",
+            "py_changed",
+            "py_untouched",
+            "bytes_saved",
+        ),
+        0,
     )
     errors: list[str] = []
 
@@ -392,7 +492,10 @@ def main() -> int:
         print(f"{mode}json: 跳过 {skipped} 个编辑器工程文件（*.mpe.json）")
     print(f"{mode}json: 改写 {stats['json_changed']} / 未变 {stats['json_untouched']} 个")
     print(f"{mode}      删除注释字段 desc {stats['desc']} 处、doc {stats['doc']} 处")
-    print(f"{mode}py  : 改写 {stats['py_changed']} / 未变 {stats['py_untouched']} 个，删除 # 注释 {stats['comments']} 处")
+    print(
+        f"{mode}py  : 改写 {stats['py_changed']} / 未变 {stats['py_untouched']} 个，"
+        f"删除 # 注释 {stats['comments']} 处、docstring {stats['docstrings']} 条"
+    )
     print(f"{mode}合计瘦身 {stats['bytes_saved'] / 1024:.1f} KB")
 
     if errors:
@@ -416,7 +519,7 @@ def main() -> int:
     # 一处都没删 = 要么扫错了目录/产物布局变了，要么这份产物已经剥过一遍。
     # 前者必须让构建停下来（静默通过正是 exec-bit 那次翻车的方式），
     # 后者在 CI 里不会发生——每个 job 只跑一次，所以这里一律按失败处理。
-    if not (stats["desc"] or stats["doc"] or stats["comments"]):
+    if not (stats["desc"] or stats["doc"] or stats["comments"] or stats["docstrings"]):
         print("::error::没有删掉任何注释：目标目录或产物布局可能有误（若是对同一产物重复执行，属预期）")
         return 1
     return 0
