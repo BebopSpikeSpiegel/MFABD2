@@ -121,8 +121,8 @@
         "post_wait_freezes": 1000,
         "post_delay": 800,
         "next": [
-            "[JumpBack]SemiAuto_Evil_SemiautoTower_OnCk",
             "SemiAuto_Evil_SemiautoTower_Timeout",
+            "[JumpBack]SemiAuto_Evil_SemiautoTower_OnCk",
             "SemiAuto_Evil_SemiautoTower_InManual",
             "SemiAuto_Evil_SemiautoTower_InAuto",
             "SemiAuto_Evil_SemiautoTower_On"
@@ -369,7 +369,8 @@
             "SemiAuto_LastNight_ReButt"
         ],
         "on_error": [
-            "SemiAuto_LastNight_End"
+            "SemiAuto_LastNight_End",
+            "Global_Null"
         ]
     },
     "SemiAuto_LastNight_ReButt": {
@@ -386,8 +387,8 @@
         "action": "Click",
         "post_delay": 500,
         "next": [
-            "SemiAuto_LastNight_InBattle",
-            "[JumpBack]SemiAuto_Evil_SemiautoTower_OnCk"
+            "[JumpBack]SemiAuto_Evil_SemiautoTower_OnCk",
+            "SemiAuto_LastNight_InBattle"
         ]
     },
     "SemiAuto_LastNight_End": {},
