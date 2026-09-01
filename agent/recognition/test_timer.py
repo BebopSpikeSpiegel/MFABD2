@@ -48,7 +48,7 @@ class _LogCatcher:
         return [lvl for lvl, _ in self.records]
 
 
-class TimerGateTestCase(unittest.TestCase):
+class TimerTestCase(unittest.TestCase):
     def setUp(self):
         timer.TIMER_STORE.clear()
         self.log = _LogCatcher()
@@ -72,7 +72,7 @@ class TimerGateTestCase(unittest.TestCase):
         timer.TIMER_STORE[name] = time.monotonic() - seconds
 
 
-class TestUnlimited(TimerGateTestCase):
+class TestUnlimited(TimerTestCase):
     """0 / 省略 / 坏值都走「不限时」，且这一支不起表、不打日志。"""
 
     def test_missing_minutes_is_unlimited(self):
@@ -101,7 +101,7 @@ class TestUnlimited(TimerGateTestCase):
         self.assertEqual(self.log.records, [])
 
 
-class TestNotExpired(TimerGateTestCase):
+class TestNotExpired(TimerTestCase):
     def test_pending_returns_box_none_with_detail(self):
         # box=None 判未命中，但 detail 仍会写进识别记录 → 状态走 maafw.log 而不是刷 GUI
         self.start_ago("T", 60)
@@ -125,7 +125,7 @@ class TestNotExpired(TimerGateTestCase):
         self.assertIn("T", timer.TIMER_STORE)
 
 
-class TestExpired(TimerGateTestCase):
+class TestExpired(TimerTestCase):
     def test_expired_hits_and_clears_store(self):
         # 命中即停：使命完成就把起点清掉，别留给下一次运行
         self.start_ago("T", 1801)
@@ -152,7 +152,7 @@ class TestExpired(TimerGateTestCase):
         self.assertEqual(self.reco('{"timer": "T", "minutes": 0.5}').box, [0, 0, 0, 0])
 
 
-class TestStartTimer(TimerGateTestCase):
+class TestStartTimer(TimerTestCase):
     def test_start_creates_timer(self):
         self.assertIs(self.act(timer.StartTimer, '{"timer": "T"}'), True)
         self.assertIn("T", timer.TIMER_STORE)
@@ -174,7 +174,7 @@ class TestStartTimer(TimerGateTestCase):
         self.assertIn("error", self.log.levels())
 
 
-class TestResetTimer(TimerGateTestCase):
+class TestResetTimer(TimerTestCase):
     def test_reset_single_name(self):
         timer.TIMER_STORE.update({"A": 1.0, "B": 2.0})
         self.assertIs(self.act(timer.ResetTimer, '{"timer": "A"}'), True)
@@ -195,7 +195,76 @@ class TestResetTimer(TimerGateTestCase):
         self.assertIn("error", self.log.levels())
 
 
-class TestFailOpen(TimerGateTestCase):
+class TestTimerGate(TimerTestCase):
+    """门禁形态：未超时 True(走 next)，超时清零 + False(走 on_error)。
+
+    语义固定、不提供反转参数——反着配会让每一轮都进错误处理路径，而 error_handling
+    为真时引擎不弹回跳栈。别为了省掉写 on_error 的负担把它加回来。
+    """
+
+    def gate(self, raw):
+        return self.act(timer.TimerGate, raw)
+
+    def test_absent_tag_starts_and_passes(self):
+        # Gate 兼做入口：无 tag 就地起表并放行，不需要另挂 StartTimer
+        self.assertIs(self.gate('{"timer": "T", "minutes": 30}'), True)
+        self.assertIn("T", timer.TIMER_STORE)
+
+    def test_pending_passes(self):
+        self.start_ago("T", 60)
+        self.assertIs(self.gate('{"timer": "T", "minutes": 30}'), True)
+        self.assertIn("T", timer.TIMER_STORE)
+
+    def test_expired_blocks_and_clears(self):
+        self.start_ago("T", 1801)
+        self.assertIs(self.gate('{"timer": "T", "minutes": 30}'), False)
+        self.assertNotIn("T", timer.TIMER_STORE)
+        self.assertIn("info", self.log.levels())
+
+    def test_expired_then_reentry_restarts(self):
+        # 闭环：超时那一刻清零 → 下次进来是无 tag → 惰性起表 → 重新放行。
+        # 这是「不必额外挂 ResetTimer」的全部依据，改动清零逻辑前先看这条。
+        self.start_ago("T", 1801)
+        self.assertIs(self.gate('{"timer": "T", "minutes": 30}'), False)
+        self.assertIs(self.gate('{"timer": "T", "minutes": 30}'), True)
+        self.assertIn("T", timer.TIMER_STORE)
+
+    def test_unlimited_always_passes(self):
+        self.start_ago("T", 99999)
+        self.assertIs(self.gate('{"timer": "T", "minutes": 0}'), True)
+        self.assertIs(self.gate('{"timer": "T"}'), True)
+
+    def test_unlimited_does_not_start_timer(self):
+        self.gate('{"timer": "T", "minutes": 0}')
+        self.assertEqual(timer.TIMER_STORE, {})
+        self.assertEqual(self.log.records, [])
+
+    def test_pending_logs_nothing(self):
+        # Gate 每轮循环执行一次，循环体短的话照样能刷屏
+        self.start_ago("T", 60)
+        for _ in range(50):
+            self.gate('{"timer": "T", "minutes": 30}')
+        self.assertEqual(self.log.records, [])
+
+    def test_unparsable_minutes_passes(self):
+        self.start_ago("T", 99999)
+        self.assertIs(self.gate('{"timer": "T", "minutes": "abc"}'), True)
+        self.assertIn("error", self.log.levels())
+
+    def test_broken_param_still_passes(self):
+        # 守卫自己坏掉不该拦住主流程 —— 与 StartTimer / ResetTimer 同向
+        self.assertIs(self.gate("{ 这不是 json"), True)
+        self.assertIn("error", self.log.levels())
+
+    def test_shares_pool_with_recognition_form(self):
+        # 文档承诺两个形态共用同一个计时器池子，这里钉住
+        self.act(timer.StartTimer, '{"timer": "T"}')
+        self.assertIs(self.gate('{"timer": "T", "minutes": 30}'), True)
+        self.act(timer.ResetTimer, '{"timer": "T"}')
+        self.assertEqual(timer.TIMER_STORE, {})
+
+
+class TestFailOpen(TimerTestCase):
     """闸门自身出问题时一律不拦截：识别侧 None，动作侧 True。"""
 
     def test_recognition_fails_open_on_broken_param(self):

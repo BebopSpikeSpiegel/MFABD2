@@ -12,6 +12,37 @@ from utils import mfaalog as logger
 # 两者互补——有些流程的轮数天生不确定(打到输为止、爬到爬不动为止), 用次数无法表达
 # 「我最多愿意让它跑多久」, 只能用墙钟。
 #
+# ------------------------------------------------------------------------------
+# ⚖️ 两种形态怎么选(本模块最容易写错的地方, 先读这段)
+# ------------------------------------------------------------------------------
+# 同一个计时器池子上架了两个闸门, 一个是识别器一个是动作。它们**不是同一个东西的两种写法**,
+# 而是分别对应两种接线, 互补、不能互相替代。根子在 rec 与 act 的失败语义不对称:
+#
+#            rec 未通过                          act 返回 False
+#   语义     这个候选不选, **让位**给同列表      我被选中了, 但我失败了
+#            里后面的候选
+#   去向     父节点继续试下一个候选              进**本节点自己**的 on_error
+#   打扰     零打扰, 原有流程照走                强行改道
+#
+# ⇒ act 做不了旁路出口。act 节点得 DirectHit 才能保证每次都执行判断, 而 DirectHit 一定命中、
+#   会抢占父节点 next 里排在它后面的所有候选; 未超时时它想「什么都别管、让原流程继续」——
+#   act 没有这个通道, 只能 return False 掉进自己的 on_error, 再被迫把原来那几个候选在
+#   on_error 里重抄一遍。这是结构性的, 不是配置问题。
+# ⇒ rec 也做不了必经门禁。它的「未命中」只是让位, 不触发 on_error, 而那个 on_error 还写在
+#   上游节点身上、不在闸门自己身上。
+#
+# 一句话: **act 是必经点上的二分岔(放行/拦截), rec 是候选列表里的可选分支(认出来就引走,
+# 认不出就让位)**。所以:
+#
+#   链的形状                                    用哪个
+#   多节点状态机, 各节点 next 各有一串候选      TimerExpired(功能 A) —— 旁路散挂
+#   (爬塔链就是这种, 回边不收敛到一点)          + StartTimer(功能 B) 在入口起表
+#   单入口循环, 所有回边独占指回同一个点        TimerGate(功能 D) —— 一个节点顶三个
+#
+# 为什么没做成「一个参数切换方向」: 反着配(未超时 -> error)意味着每一轮都进错误处理路径,
+# 而 error_handling 为真时引擎**不弹回跳栈**, 栈行为会变得极难推。反配有害 ⇒ 只剩一种有
+# 意义的配法 ⇒ 参数没有存在意义。两个类各自语义固定。
+#
 # 为什么需要它(实测背景):
 #   半自动爬塔(SemiAuto_Evil_SemiautoTower_*)一层接一层地往上爬, pipeline 里没有任何
 #   终止条件。注意真卡死并不是问题所在——所有 next 候选都识别不中时, 节点会重试到
@@ -78,6 +109,53 @@ from utils import mfaalog as logger
 #     "custom_action": "ResetTimer",
 #     "custom_action_param": {"timer": ["EvilTower"]}
 # }
+#
+# 【功能 D】TimerGate - 循环入口的门禁 (作为 "action" 使用)
+# ---------------------------------------------------
+# 坐在**单入口循环**的入口上, 一个节点同时承担入口、起表、每轮查表、超时分流四件事,
+# 不需要另外挂 StartTimer。语义固定, 无参数可调(理由见开头「两种形态怎么选」):
+#
+#   无 tag            惰性起表                 -> True  走 next(进循环体)
+#   有 tag, 未超时    无                       -> True  走 next
+#   有 tag, 已超时    **清零**                 -> False 走 on_error(出循环)
+#   minutes<=0        不起表, 视为不限时       -> True  走 next
+#   参数坏掉/内部异常  记 error                 -> True  (守卫故障不拦截)
+#
+# 清零那一步是闭环的关键: 超时退出时把表清掉, 下次再进来就是无 tag 状态、惰性起表重新
+# 开始, 不需要额外挂 ResetTimer。
+#
+# "Xxx_Loop_Gate": {
+#     "desc": "循环时间闸。未超时放行进循环体, 超时走 on_error 收尾。这里不写 timeout: 动作
+#              失败不经过识别超时窗口(上游 3.1 协议「后继处理」把两条进 on_error 的路径并列
+#              写死), 所以 R3「显式 on_error 必配 timeout」在这条路径上不适用。",
+#     "action": "Custom",
+#     "custom_action": "TimerGate",
+#     "custom_action_param": {"timer": "XxxLoop", "minutes": 30},
+#     "pre_delay": 0,
+#     "post_delay": 0,
+#     "next": ["Xxx_Loop_Body"],
+#     "on_error": ["Xxx_Loop_End"]
+# }
+#
+# ⚠️ 用它之前必须知道的三条:
+#
+# 1. **闭环成立的前提是「超时是唯一退出路径」。** 循环体若还有别的出口(战败、任务完成、
+#    用户中途停), 那条路不经过 Gate 的清零分支, 表会留到下次——下次进 Gate 立刻判超时、
+#    循环一次都不跑, 白白消耗一轮, 第二轮才正常。有其他出口的链, 出口节点挂 ResetTimer。
+#
+# 2. **Gate 无 recognition = DirectHit 必中**, 放进别人的 next 里会抢占后面所有候选。
+#    只能当回边的**独占目标**, 或者放在 next 末尾。这也是它做不了旁路的原因。
+#
+# 3. **写了 on_error 就丢掉 default_pipeline.json 那条默认的 Global_Null**(R2),
+#    收尾语义得自己补全——on_error 里至少要有一个接得住的节点, 否则整条回跳栈作废、
+#    task 判失败。
+#
+# ⚠️ CustomAction **没有 detail 通道**, 功能 A 那招「状态塞进 AnalyzeResult.detail 走
+#    maafw.log 而不刷 GUI」在 Gate 上用不了。要看实时进度只能用识别器形态。
+#
+# ⚠️ 两条**尚未实机复验**的行为, 接第一条链时要盯:
+#    · 动作返回 False 后进 on_error 的**时机**——上游文档说不等 timeout, 本项目没验过;
+#    · Gate 当回边独占目标时, [JumpBack] 栈的行为是否如预期。
 # ==============================================================================
 
 # 计时器仓库: {名字: 起点(monotonic 秒)}
@@ -202,3 +280,45 @@ class ResetTimer(CustomAction):
             # 与 StartTimer 同理: 守卫自己坏掉不该拖累主流程
             logger.error(f"ResetTimer 异常: {e}")
         return True
+
+
+# =========================================================
+# 4. 动作：循环入口的门禁 (未超时放行, 超时清零并拦截)
+# 参数: { "timer": "XxxLoop", "minutes": 30 }
+#
+# 与功能 A(TimerExpired) 的分工见开头「两种形态怎么选」: A 是散挂在候选列表里的旁路,
+# 本类是坐在单入口循环入口上的必经门禁。语义固定, 不提供反转参数。
+# =========================================================
+@AgentServer.custom_action("TimerGate")
+class TimerGate(CustomAction):
+    def run(self, context, argv):
+        try:
+            params = json.loads(argv.custom_action_param)
+            # 与 TimerExpired 同规矩: 上限该由 pipeline 给, 漏配时放行而不是自作主张定一个数
+            try:
+                minutes = float(params.get("minutes", 0))
+            except (TypeError, ValueError):
+                logger.error(f"TimerGate: minutes 参数无法解析({params.get('minutes')!r}), 按不限时处理")
+                minutes = 0.0
+
+            # 0 或负数 = 不限时, 恒放行。放在最前面直接返回: 不起表, 一行日志不打。
+            if minutes <= 0:
+                return True
+
+            name = params.get("timer", "default")
+            elapsed = _elapsed(name)  # 无 tag 则就地起表并返回 0 —— Gate 不需要另挂 StartTimer
+
+            if elapsed >= minutes * 60.0:
+                # 清零是闭环的关键: 下次再进来就是无 tag 状态, 惰性起表重新开始。
+                # ⚠️ 只有走这条路退出才会清。循环体若还有别的出口, 那条路得自己挂 ResetTimer。
+                TIMER_STORE.pop(name, None)
+                logger.info(f"🛑 [{name}] 已达时间上限 {minutes} 分钟(实际 {_fmt(elapsed)}) → 出循环")
+                return False
+
+            # 未超时不打日志: Gate 每轮循环执行一次, 循环体短的话照样能刷屏。
+            # CustomAction 没有 detail 通道, 要看实时进度只能用识别器形态(功能 A)。
+            return True
+        except Exception as e:
+            # 与本模块其余守卫一致: 自己坏掉不拦截, 放行让主流程照常跑
+            logger.error(f"TimerGate 异常: {e}")
+            return True
