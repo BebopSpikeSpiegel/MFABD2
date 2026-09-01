@@ -1,10 +1,14 @@
 {
     "SemiAuto_HomePage": {
         "next": [
-            "SemiAuto_TotalStart"
+            "SemiAuto_TotalStart",
+            "SemiAuto_LastNight_Start",
+            "SemiAuto_SequentialRefined_Str"
         ]
     },
     "SemiAuto_TotalStart": {
+        "desc": "半自动爬塔",
+        "enabled": false,
         "next": [
             "SemiAuto_Evil_SemiautoTower_Start"
         ]
@@ -69,9 +73,6 @@
             "timer": "EvilTower",
             "minutes": 30
         },
-        "next": [
-            "SemiAuto_Evil_SemiautoTower_End"
-        ],
         "focus": "半自动爬塔已达时间上限, 收工进入下一任务"
     },
     "SemiAuto_Evil_SemiautoTower_Start": {
@@ -113,7 +114,10 @@
         "post_wait_freezes": 1000,
         "post_delay": 800,
         "next": [
-            "SemiAuto_Evil_SemiautoTower_OnCk",
+            "[JumpBack]SemiAuto_Evil_SemiautoTower_OnCk",
+            "SemiAuto_Evil_SemiautoTower_Timeout",
+            "SemiAuto_Evil_SemiautoTower_InManual",
+            "SemiAuto_Evil_SemiautoTower_InAuto",
             "SemiAuto_Evil_SemiautoTower_On"
         ]
     },
@@ -129,13 +133,7 @@
             "确认"
         ],
         "action": "Click",
-        "post_delay": 5000,
-        "next": [
-            "SemiAuto_Evil_SemiautoTower_Timeout",
-            "SemiAuto_Evil_SemiautoTower_InManual",
-            "SemiAuto_Evil_SemiautoTower_InAuto",
-            "SemiAuto_Evil_SemiautoTower_OnCk"
-        ]
+        "post_delay": 5000
     },
     "SemiAuto_Evil_SemiautoTower_InManual": {
         "recognition": "OCR",
@@ -247,12 +245,10 @@
             650
         ]
     },
-    "SemiAuto_Evil_SemiautoTower_End": {
-        "next": [
-            "SemiAuto_LastNight_Start"
-        ]
-    },
+    "SemiAuto_Evil_SemiautoTower_End": {},
     "SemiAuto_LastNight_Start": {
+        "desc": "末日之书连刷",
+        "enabled": false,
         "next": [
             "SemiAuto_LastNight_MenuPage",
             "SemiAuto_LastNight_ReButt",
@@ -389,7 +385,11 @@
     },
     "SemiAuto_LastNight_End": {},
     "SemiAuto_SequentialRefined_Str": {
-        "next": ["SemiAuto_SRef_SequentialRefined"],
+        "desc": "连刷精炼",
+        "enabled": false,
+        "next": [
+            "SemiAuto_SRef_SequentialRefined"
+        ],
         "focus": "半自动-连续精炼开始"
     },
     "SemiAuto_SRef_SequentialRefined": {
