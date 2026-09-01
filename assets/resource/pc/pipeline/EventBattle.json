@@ -177,6 +177,12 @@
             1
         ]
     },
+    "SeasonEvent_Mamono_Bypass": {
+        "expected": [
+            "可练习战斗",
+            "可進行練習戰鬥"
+        ]
+    },
     "Even_MamonoFollowUp_InMamono": {
         "expected": [
             "魔兽追踪者",
