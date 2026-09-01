@@ -43,6 +43,11 @@ concurrency:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  # 构建产物剥离注释的总开关（"true" 开 / 其它值关）。
+  # 开：resource 下的 pipeline json 删 desc/doc 与 JSONC 注释、agent 下的 py 删 # 注释，
+  #     随后用 MaaFramework 加载产物验一遍；关：这两步连同 maafw 的安装一起跳过，
+  #     产物与仓库源逐字一致。仓库本身任何时候都保留注释，只影响发出去的包。
+  STRIP_COMMENTS: "true"
 
 permissions:
   contents: read
@@ -412,6 +417,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install requests json-with-comments
+          # maafw 只为剥离后的 check_resource.py 而装：产物要用内核真加载一遍才放行。
+          # 装的是构建环境，与 Windows/macOS 打进包里的那份 Python 环境互不相干。
+          # 开关关掉时这一步没人用，就别花这几十秒。
+          if [ "$STRIP_COMMENTS" = "true" ]; then
+            pip install maafw=="$MAA_VERSION"
+          fi
 
       # ----------------------------------------------------------------
       # 📦 资源下载 (根据 Matrix 变量动态处理)
@@ -804,6 +815,30 @@ jobs:
                        print(f'🗑️ Pruning mismatched arch: {name}')
                        shutil.rmtree(p)
           "
+
+      # 仓库里保留注释，发出去的包不带。范围靠两级筛框定：先目录白名单
+      # （resource/*/pipeline/ 与 resource/*/default_pipeline.json、agent/），
+      # 再按文件类型剔除 *.mpe.json（编辑器工程文件，就躺在 pipeline/ 里）。
+      # 白名单之外碰不到，interface.json 与 mfa_layout.json 天然在范围外。
+      # Python 没有 // 注释（那是整除），脚本按 tokenize 的 COMMENT token 下刀。
+      # 脚本自带 json 回读与 compile 校验，任一文件处理坏了就非零退出中断构建。
+      - name: Strip comments from build artifacts
+        if: env.STRIP_COMMENTS == 'true'
+        shell: bash
+        run: |
+          python scripts/strip_build_comments.py install
+
+      # 剥离是整条流水线里唯一会改动资源内容的一步，所以改完必须让内核再认一遍。
+      # 上游的 resource_check job 验的是仓库源（assets/），管不到剥离后的产物。
+      # check_resource.py 靠 <dir>/interface.json 的 resource 字段找资源组合，
+      # install/ 的布局与 assets/ 一致，直接指过去即可。
+      - name: Verify stripped resource (MaaFw load)
+        if: env.STRIP_COMMENTS == 'true'
+        shell: bash
+        run: |
+          echo "::group::🔍 用 MaaFramework 加载剥离后的资源"
+          python check_resource.py ./install/
+          echo "::endgroup::"
 
       - name: Inject Announcement & Verify
         shell: bash
