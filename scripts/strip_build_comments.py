@@ -26,6 +26,11 @@ token 流里跟普通字符串一模一样。所以这部分走 ast：只认 Mod
 FunctionDef / AsyncFunctionDef 体内第一条语句是纯字符串常量的情形。
 函数体里只剩这一条时补 pass（否则语法错误），复用它原来的起始行以免行号错位。
 
+⚠️ docstring 和 # 注释有个本质区别：# 注释在词法阶段就没了，docstring 会进
+字节码、挂在 __doc__ 上，运行时读得到。当前 agent/ 里没人读它（死数据），
+但 find_doc_consumers() 每次都要复查一遍——一旦有人开始读，剥离就成了静默的
+行为变更，必须让构建停下来。
+
 默认保留被删整行注释留下的空行，让产物与仓库源码**行号一一对应**——
 线上用户回传的 traceback 才能直接定位到仓库里的那一行。加 --squeeze 可关掉。
 
@@ -70,6 +75,18 @@ NEVER_SCAN = {"interface.json", "mfa_layout.json"}
 
 # 收尾审计放行的文件：schema 归 MFAAvalonia 管，将来它正经加个 desc 字段也不算残留。
 AUDIT_JSON_IGNORE = {"mfa_layout.json"}
+
+# ---- docstring 消费者哨兵 ----------------------------------------------------
+# docstring 不是纯注释：# 注释在词法阶段就没了，docstring 会进字节码、挂在
+# __doc__ 上，运行时读得到。删它唯一可能改变行为的路径，就是有人真去读 __doc__。
+#
+# 当前 agent/ 里一处都没有（含 MaaFramework 的 maa 包本身，17 个 py 源码零引用，
+# custom_action / custom_recognition 都是显式传名字注册的），所以它是死数据。
+# 但"现在没人读"不等于"将来没人写"——哪天有人加个 doctest、或写
+# ArgumentParser(description=__doc__)，剥离就成了静默的行为变更：CI 全绿，
+# 包发出去帮助文本是空的。与 NEVER_SCAN 同一种设计：宁可让构建停下来。
+DOC_CONSUMER_ATTRS = {"getdoc"}  # inspect.getdoc(obj)
+DOC_CONSUMER_MODULES = {"doctest", "pydoc"}
 
 
 class StripError(Exception):
@@ -247,6 +264,31 @@ def find_docstrings(src: str, lines: list[str]) -> tuple[list[tuple[ast.AST, ast
             continue
         hits.append((node, first))
     return hits, skipped
+
+
+def find_doc_consumers(src: str) -> list[str]:
+    """找出会读 docstring 的用法。返回人话描述，空列表 = 这个文件删 docstring 是安全的。
+
+    走 ast 而不是文本 grep：字符串里、注释里出现 "__doc__" 三个字不算数，
+    而剥离恰恰会把注释删掉——用 grep 会在删注释前后给出不同答案。
+    """
+    found: list[str] = []
+    for node in ast.walk(ast.parse(src)):
+        if isinstance(node, ast.Attribute):
+            if node.attr == "__doc__":
+                found.append(f"L{node.lineno}: 读取 .__doc__")
+            elif node.attr in DOC_CONSUMER_ATTRS:
+                found.append(f"L{node.lineno}: 调用 {node.attr}()")
+        elif isinstance(node, ast.Name) and node.id == "__doc__":
+            found.append(f"L{node.lineno}: 引用模块级 __doc__")
+        elif isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name.split(".")[0] in DOC_CONSUMER_MODULES:
+                    found.append(f"L{node.lineno}: import {alias.name}")
+        elif isinstance(node, ast.ImportFrom):
+            if node.module and node.module.split(".")[0] in DOC_CONSUMER_MODULES:
+                found.append(f"L{node.lineno}: from {node.module} import ...")
+    return found
 
 
 def strip_py_docstrings(src: str, squeeze: bool) -> tuple[str, int, list[str]]:
@@ -474,6 +516,23 @@ def main() -> int:
         return 1
     if not res_dir.is_dir() and not agent_dir.is_dir():
         print(f"::error::{root} 下既无 resource 也无 agent 目录")
+        return 1
+
+    # 有人在读 docstring = 删它就是静默的行为变更，停下来让人看一眼
+    consumers: list[str] = []
+    for path in py_files:
+        try:
+            consumers.extend(f"{path} {hit}" for hit in find_doc_consumers(path.read_text(encoding="utf-8-sig")))
+        except SyntaxError as e:
+            print(f"::error::{path}: 解析失败（行 {e.lineno}）: {e.msg}")
+            return 1
+    if consumers:
+        print("::error::有代码在运行时读 docstring，剥离会静默改掉它的行为：")
+        for msg in consumers[:20]:
+            print(f"::error::  {msg}")
+        if len(consumers) > 20:
+            print(f"::error::（另有 {len(consumers) - 20} 处未列出）")
+        print("::error::改掉这些用法，或给 strip_py_docstrings 加开关把剥离改成可选")
         return 1
 
     for path in json_files:
