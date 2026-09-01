@@ -109,10 +109,10 @@
     "SemiAuto_Evil_SemiautoTower_On": {
         "recognition": "OCR",
         "roi": [
-            1043,
-            636,
-            118,
-            38
+            997,
+            633,
+            125,
+            47
         ],
         "expected": [
             "进入第"
@@ -205,10 +205,10 @@
     "SemiAuto_Evil_SemiautoTower_ToNextRound": {
         "recognition": "OCR",
         "roi": [
-            1054,
-            654,
-            133,
-            36
+            982,
+            645,
+            134,
+            37
         ],
         "expected": [
             "前往下"
@@ -217,8 +217,9 @@
         "post_delay": 500,
         "next": [
             "SemiAuto_Evil_SemiautoTower_Timeout",
-            "SemiAuto_Evil_SemiautoTower_OnCk",
-            "SemiAuto_Evil_SemiautoTower_ToNextRound"
+            "[JumpBack]SemiAuto_Evil_SemiautoTower_OnCk",
+            "SemiAuto_Evil_SemiautoTower_InManual",
+            "SemiAuto_Evil_SemiautoTower_InAuto"
         ]
     },
     "SemiAuto_Evil_SemiautoTower_OnCk2": {
