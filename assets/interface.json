@@ -1770,7 +1770,10 @@
                         "SemiAuto_LastNight_Start": {
                             "enabled": true
                         }
-                    }
+                    },
+                    "option": [
+                        "末日之书时间上限"
+                    ]
                 },
                 {
                     "name": "连续精炼",
@@ -1803,6 +1806,27 @@
                     "custom_recognition_param": {
                         "timer": "EvilTower",
                         "minutes": "{半自动爬塔时间上限}"
+                    }
+                }
+            }
+        },
+        "末日之书时间上限": {
+            "type": "input",
+            "inputs": [
+                {
+                    "name": "末日之书时间上限",
+                    "pipeline_type": "int",
+                    "default": "30",
+                    "verify": "^(\\d+)$",
+                    "pattern_msg": "应为非负整数",
+                    "description": "运行超过该时长后自动收工, 单位分钟。<br>流程本身没有终止条件(只能靠战败结束), 该时限是防止它无限跑下去的兜底。<br>填 <b>0</b> 表示不限时。"
+                }
+            ],
+            "pipeline_override": {
+                "SemiAuto_LastNight_Timer": {
+                    "custom_action_param": {
+                        "timer": "LastNight",
+                        "minutes": "{末日之书时间上限}"
                     }
                 }
             }

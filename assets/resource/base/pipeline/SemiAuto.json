@@ -352,8 +352,24 @@
         ],
         "post_delay": 5000,
         "next": [
-            "SemiAuto_LastNight_ReButt",
-            "SemiAuto_LastNight_InBattle"
+            "SemiAuto_LastNight_InBattle",
+            "SemiAuto_LastNight_Timer"
+        ]
+    },
+    "SemiAuto_LastNight_Timer": {
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "TimerGate",
+        "custom_action_param": {
+            "timer": "LastNight",
+            "minutes": 30
+        },
+        "post_delay": 0,
+        "next": [
+            "SemiAuto_LastNight_ReButt"
+        ],
+        "on_error": [
+            "SemiAuto_LastNight_End"
         ]
     },
     "SemiAuto_LastNight_ReButt": {
@@ -370,27 +386,8 @@
         "action": "Click",
         "post_delay": 500,
         "next": [
-            "SemiAuto_LastNight_ReCk"
-        ]
-    },
-    "SemiAuto_LastNight_ReCk": {
-        "recognition": "OCR",
-        "roi": [
-            666,
-            402,
-            112,
-            38
-        ],
-        "expected": [
-            "确认"
-        ],
-        "action": "Click",
-        "next": [
             "SemiAuto_LastNight_InBattle",
-            "SemiAuto_LastNight_ReCk"
-        ],
-        "on_error": [
-            "SemiAuto_LastNight_End"
+            "[JumpBack]SemiAuto_Evil_SemiautoTower_OnCk"
         ]
     },
     "SemiAuto_LastNight_End": {},
