@@ -622,8 +622,7 @@
             412
         ],
         "template": [
-            "PetMidGe.png",
-            "tanhaoGE.png"
+            "PetMidGe.png"
         ],
         "green_mask": true,
         "order_by": "Score",

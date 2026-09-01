@@ -8,7 +8,7 @@
         ],
         "next": [
             "AutoBattle_Is_Auto",
-            "AutoBattle_TabTo_Auto"
+            "[JumpBack]AutoBattle_TabTo_Auto"
         ]
     },
     "AutoBattle_Is_Auto": {
@@ -49,39 +49,43 @@
         "expected": ["自动战斗中"]
     },
     "AutoBattle_TabTo_Auto": {
-        "desc": "当前在非自动战斗界面",
+        "desc": "当前在非自动战斗状态",
         "recognition": "Or",
         "any_of": [
             "Rec_<AutoBattle_TabTo_Auto>_Ocr_01",
             "Rec_<AutoBattle_TabTo_Auto>_Ocr_02"
         ],
-        "next": ["AutoBattle_ClickAutoButt"]
+        "next": [
+            "AutoBattle_ClickAutoButt_Tpl",
+            "AutoBattle_ClickAutoButt_Csm"
+        ]
     },
     "Rec_<AutoBattle_TabTo_Auto>_Ocr_01": {
         "desc": "[识别]手动战斗界面,位置01",
         "recognition": "OCR",
         "roi": [
-            1126,
-            629,
-            73,
-            29
+            1023,
+            612,
+            192,
+            67
         ],
-        "expected": ["BATTLE"],
-        "only_rec": true
+        "expected": [
+            "BATTLE",
+            "TURN"
+        ]
     },
     "Rec_<AutoBattle_TabTo_Auto>_Ocr_02": {
         "desc": "[识别]手动战斗界面,位置02",
         "recognition": "OCR",
         "roi": [
-            1034,
-            629,
-            60,
-            29
+            47,
+            588,
+            362,
+            94
         ],
-        "expected": ["TURN"],
-        "only_rec": true
+        "expected": ["更换"]
     },
-    "AutoBattle_ClickAutoButt": {
+    "AutoBattle_ClickAutoButt_Tpl": {
         "desc": "模板点击自动战斗图标",
         "recognition": "TemplateMatch",
         "roi": [
@@ -93,8 +97,44 @@
         "template": ["UI_AutoBattle.png"],
         "green_mask": true,
         "action": "Click",
-        "post_delay": 2000,
-        "next": ["AutoBattle_Is_Auto"]
+        "post_delay": 2000
+    },
+    "AutoBattle_ClickAutoButt_Csm": {
+        "desc": "模板点击自动战斗图标",
+        "recognition": "Custom",
+        "custom_recognition": "HSVShapeMatching",
+        "custom_recognition_param": {
+            "hsv_map": {
+                "Rec_<AutoButt_Csm>_Tpl": {
+                    "lower": [
+                        0,
+                        0,
+                        230
+                    ],
+                    "upper": [
+                        180,
+                        25,
+                        255
+                    ]
+                }
+            },
+            "edge_assist": true
+        },
+        "action": "Click",
+        "post_delay": 2000
+    },
+    "Rec_<AutoButt_Csm>_Tpl": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            712,
+            2,
+            348,
+            81
+        ],
+        "template": [
+            "Binary/UI_AutoBattle_BIn.png",
+            "Binary/UI_AutoBattle_BIn2.png"
+        ]
     },
     "AutoBattle_Settlement_Victory": {
         "recognition": "OCR",

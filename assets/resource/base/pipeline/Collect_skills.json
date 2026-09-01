@@ -26,7 +26,7 @@
             5
         ],
         "post_delay": 800,
-        "focus": "第3页技能图标点击"
+        "focus": "CSB.第3页技能图标点击"
     },
     "Collect_Skill_Tap3_Enable": {
         "desc": "色核识别完成.开始施放技能组",
@@ -39,12 +39,12 @@
             "[JumpBack]Setup_Entry5",
             "Collect_Skill3_2_Depleted",
             "Collect_Skill3_1_Nothing",
-            "Collect_Skill1_Used",
-            "Collect_Skill1"
+            "Collect_Skill3_1_Used",
+            "Collect_Skill3_1"
         ],
         "focus": "CSB.技能页3-正确"
     },
-    "Collect_Skill1": {
+    "Collect_Skill3_1": {
         "desc": "技能1设定为探查。识别位，技能环左1",
         "recognition": "TemplateMatch",
         "roi": [
@@ -65,12 +65,12 @@
         ],
         "post_delay": 2000,
         "next": [
-            "Collect_Skill1_Used",
-            "Collect_Skill1"
+            "Collect_Skill3_1_Used",
+            "Collect_Skill3_1"
         ],
-        "focus": "SCB.'探查'技能施放(无判定),栏位1-1"
+        "focus": "CSB.'探查'技能施放(无判定),栏位3-1"
     },
-    "Collect_Skill1_Used": {
+    "Collect_Skill3_1_Used": {
         "recognition": "OCR",
         "roi": [
             970,
@@ -107,14 +107,16 @@
             "Collect_Skill3_3_perOcr",
             "Collect_Skill3_3_Nothing",
             "Collect_Skill3_3",
+            "Collect_Skill3_5_perOcr",
+            "Collect_Skill3_5",
             "Collect_Skill_TapReset",
             "Global_Null_Exception",
             "Global_Null_Panic"
         ],
-        "focus": "SCB.'探查'技能施放-通过"
+        "focus": "CSB.'探查'技能施放-通过"
     },
     "Collect_Skill3_1_Nothing": {
-        "desc": "按需启用技能设置功能",
+        "desc": "3-1'探查'栏位为空。roi 是本栏位本体 Collect_Skill3_1 的框往外放了一圈(80x85 罩住 66x67),PC 覆盖侧则与本体同框；后链等同 Collect_Skill3_1_Used，跳过本栏位继续吸取。",
         "recognition": "TemplateMatch",
         "roi": [
             963,
@@ -126,28 +128,15 @@
             "Skill-Nothing.png"
         ],
         "timeout": 8000,
-        "focus": "CSB.无技能被设置,栏位3-1"
-    },
-    "Collect_Skill1_Unable": {
-        "desc": "设置不对.???不严谨，暂时不删",
-        "recognition": "ColorMatch",
-        "roi": [
-            970,
-            620,
-            66,
-            67
+        "next": [
+            "Collect_Skill3_2_Nothing",
+            "Collect_Skill3_2_Depleted",
+            "Collect_Skill3_2",
+            "Collect_Skill3_2_Used"
         ],
-        "lower": [
-            76,
-            91,
-            114
-        ],
-        "upper": [
-            156,
-            166,
-            179
-        ],
-        "focus": "技能1非正常"
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:red]CSB.[WRN]'探查'技能未设置,栏位3-1 —— 已跳过该栏位继续吸取,建议到技能设置补上[/color]"
+        }
     },
     "Collect_Skill3_2": {
         "recognition": "And",
@@ -317,7 +306,7 @@
             27
         ],
         "expected": [
-            "(\\d+)\\s*[/:：|\\-~]?\\s*\\1(?!\\d)"
+            "(\\d+)\\s*[/:：|\\-~]\\s*\\1(?!\\d)"
         ],
         "only_rec": true,
         "timeout": 5000,
@@ -329,7 +318,7 @@
         "focus": "CSB.施放次数已满,栏位3-3"
     },
     "Collect_Skill3_2_Nothing": {
-        "desc": "如果吸取技能不存在，流程无意义。用一次召集就可以杀流程了。用注入custom给召集设maxhit=1，并附加error直接去结束节点。",
+        "desc": "如果吸取技能不存在，流程无意义。改出口锚 QuickSkill_Egress→Collect_Skill_KillFocus，后链与 Collect_Skill3_2_Used 一致把剩下能放的放完，走到模块正常出口时再结束整个 task。【别把 next 缩回单项：TapReset 走不到，锚点就白设了】",
         "recognition": "TemplateMatch",
         "roi": [
             933,
@@ -340,25 +329,16 @@
         "template": [
             "Skill-Nothing.png"
         ],
-        "action": {
-            "type": "Custom",
-            "param": {
-                "custom_action": "PatchPipeline",
-                "custom_action_param": {
-                    "target": "Collect_Skill3_3",
-                    "patch": {
-                        "max_hit": 1,
-                        "next": "Collect_Skill_KillFocus"
-                    }
-                }
-            }
+        "anchor": {
+            "QuickSkill_Egress": "Collect_Skill_KillFocus"
         },
-        "timeout": 2000,
         "next": [
-            "Collect_Skill3_3"
-        ],
-        "on_error": [
-            "Collect_Skill_KillFocus"
+            "Collect_Skill3_3_perOcr",
+            "Collect_Skill3_3_Nothing",
+            "Collect_Skill3_3",
+            "Collect_Skill3_5_perOcr",
+            "Collect_Skill3_5",
+            "Collect_Skill_TapReset"
         ],
         "focus": "CSB.[WRN]无技能被设置,栏位3-2 吸取技能不存在"
     },
@@ -380,66 +360,26 @@
             "Collect_Skill3_5",
             "Collect_Skill_TapReset"
         ],
-        "focus": "CSB.无技能被设置，栏位3-3"
-    },
-    "Collect_Skill2_5_OCRERR": {
-        "next": [
-            "Collect_Skill_TapReset"
-        ]
-    },
-    "Collect_Skill2_1~5_Unable": {
-        "next": [
-            "Collect_Skill_TapReset"
-        ],
-        "focus": "CSB.[WRM]'吸取'技能施放错误"
+        "focus": "CSB.无技能被设置,栏位3-3"
     },
     "Collect_Skill_TapReset": {
-        "desc": "第一页技能点击现在已不需要，保留结构备用",
+        "desc": "技能模块唯一出口,纯锚点出口。第一页技能点击现在已不需要，保留结构备用。【出口锚'QuickSkill_Egress'一律由调用方声明、由其出口节点自行清锚:卡带主线=Collect_Skill_Entry→Collect_Skill_Egress,步行吸取=Collect_IM_Skill_*_Patch。未声明=没人接,超时落on_error复位退栈——这是有意的,不要往next里补写死的出口】",
         "recognition": "Or",
         "any_of": [
             "Rec_SandBox_Pin_Tpl"
         ],
+        "timeout": 10000,
         "next": [
-            "Collect_Skill_End",
-            "Collect_Skill_TapReset"
-        ]
-    },
-    "Collect_Skill_End": {
-        "desc": "技能页1，结束复位色核识别",
-        "recognition": "ColorMatch",
-        "roi": [
-            1173,
-            633,
-            59,
-            60
-        ],
-        "lower": [
-            192,
-            141,
-            23
-        ],
-        "upper": [
-            223,
-            194,
-            129
-        ],
-        "count": 200,
-        "timeout": 5000,
-        "next": [
-            "Collect_OperationsMain_OperationsEnd",
-            "[JumpBack]Collect_FindTeleporCircle0.9",
-            "[JumpBack]Collect_FindTeleporCircle"
+            "[Anchor]QuickSkill_Egress"
         ],
         "on_error": [
-            "Collect_ForceTeleporCircle",
-            "Global_Null_Exception",
-            "Global_Null_Panic"
-        ],
-        "focus": "CSB.技能组复位-色核通过"
+            "[JumpBack]Global_QuickCart_MenuReset",
+            "Global_Null"
+        ]
     },
     "Collect_Skill_KillFocus": {
         "action": "StopTask",
-        "focus": "CM.S. 技能配置不足-结束流程"
+        "focus": "CSB.[WRN]技能配置不足-结束流程"
     },
     "Collect_Skill3_5_perOcr": {
         "desc": "当3/3左边捕获与右边相同时,必定用完次数",
@@ -451,7 +391,7 @@
             29
         ],
         "expected": [
-            "(\\d+)\\s*[/:：|\\-~]?\\s*\\1(?!\\d)"
+            "(\\d+)\\s*[/:：|\\-~]\\s*\\1(?!\\d)"
         ],
         "only_rec": true,
         "timeout": 5000,

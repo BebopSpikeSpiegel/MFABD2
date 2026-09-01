@@ -2,6 +2,7 @@
     "Collect_StartGame_HomePage": {
         "next": [
             "[JumpBack]Collect_PerPetTask",
+            "Collect_AllLibGone",
             "Collect_Sandplay",
             "[JumpBack]Global_ToSandBox"
         ]
@@ -38,6 +39,7 @@
         "timeout": 5000,
         "next": [
             "[JumpBack]Collect_PerPetTask",
+            "Collect_AllLibGone",
             "Collect_Sandplay",
             "[JumpBack]Global_ToSandBox"
         ]
@@ -88,6 +90,23 @@
             "Collect_QuickCart_Menu",
             "[JumpBack]Global_QuickCart_MenuReset"
         ]
+    },
+    "Collect_AllLibGone": {
+        "desc": "全类标签已达标,结束task",
+        "recognition": "Custom",
+        "custom_recognition": "CheckCoolDown",
+        "custom_recognition_param": {
+            "targets": [
+                {"card_name": "Pack_Story_SimpleDone", "cycle_type": "g_weekly"},
+                {"card_name": "Pack_Character_SimpleDone", "cycle_type": "g_weekly"},
+                {"card_name": "Pack_Event_SimpleDone", "cycle_type": "g_weekly"}
+            ],
+            "match": "all_done"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "focus": "全类已有完成标签,停止任务"
     },
     "Collect_BlackList_User": {
         "enabled": false,
@@ -175,11 +194,12 @@
         },
         "timeout": 1,
         "next": [
-            "[JumpBack]Global_QuickCart_MenuReset_2P",
+            "[JumpBack]Global_QuickCart_MenuReset",
             "Collect_EventPack_SetSimpleSkip"
         ]
     },
     "Collect_FeatureSwitch_ManagerPack": {
+        "desc": "店长游戏卡类的启用开关,当前整类关闭。⚠️要启用先把 Pack_Manager_SimpleDone 加进 Collect_AllLibGone 的 targets——那个总闸现在只数故事/角色/活动三类,三类做完就会退栈收尾,本类会被整类漏掉。",
         "enabled": false,
         "max_hit": 1,
         "anchor": {
@@ -331,7 +351,7 @@
         ],
         "focus": "CM.L.店长游戏卡带集"
     },
-    "Collect_QuickCart_SelectType_GameplayPack": {
+    "Collect_QuickCart_SelectType_BattleplayPack": {
         "recognition": "OCR",
         "roi": [
             36,
@@ -340,15 +360,34 @@
             63
         ],
         "expected": [
-            "玩法游戏卡"
+            "战斗玩法游戏卡"
         ],
         "action": "Click",
         "post_delay": 500,
         "next": [
-            "Collect_QuickCart_GameplayPack_OcrCheck",
-            "Collect_QuickCart_SelectType_GameplayPack"
+            "Collect_QuickCart_BattleplayPack_OcrCheck",
+            "Collect_QuickCart_SelectType_BattleplayPack"
         ],
-        "focus": "CM.L.玩法游戏卡带集"
+        "focus": "CM.L.战斗玩法游戏卡带集"
+    },
+    "Collect_QuickCart_SelectType_LifeplayPack": {
+        "recognition": "OCR",
+        "roi": [
+            36,
+            527,
+            1104,
+            63
+        ],
+        "expected": [
+            "生活玩法游戏卡"
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "Collect_QuickCart_LifeplayPack_OcrCheck",
+            "Collect_QuickCart_SelectType_LifeplayPack"
+        ],
+        "focus": "CM.L.生活玩法游戏卡带集"
     },
     "Collect_QuickCart_StoryPack_OcrCheck": {
         "desc": "当前节点链层数标记：2。初次调取卡带菜单完毕，开始初次点击卡带.先复位再to1,to1没判定的!不可直接IsPresent,防止用户行为干扰",
@@ -459,9 +498,9 @@
         ],
         "focus": "CM.L.店长-卡带调取完毕"
     },
-    "Collect_QuickCart_GameplayPack_OcrCheck": {
+    "Collect_QuickCart_BattleplayPack_OcrCheck": {
         "recognition": "ColorMatch",
-        "roi": "Collect_QuickCart_SelectType_GameplayPack",
+        "roi": "Collect_QuickCart_SelectType_BattleplayPack",
         "lower": [
             167,
             167,
@@ -484,7 +523,34 @@
         "next": [
             "Collect_FirstBootPack"
         ],
-        "focus": "CM.L.玩法-卡带调取完毕"
+        "focus": "CM.L.战斗玩法-卡带调取完毕"
+    },
+    "Collect_QuickCart_LifeplayPack_OcrCheck": {
+        "recognition": "ColorMatch",
+        "roi": "Collect_QuickCart_SelectType_LifeplayPack",
+        "lower": [
+            167,
+            167,
+            165
+        ],
+        "upper": [
+            255,
+            255,
+            255
+        ],
+        "count": 500,
+        "action": "Custom",
+        "custom_action": "RestorePipeline",
+        "custom_action_param": {
+            "target": "Collect_LocatePackFrame_Smart_Swip"
+        },
+        "anchor": {
+            "LocSmartSwip_Limit Ctr": "Collect_Loc_Swip_1Page"
+        },
+        "next": [
+            "Collect_FirstBootPack"
+        ],
+        "focus": "CM.L.生活玩法-卡带调取完毕"
     },
     "Collect_FirstBootPack": {
         "next": [
@@ -1460,7 +1526,8 @@
             "Collect_Pack_Event_1",
             "Collect_Pack_Event_2",
             "Collect_Pack_Event_3",
-            "Collect_Pack_Event_4"
+            "Collect_Pack_Event_4",
+            "Collect_Pack_Event_5"
         ]
     },
     "Collect_Pack_Story_1": {
@@ -2716,6 +2783,45 @@
             "Collect_Pack_Click"
         ]
     },
+    "Collect_Pack_Event_5": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "TemplateMatch",
+                "roi": "[Anchor]PackFrame_Loc",
+                "template": [
+                    "Cartridges/Q_vp5.png"
+                ]
+            },
+            {
+                "recognition": "Custom",
+                "custom_recognition": "CheckCoolDown",
+                "custom_recognition_param": {
+                    "card_name": "Event_5_戏水女王",
+                    "cycle_type": "g_weekly"
+                }
+            }
+        ],
+        "box_index": 0,
+        "action": "Custom",
+        "custom_action": "PatchPipeline",
+        "custom_action_param": {
+            "target": "Collect_PackEnd_Ck",
+            "patch": {
+                "action": "Custom",
+                "custom_action": "MarkComplete",
+                "custom_action_param": {
+                    "card_name": "Event_5_戏水女王",
+                    "cycle_type": "g_weekly"
+                }
+            }
+        },
+        "anchor": "Pack_Click",
+        "post_delay": 5000,
+        "next": [
+            "Collect_Pack_Click"
+        ]
+    },
     "Collect_Pack_Click": {
         "desc": "可复用地点击已决定卡带",
         "recognition": "Or",
@@ -2730,6 +2836,7 @@
             0,
             0
         ],
+        "anchor": {"ExplorationBoard_Arrived": ""},
         "post_delay": 5000,
         "next": [
             "[JumpBack]Global_WaitingForLoading",
