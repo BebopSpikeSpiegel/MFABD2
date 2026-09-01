@@ -364,7 +364,9 @@
             "entry": "SemiAuto_HomePage",
             "controller": [
                 "Adb",
-                "PlayCover"
+                "PlayCover",
+                "PC客户端",
+                "PC客户端(Cursor)"
             ],
             "option": [
                 "半自动作业"
