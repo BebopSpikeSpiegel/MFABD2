@@ -1,10 +1,14 @@
 {
     "SemiAuto_HomePage": {
         "next": [
-            "SemiAuto_TotalStart"
+            "SemiAuto_TotalStart",
+            "SemiAuto_LastNight_Start",
+            "SemiAuto_SequentialRefined_Str"
         ]
     },
     "SemiAuto_TotalStart": {
+        "desc": "半自动爬塔",
+        "enabled": false,
         "next": [
             "SemiAuto_Evil_SemiautoTower_Start"
         ]
@@ -61,7 +65,29 @@
         "next": [],
         "focus": "G=1.页面非预期，点击返回按钮"
     },
+    "SemiAuto_Evil_SemiautoTower_Timeout": {
+        "desc": "半自动爬塔的时间闸,超过上限就收工。识别逻辑是反的:已超时才算命中,未超时返回失败让引擎继续试 next 里的后续候选,因此挂在各循环节点 next 首位不改变原有候选语义。上限由 interface.json 的「半自动爬塔时间上限」注入,默认 30 分钟,填 0 为不限时。为什么这条链需要时间界见 agent/recognition/timer.py 的模块注释。",
+        "recognition": "Custom",
+        "custom_recognition": "TimerExpired",
+        "custom_recognition_param": {
+            "timer": "EvilTower",
+            "minutes": 30
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "SemiAuto_Evil_SemiautoTower_End"
+        ],
+        "focus": "半自动-爬塔已达时间上限,收工"
+    },
     "SemiAuto_Evil_SemiautoTower_Start": {
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "StartTimer",
+        "custom_action_param": {
+            "timer": "EvilTower"
+        },
+        "post_delay": 0,
         "next": [
             "SemiAuto_Evil_SemiautoTower_On"
         ]
@@ -83,10 +109,10 @@
     "SemiAuto_Evil_SemiautoTower_On": {
         "recognition": "OCR",
         "roi": [
-            1043,
-            636,
-            118,
-            38
+            997,
+            633,
+            125,
+            47
         ],
         "expected": [
             "进入第"
@@ -95,7 +121,10 @@
         "post_wait_freezes": 1000,
         "post_delay": 800,
         "next": [
-            "SemiAuto_Evil_SemiautoTower_OnCk",
+            "SemiAuto_Evil_SemiautoTower_Timeout",
+            "[JumpBack]SemiAuto_Evil_SemiautoTower_OnCk",
+            "SemiAuto_Evil_SemiautoTower_InManual",
+            "SemiAuto_Evil_SemiautoTower_InAuto",
             "SemiAuto_Evil_SemiautoTower_On"
         ]
     },
@@ -111,12 +140,7 @@
             "确认"
         ],
         "action": "Click",
-        "post_delay": 5000,
-        "next": [
-            "SemiAuto_Evil_SemiautoTower_InManual",
-            "SemiAuto_Evil_SemiautoTower_InAuto",
-            "SemiAuto_Evil_SemiautoTower_OnCk"
-        ]
+        "post_delay": 5000
     },
     "SemiAuto_Evil_SemiautoTower_InManual": {
         "recognition": "OCR",
@@ -136,6 +160,7 @@
         ],
         "post_delay": 3500,
         "next": [
+            "SemiAuto_Evil_SemiautoTower_Timeout",
             "SemiAuto_Evil_SemiautoTower_InAuto",
             "SemiAuto_Evil_SemiautoTower_InManual"
         ]
@@ -170,6 +195,7 @@
         ],
         "post_delay": 10000,
         "next": [
+            "SemiAuto_Evil_SemiautoTower_Timeout",
             "SemiAuto_Evil_SemiautoTower_ToNextRound",
             "SemiAuto_Evil_SemiautoTower_AuDaemon",
             "SemiAuto_Evil_SemiautoTower_InAuto",
@@ -179,10 +205,10 @@
     "SemiAuto_Evil_SemiautoTower_ToNextRound": {
         "recognition": "OCR",
         "roi": [
-            1054,
-            654,
-            133,
-            36
+            982,
+            645,
+            134,
+            37
         ],
         "expected": [
             "前往下"
@@ -190,8 +216,10 @@
         "action": "Click",
         "post_delay": 500,
         "next": [
-            "SemiAuto_Evil_SemiautoTower_OnCk",
-            "SemiAuto_Evil_SemiautoTower_ToNextRound"
+            "SemiAuto_Evil_SemiautoTower_Timeout",
+            "[JumpBack]SemiAuto_Evil_SemiautoTower_OnCk",
+            "SemiAuto_Evil_SemiautoTower_InManual",
+            "SemiAuto_Evil_SemiautoTower_InAuto"
         ]
     },
     "SemiAuto_Evil_SemiautoTower_OnCk2": {
@@ -226,11 +254,11 @@
         ]
     },
     "SemiAuto_Evil_SemiautoTower_End": {
-        "next": [
-            "SemiAuto_LastNight_Start"
-        ]
+        "desc": "爬塔链的收尾终点,空 next 退栈结束 task。此处不做页面复位:超时命中可能发生在战斗画面里,而半自动模块本就要求用户手动进入界面再运行。以后要接退出战斗的收尾流程就挂在这里。"
     },
     "SemiAuto_LastNight_Start": {
+        "desc": "末日之书连刷",
+        "enabled": false,
         "next": [
             "SemiAuto_LastNight_MenuPage",
             "SemiAuto_LastNight_ReButt",
@@ -324,8 +352,25 @@
         ],
         "post_delay": 5000,
         "next": [
-            "SemiAuto_LastNight_ReButt",
-            "SemiAuto_LastNight_InBattle"
+            "SemiAuto_LastNight_InBattle",
+            "SemiAuto_LastNight_Timer"
+        ]
+    },
+    "SemiAuto_LastNight_Timer": {
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "TimerGate",
+        "custom_action_param": {
+            "timer": "LastNight",
+            "minutes": 30
+        },
+        "post_delay": 0,
+        "next": [
+            "SemiAuto_LastNight_ReButt"
+        ],
+        "on_error": [
+            "SemiAuto_LastNight_End",
+            "Global_Null"
         ]
     },
     "SemiAuto_LastNight_ReButt": {
@@ -342,32 +387,17 @@
         "action": "Click",
         "post_delay": 500,
         "next": [
-            "SemiAuto_LastNight_ReCk"
-        ]
-    },
-    "SemiAuto_LastNight_ReCk": {
-        "recognition": "OCR",
-        "roi": [
-            666,
-            402,
-            112,
-            38
-        ],
-        "expected": [
-            "确认"
-        ],
-        "action": "Click",
-        "next": [
-            "SemiAuto_LastNight_InBattle",
-            "SemiAuto_LastNight_ReCk"
-        ],
-        "on_error": [
-            "SemiAuto_LastNight_End"
+            "[JumpBack]SemiAuto_Evil_SemiautoTower_OnCk",
+            "SemiAuto_LastNight_InBattle"
         ]
     },
     "SemiAuto_LastNight_End": {},
     "SemiAuto_SequentialRefined_Str": {
-        "next": ["SemiAuto_SRef_SequentialRefined"],
+        "desc": "连刷精炼",
+        "enabled": false,
+        "next": [
+            "SemiAuto_SRef_SequentialRefined"
+        ],
         "focus": "半自动-连续精炼开始"
     },
     "SemiAuto_SRef_SequentialRefined": {
