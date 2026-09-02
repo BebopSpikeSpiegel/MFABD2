@@ -8,10 +8,6 @@
         ]
     },
     "Collect_Skill3_1": {
-        "recognition": "Or",
-        "any_of": [
-            "Rec_<Setup_SkillScan_Skill1>_Tpl"
-        ],
         "target": [
             1045,
             660,

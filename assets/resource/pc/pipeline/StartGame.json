@@ -124,7 +124,7 @@
         ]
     },
     "StartGame_Check_Win32_SetSize": {
-        "desc": "[PC覆盖] 先调整窗口大小到1280x720，再截图验证窗口可用",
+        "desc": "[PC覆盖] 把游戏窗口客户区调到1280x720，再截图验证窗口可用。|PC_ResizeWindow 恒报成功,调整结果只打印在日志里:本节点的 on_error 无处可去(StartGame_RunApp 依赖 ADB StartApp,PC 包里已 enabled:false),一旦判失败整个 StartGame 就停在这里起不来。窗口没调好顶多识别不准,交给 next 的识别节点判断当前在哪一步。",
         "action": "Custom",
         "custom_action": "PC_ResizeWindow",
         "next": [
@@ -135,12 +135,8 @@
             "StartGame_SandPlayPage",
             "StartGame_MainMsgBox_Remove"
         ],
-        "on_error": [
-            "StartGame_RunApp"
-        ],
         "focus": {
-            "Node.Action.Failed": "[color:red]PC窗口未找到或调整失败[/color]",
-            "Node.Action.Succeeded": "[color:green]PC窗口已就绪（1280x720）[/color]"
+            "Node.Action.Succeeded": "[color:green]PC窗口检查完成[/color]"
         }
     },
     "Global_BackToQC_TouchQC1Pack": {
