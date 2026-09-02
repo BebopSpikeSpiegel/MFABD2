@@ -2,11 +2,25 @@ version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
+    # 季度体检，不再每周催办。
+    # 本仓引用的 action 只有个位数，且 install.yml 里全部钉了 commit SHA；
+    # 每周扫一遍的结果是反复开无关紧要的 bump PR，评审与验证成本远高于收益。
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Asia/Shanghai"
+      interval: "quarterly"
+    # 合并成单个 PR：一次评审、一次 CI，而不是每个 action 各拉一条链。
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    # 只跟 major。action 的 major 跳变才会带来"上游换 node 运行时导致 action 停跑"
+    # 这类必须处理的问题；patch/minor 对本仓没有可观察收益，却会因为改到
+    # .github/workflows/install.yml 而触发 install.yml 的全量多平台构建。
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-patch"
+          - "version-update:semver-minor"
+    open-pull-requests-limit: 1
     labels:
       - "ci"
       - "dependencies"
