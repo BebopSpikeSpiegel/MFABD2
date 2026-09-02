@@ -67,21 +67,11 @@
         ]
     },
     "Equip_EquipMakeBack": {
-        "recognition": "And",
-        "all_of": [
-            "Equip_EquipMake"
-        ],
         "target": [
             102,
             21,
             14,
             16
-        ]
-    },
-    "Equip_ToEquipGui": {
-        "recognition": "And",
-        "all_of": [
-            "Equip_EquipMakeGui"
         ]
     },
     "Equip_EquipGui": {

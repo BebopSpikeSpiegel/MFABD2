@@ -124,7 +124,7 @@
         ]
     },
     "StartGame_Check_Win32_SetSize": {
-        "desc": "[PC覆盖] 先调整窗口大小到1280x720，再截图验证窗口可用",
+        "desc": "[PC覆盖] 把游戏窗口客户区调到1280x720，再截图验证窗口可用。|PC_ResizeWindow 恒报成功,调整结果只打印在日志里:本节点的 on_error 无处可去(StartGame_RunApp 依赖 ADB StartApp,PC 包里已 enabled:false),一旦判失败整个 StartGame 就停在这里起不来。窗口没调好顶多识别不准,交给 next 的识别节点判断当前在哪一步。",
         "action": "Custom",
         "custom_action": "PC_ResizeWindow",
         "next": [
@@ -135,22 +135,9 @@
             "StartGame_SandPlayPage",
             "StartGame_MainMsgBox_Remove"
         ],
-        "on_error": [
-            "StartGame_Win32SetSize_Retry_PC"
-        ],
         "focus": {
-            "Node.Action.Failed": "[color:red]PC窗口未找到或调整失败[/color]",
-            "Node.Action.Succeeded": "[color:green]PC窗口已就绪（1280x720）[/color]"
+            "Node.Action.Succeeded": "[color:green]PC窗口检查完成[/color]"
         }
-    },
-    "StartGame_Win32SetSize_Retry_PC": {
-        "desc": "[PC新增·2026-07-22] resize失败重试垫。原on_error指向StartGame_RunApp,但该节点在PC层enabled:false,等于零兜底:窗口短暂不可用(游戏刚启动尚未出窗口)也直接终止整条启动链。改为等5秒重试resize,最多3次;3次后本节点不再命中,流程带红字focus停止(真·窗口不存在/全屏锁定场景,自动化本就无法自救,快败并报清楚)。",
-        "post_delay": 5000,
-        "max_hit": 3,
-        "next": [
-            "StartGame_Check_Win32_SetSize"
-        ],
-        "focus": "SM.PC窗口未就绪,5秒后重试resize"
     },
     "StartGame_PVPSet": {
         "desc": "[PC覆盖·2026-07-22] 段位结算弹窗确认按钮。base roi[612,642,53,35]按安卓布局,PC紧凑弹窗确认钮实测在居中带——复用PR#396同弹窗校准值[500,640,280,60](Global_RankSettleModal_Confirm实测roi);expected补繁体。段位每变动即弹(非赛季一次性),启动相位接不住=07-18/20/21三次29秒速通失败同族雷。",

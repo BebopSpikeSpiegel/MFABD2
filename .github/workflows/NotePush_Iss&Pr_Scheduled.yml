@@ -105,6 +105,9 @@ jobs:
             LEN=$(echo "$PRS_JSON" | jq 'length')
             for i in $(seq 0 $((LEN-1))); do
               ITEM=$(echo "$PRS_JSON" | jq -c ".[$i]")
+              # 跳过机器人 PR（dependabot 版本 bump 等）：这类 PR 在合并前会天天
+              # 出现在三次汇总里，与评论侧（下方 .user.type != "Bot"）保持一致口径
+              if [ "$(echo "$ITEM" | jq -r '.user.type')" = "Bot" ]; then continue; fi
               CREATED_AT=$(echo "$ITEM" | jq -r '.created_at')
               CLOSED_AT=$(echo "$ITEM" | jq -r '.closed_at')
               MERGED_AT=$(echo "$ITEM" | jq -r '.merged_at')
