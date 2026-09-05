@@ -1952,6 +1952,10 @@
                     "enabled": true
                 },
                 {
+                    "name": "[全局]启动脚本(置顶)PC",
+                    "enabled": true
+                },
+                {
                     "name": "[执行]快速狩猎扫荡",
                     "enabled": true
                 },
@@ -2033,6 +2037,10 @@
             "task": [
                 {
                     "name": "[全局]启动脚本(置顶)",
+                    "enabled": true
+                },
+                {
+                    "name": "[全局]启动脚本(置顶)PC",
                     "enabled": true
                 },
                 {
