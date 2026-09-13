@@ -419,5 +419,22 @@
             "Activities_Fin"
         ],
         "focus": "GA.滑动寻找活动-上3(收尾)"
+    },
+    "Activities_FreeClothing": {
+        "desc": "[PC覆盖·2026-09-14] 0911 联动活动「Chained Soldier 2」免费+5强化服装页 PC 首次出现。base target[1047,204] 按安卓布局,PC 紧凑面板的「完成/领取」钮实测在(998,236)(on_error 帧 06:01:59);位移量与同页 GetRoll(-77)/GetPinTu(-52) 覆盖同族。",
+        "target": [
+            998,
+            236
+        ]
+    },
+    "Activities_FreeClothing_Ty2": {
+        "desc": "[PC覆盖·2026-09-14] 逐行领取钮列。base roi[1060,284,86,269] 在 PC 帧内最高仅 0.32(全空)→next 超时→无 on_error→Global_Null 假成功,活动页任务 48 秒静默结束、其余活动全跳过。离线全帧匹配 Ac_Getbutton.png 真实命中 (1011,315) 分 0.713(1080p 降采样帧),行距 ~76px;roi 左移覆盖 x995-1065、y 不变。threshold 0.65:实测 0.713、全帧次高峰 ≤0.515,余量充足;原生 720p 帧分应更高。",
+        "roi": [
+            995,
+            284,
+            70,
+            269
+        ],
+        "threshold": 0.65
     }
 }
