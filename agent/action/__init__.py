@@ -14,5 +14,6 @@ from .arbitrage_result import *
 from .account_save_checker import *
 from .shop_buy_fav_controller import *
 from .pc_window import *
+from .startup_prepare import *
 # 如果以后加了别的 action 文件，比如 battle_action.py，就在这里加一行：
 # from .battle_action import *
