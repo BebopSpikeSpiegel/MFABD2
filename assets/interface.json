@@ -17,7 +17,7 @@
             "win32": {
                 "class_regex": "UnityWndClass",
                 "window_regex": "^BrownDust II$",
-                "screencap": "FramePool",
+                "screencap": "PrintWindow",
                 "mouse": "PostMessageWithWindowPos",
                 "keyboard": "PostMessageWithWindowPos"
             },
@@ -29,7 +29,7 @@
         {
             "name": "PC游戏启动准备",
             "label": "PC游戏启动准备",
-            "description": "游戏未运行时自动拉起官方启动器，并等到游戏主窗口出现。<br>窗口分辨率与最小化改在任务开始时处理，不在这一步，因此这里不需要任何选项。",
+            "description": "游戏未运行时自动拉起官方启动器，等到游戏主窗口出现、再多等约 3 秒让它就绪。<br>窗口分辨率与最小化改在任务开始时处理，不在这一步，因此这里不需要任何选项。<br>游戏本来就在运行时，本步骤瞬间完成。",
             "controller": [
                 "PC客户端"
             ],

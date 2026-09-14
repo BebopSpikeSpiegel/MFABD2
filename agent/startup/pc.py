@@ -4,17 +4,25 @@ from .common import Cancelled, Prepared, PreparationError
 from .options import PCOptions
 
 TARGET = (1280, 720)
-# 成功路径只需一次 resize_client 加一轮 0.5 秒 settle。3 秒容纳「退全屏 1 秒 +
-# 四次 resize settle」，即窗口连续四次不响应才判不可达。
-RESIZE_WINDOW = 3.0
-# ShowWindowAsync 到 IsIconic 变真是 100~300ms 量级，1.5 秒给 15 次轮询。
-# 最小化失败只降级成提示，给多了纯亏时间。
+# resize 本身就是循环重发：每轮一次 SetWindowPos 加 0.5 秒回读，5 秒给 10 次机会。
+# 实机实测：窗口出现后两秒内游戏界面线程忙于加载，6 次尝试可以全部无效。所以宁可
+# 给足——真调不动时下面的长宽比分级会兜住，不会白等到总超时。
+RESIZE_WINDOW = 5.0
+# 最小化按「发一次、等一小段」重复三轮。ShowWindowAsync 只是把消息投进游戏的消息
+# 队列就返回，游戏忙时会迟迟不处理（实机实测迟 1.7~2.2 秒才生效），单发一次然后
+# 干等并不对症；重发比延长等待更可能被取走。
+MINIMIZE_ATTEMPTS = 3
 MINIMIZE_WINDOW = 1.5
 # 客户区长宽比相对目标的容许偏差。短边 720 上 1px 取整误差是 0.14%，这里留足余量。
 ASPECT_TOLERANCE = 0.02
-# sink 的总预算。必须大于 RESIZE_WINDOW，否则总超时会先于 ResolutionUnavailable
-# 触发，下面的长宽比分级就永远走不到。
-PC_TASK_TIMEOUT = 5.0
+# 短边低于这个值时，框架的短边缩放会变成放大，识别精度会掉。此时即使长宽比对得上
+# 也要单独提示，不能笼统说「不影响准确度」（实机遇到过 1006×565）。
+MIN_SHORT_SIDE = TARGET[1]
+# sink 的总预算。必须大于 RESIZE_WINDOW + MINIMIZE_ATTEMPTS × MINIMIZE_WINDOW，
+# 否则总超时会先于长宽比分级和最小化重试触发，那两套兜底就永远走不到。
+PC_TASK_TIMEOUT = 11.0
+# pretask 亲手拉起游戏后，留给界面线程的稳定时间。游戏本来就在跑时不花这个钱。
+SETTLE_AFTER_LAUNCH = 3.0
 
 
 class ResolutionUnavailable(PreparationError):
@@ -97,10 +105,18 @@ def align_window(api, hwnd, budget, options):
                 + ("且长宽比无法测量" if deviation is None else f"且长宽比偏离目标达 {deviation:.1%}")
                 + "，识别坐标会整体错位。请手动 Alt+Enter 切回窗口模式，"
                 "或在游戏内把分辨率改成 16:9 后重试")
-        note = (
-            f"；提示：未能改成 {_fmt(options.target)}，但长宽比与目标一致（偏差 {deviation:.1%}），"
-            "框架会把短边缩放到 720 再识别，不影响准确度；本任务继续执行，下个任务会重新尝试调整"
-        )
+        short_side = min(actual)
+        if short_side < MIN_SHORT_SIDE:
+            note = (
+                f"；未能改成 {_fmt(options.target)}，长宽比虽与目标一致（偏差 {deviation:.1%}），"
+                f"但短边只有 {short_side} 像素、不足 {MIN_SHORT_SIDE}，框架需要放大画面才能识别，"
+                "OCR 与模板匹配的精度可能下降；本任务继续执行，下个任务会重新尝试调整"
+            )
+        else:
+            note = (
+                f"；提示：未能改成 {_fmt(options.target)}，但长宽比与目标一致（偏差 {deviation:.1%}），"
+                "框架会把短边缩放到 720 再识别，不影响准确度；本任务继续执行，下个任务会重新尝试调整"
+            )
     mode = "普通窗口"
     if not options.minimize and api.pseudo_minimized(hwnd):
         # 伪最小化是 MaaFramework 自己的后台截图机制：FramePool / PrintWindow 在窗口被
@@ -114,18 +130,24 @@ def align_window(api, hwnd, budget, options):
         )
     if options.minimize:
         try:
-            budget.check()
-            if not api.minimized(hwnd) and not api.pseudo_minimized(hwnd):
-                api.minimize(hwnd)
-            until = min(budget.deadline, budget.clock() + MINIMIZE_WINDOW)
+            requests = 0
             while not (api.minimized(hwnd) or api.pseudo_minimized(hwnd)):
                 budget.check()
                 if not api.is_game(hwnd):
                     raise PreparationError("绑定的游戏窗口已失效，请重新连接")
-                if budget.clock() >= until:
-                    raise PreparationError(f"{MINIMIZE_WINDOW:g} 秒内未确认 PC 窗口最小化状态")
-                budget.pause(0.1)
-            mode = "最小化状态已确认"
+                if requests >= MINIMIZE_ATTEMPTS:
+                    raise PreparationError(
+                        f"{MINIMIZE_ATTEMPTS} 次请求、共 "
+                        f"{MINIMIZE_ATTEMPTS * MINIMIZE_WINDOW:g} 秒内未确认 PC 窗口最小化状态")
+                api.minimize(hwnd)
+                requests += 1
+                until = min(budget.deadline, budget.clock() + MINIMIZE_WINDOW)
+                while not (api.minimized(hwnd) or api.pseudo_minimized(hwnd)) and budget.clock() < until:
+                    budget.check()
+                    if not api.is_game(hwnd):
+                        raise PreparationError("绑定的游戏窗口已失效，请重新连接")
+                    budget.pause(0.1)
+            mode = "最小化状态已确认" if requests <= 1 else f"最小化状态已确认（第 {requests} 次请求才生效）"
         except Cancelled:
             raise
         except Exception as exc:
@@ -153,12 +175,36 @@ def align_window(api, hwnd, budget, options):
     (budget.warn if note else budget.report)(line)
 
 
+def settle_after_launch(api, hwnd, budget):
+    """给亲手拉起的游戏一段界面线程就绪时间，期间持续确认窗口没有消失。
+
+    返回 True 表示窗口稳定存活；False 表示它在就绪前消失了（启动失败会闪退），
+    此时该退回等待循环，而不是把一个已失效的句柄交给 sink。
+
+    为什么是固定等待而不是探测：试过用 SendMessageTimeout(WM_NULL) 探窗口的消息
+    循环还转不转，但实机数据否掉了它——投递的最小化请求 1.7~2.2 秒后确实被处理了，
+    不是一直排队到超时，说明游戏加载期消息循环是在转的、只是处理得慢。那么探针会
+    立刻返回「空闲」，等于没探。
+    """
+    budget.phase = "等待新启动的游戏窗口就绪"
+    until = min(budget.deadline, budget.clock() + SETTLE_AFTER_LAUNCH)
+    while budget.clock() < until:
+        budget.pause(min(0.5, until - budget.clock()))
+        if not api.is_game(hwnd):
+            return False
+    return True
+
+
 def launch_and_confirm(api, budget):
     """pretask 路径：游戏没跑就拉起官方启动器，等到主窗口出现并确认它存在。
 
     刻意不接收 options——窗口尺寸与最小化一律由任务首节点的 sink 负责。这里在签名
     层面就拿不到那两个配置，因此不会再退化成「顺手 resize 一下」；也不调 restore()，
     连接前不抢用户焦点。被手动最小化的窗口原样交给软件连接，框架首次截图时自会处理。
+
+    唯一的例外是「本轮亲手拉起过游戏」：那种窗口刚出现时界面线程正忙于加载，交出去
+    会让 sink 的 resize 与最小化全部落空（实机实测过）。这段等待放在这里而不是 sink
+    里，是因为 pretask 跑在独立进程中，等它多久都不会阻塞 pipeline。
     """
     launched = False
     last_dialogs = None
@@ -169,7 +215,16 @@ def launch_and_confirm(api, budget):
             # 多窗口交给软件自己的窗口选择，这里只报数不拦——pretask 没资格替用户决定。
             extra = f"（检测到 {len(windows)} 个，由软件选择连接目标）" if len(windows) > 1 else ""
             budget.report(f"[启动准备] 已确认游戏主窗口{extra}；窗口尺寸与最小化在任务开始时处理")
-            return Prepared(launched)
+            # 游戏本来就在跑时窗口早已稳定，不花这段等待。
+            if not launched:
+                return Prepared(launched)
+            if settle_after_launch(api, windows[0], budget):
+                budget.report(
+                    f"[启动准备] 新窗口已稳定 {SETTLE_AFTER_LAUNCH:g} 秒。注意：游戏是本轮新启动的，"
+                    "窗口编号已经变了；若软件随后报连接失败，点一次「刷新连接目标」让它重新识别窗口")
+                return Prepared(launched)
+            budget.report("[启动准备] 新窗口在就绪前消失，继续等待启动器交接")
+            continue
         if dialogs != last_dialogs:
             if dialogs:
                 budget.report(f"[启动准备] 启动器窗口：{', '.join(dialogs)}；继续观察，不自动点击弹框")

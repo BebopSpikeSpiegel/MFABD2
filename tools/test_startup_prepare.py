@@ -326,7 +326,7 @@ class PCTests(ContractTest):
         self.assertIsNotNone(pc.prepare(api, self.budget(), hwnd=7))
         self.assertEqual(api.toggles, 1)
         self.assertEqual(api.resizes, 0)
-        self.assertLessEqual(self.clock.now, 3.1)
+        self.assertLessEqual(self.clock.now, 5.1)
         self.assertIn("仍为全屏", self.messages[-1])
 
     def test_minimized_window_is_not_accepted_until_restored(self):
@@ -357,7 +357,9 @@ class PCTests(ContractTest):
         api = NativeAPI([([], False, []), ([7], True, [])])
         self.assertTrue(pc.prepare(api, self.budget()).changed)
         self.assertEqual((api.launches, api.scans), (1, 2))
-        self.assertLessEqual(self.clock.now, 2)
+        # 一轮 2 秒等待，加上亲手拉起后留给界面线程的就绪时间。
+        self.assertGreaterEqual(self.clock.now, pc.SETTLE_AFTER_LAUNCH)
+        self.assertLessEqual(self.clock.now, 2 + pc.SETTLE_AFTER_LAUNCH + 0.1)
 
     def test_multiple_games_are_left_to_the_client(self):
         # 多窗口交给软件自己的窗口选择 UI；pretask 只报数，不替用户决定。
@@ -381,16 +383,16 @@ class PCTests(ContractTest):
                 api = NativeAPI(size=size)
                 with self.assertRaises(PreparationError):
                     pc.prepare(api, self.budget(), hwnd=7)
-                self.assertLessEqual(self.clock.now, 3.1)
-                self.assertLessEqual(api.resizes, 8)
+                self.assertLessEqual(self.clock.now, 5.1)
+                self.assertLessEqual(api.resizes, 12)  # RESIZE_WINDOW / 0.5 加余量
                 self.assertEqual(api.scans, 0)
 
     def test_wrong_size_but_matching_aspect_continues(self):
         # 1920×1080 与 720p 目标同为 16:9，框架按短边缩放即可，不该为此杀任务。
         api = NativeAPI(size=(1920, 1080))
         self.assertIsNotNone(pc.prepare(api, self.budget(), hwnd=7))
-        self.assertLessEqual(self.clock.now, 3.1)
-        self.assertLessEqual(api.resizes, 8)
+        self.assertLessEqual(self.clock.now, 5.1)
+        self.assertLessEqual(api.resizes, 12)  # RESIZE_WINDOW / 0.5 加余量
         self.assertEqual(api.scans, 0)
         self.assertTrue(any("短边" in text for text in self.messages))
 
@@ -408,7 +410,8 @@ class GuardTests(ContractTest):
         for task_id in (1, 1, 2):
             context.task_id = task_id
             self.assertEqual(gate.ensure(context), Prepared())
-        self.assertEqual(attempts, [7, 7])
+        # 每个任务把请求发满三次再降级；task 1 的第二次调用命中去重缓存，所以是两轮。
+        self.assertEqual(attempts, [7] * (2 * pc.MINIMIZE_ATTEMPTS))
         self.assertEqual(context.tasker.stops, 0)
         self.assertEqual(gate.failures, {})
         self.assertEqual(self.errors, [])

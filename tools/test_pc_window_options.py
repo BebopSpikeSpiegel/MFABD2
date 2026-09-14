@@ -186,7 +186,7 @@ class Contracts(unittest.TestCase):
         api = FakeAPI(size=(1652, 929))
         api.resize_ok = False
         self.assertIsNotNone(self.prepare(api))
-        self.assertLessEqual(self.clock.now, 3.1)
+        self.assertLessEqual(self.clock.now, 5.1)
         self.assertEqual(len(self.warnings), 1)
         self.assertIn('1652×929', self.warnings[0])
         self.assertIn('短边', self.warnings[0])
@@ -198,7 +198,7 @@ class Contracts(unittest.TestCase):
         api.resize_ok = False
         with self.assertRaisesRegex(common.PreparationError, '长宽比偏离目标'):
             self.prepare(api)
-        self.assertLessEqual(self.clock.now, 3.1)
+        self.assertLessEqual(self.clock.now, 5.1)
         self.assertEqual(self.warnings, [])
 
     # ---- sink 路径：已连接窗口的校正 ----
@@ -225,7 +225,7 @@ class Contracts(unittest.TestCase):
         api.resize_ok = False
         with self.assertRaisesRegex(common.PreparationError, '长宽比偏离目标'):
             self.prepare(api)
-        self.assertLessEqual(self.clock.now, 3.1)
+        self.assertLessEqual(self.clock.now, 5.1)
         self.assertNotIn('[PC窗口]', '\n'.join(self.logs + self.warnings))
 
     def test_fullscreen_exit(self):
@@ -241,7 +241,7 @@ class Contracts(unittest.TestCase):
         with self.assertRaises(common.PreparationError):
             self.prepare(api)
         self.assertEqual(api.calls.count(('exit',)), 1)
-        self.assertLessEqual(self.clock.now, 3.1)
+        self.assertLessEqual(self.clock.now, 5.1)
 
     def test_stuck_fullscreen_but_correct_size_says_so(self):
         # 降级路径下「没退出全屏但客户区恰好达标」，报告必须说实话。
@@ -263,7 +263,7 @@ class Contracts(unittest.TestCase):
         api.restore_ok = False
         with self.assertRaises(common.PreparationError):
             self.prepare(api)
-        self.assertLessEqual(self.clock.now, 3.1)
+        self.assertLessEqual(self.clock.now, 5.1)
 
     def test_minimize_after_resize(self):
         api = FakeAPI()
@@ -284,16 +284,44 @@ class Contracts(unittest.TestCase):
         api.restore = lambda hwnd: restore(hwnd) if self.clock.now >= 2 else False
         self.prepare(api)
         self.assertGreaterEqual(self.clock.now, 2)
-        self.assertLess(self.clock.now, 3.1)
+        self.assertLess(self.clock.now, 5.1)
 
     def test_minimize_failure_is_only_a_hint(self):
         # 19e4edc0 把最小化确认降级成提示，但漏更新了这个文件的断言（本次一并修）。
         api = FakeAPI(size=(1280, 720))
         api.minimize_ok = False
         self.assertIsNotNone(self.prepare(api, minimize=True))
-        self.assertLessEqual(self.clock.now, 1.61)
-        self.assertEqual(api.calls.count(('minimize',)), 1)
+        self.assertLessEqual(self.clock.now, pc.MINIMIZE_ATTEMPTS * pc.MINIMIZE_WINDOW + 0.2)
+        # 请求必须发满三次再放弃：投递的消息可能被忙碌的游戏丢掉，重发比干等对症。
+        self.assertEqual(api.calls.count(('minimize',)), pc.MINIMIZE_ATTEMPTS)
         self.assertIn('最小化未确认', self.logs[-1])
+
+    def test_minimize_retries_and_a_later_attempt_wins(self):
+        # 实机实测：ShowWindowAsync 投出的请求会迟 1.7~2.2 秒才被游戏处理。
+        api = FakeAPI(size=(1280, 720))
+        api.minimize_ok = False
+        original = api.minimize
+
+        def minimize(hwnd):
+            original(hwnd)
+            if api.calls.count(('minimize',)) >= 2:
+                api.pseudo = True
+
+        api.minimize = minimize
+        self.assertIsNotNone(self.prepare(api, minimize=True))
+        self.assertEqual(api.calls.count(('minimize',)), 2)
+        self.assertIn('第 2 次请求才生效', self.logs[-1])
+        self.assertLessEqual(self.clock.now, pc.MINIMIZE_WINDOW + 0.2)
+
+    def test_short_side_below_720_warns_about_precision(self):
+        # 实机遇到过 1006×565：长宽比对得上，但短边不足 720，框架得放大画面来识别。
+        api = FakeAPI(size=(1006, 565))
+        api.resize_ok = False
+        self.assertIsNotNone(self.prepare(api))
+        self.assertEqual(len(self.warnings), 1)
+        self.assertIn('短边只有 565 像素', self.warnings[0])
+        self.assertIn('精度可能下降', self.warnings[0])
+        self.assertNotIn('不影响准确度', self.warnings[0])
 
     def test_pseudo_minimized_correct_size_not_minimized_again(self):
         api = FakeAPI(size=(1280, 720), pseudo=True)
@@ -342,6 +370,37 @@ class Contracts(unittest.TestCase):
         api.scan = Mock(side_effect=frames)
         self.assertIsNotNone(pc.prepare(api, self.budget))
         self.assertEqual(api.calls, [('launch',)])
+
+    def test_pretask_settles_a_freshly_launched_window(self):
+        # 亲手拉起的窗口刚出现时游戏界面线程忙于加载，直接交出去会让 sink 的
+        # resize 与最小化全部落空。这段等待放在 pretask（独立进程）里不阻塞 pipeline。
+        api = FakeAPI()
+        frames = iter([([], False, []), ([0x123], True, [])])
+        api.scan = lambda: next(frames, ([0x123], True, []))
+        self.assertIsNotNone(pc.prepare(api, self.budget))
+        self.assertGreaterEqual(self.clock.now, pc.SETTLE_AFTER_LAUNCH)
+        self.assertEqual(api.calls.count(('launch',)), 1)
+        self.assertIn('窗口编号已经变了', self.logs[-1])
+        self.assertIn('刷新连接目标', self.logs[-1])
+
+    def test_pretask_does_not_settle_a_game_that_was_already_running(self):
+        api = FakeAPI()
+        api.scan = Mock(return_value=([0x123], True, []))
+        self.assertIsNotNone(pc.prepare(api, self.budget))
+        self.assertEqual(self.clock.now, 0)
+        self.assertEqual(api.calls, [])
+        self.assertNotIn('窗口编号', self.logs[-1])
+
+    def test_settle_detects_a_window_that_vanishes_before_it_is_ready(self):
+        # 启动失败会闪退。把一个已失效的句柄交给 sink 只会换来「窗口已失效」。
+        api = FakeAPI()
+        frames = iter([([], False, []), ([0x123], True, [])])
+        api.scan = lambda: next(frames, ([0x123], True, []))
+        alive = iter([True, False])
+        api.is_game = lambda hwnd: next(alive, True)
+        self.assertIsNotNone(pc.prepare(api, self.budget))
+        self.assertEqual(api.calls.count(('launch',)), 1)
+        self.assertTrue(any('在就绪前消失' in text for text in self.logs))
 
     def test_sink_applies_minimize_after_pretask_and_connection(self):
         api = FakeAPI()
