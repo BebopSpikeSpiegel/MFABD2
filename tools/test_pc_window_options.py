@@ -291,27 +291,24 @@ class Contracts(unittest.TestCase):
         api = FakeAPI(size=(1280, 720))
         api.minimize_ok = False
         self.assertIsNotNone(self.prepare(api, minimize=True))
-        self.assertLessEqual(self.clock.now, pc.MINIMIZE_ATTEMPTS * pc.MINIMIZE_WINDOW + 0.2)
-        # 请求必须发满三次再放弃：投递的消息可能被忙碌的游戏丢掉，重发比干等对症。
-        self.assertEqual(api.calls.count(('minimize',)), pc.MINIMIZE_ATTEMPTS)
-        self.assertIn('最小化未确认', self.logs[-1])
-
-    def test_minimize_retries_and_a_later_attempt_wins(self):
-        # 实机实测：ShowWindowAsync 投出的请求会迟 1.7~2.2 秒才被游戏处理。
-        api = FakeAPI(size=(1280, 720))
-        api.minimize_ok = False
-        original = api.minimize
-
-        def minimize(hwnd):
-            original(hwnd)
-            if api.calls.count(('minimize',)) >= 2:
-                api.pseudo = True
-
-        api.minimize = minimize
-        self.assertIsNotNone(self.prepare(api, minimize=True))
-        self.assertEqual(api.calls.count(('minimize',)), 2)
-        self.assertIn('第 2 次请求才生效', self.logs[-1])
         self.assertLessEqual(self.clock.now, pc.MINIMIZE_WINDOW + 0.2)
+        self.assertEqual(api.calls.count(('minimize',)), 1)
+        self.assertIn('最小化未确认', self.logs[-1])
+        # 文案要说清请求已经发出，因为窗口很可能稍后自行最小化。
+        self.assertIn('请求已发出', self.logs[-1])
+
+    def test_minimize_is_requested_exactly_once_and_a_late_effect_counts(self):
+        # 绝不重发。残留的请求会在框架做过伪最小化之后才被消化，让窗口再次 iconic，
+        # Unity 恢复时抢回前台，于是框架的撤销条件
+        # （pseudo_minimized_ && GetForegroundWindow() == hwnd_）成立，
+        # 它把自己刚设的透明撤掉——实机表现为「最小化后又弹回前台」。
+        api = FakeAPI(size=(1280, 720))
+        api.minimize_ok = False  # 调用本身不改状态，改由下面的时间函数决定何时生效
+        api.pseudo_minimized = lambda hwnd: self.clock.now >= 3.0
+        self.assertIsNotNone(self.prepare(api, minimize=True))
+        self.assertEqual(api.calls.count(('minimize',)), 1)
+        self.assertGreaterEqual(self.clock.now, 3.0)
+        self.assertIn('最小化状态已确认', self.logs[-1])
 
     def test_short_side_below_720_warns_about_precision(self):
         # 实机遇到过 1006×565：长宽比对得上，但短边不足 720，框架得放大画面来识别。

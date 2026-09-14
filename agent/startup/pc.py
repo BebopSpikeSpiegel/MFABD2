@@ -8,19 +8,26 @@ TARGET = (1280, 720)
 # 实机实测：窗口出现后两秒内游戏界面线程忙于加载，6 次尝试可以全部无效。所以宁可
 # 给足——真调不动时下面的长宽比分级会兜住，不会白等到总超时。
 RESIZE_WINDOW = 5.0
-# 最小化按「发一次、等一小段」重复三轮。ShowWindowAsync 只是把消息投进游戏的消息
-# 队列就返回，游戏忙时会迟迟不处理（实机实测迟 1.7~2.2 秒才生效），单发一次然后
-# 干等并不对症；重发比延长等待更可能被取走。
-MINIMIZE_ATTEMPTS = 3
-MINIMIZE_WINDOW = 1.5
+# 最小化请求**只发一次**，然后等它生效，绝不重发。
+#
+# 重发试过，是错的：ShowWindowAsync 把消息投进游戏的消息队列就返回，多发的请求会在
+# 框架已经做过伪最小化之后才被消化，让窗口再次 iconic；Unity 从最小化恢复时会自己抢
+# 输入焦点，于是框架 monitor 线程的撤销条件
+# （pseudo_minimized_ && GetForegroundWindow() == hwnd_，见上游
+# MaaWin32ControlUnit/Screencap/PseudoMinimizeHelper.cpp，100ms 轮询）成立，
+# 它就把自己刚设的透明撤掉——用户看到的就是「窗口最小化后又弹回前台」。
+#
+# 单发的最坏情况只是「我们没等到、报了未确认，而窗口稍后自行最小化」，良性。
+# 窗口时长按实测延迟（1.75~4.8 秒）给到 6 秒。
+MINIMIZE_WINDOW = 6.0
 # 客户区长宽比相对目标的容许偏差。短边 720 上 1px 取整误差是 0.14%，这里留足余量。
 ASPECT_TOLERANCE = 0.02
 # 短边低于这个值时，框架的短边缩放会变成放大，识别精度会掉。此时即使长宽比对得上
 # 也要单独提示，不能笼统说「不影响准确度」（实机遇到过 1006×565）。
 MIN_SHORT_SIDE = TARGET[1]
-# sink 的总预算。必须大于 RESIZE_WINDOW + MINIMIZE_ATTEMPTS × MINIMIZE_WINDOW，
-# 否则总超时会先于长宽比分级和最小化重试触发，那两套兜底就永远走不到。
-PC_TASK_TIMEOUT = 11.0
+# sink 的总预算。必须大于 RESIZE_WINDOW + MINIMIZE_WINDOW，否则总超时会先于长宽比
+# 分级和最小化等待触发，那两套兜底就永远走不到。
+PC_TASK_TIMEOUT = 12.0
 # pretask 亲手拉起游戏后，留给界面线程的稳定时间。游戏本来就在跑时不花这个钱。
 SETTLE_AFTER_LAUNCH = 3.0
 
@@ -130,24 +137,21 @@ def align_window(api, hwnd, budget, options):
         )
     if options.minimize:
         try:
-            requests = 0
+            budget.check()
+            if not api.minimized(hwnd) and not api.pseudo_minimized(hwnd):
+                # 只发这一次。重发的后果见 MINIMIZE_WINDOW 处的说明。
+                api.minimize(hwnd)
+            until = min(budget.deadline, budget.clock() + MINIMIZE_WINDOW)
             while not (api.minimized(hwnd) or api.pseudo_minimized(hwnd)):
                 budget.check()
                 if not api.is_game(hwnd):
                     raise PreparationError("绑定的游戏窗口已失效，请重新连接")
-                if requests >= MINIMIZE_ATTEMPTS:
+                if budget.clock() >= until:
                     raise PreparationError(
-                        f"{MINIMIZE_ATTEMPTS} 次请求、共 "
-                        f"{MINIMIZE_ATTEMPTS * MINIMIZE_WINDOW:g} 秒内未确认 PC 窗口最小化状态")
-                api.minimize(hwnd)
-                requests += 1
-                until = min(budget.deadline, budget.clock() + MINIMIZE_WINDOW)
-                while not (api.minimized(hwnd) or api.pseudo_minimized(hwnd)) and budget.clock() < until:
-                    budget.check()
-                    if not api.is_game(hwnd):
-                        raise PreparationError("绑定的游戏窗口已失效，请重新连接")
-                    budget.pause(0.1)
-            mode = "最小化状态已确认" if requests <= 1 else f"最小化状态已确认（第 {requests} 次请求才生效）"
+                        f"请求已发出，但 {MINIMIZE_WINDOW:g} 秒内未确认最小化状态"
+                        "（窗口可能稍后自行最小化）")
+                budget.pause(0.1)
+            mode = "最小化状态已确认"
         except Cancelled:
             raise
         except Exception as exc:

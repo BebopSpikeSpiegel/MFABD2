@@ -410,8 +410,9 @@ class GuardTests(ContractTest):
         for task_id in (1, 1, 2):
             context.task_id = task_id
             self.assertEqual(gate.ensure(context), Prepared())
-        # 每个任务把请求发满三次再降级；task 1 的第二次调用命中去重缓存，所以是两轮。
-        self.assertEqual(attempts, [7] * (2 * pc.MINIMIZE_ATTEMPTS))
+        # 每个任务只发一次请求——重发会让框架撤销自己刚设的伪最小化；task 1 的第二次
+        # 调用命中去重缓存，所以总共两次。
+        self.assertEqual(attempts, [7, 7])
         self.assertEqual(context.tasker.stops, 0)
         self.assertEqual(gate.failures, {})
         self.assertEqual(self.errors, [])
