@@ -18,9 +18,13 @@ class Prepared:
 
 
 class Budget:
-    def __init__(self, report, cancelled=lambda: False, *, timeout=300,
-                 clock=time.monotonic, sleep=time.sleep):
+    # timeout 是浮点秒数：ADB 用默认 300，PC 的 sink 用 5，验证脚本用 0.5。
+    def __init__(self, report, cancelled=lambda: False, *, timeout: float = 300,
+                 clock=time.monotonic, sleep=time.sleep, warn=None):
         self.report = report
+        # 降级提示必须让用户看见。mfaalog 有独立的 warn 前缀，走 info 会被埋在
+        # 一堆常规日志里。没给就退回 report，调用点因此不必都传。
+        self.warn = warn or report
         self.cancelled = cancelled
         self.clock = clock
         self.sleep = sleep

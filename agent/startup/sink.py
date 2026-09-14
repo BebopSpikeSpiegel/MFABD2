@@ -15,7 +15,7 @@ def prepare_adb(controller, budget):
     return adb.prepare(controller, budget)
 
 
-guard = StartupGuard(mfaalog.info, mfaalog.error, adb_prepare=prepare_adb)
+guard = StartupGuard(mfaalog.info, mfaalog.error, warn=mfaalog.warning, adb_prepare=prepare_adb)
 
 # MaaFw 5.12.2's context-sink decorator does not initialize its ctypes binding.
 # Initialize explicitly instead of depending on unrelated action import order.

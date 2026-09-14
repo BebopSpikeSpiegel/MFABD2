@@ -1,6 +1,6 @@
 {
     "StartGame_PCWindowOptions": {
-        "desc": "PC 启动准备配置，仅供 pretask/sink 共享读取，不进入业务流程。",
+        "desc": "PC 窗口配置，仅供任务内 sink 读取（pretask 已不消费选项），不进入业务流程。",
         "enabled": false,
         "attach": {
             "resolution": "720p",
