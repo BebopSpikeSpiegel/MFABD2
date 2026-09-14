@@ -1,13 +1,14 @@
-"""PC options shared by PI pretask arguments and task-local pipeline attach."""
+"""PC options read from the task-local pipeline attach.
 
-import json
+pretask 不再消费选项（它只负责拉起游戏并确认主窗口存在），所以这里只剩 sink 这
+一个入口。原先按中文 option 名解析 PI 传入 JSON 的 from_pretask 已随之删除。
+"""
+
 from dataclasses import dataclass
 
 from .common import PreparationError
 
 NODE = "StartGame_PCWindowOptions"
-RESOLUTION_OPTION = "PC窗口分辨率"
-MINIMIZE_OPTION = "PC启动最小化"
 RESOLUTIONS = {"720p": (1280, 720), "1080p": (1920, 1080)}
 
 
@@ -25,23 +26,6 @@ class PCOptions:
     @property
     def target(self):
         return RESOLUTIONS[self.resolution]
-
-    @classmethod
-    def from_pretask(cls, arguments):
-        if not arguments:
-            return cls()
-        if len(arguments) != 1:
-            raise PreparationError("PC pretask 需要一个选项 JSON 参数")
-        try:
-            values = json.loads(arguments[0])
-            if not isinstance(values, dict):
-                raise ValueError("选项不是对象")
-            minimized = values.get(MINIMIZE_OPTION, "No")
-            if minimized not in ("Yes", "No"):
-                raise ValueError("最小化选项必须为 Yes/No")
-            return cls(values.get(RESOLUTION_OPTION, "720p"), minimized == "Yes")
-        except (ValueError, TypeError) as exc:
-            raise PreparationError(f"PC pretask 选项无效：{exc}") from exc
 
     @classmethod
     def from_context(cls, context):

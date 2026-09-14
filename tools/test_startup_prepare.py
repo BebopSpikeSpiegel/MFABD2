@@ -322,11 +322,12 @@ class PCTests(ContractTest):
         def toggle(hwnd):
             api.toggles += 1
         api.exit_fullscreen = toggle
-        with self.assertRaises(PreparationError):
-            pc.prepare(api, self.budget(), hwnd=7)
+        # 客户区尺寸本来就达标，所以卡在全屏不再是失败——但报告必须说实话。
+        self.assertIsNotNone(pc.prepare(api, self.budget(), hwnd=7))
         self.assertEqual(api.toggles, 1)
         self.assertEqual(api.resizes, 0)
-        self.assertLessEqual(self.clock.now, 10)
+        self.assertLessEqual(self.clock.now, 3.1)
+        self.assertIn("仍为全屏", self.messages[-1])
 
     def test_minimized_window_is_not_accepted_until_restored(self):
         api = NativeAPI()
@@ -358,11 +359,12 @@ class PCTests(ContractTest):
         self.assertEqual((api.launches, api.scans), (1, 2))
         self.assertLessEqual(self.clock.now, 2)
 
-    def test_multiple_games_rejected_before_mutation(self):
+    def test_multiple_games_are_left_to_the_client(self):
+        # 多窗口交给软件自己的窗口选择 UI；pretask 只报数，不替用户决定。
         api = NativeAPI([([7, 8], True, [])])
-        with self.assertRaises(PreparationError):
-            pc.prepare(api, self.budget())
+        self.assertIsNotNone(pc.prepare(api, self.budget()))
         self.assertEqual((api.launches, api.resizes, api.handles), (0, 0, []))
+        self.assertIn("2 个", self.messages[-1])
 
     def test_invalid_bound_handle_never_rebinds(self):
         api = NativeAPI([([8], True, [])], valid=False)
@@ -371,16 +373,26 @@ class PCTests(ContractTest):
         self.assertEqual((api.scans, api.launches), (0, 0))
         self.assertEqual(set(api.handles), {7})
 
-    def test_size_readback_failure_is_bounded(self):
-        for size in (None, (0, 0), (1920, 1080)):
+    def test_unmeasurable_size_is_bounded_and_fatal(self):
+        # 量不出长宽比就无法判断识别坐标还准不准，只能停掉当前任务。
+        for size in (None, (0, 0)):
             with self.subTest(size=size):
                 self.clock = Clock()
                 api = NativeAPI(size=size)
                 with self.assertRaises(PreparationError):
                     pc.prepare(api, self.budget(), hwnd=7)
-                self.assertLessEqual(self.clock.now, 10)
-                self.assertLessEqual(api.resizes, 20)
+                self.assertLessEqual(self.clock.now, 3.1)
+                self.assertLessEqual(api.resizes, 8)
                 self.assertEqual(api.scans, 0)
+
+    def test_wrong_size_but_matching_aspect_continues(self):
+        # 1920×1080 与 720p 目标同为 16:9，框架按短边缩放即可，不该为此杀任务。
+        api = NativeAPI(size=(1920, 1080))
+        self.assertIsNotNone(pc.prepare(api, self.budget(), hwnd=7))
+        self.assertLessEqual(self.clock.now, 3.1)
+        self.assertLessEqual(api.resizes, 8)
+        self.assertEqual(api.scans, 0)
+        self.assertTrue(any("短边" in text for text in self.messages))
 
 
 class GuardTests(ContractTest):

@@ -158,6 +158,11 @@ class WindowsAPI:
         os.startfile(GAME_URI)
 
     def restore(self, hwnd):
+        # 伪最小化（框架的后台截图机制）状态下，窗口按定义就不是 iconic —— 上游文档
+        # 写的是框架会「以不激活的方式恢复窗口」，所以 IsIconic 早已是 False，这里必然
+        # 走 return True，resize 会直接透过那个透明状态去做。这是对的：layered/alpha
+        # 属于框架自己的状态，既没有公开 API 能令其回退（post_inactive 只管取消置顶与
+        # 解除输入阻断），也不该由我们改写——框架的 monitor 线程会与我们竞态。
         if self.user.IsIconic(hwnd) or self.user.IsZoomed(hwnd):
             self.user.ShowWindowAsync(hwnd, 9)
             return False
