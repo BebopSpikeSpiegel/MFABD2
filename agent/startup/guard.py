@@ -7,7 +7,7 @@ from .common import Budget, Cancelled, Prepared, PreparationError
 from .options import PCOptions
 
 # 哪些控制器保留「会话级失败记忆」。
-# PC 已改为每任务重试：sink 预算收紧到 5 秒，重试最多让每个任务多等 5 秒。
+# PC 已改为每任务重试，窗口准备使用独立的短预算。
 # ADB 仍是 300 秒预算——去掉记忆会让模拟器掉线时 12 个任务变成最多 60 分钟空等，
 # 比「一次失败全灭」更折磨人。要一并放开，得先给 ADB 加失败冷却或收紧预算。
 PERSIST_FAILURE_KINDS = ("adb",)
@@ -91,8 +91,7 @@ class StartupGuard:
             else:
                 from .pc import PC_TASK_TIMEOUT
 
-                # sink 回调跑在 pipeline 线程上，必须尽快返回：PC 只做亚秒级的
-                # 分辨率校正与最小化，不该沿用等游戏启动用的 300 秒。
+                # PC 只等待窗口校正与最小化，不沿用启动器更新的 300 秒预算。
                 budget = self.budget_factory(self.report, lambda: tasker.stopping,
                                              timeout=PC_TASK_TIMEOUT, warn=self.warn)
                 options = PCOptions.from_context(context)

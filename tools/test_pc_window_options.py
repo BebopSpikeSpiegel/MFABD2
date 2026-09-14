@@ -51,9 +51,10 @@ class Clock:
 
 
 class FakeAPI:
-    def __init__(self, size=(800, 600), minimized=False, fullscreen=False, pseudo=False):
+    def __init__(self, size=(800, 600), minimized=False, maximized=False, fullscreen=False, pseudo=False):
         self.size = size
         self.iconic = minimized
+        self.zoomed = maximized
         self.full = fullscreen
         self.pseudo = pseudo
         self.calls = []
@@ -84,6 +85,9 @@ class FakeAPI:
     def minimized(self, hwnd):
         return self.iconic
 
+    def maximized(self, hwnd):
+        return self.zoomed
+
     def fullscreen(self, hwnd):
         return self.full
 
@@ -94,6 +98,7 @@ class FakeAPI:
         self.calls.append(('restore',))
         if self.restore_ok:
             self.iconic = False
+            self.zoomed = False
         return self.restore_ok
 
     def exit_fullscreen(self, hwnd):
@@ -186,7 +191,7 @@ class Contracts(unittest.TestCase):
         api = FakeAPI(size=(1652, 929))
         api.resize_ok = False
         self.assertIsNotNone(self.prepare(api))
-        self.assertLessEqual(self.clock.now, 5.1)
+        self.assertLessEqual(self.clock.now, pc.RESIZE_WINDOW + 0.1)
         self.assertEqual(len(self.warnings), 1)
         self.assertIn('1652×929', self.warnings[0])
         self.assertIn('短边', self.warnings[0])
@@ -198,7 +203,7 @@ class Contracts(unittest.TestCase):
         api.resize_ok = False
         with self.assertRaisesRegex(common.PreparationError, '长宽比偏离目标'):
             self.prepare(api)
-        self.assertLessEqual(self.clock.now, 5.1)
+        self.assertLessEqual(self.clock.now, pc.RESIZE_WINDOW + 0.1)
         self.assertEqual(self.warnings, [])
 
     # ---- sink 路径：已连接窗口的校正 ----
@@ -225,8 +230,9 @@ class Contracts(unittest.TestCase):
         api.resize_ok = False
         with self.assertRaisesRegex(common.PreparationError, '长宽比偏离目标'):
             self.prepare(api)
-        self.assertLessEqual(self.clock.now, 5.1)
-        self.assertNotIn('[PC窗口]', '\n'.join(self.logs + self.warnings))
+        self.assertLessEqual(self.clock.now, pc.RESIZE_WINDOW + 0.1)
+        self.assertIn('已请求调整', '\n'.join(self.logs))
+        self.assertFalse(any('（已调整' in line for line in self.logs + self.warnings))
 
     def test_fullscreen_exit(self):
         api = FakeAPI(fullscreen=True)
@@ -241,15 +247,15 @@ class Contracts(unittest.TestCase):
         with self.assertRaises(common.PreparationError):
             self.prepare(api)
         self.assertEqual(api.calls.count(('exit',)), 1)
-        self.assertLessEqual(self.clock.now, 5.1)
+        self.assertLessEqual(self.clock.now, pc.RESIZE_WINDOW + 0.1)
 
     def test_stuck_fullscreen_but_correct_size_says_so(self):
         # 降级路径下「没退出全屏但客户区恰好达标」，报告必须说实话。
         api = FakeAPI(size=(1280, 720), fullscreen=True)
         api.exit_ok = False
         self.assertIsNotNone(self.prepare(api))
-        self.assertIn('仍为全屏', self.logs[-1])
-        self.assertNotIn('已退出全屏', self.logs[-1])
+        self.assertIn('仍为全屏', self.warnings[-1])
+        self.assertNotIn('已退出全屏', self.warnings[-1])
 
     def test_minimized_restore(self):
         api = FakeAPI(minimized=True)
@@ -263,13 +269,98 @@ class Contracts(unittest.TestCase):
         api.restore_ok = False
         with self.assertRaises(common.PreparationError):
             self.prepare(api)
-        self.assertLessEqual(self.clock.now, 5.1)
+        self.assertLessEqual(self.clock.now, pc.RESIZE_WINDOW + 0.1)
 
     def test_minimize_after_resize(self):
         api = FakeAPI()
         self.prepare(api, minimize=True)
         self.assertTrue(api.pseudo)
         self.assertLess(api.calls.index(('read', (1280, 720))), api.calls.index(('minimize',)))
+
+    def test_delayed_resize_is_confirmed_before_minimize(self):
+        # The real game changed size several seconds after the old five-second
+        # resize phase had expired. An accepted native request is not completion.
+        for initial in ((2530, 1423), (1152, 648)):
+            with self.subTest(initial=initial):
+                self.setUp()
+                api = FakeAPI(size=initial)
+                api.resize_ok = False
+                read_size = api.client_size
+                applied = []
+
+                def deferred_size(hwnd):
+                    if self.clock.now >= 8 and not applied:
+                        api.size = (1280, 720)
+                        applied.append(self.clock.now)
+                    return read_size(hwnd)
+
+                api.client_size = deferred_size
+                minimize = api.minimize
+
+                def checked_minimize(hwnd):
+                    self.assertTrue(applied, 'Minimized while the resize request was pending')
+                    self.assertEqual(api.size, (1280, 720))
+                    minimize(hwnd)
+
+                api.minimize = checked_minimize
+                self.prepare(api, minimize=True)
+                self.assertTrue(api.pseudo, '\n'.join(self.logs))
+                self.assertEqual(api.calls.count(('resize', (1280, 720))), 1)
+                self.assertGreaterEqual(self.clock.now, 8)
+
+    def test_unconfirmed_resize_does_not_minimize_or_stop_a_usable_window(self):
+        api = FakeAPI(size=(1920, 1080))
+        api.resize_ok = False
+        self.assertIsNotNone(self.prepare(api, minimize=True))
+        self.assertNotIn(('minimize',), api.calls)
+        self.assertEqual(api.calls.count(('resize', (1280, 720))), 1)
+        self.assertIn('本次不再最小化', '\n'.join(self.warnings))
+
+    def test_transient_target_size_does_not_trigger_minimize(self):
+        api = FakeAPI(size=(1920, 1080))
+        api.resize_ok = False
+        read_size = api.client_size
+
+        def changing_size(hwnd):
+            api.size = (1280, 720) if 1 <= self.clock.now < 1.2 or self.clock.now >= 3 else (1920, 1080)
+            return read_size(hwnd)
+
+        api.client_size = changing_size
+        minimized_at = []
+        minimize = api.minimize
+
+        def record_minimize(hwnd):
+            minimized_at.append(self.clock.now)
+            minimize(hwnd)
+
+        api.minimize = record_minimize
+        self.prepare(api, minimize=True)
+        self.assertEqual(len(minimized_at), 1)
+        self.assertGreaterEqual(minimized_at[0], 3 + pc.GEOMETRY_STABLE_WINDOW)
+        self.assertEqual(api.calls.count(('resize', (1280, 720))), 1)
+
+    def test_maximized_window_restored_once_before_size_and_minimize(self):
+        api = FakeAPI(size=(1920, 1080), maximized=True)
+        self.prepare(api, minimize=True)
+        self.assertFalse(api.zoomed)
+        self.assertEqual(api.calls.count(('restore',)), 1)
+        self.assertLess(api.calls.index(('restore',)), api.calls.index(('resize', (1280, 720))))
+        self.assertLess(api.calls.index(('resize', (1280, 720))), api.calls.index(('minimize',)))
+
+    def test_fullscreen_not_confirmed_never_minimizes(self):
+        api = FakeAPI(size=(1280, 720), fullscreen=True)
+        api.exit_ok = False
+        self.assertIsNotNone(self.prepare(api, minimize=True))
+        self.assertNotIn(('minimize',), api.calls)
+        self.assertIn('本次不再最小化', '\n'.join(self.warnings))
+
+    def test_cancellation_during_delayed_geometry_does_not_minimize(self):
+        api = FakeAPI(size=(1920, 1080))
+        api.resize_ok = False
+        self.budget.cancelled = lambda: self.clock.now >= 1
+        with self.assertRaises(common.Cancelled):
+            self.prepare(api, minimize=True)
+        self.assertNotIn(('minimize',), api.calls)
 
     def test_iconic_size_is_measured_after_restore(self):
         api = FakeAPI(size=(1280, 720), minimized=True)
@@ -280,9 +371,15 @@ class Contracts(unittest.TestCase):
 
     def test_restore_can_finish_after_the_old_five_probe_limit(self):
         api = FakeAPI(size=(1280, 720), minimized=True)
-        restore = api.restore
-        api.restore = lambda hwnd: restore(hwnd) if self.clock.now >= 2 else False
+        api.restore_ok = False
+        def delayed_restore(hwnd):
+            if self.clock.now >= 2:
+                api.iconic = False
+            return api.iconic
+
+        api.minimized = delayed_restore
         self.prepare(api)
+        self.assertEqual(api.calls.count(('restore',)), 1)
         self.assertGreaterEqual(self.clock.now, 2)
         self.assertLess(self.clock.now, 5.1)
 
@@ -291,7 +388,7 @@ class Contracts(unittest.TestCase):
         api = FakeAPI(size=(1280, 720))
         api.minimize_ok = False
         self.assertIsNotNone(self.prepare(api, minimize=True))
-        self.assertLessEqual(self.clock.now, pc.MINIMIZE_WINDOW + 0.2)
+        self.assertLessEqual(self.clock.now, pc.MINIMIZE_WINDOW + pc.GEOMETRY_STABLE_WINDOW + 0.2)
         self.assertEqual(api.calls.count(('minimize',)), 1)
         self.assertIn('最小化未确认', self.logs[-1])
         # 文案要说清请求已经发出，因为窗口很可能稍后自行最小化。

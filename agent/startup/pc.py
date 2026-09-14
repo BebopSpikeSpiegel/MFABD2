@@ -4,21 +4,12 @@ from .common import Cancelled, Prepared, PreparationError
 from .options import PCOptions
 
 TARGET = (1280, 720)
-# resize 本身就是循环重发：每轮一次 SetWindowPos 加 0.5 秒回读，5 秒给 10 次机会。
-# 实机实测：窗口出现后两秒内游戏界面线程忙于加载，6 次尝试可以全部无效。所以宁可
-# 给足——真调不动时下面的长宽比分级会兜住，不会白等到总超时。
-RESIZE_WINDOW = 5.0
-# 最小化请求**只发一次**，然后等它生效，绝不重发。
-#
-# 重发试过，是错的：ShowWindowAsync 把消息投进游戏的消息队列就返回，多发的请求会在
-# 框架已经做过伪最小化之后才被消化，让窗口再次 iconic；Unity 从最小化恢复时会自己抢
-# 输入焦点，于是框架 monitor 线程的撤销条件
-# （pseudo_minimized_ && GetForegroundWindow() == hwnd_，见上游
-# MaaWin32ControlUnit/Screencap/PseudoMinimizeHelper.cpp，100ms 轮询）成立，
-# 它就把自己刚设的透明撤掉——用户看到的就是「窗口最小化后又弹回前台」。
-#
-# 单发的最坏情况只是「我们没等到、报了未确认，而窗口稍后自行最小化」，良性。
-# 窗口时长按实测延迟（1.75~4.8 秒）给到 6 秒。
+# 原生窗口调用是异步投递。冷启动日志中尺寸到第九秒才改变；旧实现五秒内
+# 重发十次后就最小化，残留的窗口操作随后又把游戏带回前台。现在每种请求只发
+# 一次，回读稳定后才能进入下一阶段。超时可以放行可用画面，但不能放行最小化。
+RESIZE_WINDOW = 15.0
+GEOMETRY_STABLE_WINDOW = 0.5
+# 最小化同样只投递一次，再等待系统/框架确认状态。
 MINIMIZE_WINDOW = 6.0
 # 客户区长宽比相对目标的容许偏差。短边 720 上 1px 取整误差是 0.14%，这里留足余量。
 ASPECT_TOLERANCE = 0.02
@@ -27,7 +18,7 @@ ASPECT_TOLERANCE = 0.02
 MIN_SHORT_SIDE = TARGET[1]
 # sink 的总预算。必须大于 RESIZE_WINDOW + MINIMIZE_WINDOW，否则总超时会先于长宽比
 # 分级和最小化等待触发，那两套兜底就永远走不到。
-PC_TASK_TIMEOUT = 12.0
+PC_TASK_TIMEOUT = 22.0
 # pretask 亲手拉起游戏后，留给界面线程的稳定时间。游戏本来就在跑时不花这个钱。
 SETTLE_AFTER_LAUNCH = 3.0
 
@@ -54,7 +45,8 @@ def _fmt(size):
 
 def resize(api, hwnd, budget, target=TARGET):
     until = min(budget.deadline, budget.clock() + RESIZE_WINDOW)
-    toggled = False
+    restore_requested = exit_requested = resize_requested = False
+    stable_since = None
     original_size = None
     while True:
         budget.check()
@@ -62,24 +54,32 @@ def resize(api, hwnd, budget, target=TARGET):
             break
         if not api.is_game(hwnd):
             raise PreparationError("绑定的游戏窗口已失效，请重新连接")
-        if api.restore(hwnd) is False:
-            budget.pause(min(0.2, until - budget.clock()))
-            continue
-        if api.fullscreen(hwnd):
-            if not toggled:
+        if api.minimized(hwnd) or api.maximized(hwnd):
+            if not restore_requested:
+                api.restore(hwnd)
+                restore_requested = True
+            stable_since = None
+        elif api.fullscreen(hwnd):
+            if not exit_requested:
                 api.exit_fullscreen(hwnd)
-                toggled = True
-            budget.pause(min(1, until - budget.clock()))
-            continue
-        size = api.client_size(hwnd)
-        if original_size is None:
-            original_size = size
-        if size == target:
-            return original_size
-        api.resize_client(hwnd, target)
-        budget.pause(min(0.5, until - budget.clock()))
-        if api.is_game(hwnd) and not api.fullscreen(hwnd) and api.client_size(hwnd) == target:
-            return original_size
+                exit_requested = True
+            stable_since = None
+        else:
+            size = api.client_size(hwnd)
+            if original_size is None:
+                original_size = size
+            if size == target:
+                if stable_since is None:
+                    stable_since = budget.clock()
+                if budget.clock() - stable_since >= GEOMETRY_STABLE_WINDOW:
+                    return original_size
+            else:
+                stable_since = None
+                if not resize_requested:
+                    api.resize_client(hwnd, target)
+                    resize_requested = True
+                    budget.report(f"[PC窗口][sink] 已请求调整 {_fmt(size)} → {_fmt(target)}；等待尺寸稳定后再处理最小化")
+        budget.pause(min(0.1, until - budget.clock()))
     # 只说明「没调成」。是否致命由 align_window 按长宽比统一裁决。
     raise ResolutionUnavailable(f"无法将游戏客户区调整为 {_fmt(target)}")
 
@@ -93,12 +93,15 @@ def align_window(api, hwnd, budget, options):
     was_minimized = api.minimized(hwnd)
     was_fullscreen = api.fullscreen(hwnd)
     restored_size = None
+    geometry_ready = False
     try:
         restored_size = resize(api, hwnd, budget, options.target)
+        geometry_ready = True
     except ResolutionUnavailable:
         # 先量完再裁决：长宽比对得上时框架的短边缩放能兜住，不该为此杀任务。
         pass
     actual = api.client_size(hwnd)
+    geometry_ready = geometry_ready and actual == options.target
     if was_minimized:
         # Iconic windows can report 0x0. Measure after restoring instead of
         # treating the iconic size as a real resolution or an optimization hint.
@@ -122,7 +125,7 @@ def align_window(api, hwnd, budget, options):
         else:
             note = (
                 f"；提示：未能改成 {_fmt(options.target)}，但长宽比与目标一致（偏差 {deviation:.1%}），"
-                "框架会把短边缩放到 720 再识别，不影响准确度；本任务继续执行，下个任务会重新尝试调整"
+                "框架会把短边缩放到 720 再识别；本任务继续执行，下个任务会重新尝试调整"
             )
     mode = "普通窗口"
     if not options.minimize and api.pseudo_minimized(hwnd):
@@ -135,11 +138,13 @@ def align_window(api, hwnd, budget, options):
             "窗口当前处于框架的后台截图模式（透明并点击穿透，这是 MaaFramework 自身机制，"
             "不影响识别）；点任务栏中的游戏即可恢复查看"
         )
-    if options.minimize:
+    if options.minimize and not geometry_ready:
+        mode = "窗口尺寸尚未确认稳定，本次不再最小化；下个任务重新检查"
+    elif options.minimize:
         try:
             budget.check()
             if not api.minimized(hwnd) and not api.pseudo_minimized(hwnd):
-                # 只发这一次。重发的后果见 MINIMIZE_WINDOW 处的说明。
+                budget.report(f"[PC窗口][sink] 尺寸 {_fmt(actual)} 已稳定；请求最小化")
                 api.minimize(hwnd)
             until = min(budget.deadline, budget.clock() + MINIMIZE_WINDOW)
             while not (api.minimized(hwnd) or api.pseudo_minimized(hwnd)):
@@ -176,7 +181,7 @@ def align_window(api, hwnd, budget, options):
     resized = "未达目标" if note else "已调整" if before != actual else "无需调整"
     line = f"[PC窗口][sink] 分辨率 {_fmt(before)} → {_fmt(actual)}（{resized}{extra}）；{mode}{note}"
     # 降级整行走 warn，否则这条「为什么继续跑」会被埋在一堆 info 里。
-    (budget.warn if note else budget.report)(line)
+    (budget.warn if note or not geometry_ready else budget.report)(line)
 
 
 def settle_after_launch(api, hwnd, budget):

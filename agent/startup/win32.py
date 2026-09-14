@@ -171,6 +171,9 @@ class WindowsAPI:
     def minimized(self, hwnd):
         return bool(self.user.IsIconic(hwnd))
 
+    def maximized(self, hwnd):
+        return bool(self.user.IsZoomed(hwnd))
+
     def pseudo_minimized(self, hwnd):
         style = self.user.GetWindowLongW(hwnd, -20)
         if style & 0x80020 != 0x80020:
