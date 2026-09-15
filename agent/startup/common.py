@@ -18,7 +18,7 @@ class Prepared:
 
 
 class Budget:
-    # timeout 是浮点秒数：ADB 用默认 300，PC 的 sink 用 5，验证脚本用 0.5。
+    # timeout 是浮点秒数：ADB 默认 300，PC 由窗口准备调用方传入独立预算。
     def __init__(self, report, cancelled=lambda: False, *, timeout: float = 300,
                  clock=time.monotonic, sleep=time.sleep, warn=None):
         self.report = report
@@ -52,7 +52,11 @@ class Budget:
         until = min(self.clock() + seconds, self.deadline)
         while self.clock() < until:
             self.check()
-            self.sleep(min(0.1, until - self.clock()))
+            # 取消查询、进度回调或线程调度都可能耗尽本次等待，不能沿用循环入口的判断。
+            remaining = until - self.clock()
+            if remaining <= 0:
+                break
+            self.sleep(min(0.1, remaining))
         self.check()
 
     def success(self):

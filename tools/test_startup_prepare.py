@@ -143,6 +143,37 @@ class ContractTest(unittest.TestCase):
 
 
 class BudgetTests(ContractTest):
+    def test_pause_handles_time_advancing_between_clock_reads(self):
+        def advancing_clock():
+            self.clock.now += 0.06
+            return self.clock.now
+
+        budget = Budget(self.messages.append, clock=advancing_clock,
+                        sleep=self.clock.sleep)
+        budget.pause(0.1)
+        self.assertGreaterEqual(self.clock.now, budget.started + 0.1)
+
+    def test_pause_handles_slow_cancellation_poll(self):
+        def cancelled():
+            self.clock.now += 0.15
+            return False
+
+        budget = self.budget(cancelled=cancelled)
+        budget.pause(0.1)
+        self.assertGreaterEqual(self.clock.now, 0.1)
+
+    def test_pause_handles_slow_progress_report(self):
+        def report(message):
+            self.messages.append(message)
+            if "已等待" in message:
+                self.clock.now += 0.2
+
+        budget = self.budget(report=report)
+        self.clock.now = 30
+        budget.pause(0.1)
+        self.assertGreaterEqual(self.clock.now, 30.1)
+        self.assertEqual(sum("已等待" in message for message in self.messages), 1)
+
     def test_success_report_does_not_revoke_readiness_at_deadline(self):
         budget = self.budget()
         self.clock.now = 300.1
