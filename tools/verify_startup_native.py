@@ -3,6 +3,7 @@
 Usage: python tools/verify_startup_native.py --maa-dir <isolated site-packages>
        --work-dir <scratch output>
 No ADB connection, real screenshot, real input or game process is used.
+This research test explicitly enables the ADB guard, which is disabled in production.
 """
 
 import argparse
@@ -25,6 +26,14 @@ def agent(identifier, mode):
     # Import the sink before any custom registrations to verify it initializes
     # its own binding instead of relying on unrelated action import order.
     from startup.sink import guard
+    from startup import adb
+    from startup.maa_compat import ensure_shell_bindings
+
+    def prepare_research_adb(controller, budget):
+        ensure_shell_bindings()
+        return adb.prepare(controller, budget)
+
+    guard.adb_prepare = prepare_research_adb
 
     @AgentServer.custom_action("test_nested")
     class Nested(CustomAction):
