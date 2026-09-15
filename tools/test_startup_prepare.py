@@ -507,6 +507,20 @@ class GuardTests(ContractTest):
                                   budget_factory=self.budget,
                                   adb_prepare=prepare or prepared, pc_prepare=prepare or prepared)
 
+    def test_default_guard_bypasses_adb_without_identity_wait_or_failure_replay(self):
+        gate = guard.StartupGuard(self.messages.append, self.fail, budget_factory=self.budget)
+        controller = Controller(uuid=None)
+        gate.failures[("adb", None)] = "previous failure"
+        context = Context(controller)
+        for task_id in (1, 1, 2):
+            context.task_id = task_id
+            self.assertEqual(gate.ensure(context), Prepared())
+        self.assertEqual(controller.commands, [])
+        self.assertEqual(context.tasker.stops, 0)
+        self.assertEqual(gate.tasks, {})
+        self.assertEqual(self.messages, [])
+        self.assertEqual(self.clock.now, 0)
+
     def test_actual_type_bypasses_even_if_label_says_pc(self):
         gate = self.make_guard()
         for kind in ("playcover", "custom", "native_android", "", None):

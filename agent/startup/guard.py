@@ -1,21 +1,21 @@
-"""Per-task startup gate. A failure fails the current task, not the whole session."""
+"""Per-task PC startup gate; ADB preparation is opt-in for research only."""
 
 from collections import OrderedDict
 
-from . import adb
 from .common import Budget, Cancelled, Prepared, PreparationError
 from .options import PCOptions
 
 # 哪些控制器保留「会话级失败记忆」。
 # PC 已改为每任务重试，窗口准备使用独立的短预算。
-# ADB 仍是 300 秒预算——去掉记忆会让模拟器掉线时 12 个任务变成最多 60 分钟空等，
+# ADB 已默认停用；显式注入旧算法的研究测试仍使用以下失败记忆。
+# 旧算法是 300 秒预算——去掉记忆会让模拟器掉线时 12 个任务变成最多 60 分钟空等，
 # 比「一次失败全灭」更折磨人。要一并放开，得先给 ADB 加失败冷却或收紧预算。
 PERSIST_FAILURE_KINDS = ("adb",)
 
 
 class StartupGuard:
     def __init__(self, report, error, *, warn=None, budget_factory=Budget,
-                 adb_prepare=adb.prepare, pc_prepare=None):
+                 adb_prepare=None, pc_prepare=None):
         self.report = report
         self.error = error
         self.warn = warn or report
@@ -72,6 +72,10 @@ class StartupGuard:
             info = controller.info
             kind = info.get("type")
             if kind not in ("adb", "win32"):
+                return Prepared()
+            # ADB 公共准备暂时停用；生产 sink 不注入 adb_prepare。
+            # 在身份、失败记忆和预算检查前旁路，旧算法只留给独立研究验证。
+            if kind == "adb" and self.adb_prepare is None:
                 return Prepared()
             uuid = controller.uuid
             if not uuid:
