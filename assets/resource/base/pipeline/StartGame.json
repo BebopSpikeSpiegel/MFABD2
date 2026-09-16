@@ -1,6 +1,6 @@
 {
     "StartGame_PCWindowOptions": {
-        "desc": "PC 启动准备配置，仅供 pretask/sink 共享读取，不进入业务流程。",
+        "desc": "PC 窗口配置，仅供任务内 sink 读取（pretask 已不消费选项），不进入业务流程。",
         "enabled": false,
         "attach": {
             "resolution": "720p",
@@ -14,7 +14,7 @@
         ]
     },
     "StartGame_Check_App_Alive": {
-        "desc": "复用当前任务的启动准备结果。已在前台沿用当前场景；本轮拉起过则进入原有加载链。",
+        "desc": "ADB 恢复旧版 Shell 前台探测，失败进入普通启动链；其他平台保留原有准备分流。",
         "action": "Custom",
         "custom_action": "StartupCheckApp",
         "next": [
@@ -30,7 +30,7 @@
         ]
     },
     "StartGame_RunApp": {
-        "desc": "启动准备适配入口；ADB 复用首节点检查，其他平台保留各自启动方式。登录和更新仍由下游节点处理。",
+        "desc": "ADB 调用框架 StartApp，失败转 Shell 兜底；其他平台保留各自启动方式。登录和更新仍由下游节点处理。",
         "pre_wait_freezes": 500,
         "action": "Custom",
         "custom_action": "StartupRunApp",
@@ -52,7 +52,7 @@
         ]
     },
     "StartGame_RunApp_Shell": {
-        "desc": "保留外部引用的兼容入口；启动策略统一由 agent 管理，不在这里再次执行 Shell。",
+        "desc": "ADB 恢复旧版 am start Shell 兜底；其他平台保留原有准备分流。",
         "action": "Custom",
         "custom_action": "StartupRunApp",
         "post_delay": 8000,
@@ -72,6 +72,21 @@
             "Global_Null_Exception",
             "Global_Null_Panic"
         ]
+    },
+    "StartGame_ADB_Check_App_Alive": {
+        "desc": "仅供 ADB 适配动作通过 run_action 调用，恢复 1084865e 的前台探测；next/on_error 由外层节点负责。",
+        "action": "Shell",
+        "cmd": "dumpsys window | grep mCurrentFocus | grep com.neowizgames.game.browndust2"
+    },
+    "StartGame_ADB_RunApp": {
+        "desc": "仅供 ADB 适配动作调用，使用框架原生 StartApp。",
+        "action": "StartApp",
+        "package": "com.neowizgames.game.browndust2"
+    },
+    "StartGame_ADB_RunApp_Shell": {
+        "desc": "仅供 ADB 适配动作调用，恢复 1084865e 的 am start 兜底。",
+        "action": "Shell",
+        "cmd": "am start -n $(cmd package resolve-activity --brief com.neowizgames.game.browndust2 | tail -1)"
     },
     "StartGame_Logo": {
         "recognition": "OCR",

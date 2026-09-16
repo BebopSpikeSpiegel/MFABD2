@@ -6,16 +6,8 @@ from maa.event_sink import NotificationType
 from utils import mfaalog
 
 from .guard import StartupGuard
-from . import adb
-from .maa_compat import ensure_shell_bindings
-
-
-def prepare_adb(controller, budget):
-    ensure_shell_bindings()
-    return adb.prepare(controller, budget)
-
-
-guard = StartupGuard(mfaalog.info, mfaalog.error, adb_prepare=prepare_adb)
+# ADB 由普通 StartGame pipeline 启动，暂不运行公共前台探测与等待。
+guard = StartupGuard(mfaalog.info, mfaalog.error, warn=mfaalog.warning)
 
 # MaaFw 5.12.2's context-sink decorator does not initialize its ctypes binding.
 # Initialize explicitly instead of depending on unrelated action import order.

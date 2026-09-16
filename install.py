@@ -25,6 +25,24 @@ from configure import configure_ocr_model
 
 working_dir = Path(__file__).parent
 install_path = working_dir / Path("install")
+
+# ── pretask 的启动路径 ────────────────────────────────────────────────────────
+# 协议规定 pretask 的 CWD 是 interface.json 所在目录，即安装根
+# （deps/tools/interface.schema.json 的 pretaskConfig.exec）。但 MFAA v2.15.2 至少有
+# 一条代码路径用的是 resource/base：线上实测中，点「刷新连接目标」时两级上跳能跑通并
+# 写出 pc_bootstrap.log，而点「开始任务」时一行日志都没有。一个相对路径不可能同时满足
+# 两个 CWD，这里必须选一个锚点——默认沿用唯一已知可用的那个，不拿「协议正确」去换掉它。
+# 切换只需改这一个常量。
+PRETASK_ANCHOR = "base"  # "base" = resource/base（实测可用）；"root" = 安装根（协议正确）
+PRETASK_EXEC = {"base": "../../python/python.exe", "root": "./python/python.exe"}[PRETASK_ANCHOR]
+# 脚本路径反过来可以做到与 CWD 无关：CreateProcess 一定把 exec 解析成绝对路径，于是
+# sys.executable 必然是 <安装根>/python/python.exe，往上两级就是安装根。这样即便 CWD
+# 与 exec 的解析锚点不一致（上面那两条路径的差异），脚本也一定找得到。
+PRETASK_LAUNCH = (
+    "import os,runpy,sys;d=os.path.dirname;"
+    "r=d(d(os.path.realpath(sys.executable)));"
+    "runpy.run_path(os.path.join(r,'agent','pc_bootstrap.py'),run_name='__main__')"
+)
 version = len(sys.argv) > 1 and sys.argv[1] or "v0.0.1"
 target_os = len(sys.argv) > 2 and sys.argv[2] or "win"
 # 确保这里能接收到 CI 传进来的版本号，默认为 0.0.0
@@ -261,7 +279,9 @@ def install_agent(target_os):
         if any(target_os.startswith(p) for p in ["win", "windows"]):
             interface["agent"]["child_exec"] = r"{PROJECT_DIR}/python/python.exe"
             interface["agent"]["child_args"] = ["-u", "-X", "utf8=1", r"{PROJECT_DIR}/agent/main.py"]
-            # MFAA v2.15.2 pretask cwd is resource/base; args have no placeholder expansion.
+            # pretask 的 exec/args 都不做 {PROJECT_DIR} 占位符展开（协议未定义该机制）。
+            # 开发时 args 里写的是脚本相对路径；发布时换成 -c 载荷，让脚本自己从
+            # sys.executable 反推安装根，不再依赖 CWD。理由见顶部 PRETASK_* 常量。
             for pretask in interface.get("pretask", []):
                 args = pretask.get("args", [])
                 script_indices = [
@@ -269,9 +289,10 @@ def install_agent(target_os):
                     if Path(arg.replace("\\", "/")).name == "pc_bootstrap.py"
                 ]
                 if script_indices:
-                    pretask["exec"] = "../../python/python.exe"
-                    for index in script_indices:
-                        args[index] = "../../agent/pc_bootstrap.py"
+                    pretask["exec"] = PRETASK_EXEC
+                    # 倒序替换：一项换两项会移动后面的下标。
+                    for index in reversed(script_indices):
+                        args[index:index + 1] = ["-c", PRETASK_LAUNCH]
         
         # 2. macOS: 智能判断 (有嵌入用嵌入，没嵌入用系统)
         elif any(target_os.startswith(p) for p in ["macos", "darwin", "osx"]):
@@ -323,6 +344,23 @@ def install_agent(target_os):
             if ".venv" in value.lower():
                 print(f"::error::pretask {pretask.get('name', '<unnamed>')!r} 仍指向开发环境虚拟环境: {value}")
                 sys.exit(1)
+
+    # pretask 路径存在性：悬空的 exec 会让 pretask 静默不执行——上层软件不报错，
+    # 运行日志里连一条警告都没有。这正是线上踩过的坑，必须在构建期就发现。
+    anchor = install_path if PRETASK_ANCHOR == "root" else install_path / "resource" / "base"
+    for pretask in written_interface.get("pretask", []):
+        if "pc_bootstrap.py" not in "".join(pretask.get("args", [])):
+            continue
+        if not (install_path / "agent" / "pc_bootstrap.py").is_file():
+            print("::error::install/agent/pc_bootstrap.py 缺失，pretask 必然起不来")
+            sys.exit(1)
+        resolved = (anchor / pretask.get("exec", "")).resolve()
+        if not (install_path / "python").is_dir():
+            # 本地手动出包时还没解开嵌入式解释器，只提示不中止；CI 里它总是先就绪。
+            print(f"⚠️ 跳过 pretask exec 存在性检查（{install_path / 'python'} 尚未就绪）：{resolved}")
+        elif not resolved.is_file():
+            print(f"::error::pretask exec 在 {PRETASK_ANCHOR} 锚点下不存在: {resolved}")
+            sys.exit(1)
     print(f"✅ Agent 配置更新完成: {written}")
 
 if __name__ == "__main__":
