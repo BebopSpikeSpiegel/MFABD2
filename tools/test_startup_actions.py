@@ -29,7 +29,10 @@ class StartupActionTests(unittest.TestCase):
 
     def context(self, kind):
         controller = types.SimpleNamespace(info={"type": kind}, post_start_app=Mock())
-        return types.SimpleNamespace(tasker=types.SimpleNamespace(controller=controller, stopping=False, post_stop=Mock()))
+        return types.SimpleNamespace(
+            tasker=types.SimpleNamespace(controller=controller, stopping=False, post_stop=Mock()),
+            run_action=Mock(return_value=types.SimpleNamespace(success=True)),
+        )
 
     def test_playcover_continues_manual_game_without_start_app(self):
         context = self.context("playcover")
@@ -37,11 +40,40 @@ class StartupActionTests(unittest.TestCase):
         context.tasker.controller.post_start_app.assert_not_called()
         context.tasker.post_stop.assert_not_called()
 
-    def test_prepared_adb_and_pc_do_not_launch_again(self):
-        for kind in ("adb", "win32"):
+    def test_prepared_pc_does_not_launch_again(self):
+        context = self.context("win32")
+        self.assertTrue(self.module.StartupRunApp().run(context, None))
+        context.tasker.controller.post_start_app.assert_not_called()
+        context.run_action.assert_not_called()
+
+    def test_adb_check_uses_legacy_action_without_startup_guard(self):
+        context = self.context("adb")
+        for result, expected in ((types.SimpleNamespace(success=True), True),
+                                 (types.SimpleNamespace(success=False), False), (None, False)):
+            context.run_action.return_value = result
+            self.assertEqual(self.module.StartupCheckApp().run(context, None), expected)
+        self.assertEqual(context.run_action.call_args.args, ("StartGame_ADB_Check_App_Alive",))
+        self.guard.ensure.assert_not_called()
+        context.tasker.post_stop.assert_not_called()
+
+    def test_adb_launch_and_fallback_use_separate_legacy_actions(self):
+        context = self.context("adb")
+        for entry, target in (("StartGame_RunApp", "StartGame_ADB_RunApp"),
+                              ("StartGame_RunApp_Shell", "StartGame_ADB_RunApp_Shell")):
+            for result, expected in ((types.SimpleNamespace(success=True), True),
+                                     (types.SimpleNamespace(success=False), False), (None, False)):
+                context.run_action.return_value = result
+                self.assertEqual(self.module.StartupRunApp().run(
+                    context, types.SimpleNamespace(node_name=entry)), expected)
+                self.assertEqual(context.run_action.call_args.args, (target,))
+        self.guard.ensure.assert_not_called()
+        context.tasker.post_stop.assert_not_called()
+
+    def test_non_adb_checks_do_not_run_legacy_shell(self):
+        for kind in ("win32", "playcover", "native_android", "custom"):
             context = self.context(kind)
-            self.assertTrue(self.module.StartupRunApp().run(context, None))
-            context.tasker.controller.post_start_app.assert_not_called()
+            self.assertFalse(self.module.StartupCheckApp().run(context, None))
+            context.run_action.assert_not_called()
 
     def test_other_controller_keeps_its_start_app_path(self):
         context = self.context("custom")

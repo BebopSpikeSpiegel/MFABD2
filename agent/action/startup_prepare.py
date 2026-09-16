@@ -10,12 +10,14 @@ from utils import mfaalog
 @AgentServer.custom_action("StartupCheckApp")
 class StartupCheckApp(CustomAction):
     def run(self, context, argv):
+        if context.tasker.controller.info.get("type") == "adb":
+            result = context.run_action("StartGame_ADB_Check_App_Alive")
+            return result is not None and result.success
         result = guard.ensure(context)
         if result is None:
             return False
         kind = context.tasker.controller.info.get("type")
-        # A new/resumed game needs the existing Logo/Loading branch.
-        # Other platforms retain their controller's StartApp path.
+        # 非 ADB 平台继续进入原有加载分支；ADB 已在上方执行旧版探测。
         # PC may have launched in the separate pretask process, so enter the
         # loading branch (which also recognizes an already-ready home screen).
         return kind == "adb" and not result.changed
@@ -24,6 +26,11 @@ class StartupCheckApp(CustomAction):
 @AgentServer.custom_action("StartupRunApp")
 class StartupRunApp(CustomAction):
     def run(self, context, argv):
+        if context.tasker.controller.info.get("type") == "adb":
+            node = ("StartGame_ADB_RunApp_Shell" if argv.node_name == "StartGame_RunApp_Shell"
+                    else "StartGame_ADB_RunApp")
+            result = context.run_action(node)
+            return result is not None and result.success
         result = guard.ensure(context)
         if result is None:
             return False

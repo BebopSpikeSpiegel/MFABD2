@@ -18,9 +18,13 @@ class Prepared:
 
 
 class Budget:
-    def __init__(self, report, cancelled=lambda: False, *, timeout=300,
-                 clock=time.monotonic, sleep=time.sleep):
+    # timeout 是浮点秒数：ADB 默认 300，PC 由窗口准备调用方传入独立预算。
+    def __init__(self, report, cancelled=lambda: False, *, timeout: float = 300,
+                 clock=time.monotonic, sleep=time.sleep, warn=None):
         self.report = report
+        # 降级提示必须让用户看见。mfaalog 有独立的 warn 前缀，走 info 会被埋在
+        # 一堆常规日志里。没给就退回 report，调用点因此不必都传。
+        self.warn = warn or report
         self.cancelled = cancelled
         self.clock = clock
         self.sleep = sleep
@@ -48,7 +52,11 @@ class Budget:
         until = min(self.clock() + seconds, self.deadline)
         while self.clock() < until:
             self.check()
-            self.sleep(min(0.1, until - self.clock()))
+            # 取消查询、进度回调或线程调度都可能耗尽本次等待，不能沿用循环入口的判断。
+            remaining = until - self.clock()
+            if remaining <= 0:
+                break
+            self.sleep(min(0.1, remaining))
         self.check()
 
     def success(self):

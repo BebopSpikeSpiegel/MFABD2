@@ -1,13 +1,13 @@
 {
     "Daily_HomePage": {
-        "desc": "日常枢纽。|[PC覆盖·2026-08-02] 广场段成功后卡带留驻广场→次日开局派遣静默丢领/锻造哑死(当日实录)。在Global_Hub_End前插一发QC1归位腿:六个子枢纽全部消耗后触发,日常无论成败收尾时卡带必回QC1,次日开局天然安全,零手动。base六腿原序照抄。",
+        "desc": "日常枢纽。保留base子项顺序与Daily_Square_Switch存档判据、选项开关,只在Global_Hub_End前追加PC广场收尾归位。#462后不可直连Daily_Square_Hub,否则会绕过今日已完成检查、广场关闭和强制指定子项设置。",
         "next": [
             "[JumpBack]Daily_HomePage_Hub",
             "[JumpBack]Daily_Union_Hub",
             "[JumpBack]Daily_VisitCabin_Hub",
             "[JumpBack]Daily_Busin_Hub",
             "[JumpBack]Daily_Intimacy_HUB",
-            "[JumpBack]Daily_Square_Hub",
+            "[JumpBack]Daily_Square_Switch",
             "[JumpBack]Daily_End_CassetteHome_PC",
             "Global_Hub_End"
         ]

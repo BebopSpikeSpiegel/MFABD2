@@ -1,6 +1,6 @@
 {
-    "Equip_HomePage": {
-        "desc": "锻造入口。|[PC覆盖·2026-08-02] 卡带留驻梦幻广场时,新setup技能表进入方式在广场必死(OpenSklMenu连败20s→默认Null假成功,当日三连实录)——广场无技能坞。前置一发QC1归位守卫:无论开局卡带在哪,锻造永远从标准卡带起步,零手动。",
+    "Equip_Daily_Switch": {
+        "desc": "[PC覆盖·2026-09-14] 上游 #462 把 Equip_HomePage 改成 timeout:1 的直通节点,调度腿(Equip_Skill_Call/[JumpBack]Global_ToSandBox)挪进本节点 next。原 PC 覆盖仍整字段替换 HomePage.next 挂真识别腿,继承 1ms 超时→必然瞬时超时→on_error 兜 Global_Null→装备日常 1.15 秒假成功零动作(09-14 05:44 实录)。修=PC 腿跟着挪到这里:保留 base 两腿,前置 PC 专用的 [JumpBack]Daily_End_CassetteHome_PC(与原 PC HomePage 覆盖语义一致)。",
         "next": [
             "[JumpBack]Daily_End_CassetteHome_PC",
             "Equip_Skill_Call",
