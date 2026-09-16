@@ -21,6 +21,7 @@ sys.meta_path.insert(0, NoNativeImports())
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "agent"))
 from startup import adb, pc, guard
 from startup.common import Budget, Cancelled, Prepared, PreparationError
+from startup.options import PCOptions
 
 
 class Clock:
@@ -93,6 +94,9 @@ class NativeAPI:
     def minimized(self, hwnd):
         return False
 
+    def maximized(self, hwnd):
+        return False
+
     def pseudo_minimized(self, hwnd):
         return False
 
@@ -139,6 +143,37 @@ class ContractTest(unittest.TestCase):
 
 
 class BudgetTests(ContractTest):
+    def test_pause_handles_time_advancing_between_clock_reads(self):
+        def advancing_clock():
+            self.clock.now += 0.06
+            return self.clock.now
+
+        budget = Budget(self.messages.append, clock=advancing_clock,
+                        sleep=self.clock.sleep)
+        budget.pause(0.1)
+        self.assertGreaterEqual(self.clock.now, budget.started + 0.1)
+
+    def test_pause_handles_slow_cancellation_poll(self):
+        def cancelled():
+            self.clock.now += 0.15
+            return False
+
+        budget = self.budget(cancelled=cancelled)
+        budget.pause(0.1)
+        self.assertGreaterEqual(self.clock.now, 0.1)
+
+    def test_pause_handles_slow_progress_report(self):
+        def report(message):
+            self.messages.append(message)
+            if "已等待" in message:
+                self.clock.now += 0.2
+
+        budget = self.budget(report=report)
+        self.clock.now = 30
+        budget.pause(0.1)
+        self.assertGreaterEqual(self.clock.now, 30.1)
+        self.assertEqual(sum("已等待" in message for message in self.messages), 1)
+
     def test_success_report_does_not_revoke_readiness_at_deadline(self):
         budget = self.budget()
         self.clock.now = 300.1
@@ -266,6 +301,45 @@ class ADBTests(ContractTest):
 
 
 class PCTests(ContractTest):
+    def test_minimize_exception_is_optional(self):
+        api = NativeAPI()
+        def fail(hwnd):
+            raise OSError("minimize rejected")
+        api.minimize = fail
+        self.assertEqual(pc.prepare(api, self.budget(), hwnd=7,
+                                    options=PCOptions(minimize=True)), Prepared())
+        self.assertIn("minimize rejected", self.messages[-1])
+        self.assertIn("继续任务", self.messages[-1])
+
+    def test_confirmed_minimize_is_not_reported_as_failure(self):
+        api = NativeAPI()
+        api.minimize = lambda hwnd: setattr(api, "minimized", lambda hwnd: True)
+        pc.prepare(api, self.budget(), hwnd=7, options=PCOptions(minimize=True))
+        self.assertIn("最小化状态已确认", self.messages[-1])
+        self.assertFalse(any("未确认" in message for message in self.messages))
+
+    def test_minimize_does_not_swallow_cancellation_or_deadline(self):
+        threshold = pc.GEOMETRY_STABLE_WINDOW + 0.2
+        for cancelled, timeout, expected in (
+            (lambda: self.clock.now >= threshold, 300, Cancelled),
+            (lambda: False, threshold, PreparationError),
+        ):
+            with self.subTest(expected=expected):
+                self.clock = Clock()
+                api = NativeAPI()
+                attempts = []
+                api.minimize = attempts.append
+                with self.assertRaises(expected):
+                    pc.prepare(api, self.budget(cancelled=cancelled, timeout=timeout),
+                               hwnd=7, options=PCOptions(minimize=True))
+                self.assertEqual(attempts, [7])
+
+    def test_window_lost_during_minimize_remains_fatal(self):
+        api = NativeAPI()
+        api.minimize = lambda hwnd: setattr(api, "valid", False)
+        with self.assertRaisesRegex(PreparationError, "游戏窗口已失效"):
+            pc.prepare(api, self.budget(), hwnd=7, options=PCOptions(minimize=True))
+
     def test_old_launcher_error_keeps_waiting_for_main_window(self):
         api = NativeAPI([([], True, ["ERROR"]), ([], True, ["ERROR"]), ([7], True, [])])
         pc.prepare(api, self.budget())
@@ -285,18 +359,21 @@ class PCTests(ContractTest):
         def toggle(hwnd):
             api.toggles += 1
         api.exit_fullscreen = toggle
-        with self.assertRaises(PreparationError):
-            pc.prepare(api, self.budget(), hwnd=7)
+        # 客户区尺寸本来就达标，所以卡在全屏不再是失败——但报告必须说实话。
+        self.assertIsNotNone(pc.prepare(api, self.budget(), hwnd=7))
         self.assertEqual(api.toggles, 1)
         self.assertEqual(api.resizes, 0)
-        self.assertLessEqual(self.clock.now, 10)
+        self.assertLessEqual(self.clock.now, pc.RESIZE_WINDOW + 0.1)
+        self.assertIn("仍为全屏", self.messages[-1])
 
     def test_minimized_window_is_not_accepted_until_restored(self):
         api = NativeAPI()
-        states = iter([False, False, True])
-        api.restore = lambda hwnd: next(states)
+        api.minimized = lambda hwnd: self.clock.now < 0.4
+        restores = []
+        api.restore = restores.append
         pc.prepare(api, self.budget(), hwnd=7)
-        self.assertAlmostEqual(self.clock.now, 0.4)
+        self.assertEqual(restores, [7])
+        self.assertGreaterEqual(self.clock.now, 0.4 + pc.GEOMETRY_STABLE_WINDOW)
 
     def test_fullscreen_exit_then_resize_is_verified(self):
         api = NativeAPI(size=(1920, 1080))
@@ -319,13 +396,16 @@ class PCTests(ContractTest):
         api = NativeAPI([([], False, []), ([7], True, [])])
         self.assertTrue(pc.prepare(api, self.budget()).changed)
         self.assertEqual((api.launches, api.scans), (1, 2))
-        self.assertLessEqual(self.clock.now, 2)
+        # 一轮 2 秒等待，加上亲手拉起后留给界面线程的就绪时间。
+        self.assertGreaterEqual(self.clock.now, pc.SETTLE_AFTER_LAUNCH)
+        self.assertLessEqual(self.clock.now, 2 + pc.SETTLE_AFTER_LAUNCH + 0.1)
 
-    def test_multiple_games_rejected_before_mutation(self):
+    def test_multiple_games_are_left_to_the_client(self):
+        # 多窗口交给软件自己的窗口选择 UI；pretask 只报数，不替用户决定。
         api = NativeAPI([([7, 8], True, [])])
-        with self.assertRaises(PreparationError):
-            pc.prepare(api, self.budget())
+        self.assertIsNotNone(pc.prepare(api, self.budget()))
         self.assertEqual((api.launches, api.resizes, api.handles), (0, 0, []))
+        self.assertIn("2 个", self.messages[-1])
 
     def test_invalid_bound_handle_never_rebinds(self):
         api = NativeAPI([([8], True, [])], valid=False)
@@ -334,19 +414,75 @@ class PCTests(ContractTest):
         self.assertEqual((api.scans, api.launches), (0, 0))
         self.assertEqual(set(api.handles), {7})
 
-    def test_size_readback_failure_is_bounded(self):
-        for size in (None, (0, 0), (1920, 1080)):
+    def test_unmeasurable_size_is_bounded_and_fatal(self):
+        # 量不出长宽比就无法判断识别坐标还准不准，只能停掉当前任务。
+        for size in (None, (0, 0)):
             with self.subTest(size=size):
                 self.clock = Clock()
                 api = NativeAPI(size=size)
                 with self.assertRaises(PreparationError):
                     pc.prepare(api, self.budget(), hwnd=7)
-                self.assertLessEqual(self.clock.now, 10)
-                self.assertLessEqual(api.resizes, 20)
+                self.assertLessEqual(self.clock.now, pc.RESIZE_WINDOW + 0.1)
+                self.assertEqual(api.resizes, 1)
                 self.assertEqual(api.scans, 0)
+
+    def test_wrong_size_but_matching_aspect_continues(self):
+        # 1920×1080 与 720p 目标同为 16:9，框架按短边缩放即可，不该为此杀任务。
+        api = NativeAPI(size=(1920, 1080))
+        self.assertIsNotNone(pc.prepare(api, self.budget(), hwnd=7))
+        self.assertLessEqual(self.clock.now, pc.RESIZE_WINDOW + 0.1)
+        self.assertEqual(api.resizes, 1)
+        self.assertEqual(api.scans, 0)
+        self.assertTrue(any("短边" in text for text in self.messages))
 
 
 class GuardTests(ContractTest):
+    def test_pending_resize_continues_without_minimize_and_next_task_rechecks(self):
+        api = NativeAPI(size=(1920, 1080))
+        attempts = []
+        api.minimize = attempts.append
+
+        def prepare(controller, info, budget, options):
+            return pc.prepare(api, budget, hwnd=info["hwnd"], options=options)
+
+        gate = self.make_guard(prepare)
+        context = Context(Controller(kind="win32"))
+        context.get_node_object = lambda name: SimpleNamespace(attach={"minimize": True})
+        self.assertEqual(gate.ensure(context), Prepared())
+        self.assertEqual(api.resizes, 1)
+        self.assertEqual(attempts, [])
+        # The delayed request takes effect after this task was allowed through.
+        # Only the next task repeats preparation; the current task stays cached.
+        api.size = (1280, 720)
+        self.assertEqual(gate.ensure(context), Prepared())
+        self.assertEqual(attempts, [])
+        context.task_id = 2
+        self.assertEqual(gate.ensure(context), Prepared())
+        self.assertEqual(attempts, [7])
+        self.assertEqual(context.tasker.stops, 0)
+        self.assertEqual(gate.failures, {})
+        self.assertEqual(self.errors, [])
+
+    def test_unconfirmed_minimize_continues_and_next_task_retries(self):
+        api = NativeAPI()
+        attempts = []
+        api.minimize = attempts.append
+        def prepare(controller, info, budget, options):
+            return pc.prepare(api, budget, hwnd=info["hwnd"], options=options)
+        gate = self.make_guard(prepare)
+        context = Context(Controller(kind="win32"))
+        context.get_node_object = lambda name: SimpleNamespace(attach={"minimize": True})
+        for task_id in (1, 1, 2):
+            context.task_id = task_id
+            self.assertEqual(gate.ensure(context), Prepared())
+        # 每个任务只发一次请求——重发会让框架撤销自己刚设的伪最小化；task 1 的第二次
+        # 调用命中去重缓存，所以总共两次。
+        self.assertEqual(attempts, [7, 7])
+        self.assertEqual(context.tasker.stops, 0)
+        self.assertEqual(gate.failures, {})
+        self.assertEqual(self.errors, [])
+        self.assertEqual(sum("最小化未确认" in message for message in self.messages), 2)
+
     def test_identity_failure_does_not_poison_reconnection_or_other_types(self):
         gate = self.make_guard()
         class Unavailable:
@@ -370,6 +506,20 @@ class GuardTests(ContractTest):
         return guard.StartupGuard(self.messages.append, self.errors.append,
                                   budget_factory=self.budget,
                                   adb_prepare=prepare or prepared, pc_prepare=prepare or prepared)
+
+    def test_default_guard_bypasses_adb_without_identity_wait_or_failure_replay(self):
+        gate = guard.StartupGuard(self.messages.append, self.fail, budget_factory=self.budget)
+        controller = Controller(uuid=None)
+        gate.failures[("adb", None)] = "previous failure"
+        context = Context(controller)
+        for task_id in (1, 1, 2):
+            context.task_id = task_id
+            self.assertEqual(gate.ensure(context), Prepared())
+        self.assertEqual(controller.commands, [])
+        self.assertEqual(context.tasker.stops, 0)
+        self.assertEqual(gate.tasks, {})
+        self.assertEqual(self.messages, [])
+        self.assertEqual(self.clock.now, 0)
 
     def test_actual_type_bypasses_even_if_label_says_pc(self):
         gate = self.make_guard()

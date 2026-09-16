@@ -65,10 +65,17 @@ class AndroidInterfaceFilterTest(unittest.TestCase):
                 INSTALL.install_agent("win-x64")
             installed = json.loads((output / "interface.json").read_text(encoding="utf-8"))
             pretask = installed["pretask"][0]
-            self.assertEqual(pretask["exec"], "../../python/python.exe")
-            self.assertEqual(pretask["args"][-1], "../../agent/pc_bootstrap.py")
-            base = output / "resource" / "base"
-            self.assertEqual((base / pretask["args"][-1]).resolve(), (output / "agent" / "pc_bootstrap.py").resolve())
+            self.assertEqual(pretask["exec"], INSTALL.PRETASK_EXEC)
+            # 脚本不再按相对路径给出，改为 -c 载荷从 sys.executable 反推安装根。
+            self.assertEqual(pretask["args"][-2:], ["-c", INSTALL.PRETASK_LAUNCH])
+            self.assertNotIn("pc_bootstrap.py", pretask["args"][0])
+            # exec 必须落在选定锚点下解析得到的嵌入式解释器上。
+            anchor = output if INSTALL.PRETASK_ANCHOR == "root" else output / "resource" / "base"
+            interpreter = (anchor / pretask["exec"]).resolve()
+            self.assertEqual(interpreter, (output / "python" / "python.exe").resolve())
+            # 载荷的不变量：从解释器往上两级就是安装根，脚本必在其 agent/ 下。
+            self.assertEqual(interpreter.parents[1] / "agent" / "pc_bootstrap.py",
+                             (output / "agent" / "pc_bootstrap.py").resolve())
             self.assertTrue((output / "agent" / "pc_bootstrap.py").is_file())
         pretask = self.interface["pretask"][0]
         self.assertEqual((ROOT / "assets/resource/base" / pretask["args"][-1]).resolve(), ROOT / "agent/pc_bootstrap.py")
@@ -106,9 +113,10 @@ class AndroidInterfaceFilterTest(unittest.TestCase):
                                  "args": ["-B", "-u", script, "--custom-flag", "value"]}],
                 }
                 installed = self.install_agent_fixture(source, "win-x64")
+                # 一项换两项，其余 args 必须原样保留（含位置）。
                 self.assertEqual(installed["pretask"], [
-                    {**source["pretask"][0], "exec": "../../python/python.exe",
-                     "args": ["-B", "-u", "../../agent/pc_bootstrap.py", "--custom-flag", "value"]},
+                    {**source["pretask"][0], "exec": INSTALL.PRETASK_EXEC,
+                     "args": ["-B", "-u", "-c", INSTALL.PRETASK_LAUNCH, "--custom-flag", "value"]},
                 ])
 
     def test_unrelated_pretask_venv_paths_fail_with_name(self):
